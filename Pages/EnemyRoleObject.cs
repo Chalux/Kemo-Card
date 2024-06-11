@@ -93,6 +93,11 @@ public partial class EnemyRoleObject : Control, IEvent
         MBLabel.Text = StaticUtils.MakeBBCodeString(data.CurrMBlock.ToString());
         hpLabel.Text = StaticUtils.MakeBBCodeString(data.CurrHealth + "/" + data.CurrHpLimit);
         mpLabel.Text = StaticUtils.MakeBBCodeString(data.CurrMagic + "/" + data.CurrHpLimit);
+        SpriteFrames spriteFrames = new()
+        {
+            ResourcePath = data.script.AnimationResourcePath
+        };
+        animation.SpriteFrames = spriteFrames;
     }
 
     public void ReceiveEvent(string @event, dynamic datas)

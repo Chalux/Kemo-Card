@@ -104,7 +104,7 @@ public partial class RoleCreateScene : BaseScene
 
     void DoConfirm()
     {
-        if (PresetRoleInput.Text.ToInt() > 0)
+        if (PresetRoleInput.Text.Length > 0 && PresetRoleInput.Text.ToInt() > 0)
         {
             PlayerRole role = new((uint)PresetRoleInput.Text.ToInt());
             AlertView.PopupAlert($"检测到已填入预设角色id。角色的数据为：\r\n{role.GetRichDesc()}是否确定？", false, new(() => role.StartFunction?.Call()));

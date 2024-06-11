@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" path="res://Pages/RoleCreateScene.cs" id="1_rd4da"]
 
-[node name="RoleCreateScene" type="Node2D" node_paths=PackedStringArray("NameInput", "SpeedTxt", "StrengthTxt", "EfficiencyTxt", "MantraTxt", "EquipTxt", "BookTxt", "CriticalTxt", "DodgeTxt", "SpeedMinus", "StrengthMinus", "EfficiencyMinus", "MantraMinus", "EquipMinus", "BookMinus", "CriticalMinus", "DodgeMinus", "SpeedPlus", "StrengthPlus", "EfficiencyPlus", "MantraPlus", "EquipPlus", "BookPlus", "CriticalPlus", "DodgePlus", "ConfirmBtn", "RemainPoint")]
+[node name="RoleCreateScene" type="Node2D" node_paths=PackedStringArray("NameInput", "SpeedTxt", "StrengthTxt", "EfficiencyTxt", "MantraTxt", "EquipTxt", "BookTxt", "CriticalTxt", "DodgeTxt", "SpeedMinus", "StrengthMinus", "EfficiencyMinus", "MantraMinus", "EquipMinus", "BookMinus", "CriticalMinus", "DodgeMinus", "SpeedPlus", "StrengthPlus", "EfficiencyPlus", "MantraPlus", "EquipPlus", "BookPlus", "CriticalPlus", "DodgePlus", "ConfirmBtn", "RemainPoint", "PresetRoleInput")]
 script = ExtResource("1_rd4da")
 NameInput = NodePath("Container/NameInput")
 SpeedTxt = NodePath("Container/Control/SpeedTxt")
@@ -31,6 +31,7 @@ CriticalPlus = NodePath("Container/Control7/CriticalPlus")
 DodgePlus = NodePath("Container/Control8/DodgePlus")
 ConfirmBtn = NodePath("Container/Button")
 RemainPoint = NodePath("Container/RemainPoint")
+PresetRoleInput = NodePath("Container/NameInput2")
 
 [node name="Container" type="Control" parent="."]
 layout_mode = 3
@@ -443,6 +444,7 @@ theme_override_font_sizes/font_size = 36
 text = "确定"
 
 [node name="NameInput2" type="TextEdit" parent="Container"]
+layout_mode = 0
 offset_left = 64.0
 offset_top = 320.0
 offset_right = 464.0

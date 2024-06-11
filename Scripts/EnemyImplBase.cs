@@ -8,7 +8,7 @@ namespace KemoCard.Scripts
         public EnemyRole Binder;
         public Dictionary<string, float> GlobalDict { get; set; } = new();
         public Dictionary<string, float> InGameDict { get; set; } = new();
-
+        public string AnimationResourcePath { get; set; } = "";
         public int Speed { get; set; } = 1;
         public int Strength { get; set; } = 1;
         public int Effeciency { get; set; } = 1;
