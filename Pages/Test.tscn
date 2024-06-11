@@ -1,0 +1,34 @@
+[gd_scene load_steps=6 format=3 uid="uid://bnp4g6bja4b41"]
+
+[ext_resource type="Shader" path="res://Resources/SelectorShader.gdshader" id="1_8urud"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_s0cds"]
+shader = ExtResource("1_8urud")
+shader_parameter/edge_color = Color(0.537255, 0, 0, 1)
+shader_parameter/threshold = 0.01
+
+[sub_resource type="Gradient" id="Gradient_7uoap"]
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_451wu"]
+frequency = 0.0179
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_x4uvm"]
+color_ramp = SubResource("Gradient_7uoap")
+noise = SubResource("FastNoiseLite_451wu")
+
+[node name="Test" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="TextureRect" type="TextureRect" parent="."]
+material = SubResource("ShaderMaterial_s0cds")
+layout_mode = 0
+offset_left = 128.0
+offset_top = 64.0
+offset_right = 168.0
+offset_bottom = 104.0
+texture = SubResource("NoiseTexture2D_x4uvm")

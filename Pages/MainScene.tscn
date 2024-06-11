@@ -1,0 +1,49 @@
+[gd_scene load_steps=2 format=3 uid="uid://bemn2qkcjybbi"]
+
+[ext_resource type="Script" path="res://Pages/MainScene.cs" id="1_ejl3x"]
+
+[node name="MainScene" type="Node2D" node_paths=PackedStringArray("SaveButton", "EditDeckButton", "TestBattleButton", "EditEquipBtn")]
+script = ExtResource("1_ejl3x")
+SaveButton = NodePath("SaveBtn")
+EditDeckButton = NodePath("EditDeckBtn")
+TestBattleButton = NodePath("TestBattleBtn")
+EditEquipBtn = NodePath("EditEquipBtn")
+
+[node name="ColorRect" type="ColorRect" parent="."]
+offset_right = 1920.0
+offset_bottom = 1080.0
+color = Color(0.329412, 0.541176, 0.74902, 1)
+
+[node name="TestBattleBtn" type="Button" parent="."]
+offset_left = 64.0
+offset_top = 64.0
+offset_right = 256.0
+offset_bottom = 128.0
+theme_override_font_sizes/font_size = 36
+text = "测试战斗"
+
+[node name="SaveBtn" type="Button" parent="."]
+offset_left = 64.0
+offset_top = 152.0
+offset_right = 256.0
+offset_bottom = 216.0
+scale = Vector2(1, 1.018)
+theme_override_font_sizes/font_size = 36
+text = "保存"
+
+[node name="EditDeckBtn" type="Button" parent="."]
+visible = false
+offset_left = 64.0
+offset_top = 240.0
+offset_right = 256.0
+offset_bottom = 304.0
+theme_override_font_sizes/font_size = 36
+text = "编辑卡组"
+
+[node name="EditEquipBtn" type="Button" parent="."]
+offset_left = 64.0
+offset_top = 320.0
+offset_right = 256.0
+offset_bottom = 384.0
+theme_override_font_sizes/font_size = 36
+text = "编辑装备"

@@ -1,0 +1,183 @@
+[gd_scene load_steps=4 format=3 uid="uid://dktlsmcncoda2"]
+
+[ext_resource type="Script" path="res://Pages/CustonSContainer.cs" id="1_2wsrc"]
+[ext_resource type="Script" path="res://Pages/BagScene.cs" id="1_cx6uk"]
+[ext_resource type="PackedScene" uid="uid://dyv3uci0g4ye4" path="res://Pages/EquipObject.tscn" id="2_8083f"]
+
+[node name="BagScene" type="Node2D" node_paths=PackedStringArray("HalmetSlot", "ArmorSlot", "GloveSlot", "TrouserSlot", "ShoeSlot", "WeaponSlot1", "WeaponSlot2", "OtherSlot1", "OtherSlot2", "OtherSlot3", "OtherSlot4", "OtherSlot5", "GMEdit", "AddBtn", "DeleteBtn", "popup", "flowContainer", "QuitBtn")]
+script = ExtResource("1_cx6uk")
+HalmetSlot = NodePath("ColorRect2/HalmetSlot")
+ArmorSlot = NodePath("ColorRect2/ArmorSlot")
+GloveSlot = NodePath("ColorRect2/GloveSlot")
+TrouserSlot = NodePath("ColorRect2/TrouserSlot")
+ShoeSlot = NodePath("ColorRect2/ShoeSlot")
+WeaponSlot1 = NodePath("ColorRect2/WeaponSlot1")
+WeaponSlot2 = NodePath("ColorRect2/WeaponSlot2")
+OtherSlot1 = NodePath("ColorRect2/OtherSlot")
+OtherSlot2 = NodePath("ColorRect2/OtherSlot2")
+OtherSlot3 = NodePath("ColorRect2/OtherSlot3")
+OtherSlot4 = NodePath("ColorRect2/OtherSlot4")
+OtherSlot5 = NodePath("ColorRect2/OtherSlot5")
+GMEdit = NodePath("DebugControl/GMEdit")
+AddBtn = NodePath("DebugControl/AddBtn")
+DeleteBtn = NodePath("DebugControl/DeleteBtn")
+popup = NodePath("PopupMenu")
+flowContainer = NodePath("ColorRect3/Control/ScrollContainer/HBoxContainer")
+QuitBtn = NodePath("QuitBtn")
+
+[node name="ColorRect" type="ColorRect" parent="."]
+offset_right = 1920.0
+offset_bottom = 1080.0
+color = Color(0.341176, 0, 0.333333, 1)
+
+[node name="ColorRect2" type="ColorRect" parent="."]
+self_modulate = Color(0.323755, 0.629986, 1, 1)
+offset_left = 128.0
+offset_top = 128.0
+offset_right = 704.0
+offset_bottom = 960.0
+
+[node name="OtherSlot" parent="ColorRect2" instance=ExtResource("2_8083f")]
+offset_left = 64.0
+offset_top = 112.0
+offset_right = 160.0
+offset_bottom = 208.0
+
+[node name="OtherSlot2" parent="ColorRect2" instance=ExtResource("2_8083f")]
+offset_left = 64.0
+offset_top = 240.0
+offset_right = 160.0
+offset_bottom = 336.0
+
+[node name="OtherSlot3" parent="ColorRect2" instance=ExtResource("2_8083f")]
+offset_left = 64.0
+offset_top = 368.0
+offset_right = 160.0
+offset_bottom = 464.0
+
+[node name="OtherSlot4" parent="ColorRect2" instance=ExtResource("2_8083f")]
+offset_left = 64.0
+offset_top = 496.0
+offset_right = 160.0
+offset_bottom = 592.0
+
+[node name="OtherSlot5" parent="ColorRect2" instance=ExtResource("2_8083f")]
+offset_left = 64.0
+offset_top = 624.0
+offset_right = 160.0
+offset_bottom = 720.0
+
+[node name="HalmetSlot" parent="ColorRect2" instance=ExtResource("2_8083f")]
+offset_left = 272.0
+offset_top = 112.0
+offset_right = 368.0
+offset_bottom = 208.0
+
+[node name="ArmorSlot" parent="ColorRect2" instance=ExtResource("2_8083f")]
+offset_left = 272.0
+offset_top = 240.0
+offset_right = 368.0
+offset_bottom = 336.0
+
+[node name="GloveSlot" parent="ColorRect2" instance=ExtResource("2_8083f")]
+offset_left = 272.0
+offset_top = 368.0
+offset_right = 368.0
+offset_bottom = 464.0
+
+[node name="TrouserSlot" parent="ColorRect2" instance=ExtResource("2_8083f")]
+offset_left = 272.0
+offset_top = 496.0
+offset_right = 368.0
+offset_bottom = 592.0
+
+[node name="ShoeSlot" parent="ColorRect2" instance=ExtResource("2_8083f")]
+offset_left = 272.0
+offset_top = 624.0
+offset_right = 368.0
+offset_bottom = 720.0
+
+[node name="WeaponSlot1" parent="ColorRect2" instance=ExtResource("2_8083f")]
+offset_left = 432.0
+offset_top = 304.0
+offset_right = 528.0
+offset_bottom = 400.0
+
+[node name="WeaponSlot2" parent="ColorRect2" instance=ExtResource("2_8083f")]
+offset_left = 432.0
+offset_top = 432.0
+offset_right = 528.0
+offset_bottom = 528.0
+
+[node name="ColorRect3" type="ColorRect" parent="."]
+self_modulate = Color(0.323755, 0.629986, 1, 1)
+offset_left = 768.0
+offset_top = 128.0
+offset_right = 1856.0
+offset_bottom = 960.0
+
+[node name="Control" type="Control" parent="ColorRect3" node_paths=PackedStringArray("scrollContainer")]
+anchors_preset = 0
+offset_left = 64.0
+offset_top = 64.0
+offset_right = 1024.0
+offset_bottom = 768.0
+script = ExtResource("1_2wsrc")
+scrollContainer = NodePath("ScrollContainer")
+
+[node name="ScrollContainer" type="ScrollContainer" parent="ColorRect3/Control"]
+layout_mode = 0
+offset_right = 960.0
+offset_bottom = 704.0
+
+[node name="HBoxContainer" type="HFlowContainer" parent="ColorRect3/Control/ScrollContainer"]
+custom_minimum_size = Vector2(960, 704)
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 0
+theme_override_constants/h_separation = 30
+theme_override_constants/v_separation = 30
+
+[node name="PopupMenu" type="PopupMenu" parent="."]
+size = Vector2i(100, 120)
+theme_override_font_sizes/font_size = 36
+item_count = 2
+item_0/text = "装备"
+item_0/id = 0
+item_1/text = "丢弃"
+item_1/id = 1
+
+[node name="DebugControl" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 0
+offset_left = 128.0
+offset_top = 64.0
+offset_right = 464.0
+offset_bottom = 104.0
+
+[node name="GMEdit" type="TextEdit" parent="DebugControl"]
+layout_mode = 0
+offset_right = 192.0
+offset_bottom = 40.0
+
+[node name="AddBtn" type="Button" parent="DebugControl"]
+layout_mode = 0
+offset_left = 208.0
+offset_right = 264.0
+offset_bottom = 40.0
+text = "添加"
+
+[node name="DeleteBtn" type="Button" parent="DebugControl"]
+layout_mode = 0
+offset_left = 280.0
+offset_right = 336.0
+offset_bottom = 40.0
+text = "删除"
+
+[node name="QuitBtn" type="Button" parent="."]
+offset_left = 48.0
+offset_top = 24.0
+offset_right = 128.0
+offset_bottom = 82.0
+theme_override_font_sizes/font_size = 36
+text = "退出"

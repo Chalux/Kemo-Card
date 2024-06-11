@@ -1,0 +1,9 @@
+[gd_resource type="ShaderMaterial" load_steps=2 format=3 uid="uid://vlemaqje0h5l"]
+
+[ext_resource type="Shader" uid="uid://djs78omrgd24r" path="res://Resources/HitFlash.tres" id="1_xyf0d"]
+
+[resource]
+resource_local_to_scene = true
+shader = ExtResource("1_xyf0d")
+shader_parameter/enabled = false
+shader_parameter/ColorParameter = Color(1, 1, 1, 1)

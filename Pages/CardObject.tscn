@@ -1,0 +1,215 @@
+[gd_scene load_steps=22 format=3 uid="uid://w7e40lauidt0"]
+
+[ext_resource type="Shader" path="res://Resources/burn_shader.gdshader" id="1_8ochk"]
+[ext_resource type="Script" path="res://Pages/CardObject.cs" id="1_bld5k"]
+[ext_resource type="Shader" path="res://Resources/fake3d.gdshader" id="2_03cat"]
+[ext_resource type="Script" path="res://Pages/Bezier.cs" id="2_13l5h"]
+[ext_resource type="Script" path="res://Scripts/Cards/CardStateMachine.cs" id="2_ugu8i"]
+[ext_resource type="Script" path="res://Scripts/Cards/CardBaseState.cs" id="3_kyomr"]
+[ext_resource type="Texture2D" uid="uid://byn85mmoj86ck" path="res://Resources/Cursor/104.png" id="3_wi0nh"]
+[ext_resource type="Texture2D" uid="uid://lhm0o7fr7df3" path="res://Resources/Cursor/75.png" id="4_7smcf"]
+[ext_resource type="Script" path="res://Scripts/Cards/CardClickedState.cs" id="4_wim2r"]
+[ext_resource type="Script" path="res://Scripts/Cards/CardDraggingState.cs" id="5_ff1ko"]
+[ext_resource type="Script" path="res://Scripts/Cards/CardReleasedState.cs" id="6_iatr0"]
+[ext_resource type="Script" path="res://Scripts/Cards/CardAllState.cs" id="8_m444i"]
+
+[sub_resource type="Gradient" id="Gradient_mcxnm"]
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_wjo5k"]
+frequency = 0.001
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_ocyq7"]
+color_ramp = SubResource("Gradient_mcxnm")
+noise = SubResource("FastNoiseLite_wjo5k")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_proen"]
+resource_local_to_scene = true
+shader = ExtResource("1_8ochk")
+shader_parameter/dissolve_value = 1.0
+shader_parameter/burn_size = 0.14
+shader_parameter/burn_color = Color(0.831373, 0.137255, 0, 1)
+shader_parameter/dissolve_texture = SubResource("NoiseTexture2D_ocyq7")
+
+[sub_resource type="Gradient" id="Gradient_5i4y7"]
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_kogeu"]
+frequency = 0.0016
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_hp427"]
+color_ramp = SubResource("Gradient_5i4y7")
+noise = SubResource("FastNoiseLite_kogeu")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_on47y"]
+resource_local_to_scene = true
+shader = ExtResource("2_03cat")
+shader_parameter/fov = 90.0
+shader_parameter/cull_back = true
+shader_parameter/y_rot = 0.0
+shader_parameter/x_rot = 0.0
+shader_parameter/inset = 0.0
+shader_parameter/dissolve_value = 1.0
+shader_parameter/burn_size = 0.2
+shader_parameter/burn_color = Color(0.922391, 0.121125, 0, 1)
+shader_parameter/dissolve_texture = SubResource("NoiseTexture2D_hp427")
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_btin5"]
+size = Vector2(256, 320)
+
+[node name="CardObject" type="Control" node_paths=PackedStringArray("cardName", "cardDesc", "cardCost", "colorRect", "costBg", "dropPointDetector", "stateLabel", "csm", "BezierControl", "SVContainer")]
+material = SubResource("ShaderMaterial_proen")
+custom_minimum_size = Vector2(256, 320)
+layout_mode = 3
+anchors_preset = 0
+offset_right = 256.0
+offset_bottom = 320.0
+pivot_offset = Vector2(128, 320)
+mouse_default_cursor_shape = 7
+script = ExtResource("1_bld5k")
+cardName = NodePath("Container/SubViewportContainer/SubViewport/CardName")
+cardDesc = NodePath("Container/SubViewportContainer/SubViewport/CardDesc")
+cardCost = NodePath("Container/SubViewportContainer/SubViewport/CostBg/CardCost")
+colorRect = NodePath("Container/SubViewportContainer/SubViewport/ColorRect")
+costBg = NodePath("Container/SubViewportContainer/SubViewport/CostBg")
+dropPointDetector = NodePath("Container/SubViewportContainer/SubViewport/Area2D")
+stateLabel = NodePath("Container/SubViewportContainer/SubViewport/Label")
+csm = NodePath("CardStateMachine")
+BezierControl = NodePath("Bezier")
+SVContainer = NodePath("Container/SubViewportContainer")
+AngleXMax = 0.08
+AngleYMax = 0.08
+
+[node name="Container" type="Control" parent="."]
+use_parent_material = true
+custom_minimum_size = Vector2(256, 320)
+layout_mode = 1
+anchors_preset = 0
+offset_right = 128.0
+offset_bottom = 192.0
+pivot_offset = Vector2(128, 320)
+mouse_filter = 2
+metadata/_edit_use_anchors_ = true
+
+[node name="SubViewportContainer" type="SubViewportContainer" parent="Container"]
+material = SubResource("ShaderMaterial_on47y")
+layout_mode = 0
+offset_right = 256.0
+offset_bottom = 320.0
+pivot_offset = Vector2(128, 160)
+
+[node name="SubViewport" type="SubViewport" parent="Container/SubViewportContainer"]
+transparent_bg = true
+handle_input_locally = false
+size = Vector2i(256, 320)
+render_target_update_mode = 4
+
+[node name="ColorRect" type="ColorRect" parent="Container/SubViewportContainer/SubViewport"]
+modulate = Color(0, 0, 0, 0.431373)
+custom_minimum_size = Vector2(128, 192)
+offset_right = 256.0
+offset_bottom = 320.0
+pivot_offset = Vector2(128, 320)
+mouse_filter = 2
+
+[node name="CardName" type="RichTextLabel" parent="Container/SubViewportContainer/SubViewport"]
+offset_left = 16.0
+offset_top = 16.0
+offset_right = 464.0
+offset_bottom = 80.0
+scale = Vector2(0.5, 0.5)
+mouse_filter = 2
+bbcode_enabled = true
+text = "[center][font_size=36]CardName[/font_size][/center]"
+
+[node name="CardDesc" type="RichTextLabel" parent="Container/SubViewportContainer/SubViewport"]
+offset_left = 16.0
+offset_top = 64.0
+offset_right = 464.0
+offset_bottom = 543.0
+scale = Vector2(0.5, 0.501)
+mouse_filter = 2
+bbcode_enabled = true
+text = "[font_size=36]CardDesc[/font_size]"
+
+[node name="CostBg" type="Polygon2D" parent="Container/SubViewportContainer/SubViewport"]
+position = Vector2(224, 0)
+color = Color(0, 0.45098, 0.878431, 0.662745)
+polygon = PackedVector2Array(0, 0, 32, 0, 32, 32, 0, 32)
+
+[node name="CardCost" type="Label" parent="Container/SubViewportContainer/SubViewport/CostBg"]
+custom_minimum_size = Vector2(64, 64)
+offset_right = 64.0
+offset_bottom = 64.0
+scale = Vector2(0.5, 0.502273)
+theme_override_font_sizes/font_size = 36
+text = "99"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Area2D" type="Area2D" parent="Container/SubViewportContainer/SubViewport"]
+visible = false
+collision_mask = 2
+monitorable = false
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Container/SubViewportContainer/SubViewport/Area2D"]
+position = Vector2(128, 160)
+shape = SubResource("RectangleShape2D_btin5")
+
+[node name="Label" type="Label" parent="Container/SubViewportContainer/SubViewport"]
+offset_top = 295.0
+offset_right = 1024.0
+offset_bottom = 397.0
+scale = Vector2(0.25, 0.25)
+theme_override_font_sizes/font_size = 72
+text = "StateText"
+horizontal_alignment = 1
+
+[node name="Bezier" type="Control" parent="."]
+visible = false
+layout_mode = 3
+anchors_preset = 0
+offset_right = 256.0
+offset_bottom = 320.0
+mouse_filter = 2
+script = ExtResource("2_13l5h")
+t_arrow_head = ExtResource("3_wi0nh")
+t_arrow_body = ExtResource("4_7smcf")
+
+[node name="CardStateMachine" type="Control" parent="." node_paths=PackedStringArray("initialState")]
+visible = false
+anchors_preset = 0
+script = ExtResource("2_ugu8i")
+initialState = NodePath("CardBaseState")
+
+[node name="CardBaseState" type="Control" parent="CardStateMachine"]
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+script = ExtResource("3_kyomr")
+
+[node name="CardClickedState" type="Control" parent="CardStateMachine"]
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+script = ExtResource("4_wim2r")
+state = 1
+
+[node name="CardDraggingState" type="Control" parent="CardStateMachine"]
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+script = ExtResource("5_ff1ko")
+state = 3
+
+[node name="CardReleasedState" type="Control" parent="CardStateMachine"]
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+script = ExtResource("6_iatr0")
+state = 5
+
+[node name="CardAllState" type="Control" parent="CardStateMachine"]
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+script = ExtResource("8_m444i")
+state = 2

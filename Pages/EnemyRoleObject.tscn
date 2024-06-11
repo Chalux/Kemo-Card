@@ -1,0 +1,218 @@
+[gd_scene load_steps=13 format=3 uid="uid://cn1xqe8mwgyr0"]
+
+[ext_resource type="SpriteFrames" uid="uid://bt735d6c42stc" path="res://Resources/Bat/Bat.tres" id="1_5erph"]
+[ext_resource type="Script" path="res://Pages/EnemyRoleObject.cs" id="1_w664j"]
+[ext_resource type="Material" uid="uid://vlemaqje0h5l" path="res://Resources/HitFlashMaterial.tres" id="2_caie8"]
+[ext_resource type="Shader" path="res://Resources/SelectorShader.gdshader" id="4_o8kpm"]
+
+[sub_resource type="Animation" id="Animation_v1i4x"]
+loop_mode = 1
+
+[sub_resource type="Animation" id="Animation_358d4"]
+resource_name = "hit_flash"
+length = 0.8
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("%Animation:material:shader_parameter/enabled")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.2, 0.6, 0.8),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
+"update": 1,
+"values": [true, false, true, false]
+}
+
+[sub_resource type="Animation" id="Animation_4xxqk"]
+resource_name = "swap_texture"
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_pmhtp"]
+_data = {
+"RESET": SubResource("Animation_v1i4x"),
+"hit_flash": SubResource("Animation_358d4"),
+"swap_texture": SubResource("Animation_4xxqk")
+}
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_68ljr"]
+shader = ExtResource("4_o8kpm")
+shader_parameter/edge_color = Color(0.866667, 0.247059, 0.254902, 1)
+shader_parameter/threshold = 0.526
+
+[sub_resource type="Gradient" id="Gradient_t1mix"]
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_ps8mf"]
+frequency = 0.03
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_eecrr"]
+color_ramp = SubResource("Gradient_t1mix")
+noise = SubResource("FastNoiseLite_ps8mf")
+
+[node name="EnemyRoleObject" type="Control" node_paths=PackedStringArray("hpProgress", "mpProgress", "hpLabel", "mpLabel", "PBProgress", "MBProgress", "PBLabel", "MBLabel", "hitFlashAnimationPlayer", "monsterName", "animation", "buffContainer", "SelectRect", "mainControl", "IntentRichLabel")]
+custom_minimum_size = Vector2(300, 448)
+layout_mode = 3
+anchors_preset = 0
+offset_right = 300.0
+offset_bottom = 448.0
+script = ExtResource("1_w664j")
+hpProgress = NodePath("PanelContainer/Control/RoleHealthBar")
+mpProgress = NodePath("PanelContainer/Control/RoleMagicBar")
+hpLabel = NodePath("PanelContainer/Control/RoleHealthBar/RoleHealth")
+mpLabel = NodePath("PanelContainer/Control/RoleMagicBar/RoleMagic")
+PBProgress = NodePath("PanelContainer/Control/PBlockProg")
+MBProgress = NodePath("PanelContainer/Control/MBlockProg")
+PBLabel = NodePath("PanelContainer/Control/PBlockProg/PBlockTxt")
+MBLabel = NodePath("PanelContainer/Control/MBlockProg/MBlockTxt")
+hitFlashAnimationPlayer = NodePath("PanelContainer/Control/AnimationPlayer")
+monsterName = NodePath("PanelContainer/Control/MonsterName")
+animation = NodePath("PanelContainer/Control/Animation")
+buffContainer = NodePath("PanelContainer/Control/ScrollContainer/BuffContainer")
+SelectRect = NodePath("PanelContainer/Control/ColorRect")
+mainControl = NodePath("PanelContainer/Control")
+IntentRichLabel = NodePath("PanelContainer/Control/IntentRichLabel")
+
+[node name="PanelContainer" type="PanelContainer" parent="."]
+custom_minimum_size = Vector2(300, 448)
+layout_mode = 0
+offset_right = 300.0
+offset_bottom = 448.0
+
+[node name="Control" type="Control" parent="PanelContainer"]
+layout_mode = 2
+
+[node name="Animation" type="AnimatedSprite2D" parent="PanelContainer/Control"]
+unique_name_in_owner = true
+material = ExtResource("2_caie8")
+position = Vector2(160, 256)
+scale = Vector2(-9.97686, 10.4556)
+sprite_frames = ExtResource("1_5erph")
+autoplay = "default"
+
+[node name="MonsterName" type="RichTextLabel" parent="PanelContainer/Control"]
+unique_name_in_owner = true
+layout_mode = 2
+offset_right = 300.0
+offset_bottom = 64.0
+bbcode_enabled = true
+text = "[center][font_size=36]MonsterName[/font_size][/center]"
+
+[node name="RoleHealthBar" type="ProgressBar" parent="PanelContainer/Control"]
+unique_name_in_owner = true
+self_modulate = Color(1, 0, 0, 1)
+layout_mode = 0
+offset_top = -64.0
+offset_right = 300.0
+offset_bottom = -37.0
+value = 50.0
+show_percentage = false
+
+[node name="RoleHealth" type="RichTextLabel" parent="PanelContainer/Control/RoleHealthBar"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_right = 600.0
+offset_bottom = 64.0
+scale = Vector2(0.5, 0.5)
+bbcode_enabled = true
+text = "[center][color=#28ff00][font_size=36]999/999[/font_size][/color][/center]"
+
+[node name="RoleMagicBar" type="ProgressBar" parent="PanelContainer/Control"]
+unique_name_in_owner = true
+self_modulate = Color(0, 0.415686, 1, 1)
+layout_mode = 0
+offset_top = -32.0
+offset_right = 300.0
+offset_bottom = -5.0
+value = 50.0
+show_percentage = false
+
+[node name="RoleMagic" type="RichTextLabel" parent="PanelContainer/Control/RoleMagicBar"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_right = 600.0
+offset_bottom = 64.0
+scale = Vector2(0.5, 0.5)
+bbcode_enabled = true
+text = "[center][color=#28ff00][font_size=36]999/999[/font_size][/color][/center]"
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="PanelContainer/Control"]
+libraries = {
+"": SubResource("AnimationLibrary_pmhtp")
+}
+
+[node name="PBlockProg" type="ProgressBar" parent="PanelContainer/Control"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_top = -99.0
+offset_right = 144.0
+offset_bottom = -72.0
+max_value = 1000.0
+step = 1.0
+value = 50.0
+rounded = true
+allow_greater = true
+show_percentage = false
+
+[node name="PBlockTxt" type="RichTextLabel" parent="PanelContainer/Control/PBlockProg"]
+unique_name_in_owner = true
+layout_mode = 1
+offset_right = 288.0
+offset_bottom = 54.0
+scale = Vector2(0.5, 0.5)
+bbcode_enabled = true
+text = "[center][color=#28ff00][font_size=36]999[/font_size][/color][/center]"
+
+[node name="MBlockProg" type="ProgressBar" parent="PanelContainer/Control"]
+unique_name_in_owner = true
+self_modulate = Color(1, 0, 1, 1)
+layout_mode = 0
+offset_left = 151.803
+offset_top = -99.0
+offset_right = 295.803
+offset_bottom = -72.0
+max_value = 1000.0
+step = 1.0
+value = 50.0
+rounded = true
+allow_greater = true
+show_percentage = false
+
+[node name="MBlockTxt" type="RichTextLabel" parent="PanelContainer/Control/MBlockProg"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 1.52588e-05
+offset_right = 288.0
+offset_bottom = 54.0
+scale = Vector2(0.5, 0.5)
+bbcode_enabled = true
+text = "[center][color=#28ff00][font_size=36]999[/font_size][/color][/center]"
+
+[node name="ScrollContainer" type="ScrollContainer" parent="PanelContainer/Control"]
+layout_mode = 0
+offset_top = -136.0
+offset_right = 296.0
+offset_bottom = -104.0
+
+[node name="BuffContainer" type="HBoxContainer" parent="PanelContainer/Control/ScrollContainer"]
+unique_name_in_owner = true
+clip_contents = true
+custom_minimum_size = Vector2(296, 32)
+layout_mode = 2
+
+[node name="ColorRect" type="TextureRect" parent="PanelContainer/Control"]
+visible = false
+show_behind_parent = true
+material = SubResource("ShaderMaterial_68ljr")
+layout_mode = 0
+offset_right = 300.0
+offset_bottom = 448.0
+texture = SubResource("NoiseTexture2D_eecrr")
+expand_mode = 1
+
+[node name="IntentRichLabel" type="RichTextLabel" parent="PanelContainer/Control"]
+layout_mode = 0
+offset_top = 48.0
+offset_right = 300.0
+offset_bottom = 88.0
+bbcode_enabled = true
+text = "[center][font_size=30]意图"
+scroll_active = false

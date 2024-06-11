@@ -1,0 +1,64 @@
+[gd_scene load_steps=2 format=3 uid="uid://bp2iih4fjt633"]
+
+[ext_resource type="Script" path="res://Pages/DeckEditScene.cs" id="1_1ya2g"]
+
+[node name="DeckEditScene" type="Node2D" node_paths=PackedStringArray("flagFilter", "IDFilter", "NameFilter", "clearBtn")]
+script = ExtResource("1_1ya2g")
+flagFilter = NodePath("MenuButton")
+IDFilter = NodePath("IDFilter")
+NameFilter = NodePath("NameFilter")
+clearBtn = NodePath("ClearBtn")
+
+[node name="ColorRect" type="ColorRect" parent="."]
+offset_right = 1920.0
+offset_bottom = 1080.0
+color = Color(0.329412, 0.541176, 0.74902, 1)
+
+[node name="ExitBtn" type="Button" parent="."]
+offset_left = 64.0
+offset_top = 64.0
+offset_right = 192.0
+offset_bottom = 128.0
+theme_override_font_sizes/font_size = 36
+text = "退出"
+
+[node name="Label" type="Label" parent="."]
+offset_left = 216.0
+offset_top = 72.0
+offset_right = 360.0
+offset_bottom = 122.0
+theme_override_font_sizes/font_size = 36
+text = "过滤器："
+
+[node name="IDFilter" type="TextEdit" parent="."]
+offset_left = 344.0
+offset_top = 64.0
+offset_right = 536.0
+offset_bottom = 128.0
+theme_override_font_sizes/font_size = 36
+placeholder_text = "根据id查询"
+
+[node name="NameFilter" type="TextEdit" parent="."]
+offset_left = 576.0
+offset_top = 64.0
+offset_right = 832.0
+offset_bottom = 128.0
+theme_override_font_sizes/font_size = 36
+placeholder_text = "根据卡名查询"
+
+[node name="MenuButton" type="MenuButton" parent="."]
+offset_left = 896.0
+offset_top = 64.0
+offset_right = 1152.0
+offset_bottom = 128.0
+theme_override_font_sizes/font_size = 36
+text = "根据标签过滤"
+switch_on_hover = true
+
+[node name="ClearBtn" type="Button" parent="."]
+offset_left = 1184.0
+offset_top = 56.0
+offset_right = 1488.0
+offset_bottom = 128.0
+theme_override_font_sizes/font_size = 36
+text = "清除所有已选标签"

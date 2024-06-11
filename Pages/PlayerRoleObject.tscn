@@ -1,0 +1,165 @@
+[gd_scene load_steps=7 format=3 uid="uid://demprxrejhkpd"]
+
+[ext_resource type="Script" path="res://Pages/PlayerRoleObject.cs" id="1_18ktr"]
+[ext_resource type="Shader" path="res://Resources/SelectorShader.gdshader" id="2_yg3i5"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_fttja"]
+shader = ExtResource("2_yg3i5")
+shader_parameter/edge_color = Color(0.235294, 0.52549, 0.772549, 1)
+shader_parameter/threshold = 0.526
+
+[sub_resource type="Gradient" id="Gradient_elmam"]
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_ymh53"]
+frequency = 0.03
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_hjk3e"]
+color_ramp = SubResource("Gradient_elmam")
+noise = SubResource("FastNoiseLite_ymh53")
+
+[node name="PlayerRoleObject" type="Control" node_paths=PackedStringArray("hpProgress", "mpProgress", "hpLabel", "mpLabel", "PBProgress", "MBProgress", "PBLabel", "MBLabel", "roleName", "buffContainer", "SelectRect", "mainControl")]
+custom_minimum_size = Vector2(300, 448)
+layout_mode = 3
+anchors_preset = 0
+offset_right = 300.0
+offset_bottom = 448.0
+scale = Vector2(1.0013, 1)
+script = ExtResource("1_18ktr")
+hpProgress = NodePath("PlayerContainer1/Control/RoleHealthBar")
+mpProgress = NodePath("PlayerContainer1/Control/RoleMagicBar")
+hpLabel = NodePath("PlayerContainer1/Control/RoleHealthBar/RoleHealth")
+mpLabel = NodePath("PlayerContainer1/Control/RoleMagicBar/RoleMagic")
+PBProgress = NodePath("PlayerContainer1/Control/PBlockProg")
+MBProgress = NodePath("PlayerContainer1/Control/MBlockProg")
+PBLabel = NodePath("PlayerContainer1/Control/PBlockProg/PBlockTxt")
+MBLabel = NodePath("PlayerContainer1/Control/MBlockProg/MBlockTxt")
+roleName = NodePath("PlayerContainer1/Control/RoleName")
+buffContainer = NodePath("PlayerContainer1/Control/ScrollContainer/BuffContainer")
+SelectRect = NodePath("PlayerContainer1/Control/ColorRect")
+mainControl = NodePath("PlayerContainer1/Control")
+
+[node name="PlayerContainer1" type="PanelContainer" parent="."]
+custom_minimum_size = Vector2(300, 448)
+layout_mode = 0
+offset_right = 300.0
+offset_bottom = 448.0
+
+[node name="Control" type="Control" parent="PlayerContainer1"]
+layout_mode = 2
+
+[node name="RoleName" type="RichTextLabel" parent="PlayerContainer1/Control"]
+unique_name_in_owner = true
+layout_mode = 2
+offset_top = 16.0
+offset_right = 600.0
+offset_bottom = 128.0
+scale = Vector2(0.5, 0.5)
+bbcode_enabled = true
+text = "[center][font_size=72]RoleName[/font_size][/center]"
+
+[node name="RoleHealthBar" type="ProgressBar" parent="PlayerContainer1/Control"]
+unique_name_in_owner = true
+self_modulate = Color(1, 0, 0, 1)
+layout_mode = 0
+offset_top = -64.0
+offset_right = 300.0
+offset_bottom = -37.0
+value = 50.0
+show_percentage = false
+
+[node name="RoleHealth" type="RichTextLabel" parent="PlayerContainer1/Control/RoleHealthBar"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_right = 600.0
+offset_bottom = 64.0
+scale = Vector2(0.5, 0.5)
+bbcode_enabled = true
+text = "[center][color=#28ff00][font_size=36]999/999[/font_size][/color][/center]"
+
+[node name="RoleMagicBar" type="ProgressBar" parent="PlayerContainer1/Control"]
+unique_name_in_owner = true
+self_modulate = Color(0, 0.415686, 1, 1)
+layout_mode = 0
+offset_top = -32.0
+offset_right = 300.0
+offset_bottom = -5.0
+value = 50.0
+show_percentage = false
+
+[node name="RoleMagic" type="RichTextLabel" parent="PlayerContainer1/Control/RoleMagicBar"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_right = 600.0
+offset_bottom = 64.0
+scale = Vector2(0.5, 0.5)
+bbcode_enabled = true
+text = "[center][color=#28ff00][font_size=36]999/999[/font_size][/color][/center]"
+
+[node name="PBlockProg" type="ProgressBar" parent="PlayerContainer1/Control"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_top = -99.0
+offset_right = 144.0
+offset_bottom = -72.0
+max_value = 1000.0
+step = 1.0
+value = 50.0
+rounded = true
+allow_greater = true
+show_percentage = false
+
+[node name="PBlockTxt" type="RichTextLabel" parent="PlayerContainer1/Control/PBlockProg"]
+unique_name_in_owner = true
+layout_mode = 1
+offset_right = 288.0
+offset_bottom = 54.0
+scale = Vector2(0.5, 0.5)
+bbcode_enabled = true
+text = "[center][color=#28ff00][font_size=36]999[/font_size][/color][/center]"
+
+[node name="MBlockProg" type="ProgressBar" parent="PlayerContainer1/Control"]
+unique_name_in_owner = true
+self_modulate = Color(1, 0, 1, 1)
+layout_mode = 0
+offset_left = 151.803
+offset_top = -99.0
+offset_right = 295.803
+offset_bottom = -72.0
+max_value = 1000.0
+step = 1.0
+value = 50.0
+rounded = true
+allow_greater = true
+show_percentage = false
+
+[node name="MBlockTxt" type="RichTextLabel" parent="PlayerContainer1/Control/MBlockProg"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 1.52588e-05
+offset_right = 288.0
+offset_bottom = 54.0
+scale = Vector2(0.5, 0.5)
+bbcode_enabled = true
+text = "[center][color=#28ff00][font_size=36]999[/font_size][/color][/center]"
+
+[node name="ScrollContainer" type="ScrollContainer" parent="PlayerContainer1/Control"]
+layout_mode = 0
+offset_top = -136.0
+offset_right = 296.0
+offset_bottom = -104.0
+
+[node name="BuffContainer" type="HBoxContainer" parent="PlayerContainer1/Control/ScrollContainer"]
+unique_name_in_owner = true
+clip_contents = true
+custom_minimum_size = Vector2(296, 32)
+layout_mode = 2
+
+[node name="ColorRect" type="TextureRect" parent="PlayerContainer1/Control"]
+visible = false
+show_behind_parent = true
+material = SubResource("ShaderMaterial_fttja")
+layout_mode = 0
+offset_right = 300.0
+offset_bottom = 448.0
+texture = SubResource("NoiseTexture2D_hjk3e")
+expand_mode = 1

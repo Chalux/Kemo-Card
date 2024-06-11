@@ -1,0 +1,453 @@
+[gd_scene load_steps=2 format=3 uid="uid://crc6esbpv776l"]
+
+[ext_resource type="Script" path="res://Pages/RoleCreateScene.cs" id="1_rd4da"]
+
+[node name="RoleCreateScene" type="Node2D" node_paths=PackedStringArray("NameInput", "SpeedTxt", "StrengthTxt", "EfficiencyTxt", "MantraTxt", "EquipTxt", "BookTxt", "CriticalTxt", "DodgeTxt", "SpeedMinus", "StrengthMinus", "EfficiencyMinus", "MantraMinus", "EquipMinus", "BookMinus", "CriticalMinus", "DodgeMinus", "SpeedPlus", "StrengthPlus", "EfficiencyPlus", "MantraPlus", "EquipPlus", "BookPlus", "CriticalPlus", "DodgePlus", "ConfirmBtn", "RemainPoint")]
+script = ExtResource("1_rd4da")
+NameInput = NodePath("Container/NameInput")
+SpeedTxt = NodePath("Container/Control/SpeedTxt")
+StrengthTxt = NodePath("Container/Control2/StrengthTxt")
+EfficiencyTxt = NodePath("Container/Control3/EfficiencyTxt")
+MantraTxt = NodePath("Container/Control4/MantraTxt")
+EquipTxt = NodePath("Container/Control5/EquipTxt")
+BookTxt = NodePath("Container/Control6/BookTxt")
+CriticalTxt = NodePath("Container/Control7/CriticalTxt")
+DodgeTxt = NodePath("Container/Control8/DodgeTxt")
+SpeedMinus = NodePath("Container/Control/SpeedMinus")
+StrengthMinus = NodePath("Container/Control2/StrengthMinus")
+EfficiencyMinus = NodePath("Container/Control3/EfficiencyMinus")
+MantraMinus = NodePath("Container/Control4/MantraMinus")
+EquipMinus = NodePath("Container/Control5/EquipMinus")
+BookMinus = NodePath("Container/Control6/BookMinus")
+CriticalMinus = NodePath("Container/Control7/CriticalMinus")
+DodgeMinus = NodePath("Container/Control8/DodgeMinus")
+SpeedPlus = NodePath("Container/Control/SpeedPlus")
+StrengthPlus = NodePath("Container/Control2/StrengthPlus")
+EfficiencyPlus = NodePath("Container/Control3/EfficiencyPlus")
+MantraPlus = NodePath("Container/Control4/MantraPlus")
+EquipPlus = NodePath("Container/Control5/EquipPlus")
+BookPlus = NodePath("Container/Control6/BookPlus")
+CriticalPlus = NodePath("Container/Control7/CriticalPlus")
+DodgePlus = NodePath("Container/Control8/DodgePlus")
+ConfirmBtn = NodePath("Container/Button")
+RemainPoint = NodePath("Container/RemainPoint")
+
+[node name="Container" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 1920.0
+offset_bottom = 1080.0
+
+[node name="NameInput" type="TextEdit" parent="Container"]
+layout_mode = 0
+offset_left = 64.0
+offset_top = 64.0
+offset_right = 464.0
+offset_bottom = 126.0
+theme_override_font_sizes/font_size = 36
+placeholder_text = "名字"
+autowrap_mode = 1
+scroll_fit_content_height = true
+
+[node name="Control" type="Control" parent="Container"]
+anchors_preset = 0
+offset_left = 576.0
+offset_top = 64.0
+offset_right = 616.0
+offset_bottom = 104.0
+
+[node name="Label" type="Label" parent="Container/Control"]
+layout_mode = 0
+offset_top = 6.0
+offset_right = 72.0
+offset_bottom = 56.0
+theme_override_font_sizes/font_size = 36
+text = "速度"
+
+[node name="SpeedMinus" type="Button" parent="Container/Control"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 100.0
+offset_top = 3.0
+offset_right = 160.0
+offset_bottom = 63.0
+theme_override_font_sizes/font_size = 36
+text = "－"
+
+[node name="SpeedTxt" type="Label" parent="Container/Control"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 188.0
+offset_top = 6.0
+offset_right = 260.0
+offset_bottom = 56.0
+theme_override_font_sizes/font_size = 36
+text = "速度"
+horizontal_alignment = 1
+
+[node name="SpeedPlus" type="Button" parent="Container/Control"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 296.0
+offset_top = 3.0
+offset_right = 356.0
+offset_bottom = 63.0
+theme_override_font_sizes/font_size = 36
+text = "＋"
+
+[node name="Control2" type="Control" parent="Container"]
+layout_mode = 3
+anchors_preset = 0
+offset_left = 576.0
+offset_top = 152.0
+offset_right = 616.0
+offset_bottom = 192.0
+
+[node name="Label" type="Label" parent="Container/Control2"]
+layout_mode = 0
+offset_top = 6.0
+offset_right = 72.0
+offset_bottom = 56.0
+theme_override_font_sizes/font_size = 36
+text = "身体"
+
+[node name="StrengthMinus" type="Button" parent="Container/Control2"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 100.0
+offset_top = 3.0
+offset_right = 160.0
+offset_bottom = 63.0
+theme_override_font_sizes/font_size = 36
+text = "－"
+
+[node name="StrengthTxt" type="Label" parent="Container/Control2"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 188.0
+offset_top = 6.0
+offset_right = 260.0
+offset_bottom = 56.0
+theme_override_font_sizes/font_size = 36
+text = "身体"
+horizontal_alignment = 1
+
+[node name="StrengthPlus" type="Button" parent="Container/Control2"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 296.0
+offset_top = 3.0
+offset_right = 356.0
+offset_bottom = 63.0
+theme_override_font_sizes/font_size = 36
+text = "＋"
+
+[node name="Control3" type="Control" parent="Container"]
+layout_mode = 3
+anchors_preset = 0
+offset_left = 576.0
+offset_top = 242.0
+offset_right = 616.0
+offset_bottom = 282.0
+
+[node name="Label" type="Label" parent="Container/Control3"]
+layout_mode = 0
+offset_top = 6.0
+offset_right = 72.0
+offset_bottom = 56.0
+theme_override_font_sizes/font_size = 36
+text = "效率"
+
+[node name="EfficiencyMinus" type="Button" parent="Container/Control3"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 100.0
+offset_top = 3.0
+offset_right = 160.0
+offset_bottom = 63.0
+theme_override_font_sizes/font_size = 36
+text = "－"
+
+[node name="EfficiencyTxt" type="Label" parent="Container/Control3"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 188.0
+offset_top = 6.0
+offset_right = 260.0
+offset_bottom = 56.0
+theme_override_font_sizes/font_size = 36
+text = "效率"
+horizontal_alignment = 1
+
+[node name="EfficiencyPlus" type="Button" parent="Container/Control3"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 296.0
+offset_top = 3.0
+offset_right = 356.0
+offset_bottom = 63.0
+theme_override_font_sizes/font_size = 36
+text = "＋"
+
+[node name="Control4" type="Control" parent="Container"]
+layout_mode = 3
+anchors_preset = 0
+offset_left = 576.0
+offset_top = 332.0
+offset_right = 616.0
+offset_bottom = 372.0
+
+[node name="Label" type="Label" parent="Container/Control4"]
+layout_mode = 0
+offset_top = 6.0
+offset_right = 72.0
+offset_bottom = 56.0
+theme_override_font_sizes/font_size = 36
+text = "咒言"
+
+[node name="MantraMinus" type="Button" parent="Container/Control4"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 100.0
+offset_top = 3.0
+offset_right = 160.0
+offset_bottom = 63.0
+theme_override_font_sizes/font_size = 36
+text = "－"
+
+[node name="MantraTxt" type="Label" parent="Container/Control4"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 188.0
+offset_top = 6.0
+offset_right = 260.0
+offset_bottom = 56.0
+theme_override_font_sizes/font_size = 36
+text = "咒言"
+horizontal_alignment = 1
+
+[node name="MantraPlus" type="Button" parent="Container/Control4"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 296.0
+offset_top = 3.0
+offset_right = 356.0
+offset_bottom = 63.0
+theme_override_font_sizes/font_size = 36
+text = "＋"
+
+[node name="Control5" type="Control" parent="Container"]
+layout_mode = 3
+anchors_preset = 0
+offset_left = 576.0
+offset_top = 422.0
+offset_right = 616.0
+offset_bottom = 462.0
+
+[node name="Label" type="Label" parent="Container/Control5"]
+layout_mode = 0
+offset_top = 6.0
+offset_right = 72.0
+offset_bottom = 56.0
+theme_override_font_sizes/font_size = 36
+text = "工艺"
+
+[node name="EquipMinus" type="Button" parent="Container/Control5"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 100.0
+offset_top = 3.0
+offset_right = 160.0
+offset_bottom = 63.0
+theme_override_font_sizes/font_size = 36
+text = "－"
+
+[node name="EquipTxt" type="Label" parent="Container/Control5"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 188.0
+offset_top = 6.0
+offset_right = 260.0
+offset_bottom = 56.0
+theme_override_font_sizes/font_size = 36
+text = "工艺"
+horizontal_alignment = 1
+
+[node name="EquipPlus" type="Button" parent="Container/Control5"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 296.0
+offset_top = 3.0
+offset_right = 356.0
+offset_bottom = 63.0
+theme_override_font_sizes/font_size = 36
+text = "＋"
+
+[node name="Control6" type="Control" parent="Container"]
+layout_mode = 3
+anchors_preset = 0
+offset_left = 576.0
+offset_top = 512.0
+offset_right = 616.0
+offset_bottom = 552.0
+
+[node name="Label" type="Label" parent="Container/Control6"]
+layout_mode = 0
+offset_top = 6.0
+offset_right = 72.0
+offset_bottom = 56.0
+theme_override_font_sizes/font_size = 36
+text = "书写"
+
+[node name="BookMinus" type="Button" parent="Container/Control6"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 100.0
+offset_top = 3.0
+offset_right = 160.0
+offset_bottom = 63.0
+theme_override_font_sizes/font_size = 36
+text = "－"
+
+[node name="BookTxt" type="Label" parent="Container/Control6"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 188.0
+offset_top = 6.0
+offset_right = 260.0
+offset_bottom = 56.0
+theme_override_font_sizes/font_size = 36
+text = "书写"
+horizontal_alignment = 1
+
+[node name="BookPlus" type="Button" parent="Container/Control6"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 296.0
+offset_top = 3.0
+offset_right = 356.0
+offset_bottom = 63.0
+theme_override_font_sizes/font_size = 36
+text = "＋"
+
+[node name="Control7" type="Control" parent="Container"]
+layout_mode = 3
+anchors_preset = 0
+offset_left = 576.0
+offset_top = 602.0
+offset_right = 616.0
+offset_bottom = 642.0
+
+[node name="Label" type="Label" parent="Container/Control7"]
+layout_mode = 0
+offset_top = 6.0
+offset_right = 72.0
+offset_bottom = 56.0
+theme_override_font_sizes/font_size = 36
+text = "会心"
+
+[node name="CriticalMinus" type="Button" parent="Container/Control7"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 100.0
+offset_top = 3.0
+offset_right = 160.0
+offset_bottom = 63.0
+theme_override_font_sizes/font_size = 36
+text = "－"
+
+[node name="CriticalTxt" type="Label" parent="Container/Control7"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 188.0
+offset_top = 6.0
+offset_right = 260.0
+offset_bottom = 56.0
+theme_override_font_sizes/font_size = 36
+text = "会心"
+horizontal_alignment = 1
+
+[node name="CriticalPlus" type="Button" parent="Container/Control7"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 296.0
+offset_top = 3.0
+offset_right = 356.0
+offset_bottom = 63.0
+theme_override_font_sizes/font_size = 36
+text = "＋"
+
+[node name="Control8" type="Control" parent="Container"]
+layout_mode = 3
+anchors_preset = 0
+offset_left = 576.0
+offset_top = 692.0
+offset_right = 616.0
+offset_bottom = 732.0
+
+[node name="Label" type="Label" parent="Container/Control8"]
+layout_mode = 0
+offset_top = 6.0
+offset_right = 72.0
+offset_bottom = 56.0
+theme_override_font_sizes/font_size = 36
+text = "敏捷"
+
+[node name="DodgeMinus" type="Button" parent="Container/Control8"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 100.0
+offset_top = 3.0
+offset_right = 160.0
+offset_bottom = 63.0
+theme_override_font_sizes/font_size = 36
+text = "－"
+
+[node name="DodgeTxt" type="Label" parent="Container/Control8"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 188.0
+offset_top = 6.0
+offset_right = 260.0
+offset_bottom = 56.0
+theme_override_font_sizes/font_size = 36
+text = "敏捷"
+horizontal_alignment = 1
+
+[node name="DodgePlus" type="Button" parent="Container/Control8"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 296.0
+offset_top = 3.0
+offset_right = 356.0
+offset_bottom = 63.0
+theme_override_font_sizes/font_size = 36
+text = "＋"
+
+[node name="RemainPoint" type="Label" parent="Container"]
+layout_mode = 0
+offset_left = 64.0
+offset_top = 192.0
+offset_right = 244.0
+offset_bottom = 242.0
+theme_override_font_sizes/font_size = 36
+text = "剩余点数："
+
+[node name="Button" type="Button" parent="Container"]
+layout_mode = 0
+offset_left = 1536.0
+offset_top = 64.0
+offset_right = 1776.0
+offset_bottom = 184.0
+theme_override_font_sizes/font_size = 36
+text = "确定"
+
+[node name="NameInput2" type="TextEdit" parent="Container"]
+offset_left = 64.0
+offset_top = 320.0
+offset_right = 464.0
+offset_bottom = 382.0
+theme_override_font_sizes/font_size = 36
+placeholder_text = "预设角色id"
+autowrap_mode = 1
+scroll_fit_content_height = true
