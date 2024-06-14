@@ -1,3 +1,4 @@
+using DialogueManagerRuntime;
 using Godot;
 using KemoCard.Pages;
 using StaticClass;
@@ -33,12 +34,12 @@ public partial class MenuScene : BaseScene
         });
         start.Pressed += new(() =>
         {
-            StaticInstance.windowMgr.ChangeScene(ResourceLoader.Load<PackedScene>("res://Pages/RoleCreateScene.tscn").Instantiate(), new(() => { StaticInstance.MainRoot.canPause = true; }));
+            StaticInstance.windowMgr.ChangeScene(ResourceLoader.Load<PackedScene>("res://Pages/RoleCreateScene.tscn").Instantiate(), new((scene) => { StaticInstance.MainRoot.canPause = true; }));
             StaticInstance.MainRoot.HideRichHint();
         });
         load.Pressed += new(() =>
         {
-            StaticInstance.windowMgr.ChangeScene(ResourceLoader.Load<PackedScene>("res://Pages/LoadSaveScene.tscn").Instantiate(), new(() => { StaticInstance.MainRoot.canPause = true; }));
+            StaticInstance.windowMgr.ChangeScene(ResourceLoader.Load<PackedScene>("res://Pages/LoadSaveScene.tscn").Instantiate(), new((scene) => { StaticInstance.MainRoot.canPause = true; }));
             StaticInstance.MainRoot.HideRichHint();
         });
     }

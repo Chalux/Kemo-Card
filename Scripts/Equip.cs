@@ -1,5 +1,5 @@
 ﻿using Godot;
-using NLua;
+using KemoCard.Scripts.Equips;
 using StaticClass;
 using System.Collections.Generic;
 using System.Text.Json.Serialization;
@@ -24,8 +24,6 @@ namespace KemoCard.Scripts
         }
         [JsonIgnore]
         public BaseRole owner;
-        [JsonIgnore]
-        public Lua LuaState { get; set; }
         public EquipType EquipType { get; set; } = EquipType.OTHER;
         public Equip(uint id, BaseRole owner = null)
         {
@@ -48,7 +46,8 @@ namespace KemoCard.Scripts
                 GD.PrintErr(errorLog);
             }
             @struct = Ins.EquipPool[Id];
-            var res = FileAccess.Open("user://Mods/" + @struct.mod_id + "/equip/EQ" + Id + ".lua", FileAccess.ModeFlags.Read);
+            string path = $"res://Mods/{@struct.mod_id}/equip/EQ{Id}.cs";
+            var res = FileAccess.Open(path, FileAccess.ModeFlags.Read);
             if (res == null)
             {
                 string errorLog = "未找到装备脚本资源,id:" + Id;
@@ -57,9 +56,8 @@ namespace KemoCard.Scripts
             }
             else
             {
-                LuaState = StaticUtils.GetOneTempLua();
-                LuaState["eq"] = EquipScript;
-                LuaState.DoString(res.GetAsText());
+                var s = ResourceLoader.Load<CSharpScript>(path).New().As<BaseEquipScript>();
+                s.OnEquipInit(this);
             }
             EquipType = (EquipType)@struct.equip_type;
             EquipScript.OnCreated?.Invoke();
@@ -68,8 +66,7 @@ namespace KemoCard.Scripts
 
         ~Equip()
         {
-            LuaState?.Dispose();
-            LuaState = null;
+            owner = null;
         }
     }
 }

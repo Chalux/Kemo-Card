@@ -51,9 +51,11 @@ namespace KemoCard.Scripts.Cards
                         break;
                 }
             }
-            if (isCosted && BattleStatic.Targets.Count > 0 && (cardObject.card.FunctionUseFilter == null || (bool)cardObject.card.FunctionUseFilter.Call(cardObject.card?.owner, roles).First()))
+            bool flag = true;
+            if (cardObject.card.UseFilter != null) flag = cardObject.card.UseFilter.Invoke(cardObject.card?.owner, roles, null);
+            if (isCosted && BattleStatic.Targets.Count > 0 && flag)
             {
-                cardObject.card.FunctionUse?.Call(cardObject.card.owner, roles);
+                cardObject.card.FunctionUse?.Invoke(cardObject.card.owner, roles, null);
                 BattleStatic.currCard = null;
                 BattleStatic.Targets.Clear();
                 if (cardObject.card.owner is InFightPlayer ifp)

@@ -1,6 +1,7 @@
 using Godot;
 using KemoCard.Pages;
 using KemoCard.Scripts;
+using KemoCard.Scripts.Buffs;
 using StaticClass;
 
 public partial class RoleCreateScene : BaseScene
@@ -107,7 +108,7 @@ public partial class RoleCreateScene : BaseScene
         if (PresetRoleInput.Text.Length > 0 && PresetRoleInput.Text.ToInt() > 0)
         {
             PlayerRole role = new((uint)PresetRoleInput.Text.ToInt());
-            AlertView.PopupAlert($"检测到已填入预设角色id。角色的数据为：\r\n{role.GetRichDesc()}是否确定？", false, new(() => role.StartFunction?.Call()));
+            AlertView.PopupAlert($"检测到已填入预设角色id。角色的数据为：\r\n{role.GetRichDesc()}是否确定？", false, new(() => role.StartFunction?.Invoke()));
         }
         if (CurrentPoint > 0)
         {
@@ -145,15 +146,16 @@ public partial class RoleCreateScene : BaseScene
         majorrole.AddCardIntoDeck(new(10004));
         if (Datas.Ins.BuffPool.TryGetValue(10001, out Datas.BuffStruct modInfo))
         {
-            FileAccess script = FileAccess.Open("user://Mods/" + modInfo.mod_id + "/buff/B" + modInfo.buff_id + ".lua", FileAccess.ModeFlags.Read);
+            FileAccess script = FileAccess.Open($"res://Mods/{modInfo.mod_id}/buff/B{modInfo.buff_id}.cs", FileAccess.ModeFlags.Read);
             if (script != null)
             {
-                BuffImplBase data = new()
+                BuffImplBase data = new();
+                var res = ResourceLoader.Load<CSharpScript>($"res://Mod/{modInfo.mod_id}/Scripts/Buffs/B{modInfo.buff_id}.cs");
+                if (res != null)
                 {
-                    LuaState = StaticUtils.GetOneTempLua()
-                };
-                data.LuaState["b"] = data;
-                data.LuaState.DoString(script.GetAsText());
+                    BaseBuffScript @base = res.New().As<BaseBuffScript>();
+                    @base.OnBuffInit(data);
+                }
                 majorrole.AddBuff(data);
             }
         }
@@ -162,7 +164,7 @@ public partial class RoleCreateScene : BaseScene
         StaticInstance.playerData.gsd.MajorRole = majorrole;
 
         MainScene node = (MainScene)ResourceLoader.Load<PackedScene>("res://Pages/MainScene.tscn").Instantiate();
-        StaticInstance.windowMgr.ChangeScene(node, new(() =>
+        StaticInstance.windowMgr.ChangeScene(node, new((scene) =>
         {
             StaticInstance.MainRoot.canPause = true;
         }));

@@ -1,5 +1,6 @@
 using Godot;
 using KemoCard.Scripts;
+using KemoCard.Scripts.Cards;
 using StaticClass;
 
 public partial class CardObject : Control

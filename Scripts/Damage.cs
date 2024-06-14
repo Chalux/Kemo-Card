@@ -5,7 +5,7 @@ namespace KemoCard.Scripts
 {
     public class Damage
     {
-        public float value;
+        public double value;
         public BaseRole from;
         public List<BaseRole> targets;
         public AttributeEnum atrribute;

@@ -1,6 +1,6 @@
 ﻿using Godot;
-using KeraLua;
-using NLua;
+using KemoCard.Scripts.Cards;
+using KemoCard.Scripts.Roles;
 using StaticClass;
 using System;
 using System.Collections.Generic;
@@ -33,7 +33,8 @@ namespace KemoCard.Scripts
             else
             {
                 var cfg = Datas.Ins.RolePool[id];
-                var res = FileAccess.Open("user://Mods/" + cfg.mod_id + "/role/R" + id + ".lua", FileAccess.ModeFlags.Read);
+                string path = $"res://Mods/{cfg.mod_id}/role/R{id}.cs";
+                var res = FileAccess.Open(path, FileAccess.ModeFlags.Read);
                 if (res == null)
                 {
                     string errorLog = "未找到角色脚本资源,id:" + id;
@@ -42,17 +43,16 @@ namespace KemoCard.Scripts
                 }
                 else
                 {
-                    NLua.Lua templua = StaticUtils.GetOneTempLua();
-                    templua["r"] = this;
-                    templua.DoString(res.GetAsText());
+                    var s = ResourceLoader.Load<CSharpScript>(path).New().As<BaseRoleScript>();
+                    s.OnRoleInit(this);
                 }
             }
         }
 
         /// <summary>
-        /// 在创建角色的时候才会调用这个函数，在lua脚本中定义好函数内容，然后创角后会检测有没有对应的脚本，有的话就调用lua脚本写好的函数
+        /// 在使用这个角色当预设角色开始游戏的时候才会调用这个函数
         /// </summary>
-        public NLua.LuaFunction StartFunction;
+        public Action StartFunction;
 
         public List<Card> Deck { get; set; } = new();
 

@@ -1,5 +1,5 @@
-﻿using NLua;
-using StaticClass;
+﻿using StaticClass;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json.Serialization;
@@ -47,32 +47,27 @@ namespace KemoCard.Scripts
         public string BuffShowname { get; set; } = "未命名";
         public void ReceiveEvent(string @event, dynamic datas)
         {
-            if (EventDic.ContainsKey(@event)) EventDic[@event]?.ForEach(function => function.Call(datas));
+            if (EventDic.ContainsKey(@event)) EventDic[@event]?.ForEach(function => function.Invoke(datas));
             CheckCountNeedMinus(datas);
         }
-        public Dictionary<string, List<LuaFunction>> EventDic { get; set; } = new();
-        [JsonIgnore]
-        public Lua LuaState { get; set; }
+        public Dictionary<string, List<Action<dynamic>>> EventDic { get; set; } = new();
 
         [JsonIgnore]
-        public LuaFunction OnBuffAdded;
+        public Action<BuffImplBase> OnBuffAdded;
         [JsonIgnore]
-        public LuaFunction OnBuffRemoved;
+        public Action<BuffImplBase> OnBuffRemoved;
         ~BuffImplBase()
         {
-            OnBuffAdded.Dispose();
-            OnBuffRemoved.Dispose();
+            OnBuffAdded = OnBuffRemoved = null;
             foreach (var list in EventDic.Values)
             {
-                list.ForEach(function => function.Dispose());
+                list.Clear();
             }
             if (Binder is BaseRole br) br?.buffs.Remove(this);
             Binder = null;
             if (BuffObj != null) BuffObj.data = null;
             BuffObj?.QueueFree();
             BuffObj = null;
-            LuaState?.Dispose();
-            LuaState = null;
         }
         public void CheckCountNeedMinus(dynamic datas)
         {
@@ -122,13 +117,13 @@ namespace KemoCard.Scripts
                     }
                 }
             }
-            OnBuffRemoved?.Call(this);
+            OnBuffRemoved?.Invoke(this);
             StaticInstance.eventMgr.Dispatch("BuffChanged", tempBinder);
         }
 
         public string Desc { get; set; } = "什么都没有";
 
-        public void AddEvent(string @event, LuaFunction func)
+        public void AddEvent(string @event, Action<dynamic> func)
         {
             if (EventDic.ContainsKey(@event))
             {

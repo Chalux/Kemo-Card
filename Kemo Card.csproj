@@ -7,7 +7,6 @@
     <RootNamespace>KemoCard</RootNamespace>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="KeraLua" Version="1.4.1" />
-    <PackageReference Include="NLua" Version="1.7.3" />
+    <Folder Include="Mods\MainPackage\Scripts\Roles\" />
   </ItemGroup>
 </Project>

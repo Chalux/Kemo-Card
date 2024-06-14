@@ -60,21 +60,32 @@ public partial class EnemyRoleObject : Control, IEvent
     public void Init(uint id)
     {
         data = new(id);
-        monsterName.Text = data.name;
+        monsterName.Text = StaticUtils.MakeBBCodeString(data.name);
         hpProgress.MaxValue = data.CurrHpLimit;
         mpProgress.MaxValue = data.CurrMpLimit;
         PBProgress.MaxValue = MBProgress.MaxValue = data.CurrHpLimit;
+        data.roleObject = this;
+        var res = ResourceLoader.Load<SpriteFrames>(data.script.AnimationResourcePath);
+        if (res != null)
+        {
+            animation.SpriteFrames = res;
+        }
         UpdateObject();
     }
 
     public void Init(EnemyRole enemyRole)
     {
         data = enemyRole;
-        monsterName.Text = data.name;
+        monsterName.Text = StaticUtils.MakeBBCodeString(data.name);
         hpProgress.MaxValue = data.CurrHpLimit;
         mpProgress.MaxValue = data.CurrMpLimit;
         PBProgress.MaxValue = MBProgress.MaxValue = data.CurrHpLimit;
         enemyRole.roleObject = this;
+        var res = ResourceLoader.Load<SpriteFrames>(data.script.AnimationResourcePath);
+        if (res != null)
+        {
+            animation.SpriteFrames = res;
+        }
         UpdateObject();
     }
 
@@ -93,11 +104,6 @@ public partial class EnemyRoleObject : Control, IEvent
         MBLabel.Text = StaticUtils.MakeBBCodeString(data.CurrMBlock.ToString());
         hpLabel.Text = StaticUtils.MakeBBCodeString(data.CurrHealth + "/" + data.CurrHpLimit);
         mpLabel.Text = StaticUtils.MakeBBCodeString(data.CurrMagic + "/" + data.CurrHpLimit);
-        SpriteFrames spriteFrames = new()
-        {
-            ResourcePath = data.script.AnimationResourcePath
-        };
-        animation.SpriteFrames = spriteFrames;
     }
 
     public void ReceiveEvent(string @event, dynamic datas)
@@ -141,10 +147,10 @@ public partial class EnemyRoleObject : Control, IEvent
         {
             bobj.data.Binder = data;
             bobj.data.BuffObj = bobj;
+            bobj.data.OnBuffAdded?.Invoke(bobj.data);
             data.buffs.Add(bobj.data);
             data.InFightBuffs.Add(bobj.data);
             buffContainer.AddChild(bobj);
-            bobj.data.OnBuffAdded?.Call();
         }
     }
 }

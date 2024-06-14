@@ -1,4 +1,4 @@
-﻿using NLua;
+﻿using System;
 using System.Collections.Generic;
 
 namespace KemoCard.Scripts
@@ -18,8 +18,8 @@ namespace KemoCard.Scripts
         public int Critical { get; set; } = 1;
         public int Dodge { get; set; } = 1;
         public string Name { get; set; } = "未命名";
-        public LuaFunction Action;
-        public Dictionary<string, List<LuaFunction>> EventDic { get; set; } = new();
+        public Action<int,List<InFightPlayer>,List<EnemyRole>> ActionFunc;
+        public Dictionary<string, List<Action<dynamic>>> EventDic { get; set; } = new();
 
         public virtual void ReceiveEvent(string @event, dynamic datas)
         {
@@ -27,12 +27,12 @@ namespace KemoCard.Scripts
             {
                 EventDic[@event].ForEach(function =>
                 {
-                    function.Call(datas);
+                    function.Invoke(datas);
                 });
             }
         }
 
-        public void AddEvent(string @event, LuaFunction func)
+        public void AddEvent(string @event, Action<dynamic> func)
         {
             if (EventDic.ContainsKey(@event))
             {
@@ -55,10 +55,6 @@ namespace KemoCard.Scripts
             InGameDict = null;
             foreach (var list in EventDic.Values)
             {
-                list.ForEach(function =>
-                {
-                    function.Dispose();
-                });
                 list.Clear();
             }
             EventDic = null;

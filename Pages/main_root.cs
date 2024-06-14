@@ -13,6 +13,7 @@ public partial class main_root : Control
     [Export] private ColorRect colorRect;
     [Export] private RichTextLabel banner;
     [Export] private RichTextLabel richHint;
+    [Export] public ColorRect BlackMask;
     private Action richHintAction;
     public Boolean canPause = false;
     // Called when the node enters the scene tree for the first time.

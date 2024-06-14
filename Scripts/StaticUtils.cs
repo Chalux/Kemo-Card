@@ -1,11 +1,8 @@
 ﻿using DialogueManagerRuntime;
 using Godot;
-using KemoCard.Scripts;
-using NLua;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
-using System.Text;
 using static StaticClass.StaticEnums;
 
 namespace StaticClass
@@ -42,52 +39,21 @@ namespace StaticClass
             };
         }
 
-        public static BuffImplBase RegisteBuff(object Binder)
-        {
-            BuffImplBase buffImplBase = new();
-            buffImplBase.Binder = Binder;
-            return buffImplBase;
-        }
-
-        /// <summary>
-        /// 获取一个临时的lua虚拟机，使用完后记得手动销毁掉
-        /// </summary>
-        /// <returns>临时的lua虚拟机，使用完后记得手动销毁掉</returns>
-        public static Lua GetOneTempLua()
-        {
-            Lua tempLua = new();
-            InitLuaEnv(tempLua);
-            return tempLua;
-        }
-
-        public static void ExecuteInSandBox(string script)
-        {
-            Lua tempLua = new();
-            InitLuaEnv(tempLua);
-            tempLua.DoString(script);
-        }
-
         public static string MakeBBCodeString(string msg, string align = "center", int font_size = 36, string color = "#ffffff") => "[" + align + "][font_size=" + font_size + "][color=" + color + "]" + msg + "[/color][/font_size][/" + align + "]";
 
         public static string GetSavePath(uint index) => ProjectSettings.LocalizePath("user://Saves/s" + index + ".sav");
         public static string GetSaveImgPath(uint index) => ProjectSettings.LocalizePath("user://Saves/s" + index + ".jpg");
         public static string GetSaveDirPath() => ProjectSettings.LocalizePath("user://Saves/");
-        public static void InitLuaEnv(Lua lua)
-        {
-            lua.LoadCLRPackage();
-            lua.State.Encoding = Encoding.UTF8;
-            lua.DoString($"import('{typeof(StaticEnums).Assembly}','{typeof(StaticEnums).Namespace}')");
-            lua.DoString($"import('{typeof(StaticUtils).Assembly}','{typeof(StaticUtils).Namespace}')");
-            lua.DoString($"import('{typeof(StaticInstance).Assembly}','{typeof(StaticInstance).Namespace}')");
-            lua.DoString($"import('{typeof(Console).Namespace}')");
-            lua.DoString($"import('{typeof(DialogueManager).Assembly}','{typeof(DialogueManager).Namespace}')");
-            lua["ShowBanner"] = new Action<string, bool>(StaticInstance.MainRoot.ShowBanner);
-            lua.DoString($"import = function() end");
-        }
+        public static string GetInternalImagePath => ProjectSettings.LocalizePath("res://Resources/Image/");
 
-        public static List<BaseRole> CreateBaseRoleList()
+        public static void StartDialogue(string url)
         {
-            return new List<BaseRole>();
+            StaticInstance.windowMgr.ChangeScene(ResourceLoader.Load<PackedScene>("res://Pages/DialogueScene.tscn").Instantiate(), new((scene) =>
+            {
+                StaticInstance.MainRoot.canPause = true;
+                DialogueManager.ShowDialogueBalloon(ResourceLoader.Load(url), "Begin", new() { scene });
+            }));
+            StaticInstance.MainRoot.HideRichHint();
         }
     }
 }

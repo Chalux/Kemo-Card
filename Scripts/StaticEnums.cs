@@ -99,5 +99,13 @@ namespace StaticClass
             ON_BEATTACKED = 0x80,
             ON_BETARGETTED = 0x100,
         }
+
+        /// <summary>
+        /// 提示词字典，可以在这里面存一些专有名词的说明什么的
+        /// </summary>
+        public static Dictionary<string, string> HintDictionary = new()
+        {
+
+        };
     }
 }

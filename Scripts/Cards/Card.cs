@@ -1,11 +1,11 @@
 ﻿using Godot;
-using NLua;
 using StaticClass;
+using System;
 using System.Collections.Generic;
 using System.Text.Json.Serialization;
 using static StaticClass.StaticEnums;
 
-namespace KemoCard.Scripts
+namespace KemoCard.Scripts.Cards
 {
     public class Card
     {
@@ -33,11 +33,9 @@ namespace KemoCard.Scripts
         public int Cost { get; set; } = 0;
         public CostType CostType { get; set; } = CostType.ACTIONPOINT;
         [JsonIgnore]
-        public LuaFunction FunctionUseFilter { get; set; }
+        public Func<BaseRole, List<BaseRole>, dynamic[], bool> UseFilter { get; set; }
         [JsonIgnore]
-        public LuaFunction FunctionUse { get; set; }
-        [JsonIgnore]
-        private Lua LuaState { get; set; }
+        public Action<BaseRole, List<BaseRole>, dynamic[]> FunctionUse { get; set; }
         public Card(uint id)
         {
             Id = id;
@@ -51,18 +49,18 @@ namespace KemoCard.Scripts
             else
             {
                 var cfg = Datas.Ins.CardPool[id];
-                var res = FileAccess.Open("user://Mods/" + cfg.mod_id + "/card/C" + id + ".lua", FileAccess.ModeFlags.Read);
-                if (res == null)
+                var path = $"res://Mods/{cfg.mod_id}/Scripts/Cards/C{id}.cs";
+                var res = ResourceLoader.Load<CSharpScript>(path);
+                if (res != null)
+                {
+                    BaseCardScript @base = res.New().As<BaseCardScript>();
+                    @base.OnCardScriptInit(this);
+                }
+                else
                 {
                     string errorLog = "未找到卡牌脚本资源,id:" + id;
                     StaticInstance.MainRoot.ShowBanner(errorLog);
                     GD.PrintErr(errorLog);
-                }
-                else
-                {
-                    LuaState = StaticUtils.GetOneTempLua();
-                    LuaState["c"] = this;
-                    LuaState.DoString(res.GetAsText());
                 }
             }
         }
@@ -74,7 +72,6 @@ namespace KemoCard.Scripts
             GlobalDict = null;
             InGameDict?.Clear();
             InGameDict = null;
-            LuaState?.Dispose();
         }
     }
 }

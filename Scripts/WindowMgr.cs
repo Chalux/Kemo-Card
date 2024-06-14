@@ -120,7 +120,7 @@ namespace KemoCard.Scripts
             if (amt > 0) StaticInstance.currWindow = DialogRoot.GetChild(amt - 1);
         }
 
-        public void ChangeScene(Node node, Action afterAction = null, dynamic datas = null)
+        public void ChangeScene(Node node, Action<BaseScene> afterAction = null, dynamic datas = null)
         {
             BaseScene scene = (BaseScene)node;
 
@@ -150,7 +150,7 @@ namespace KemoCard.Scripts
                 StaticInstance.eventMgr.RegistIEvent(@event);
             }
             scene.OnAdd(datas);
-            afterAction?.Invoke();
+            afterAction?.Invoke(scene);
             //tween.Stop();
             //Tween tween1 = StaticInstance.MainRoot.GetTree().CreateTween();
             //tween1.TweenProperty(BlackMask, "modulate", Color.Color8(0, 0, 0, 0), 0.5f).SetDelay(1);

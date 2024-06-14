@@ -1,6 +1,5 @@
 using Godot;
 using KemoCard.Scripts;
-using NLua;
 
 public partial class CardShowObject : Control
 {
@@ -18,13 +17,7 @@ public partial class CardShowObject : Control
     {
         if (!Datas.Ins.CardPool.ContainsKey(id)) return;
         var cdata = Datas.Ins.CardPool[id];
-        var res = ResourceLoader.Load("user://Mods/" + cdata.mod_id + "/C" + cdata.card_id + ".lua");
-        if (res != null)
-        {
-            Lua templua = GlobalLua.GetInstance().lua;
-            templua.Close();
-            templua.Dispose();
-        }
+        //var res = ResourceLoader.Load("user://Mods/" + cdata.mod_id + "/C" + cdata.card_id + ".lua");
     }
 
     public override void _Ready()

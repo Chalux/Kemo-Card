@@ -9,7 +9,7 @@ content_margin_right = 10.0
 content_margin_bottom = 10.0
 bg_color = Color(0, 0, 0, 0.584314)
 
-[node name="MainRoot" type="Control" node_paths=PackedStringArray("colorRect", "banner", "richHint")]
+[node name="MainRoot" type="Control" node_paths=PackedStringArray("colorRect", "banner", "richHint", "BlackMask")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -20,6 +20,7 @@ script = ExtResource("1_0riev")
 colorRect = NodePath("ColorRect")
 banner = NodePath("Banner")
 richHint = NodePath("ColorRect/richHint")
+BlackMask = NodePath("BlackMask")
 
 [node name="LoadTimer" type="Timer" parent="."]
 

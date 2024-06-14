@@ -1,5 +1,4 @@
 ﻿using Godot;
-using NLua;
 using StaticClass;
 using System.Collections.Generic;
 using System.Reflection;
@@ -89,11 +88,16 @@ namespace KemoCard.Scripts
             errorModsSet.Clear();
             foreach (var name in ModCache)
             {
-                string path = "user://Mods/" + name + "/mod_info.json";
-                if (FileAccess.FileExists(path))
+                var isLoaded = ProjectSettings.LoadResourcePack($"user://Mods/{name}.pck");
+                if (isLoaded)
                 {
-                    using (var f = FileAccess.Open(path, Godot.FileAccess.ModeFlags.Read))
+                    var res = ResourceLoader.Load<CSharpScript>($"res://Mods/{name}/Scripts/ModBoost.cs");
+                    BaseModBoost modBoost = res.New().As<BaseModBoost>();
+                    modBoost.OnInit();
+                    string path = $"res://Mods/{name}/mod_info.json";
+                    if (FileAccess.FileExists(path))
                     {
+                        using var f = FileAccess.Open(path, FileAccess.ModeFlags.Read);
                         var mod_info = Json.ParseString(f.GetAsText());
                         if ((mod_info as object) != null)
                         {
@@ -224,14 +228,11 @@ namespace KemoCard.Scripts
                             }
                         }
                     }
-                    string boostpath = ProjectSettings.LocalizePath("user://Mods/" + name + "/ModBoost.lua");
-                    var file = FileAccess.Open(boostpath, FileAccess.ModeFlags.Read);
-                    if (file != null)
-                    {
-                        //Lua templua = GlobalLua.GetInstance().lua;
-                        //templua.DoString(file.GetAsText());
-                        GlobalLua.ExecuteInSandBox(file.GetAsText());
-                    }
+                    modBoost.OnInitEnd();
+                }
+                else
+                {
+                    StaticInstance.MainRoot.ShowBanner($"Mod加载出错，Mod名为：{name}");
                 }
             }
             foreach (var i in ModPool)
@@ -243,6 +244,18 @@ namespace KemoCard.Scripts
                 GD.Print(i.ToString());
             }
             foreach (var i in EnemyPool)
+            {
+                GD.Print(i.ToString());
+            }
+            foreach (var i in EquipPool)
+            {
+                GD.Print(i.ToString());
+            }
+            foreach (var i in BuffPool)
+            {
+                GD.Print(i.ToString());
+            }
+            foreach (var i in RolePool)
             {
                 GD.Print(i.ToString());
             }

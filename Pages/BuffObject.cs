@@ -1,5 +1,6 @@
 ﻿using Godot;
 using KemoCard.Scripts;
+using KemoCard.Scripts.Buffs;
 using StaticClass;
 using System.Collections.Generic;
 
@@ -14,13 +15,13 @@ public partial class BuffObject : Control, IEvent
         var modInfo = Datas.Ins.BuffPool.GetValueOrDefault(id, new() { buff_id = 0, buff_name = "", mod_id = "MainPackage" });
         if (modInfo.buff_id != 0)
         {
-            FileAccess script = FileAccess.Open("user://Mods/" + modInfo.mod_id + "/buff/B" + modInfo.buff_id + ".lua", FileAccess.ModeFlags.Read);
+            string spath = "res://Mods/{modInfo.mod_id}/buff/B{modInfo.buff_id}.cs";
+            FileAccess script = FileAccess.Open(spath, FileAccess.ModeFlags.Read);
             data = new();
             if (script != null)
             {
-                data.LuaState = StaticUtils.GetOneTempLua();
-                data.LuaState["b"] = data;
-                data.LuaState.DoString(script.GetAsText());
+                var s = ResourceLoader.Load<CSharpScript>(spath).New().As<BaseBuffScript>();
+                s.OnBuffInit(data);
             }
             string path = ProjectSettings.GlobalizePath("user://Mods/" + modInfo.mod_id + "/image/B" + modInfo.buff_id + ".jpg");
             Image res = null;

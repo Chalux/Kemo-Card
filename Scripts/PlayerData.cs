@@ -1,4 +1,5 @@
 ﻿using Godot;
+using KemoCard.Scripts.Cards;
 using StaticClass;
 using System;
 using System.Text;
@@ -68,7 +69,8 @@ namespace KemoCard.Scripts
                         throw new Exception(errorLog);
                     }
                     var cfg = Datas.Ins.CardPool[card.Id];
-                    var res = FileAccess.Open("user://Mods/" + cfg.mod_id + "/card/C" + card.Id + ".lua", FileAccess.ModeFlags.Read);
+                    string path = $"user://Mods/{cfg.mod_id}/card/C{card.Id}.cs";
+                    var res = FileAccess.Open(path, FileAccess.ModeFlags.Read);
                     if (res == null)
                     {
                         string errorLog = "未找到卡牌脚本资源,id:" + card.Id;
@@ -77,10 +79,8 @@ namespace KemoCard.Scripts
                     }
                     else
                     {
-                        var lua = GlobalLua.GetInstance().lua;
-                        lua["c"] = card;
-                        GlobalLua.ExecuteInSandBox(res.GetAsText());
-                        //lua.DoFile(ProjectSettings.GlobalizePath("user://Mods/" + cfg.mod_id + "/card/C" + card.Id + ".lua"));
+                        var s = ResourceLoader.Load<CSharpScript>(path).New().As<BaseCardScript>();
+                        s.OnCardScriptInit(card);
                     }
                 });
                 foreach (var equip in gsd.MajorRole.EquipList)

@@ -4,7 +4,7 @@
 [ext_resource type="Material" uid="uid://vlemaqje0h5l" path="res://Resources/HitFlashMaterial.tres" id="2_caie8"]
 [ext_resource type="Shader" path="res://Resources/SelectorShader.gdshader" id="4_o8kpm"]
 
-[sub_resource type="SpriteFrames" id="SpriteFrames_mvjxf"]
+[sub_resource type="SpriteFrames" id="SpriteFrames_i8yhf"]
 
 [sub_resource type="Animation" id="Animation_v1i4x"]
 loop_mode = 1
@@ -85,8 +85,8 @@ layout_mode = 2
 unique_name_in_owner = true
 material = ExtResource("2_caie8")
 position = Vector2(160, 256)
-scale = Vector2(-9.97686, 10.4556)
-sprite_frames = SubResource("SpriteFrames_mvjxf")
+scale = Vector2(-9.97686, 10.5307)
+sprite_frames = SubResource("SpriteFrames_i8yhf")
 autoplay = "default"
 
 [node name="MonsterName" type="RichTextLabel" parent="PanelContainer/Control"]

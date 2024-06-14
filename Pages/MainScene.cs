@@ -26,7 +26,7 @@ public partial class MainScene : BaseScene
         TestBattleButton.Pressed += new(() =>
         {
             BattleScene node = (BattleScene)ResourceLoader.Load<PackedScene>("res://Pages/BattleScene.tscn").Instantiate();
-            StaticInstance.windowMgr.ChangeScene(node, new(() =>
+            StaticInstance.windowMgr.ChangeScene(node, new((scene) =>
             {
                 node.NewBattle(StaticInstance.playerData.gsd.MajorRole, new uint[] { 1, 1 });
             }));

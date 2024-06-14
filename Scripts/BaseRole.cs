@@ -335,14 +335,14 @@ namespace KemoCard.Scripts
         {
             buffs.Add(buff);
             StaticInstance.eventMgr.Dispatch("BuffChanged", this);
-            buff.OnBuffAdded?.Call();
+            buff.OnBuffAdded?.Invoke(buff);
         }
 
         public void RemoveBuff(BuffImplBase buff)
         {
             buffs.Remove(buff);
             StaticInstance.eventMgr.Dispatch("BuffChanged", this);
-            buff.OnBuffRemoved?.Call();
+            buff.OnBuffRemoved?.Invoke(buff);
         }
 
         public string GetDesc()

@@ -1,6 +1,7 @@
 using Godot;
 using KemoCard.Pages;
 using KemoCard.Scripts;
+using KemoCard.Scripts.Cards;
 using StaticClass;
 using System;
 using System.Collections.Generic;
@@ -304,12 +305,12 @@ public partial class BattleScene : BaseScene, IEvent
         for (int i = 0; i < currentEnemyRoles.Count; i++)
         {
             if (currentEnemyRoles[i] == null || !isFighting) return;
-            currentEnemyRoles[i].script.Action?.Call(turns, currentPlayerRoles, currentEnemyRoles);
+            currentEnemyRoles[i].script.ActionFunc?.Invoke(turns, currentPlayerRoles, currentEnemyRoles);
         }
         NextTurn();
     }
 
-    public AttackResult DealDamage(float value, AttackType attackType, BaseRole from, List<BaseRole> targets, AttributeEnum atrribute = AttributeEnum.None)
+    public AttackResult DealDamage(double value, AttackType attackType, BaseRole from, List<BaseRole> targets, AttributeEnum atrribute = AttributeEnum.None)
     {
         if (!isFighting) return AttackResult.Failed;
         Damage damage = new()

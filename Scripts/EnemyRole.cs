@@ -1,5 +1,5 @@
 ﻿using Godot;
-using NLua;
+using KemoCard.Scripts.Enemies;
 using StaticClass;
 using System.Collections.Generic;
 using System.Text.Json.Serialization;
@@ -12,8 +12,6 @@ namespace KemoCard.Scripts
         public List<BuffImplBase> InFightBuffs = new();
         public EnemyRoleObject roleObject;
         public bool isEnemyInited = false;
-        [JsonIgnore]
-        private Lua LuaState { get; set; }
 
         private int _CurrPBlock = 0;
         private int _CurrMBlock = 0;
@@ -56,13 +54,12 @@ namespace KemoCard.Scripts
             {
                 var data = Datas.Ins.EnemyPool[id];
                 isFriendly = false;
-                var res = FileAccess.Open("user://Mods/" + data.mod_id + "/enemy/E" + id + ".lua", FileAccess.ModeFlags.Read);
+                var res = ResourceLoader.Load<CSharpScript>($"res://Mods/{data.mod_id}/Scripts/Enemies/E" + id + ".cs");
                 script = new();
                 if (res != null)
                 {
-                    LuaState = StaticUtils.GetOneTempLua();
-                    LuaState["e"] = script;
-                    LuaState.DoString(res.GetAsText());
+                    var s = res.New().As<BaseEnemyScript>();
+                    s.OnEnemyInit(script);
                 }
                 else
                 {
@@ -135,8 +132,6 @@ namespace KemoCard.Scripts
             if (script != null) script.Binder = null;
             script = null;
             roleObject = null;
-            LuaState?.Dispose();
-            LuaState = null;
         }
     }
 }

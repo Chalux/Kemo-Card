@@ -1,5 +1,5 @@
 ﻿using Godot;
-using KeraLua;
+using KemoCard.Scripts.Cards;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -59,13 +59,13 @@ namespace KemoCard.Scripts
         public Action OnCreated;
 
         [JsonIgnore]
-        public Dictionary<string, List<LuaFunction>> EventDic { get; set; } = new();
+        public Dictionary<string, List<Action<dynamic>>> EventDic { get; set; } = new();
         public void ReceiveEvent(string @event, dynamic datas)
         {
             if (EventDic.ContainsKey(@event)) EventDic[@event]?.ForEach(function => function?.Invoke(datas));
         }
 
-        public void AddEvent(string @event, LuaFunction func)
+        public void AddEvent(string @event, Action<dynamic> func)
         {
             if (EventDic.ContainsKey(@event))
             {

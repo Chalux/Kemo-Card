@@ -1,4 +1,5 @@
-﻿using StaticClass;
+﻿using KemoCard.Scripts.Cards;
+using StaticClass;
 using System.Collections.Generic;
 using System.Linq;
 
