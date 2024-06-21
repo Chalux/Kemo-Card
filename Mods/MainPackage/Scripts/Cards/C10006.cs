@@ -21,7 +21,7 @@ namespace KemoCard.Mods.MainPackage.Scripts.Cards
             c.CostType = StaticEnums.CostType.ACTIONPOINT;
             c.UseFilter = new((user, targets, datas) =>
             {
-                return targets != null && targets.Count > 0 && targets[0] is InFightPlayer && targets[0].isFriendly == false;
+                return targets != null && targets.Count > 0 && targets[0] is EnemyRole er && er.isFriendly == false;
             });
             c.FunctionUse = new((user, targets, datas) =>
             {

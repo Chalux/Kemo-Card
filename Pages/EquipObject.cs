@@ -29,7 +29,7 @@ public partial class EquipObject : Control
         }
         else
         {
-            var res = Image.LoadFromFile("user://Mods/" + Data.EquipScript.Binder.@struct.mod_id + "/image/" + Data.EquipScript.TextureUrl + ".png");
+            var res = Image.LoadFromFile(Data.EquipScript.TextureUrl);
             if (res != null) textureRect.Texture = ImageTexture.CreateFromImage(res);
         }
     }

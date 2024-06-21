@@ -18,6 +18,7 @@ namespace KemoCard.Scripts
         public int Critical { get; set; } = 1;
         public int Dodge { get; set; } = 1;
         public string Name { get; set; } = "未命名";
+        public string Intent { get; set; } = "";
         public Action<int,List<InFightPlayer>,List<EnemyRole>> ActionFunc;
         public Dictionary<string, List<Action<dynamic>>> EventDic { get; set; } = new();
 
@@ -59,6 +60,12 @@ namespace KemoCard.Scripts
             }
             EventDic = null;
             Binder = null;
+        }
+
+        public void ChangeIntent(string Intent)
+        {
+            if (Binder != null && Binder.roleObject != null) Binder.roleObject.IntentRichLabel.Text = Intent;
+            this.Intent = Intent;
         }
     }
 }

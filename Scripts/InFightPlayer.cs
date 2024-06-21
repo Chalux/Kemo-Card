@@ -165,5 +165,15 @@ namespace KemoCard.Scripts
             InFightGrave?.Clear();
             isIFPInited = false;
         }
+
+        public override void AddBuff(BuffImplBase buff)
+        {
+            if (roleObject != null)
+            {
+                buff.Binder = this;
+                roleObject.AddBuff(buff);
+            }
+            base.AddBuff(buff);
+        }
     }
 }

@@ -30,6 +30,7 @@ namespace KemoCard.Pages
         [Export] public PopupMenu popup;
         [Export] FlowContainer flowContainer;
         [Export] Godot.Button QuitBtn;
+        [Export] Control DebugControl;
         private Equip popupdata;
         private uint bagIndex;
         private BagOpType opType = BagOpType.PUT_ON;
@@ -129,6 +130,7 @@ namespace KemoCard.Pages
             OtherSlot3.AddBagDelegate(2);
             OtherSlot4.AddBagDelegate(2);
             OtherSlot5.AddBagDelegate(2);
+            DebugControl.Visible = OS.IsDebugBuild();
             UpdateScene();
         }
 

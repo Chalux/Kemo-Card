@@ -1,6 +1,7 @@
 ﻿using Godot;
 using KemoCard.Scripts.Enemies;
 using StaticClass;
+using System;
 using System.Collections.Generic;
 using System.Text.Json.Serialization;
 
@@ -56,6 +57,7 @@ namespace KemoCard.Scripts
                 isFriendly = false;
                 var res = ResourceLoader.Load<CSharpScript>($"res://Mods/{data.mod_id}/Scripts/Enemies/E" + id + ".cs");
                 script = new();
+                script.Binder = this;
                 if (res != null)
                 {
                     var s = res.New().As<BaseEnemyScript>();
@@ -132,6 +134,15 @@ namespace KemoCard.Scripts
             if (script != null) script.Binder = null;
             script = null;
             roleObject = null;
+        }
+
+        public Action<EnemyRoleObject> OnBattleStart;
+
+        public override void AddBuff(BuffImplBase buff)
+        {
+            InFightBuffs.Add(buff);
+            roleObject?.AddBuff(buff);
+            base.AddBuff(buff);
         }
     }
 }

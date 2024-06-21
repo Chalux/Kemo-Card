@@ -10,6 +10,7 @@ namespace KemoCard.Scripts
     {
         public uint BuffId { get; set; } = 0;
         private int _buffCount = 1;
+        public string IconPath { get; set; } = "";
         // 临时的属性修改都放在这里面，只有永久修改的才写代码改属性值
         public Dictionary<string, float> Symbol { get; set; } = new();
         public int BuffCount
@@ -42,7 +43,9 @@ namespace KemoCard.Scripts
         public HashSet<string> tags = new();
         public string BuffName { get; set; } = "";
         public StaticEnums.EffectTriggerTiming CountTriTiming { get; set; } = StaticEnums.EffectTriggerTiming.ON_TURN_END;
+        [JsonIgnore]
         public object Binder;
+        [JsonIgnore]
         public BuffObject BuffObj;
         public string BuffShowname { get; set; } = "未命名";
         public void ReceiveEvent(string @event, dynamic datas)
@@ -50,6 +53,7 @@ namespace KemoCard.Scripts
             if (EventDic.ContainsKey(@event)) EventDic[@event]?.ForEach(function => function.Invoke(datas));
             CheckCountNeedMinus(datas);
         }
+        [JsonIgnore]
         public Dictionary<string, List<Action<dynamic>>> EventDic { get; set; } = new();
 
         [JsonIgnore]
@@ -63,7 +67,7 @@ namespace KemoCard.Scripts
             {
                 list.Clear();
             }
-            if (Binder is BaseRole br) br?.buffs.Remove(this);
+            if (Binder is BaseRole br) br?.Buffs.Remove(this);
             Binder = null;
             if (BuffObj != null) BuffObj.data = null;
             BuffObj?.QueueFree();
@@ -82,7 +86,7 @@ namespace KemoCard.Scripts
         public void RemoveThisFromBinder()
         {
             object tempBinder = Binder;
-            if (Binder is BaseRole br) br.buffs.Remove(this);
+            if (Binder is BaseRole br) br.Buffs.Remove(this);
             if (Binder is InFightPlayer ifp)
             {
                 ifp.InFightBuffs.Remove(this);

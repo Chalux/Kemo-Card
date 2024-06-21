@@ -36,6 +36,10 @@ public partial class EnemyRoleObject : Control, IEvent
                 SelectRect.Visible = true;
                 BattleStatic.Targets.Add(data);
             }
+            else
+            {
+                StaticInstance.MainRoot.ShowRichHint(data.script.Intent);
+            }
         });
         mainControl.MouseExited += new(() =>
         {
@@ -48,6 +52,7 @@ public partial class EnemyRoleObject : Control, IEvent
                 }
                 //GD.Print(BattleStatic.Targets.Count);
             }
+            StaticInstance.MainRoot.HideRichHint();
         });
     }
 
@@ -86,6 +91,10 @@ public partial class EnemyRoleObject : Control, IEvent
         {
             animation.SpriteFrames = res;
         }
+        enemyRole.Buffs.ForEach(buff =>
+        {
+            AddBuff(buff);
+        });
         UpdateObject();
     }
 
@@ -148,8 +157,19 @@ public partial class EnemyRoleObject : Control, IEvent
             bobj.data.Binder = data;
             bobj.data.BuffObj = bobj;
             bobj.data.OnBuffAdded?.Invoke(bobj.data);
-            data.buffs.Add(bobj.data);
-            data.InFightBuffs.Add(bobj.data);
+            buffContainer.AddChild(bobj);
+        }
+    }
+
+    public void AddBuff(BuffImplBase buff)
+    {
+        BuffObject bobj = (BuffObject)ResourceLoader.Load<PackedScene>("res://Pages/BuffObject.tscn").Instantiate();
+        bobj.Init(buff);
+        if (bobj.data != null)
+        {
+            bobj.data.Binder = data;
+            bobj.data.BuffObj = bobj;
+            bobj.data.OnBuffAdded?.Invoke(bobj.data);
             buffContainer.AddChild(bobj);
         }
     }

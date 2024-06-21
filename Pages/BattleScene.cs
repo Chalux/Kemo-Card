@@ -2,6 +2,7 @@ using Godot;
 using KemoCard.Pages;
 using KemoCard.Scripts;
 using KemoCard.Scripts.Cards;
+using KemoCard.Scripts.Presets;
 using StaticClass;
 using System;
 using System.Collections.Generic;
@@ -12,7 +13,7 @@ public partial class BattleScene : BaseScene, IEvent
 {
     [Export] HBoxContainer playerContainer;
     [Export] HBoxContainer enemyContainer;
-    [Export] Control HandControl;
+    [Export] public Control HandControl;
     [Export] Label DeckCount;
     [Export] Label GraveCount;
     [Export] Label ActionPointLabel;
@@ -24,6 +25,8 @@ public partial class BattleScene : BaseScene, IEvent
     [Export] public Control DragDwonArea;
     [Export] Godot.Button DebugDrawBtn;
     [Export] Label TurnLabel;
+    [Export] Godot.Button DeckBtn;
+    [Export] Godot.Button GraveBtn;
 
     public bool isFighting = false;
 
@@ -48,8 +51,22 @@ public partial class BattleScene : BaseScene, IEvent
         NewBattleCore(players, enemies);
     }
 
+    public void NewBattleByPreset(uint presetId)
+    {
+        Preset preset = new();
+        if (Datas.Ins.PresetPool.ContainsKey(presetId))
+        {
+            var preset_info = Datas.Ins.PresetPool[presetId];
+            var res = ResourceLoader.Load<CSharpScript>($"res://Mods/{preset_info.mod_id}/Scripts/Presets/P{presetId}.cs");
+            var PresetScript = res.New().As<BasePresetScript>();
+            PresetScript.Init(preset);
+            NewBattle(StaticInstance.playerData.gsd.MajorRole, preset.Enemies.ToArray());
+        }
+    }
+
     public override void _Ready()
     {
+        DebugDrawBtn.Visible = OS.IsDebugBuild();
         DebugDrawBtn.Pressed += new(() =>
         {
             if (nowPlayer != null)
@@ -62,13 +79,25 @@ public partial class BattleScene : BaseScene, IEvent
             EndTurn();
         });
         //GD.Print("battleScene Ready");
+        DeckBtn.Pressed += new(() =>
+        {
+            var list = currentPlayerRoles[0].InFightDeck.ToList();
+            StaticUtils.ShuffleArray(list);
+            StaticInstance.windowMgr.AddScene((BaseScene)ResourceLoader.Load<PackedScene>("res://Pages/DeckView.tscn").Instantiate()
+                , new[] { list });
+        });
+        GraveBtn.Pressed += new(() =>
+        {
+            StaticInstance.windowMgr.AddScene((BaseScene)ResourceLoader.Load<PackedScene>("res://Pages/DeckView.tscn").Instantiate()
+                , new[] { currentPlayerRoles[0].InFightGrave.ToList() });
+        });
     }
 
     private void UpdateCardPosition()
     {
         if (IsDragging) return;
         if (HandControl == null) return;
-        foreach (CardObject i in HandControl.GetChildren())
+        foreach (CardObject i in HandControl.GetChildren().Cast<CardObject>())
         {
             i.StartReposition(CalculateCardPostion(i.GetIndex()), GetCardAngle(i.GetIndex()), TweenSpeed, GetCardScales(i.GetIndex()));
             //GD.Print("序号：" + i.GetIndex() + ",角度：" + GetCardAngle(i.GetIndex()) + ",位置：" + CalculateCardPostion(i.GetIndex()) + ",Pivot：" + i.PivotOffset);
@@ -174,7 +203,7 @@ public partial class BattleScene : BaseScene, IEvent
         {
             if (datas != null)
             {
-                if (datas is InFightPlayer ifp && ifp == nowPlayer)
+                if (datas[0] is InFightPlayer ifp && ifp == nowPlayer)
                 {
                     if (ifp == nowPlayer)
                     {
@@ -223,6 +252,11 @@ public partial class BattleScene : BaseScene, IEvent
             po.InitByPlayerRole(inFightPlayer);
             inFightPlayer.TurnActionPoint = inFightPlayer.CurrentActionPoint = i.ActionPoint;
             inFightPlayer.InitFighter();
+            i.Buffs.ForEach(buff =>
+            {
+                inFightPlayer.AddBuff(buff);
+            });
+            i.OnBattleStart?.Invoke(inFightPlayer);
             playerContainer.AddChild(po);
         }
         foreach (EnemyRole i in enemies)
@@ -233,9 +267,8 @@ public partial class BattleScene : BaseScene, IEvent
             EnemyRoleObject eo = ResourceLoader.Load<PackedScene>("res://Pages/EnemyRoleObject.tscn").Instantiate<EnemyRoleObject>();
             StaticInstance.eventMgr.RegistIEvent(eo);
             eo.Init(i);
+            i.OnBattleStart?.Invoke(eo);
             enemyContainer.AddChild(eo);
-            eo.AddBuff(10001);
-            eo.AddBuff(10002);
         }
         turns = 1;
         TurnLabel.Text = "回合数：" + turns;
@@ -295,12 +328,27 @@ public partial class BattleScene : BaseScene, IEvent
     {
         foreach (var player in currentPlayerRoles)
         {
-            player.InFightHands.ForEach(c => player.InFightGrave.Add(c));
-            player.InFightHands.Clear();
+            //player.InFightHands.ForEach(c => player.InFightGrave.Add(c));
+            //player.InFightHands.Clear();
+            var list = player.InFightHands.ToList();
+            for (int i = 0; i < list.Count; i++)
+            {
+                var c = list[i];
+                if (c.InGameDict.ContainsKey("KeepInHand") || c.GlobalDict.ContainsKey("KeepInHand"))
+                {
+                    continue;
+                }
+                else
+                {
+                    player.InFightGrave.Add(c);
+                    player.InFightHands.Remove(c);
+                }
+            }
         }
-        foreach (var i in HandControl.GetChildren())
+        foreach (CardObject i in HandControl.GetChildren().Cast<CardObject>())
         {
-            i.QueueFree();
+            if (i.card.InGameDict.ContainsKey("KeepInHand") || i.card.GlobalDict.ContainsKey("KeepInHand")) continue;
+            else i.QueueFree();
         }
         for (int i = 0; i < currentEnemyRoles.Count; i++)
         {

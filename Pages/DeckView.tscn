@@ -1,0 +1,30 @@
+[gd_scene load_steps=2 format=3 uid="uid://dwkmhmnkc27r4"]
+
+[ext_resource type="Script" path="res://Pages/DeckView.cs" id="1_ine4d"]
+
+[node name="DeckView" type="Node2D" node_paths=PackedStringArray("FlowContainer", "ExitBtn")]
+script = ExtResource("1_ine4d")
+FlowContainer = NodePath("FlowContainer")
+ExitBtn = NodePath("Button")
+
+[node name="ColorRect" type="ColorRect" parent="."]
+custom_minimum_size = Vector2(1920, 1080)
+offset_right = 40.0
+offset_bottom = 40.0
+color = Color(0, 0, 0, 0.6)
+
+[node name="Button" type="Button" parent="."]
+offset_left = 64.0
+offset_top = 64.0
+offset_right = 192.0
+offset_bottom = 128.0
+theme_override_font_sizes/font_size = 36
+text = "返回"
+
+[node name="FlowContainer" type="FlowContainer" parent="."]
+offset_left = 64.0
+offset_top = 144.0
+offset_right = 1856.0
+offset_bottom = 1024.0
+theme_override_constants/h_separation = 50
+theme_override_constants/v_separation = 50

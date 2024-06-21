@@ -1,4 +1,5 @@
-﻿using StaticClass;
+﻿using Godot;
+using StaticClass;
 using System.Collections.Generic;
 using System.Linq;
 using static StaticClass.StaticEnums;
@@ -60,13 +61,21 @@ namespace KemoCard.Scripts.Cards
                 BattleStatic.Targets.Clear();
                 if (cardObject.card.owner is InFightPlayer ifp)
                 {
-                    ifp.AddCardToGrave(cardObject.card);
+                    if (!cardObject.card.GlobalDict.ContainsKey("Exhaust")
+                    && !cardObject.card.InGameDict.ContainsKey("Exhaust"))
+                    {
+                        ifp.AddCardToGrave(cardObject.card);
+                        cardObject.QueueFree();
+                    }
+                    else
+                    {
+                        var tween = CreateTween();
+                        tween.TweenProperty((cardObject.Material as ShaderMaterial), "shader_parameter/dissolve_value", 0, 1f);
+                        tween.TweenCallback(Callable.From(cardObject.QueueFree));
+                        tween.Play();
+                    }
                     ifp.InFightHands.Remove(cardObject.card);
                 }
-                //var tween = CreateTween();
-                //tween.TweenProperty((cardObject.Material as ShaderMaterial), "shader_parameter/dissolve_value", 0, 1f);
-                //tween.TweenCallback(Callable.From(cardObject.QueueFree));
-                cardObject.QueueFree();
                 cardObject.GetTree().CreateTimer(0.1f).Timeout += new(() =>
                 {
                     StaticInstance.eventMgr.Dispatch("RepositionHand");

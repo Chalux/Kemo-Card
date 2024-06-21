@@ -280,7 +280,7 @@ namespace KemoCard.Scripts
         public override float GetSymbol(string key, float defaultValue = 0f)
         {
             var value = Symbol.GetValueOrDefault(key, defaultValue);
-            buffs.ForEach(buff =>
+            Buffs.ForEach(buff =>
             {
                 value += buff.Symbol.GetValueOrDefault(key, 0);
             });
@@ -290,6 +290,8 @@ namespace KemoCard.Scripts
             }
             return value;
         }
+
+        public Action<InFightPlayer> OnBattleStart;
 
     }
 }

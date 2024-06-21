@@ -1,6 +1,7 @@
 ﻿using Godot;
 using KemoCard.Scripts.Equips;
 using StaticClass;
+using System;
 using System.Collections.Generic;
 using System.Text.Json.Serialization;
 using static KemoCard.Scripts.Datas;
@@ -22,6 +23,7 @@ namespace KemoCard.Scripts
                 InitScript();
             }
         }
+        public string Uuid { get; set; }
         [JsonIgnore]
         public BaseRole owner;
         public EquipType EquipType { get; set; } = EquipType.OTHER;
@@ -34,34 +36,38 @@ namespace KemoCard.Scripts
         {
         }
         [JsonIgnore]
-        public EquipImplBase EquipScript { get; set; }
+        public EquipImplBase EquipScript { get; set; } = new();
         public EquipStruct @struct;
         private void InitScript()
         {
             EquipScript = new();
-            if (!Ins.EquipPool.ContainsKey(Id))
+            if (Ins.EquipPool.ContainsKey(Id))
+            {
+                @struct = Ins.EquipPool[Id];
+                string path = $"res://Mods/{@struct.mod_id}/Scripts/Equips/EQ{Id}.cs";
+                var res = FileAccess.Open(path, FileAccess.ModeFlags.Read);
+                if (res == null)
+                {
+                    string errorLog = "未找到装备脚本资源,id:" + Id;
+                    StaticInstance.MainRoot.ShowBanner(errorLog);
+                    GD.PrintErr(errorLog);
+                }
+                else
+                {
+                    var s = ResourceLoader.Load<CSharpScript>(path).New().As<BaseEquipScript>();
+                    s.OnEquipInit(EquipScript);
+                }
+                EquipType = (EquipType)@struct.equip_type;
+            }
+            else
             {
                 string errorLog = "未在脚本库中找到对应装备id，请检查Mod配置。id:" + Id;
                 StaticInstance.MainRoot.ShowBanner(errorLog);
                 GD.PrintErr(errorLog);
             }
-            @struct = Ins.EquipPool[Id];
-            string path = $"res://Mods/{@struct.mod_id}/equip/EQ{Id}.cs";
-            var res = FileAccess.Open(path, FileAccess.ModeFlags.Read);
-            if (res == null)
-            {
-                string errorLog = "未找到装备脚本资源,id:" + Id;
-                StaticInstance.MainRoot.ShowBanner(errorLog);
-                GD.PrintErr(errorLog);
-            }
-            else
-            {
-                var s = ResourceLoader.Load<CSharpScript>(path).New().As<BaseEquipScript>();
-                s.OnEquipInit(this);
-            }
-            EquipType = (EquipType)@struct.equip_type;
             EquipScript.OnCreated?.Invoke();
             EquipScript.Binder = this;
+            Uuid = Guid.NewGuid().ToString();
         }
 
         ~Equip()

@@ -13,10 +13,12 @@ namespace KemoCard.Mods.MainPackage.Scripts.Buffs
     {
         public override void OnBuffInit(BuffImplBase b)
         {
+            b.BuffId = 10001;
             b.BuffName = "water_injury";
             b.BuffShowname = "水属性易伤";
             b.IsInfinite = true;
             b.Desc = "受到的水属性伤害提高至1.5倍";
+            b.IconPath = "res://Mods/MainPackage/Resources/Icons/Skillicon14_04.png";
             b.AddEvent("BeforeDealDamageSingle", new((datas) =>
             {
                 if (datas != null)

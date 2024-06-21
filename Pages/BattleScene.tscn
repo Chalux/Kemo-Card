@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" path="res://Pages/BattleScene.cs" id="1_51jkc"]
 
-[node name="BattleScene" type="Node2D" node_paths=PackedStringArray("playerContainer", "enemyContainer", "HandControl", "DeckCount", "GraveCount", "ActionPointLabel", "TurnEndBtn", "DragDwonArea", "DebugDrawBtn", "TurnLabel")]
+[node name="BattleScene" type="Node2D" node_paths=PackedStringArray("playerContainer", "enemyContainer", "HandControl", "DeckCount", "GraveCount", "ActionPointLabel", "TurnEndBtn", "DragDwonArea", "DebugDrawBtn", "TurnLabel", "DeckBtn", "GraveBtn")]
 script = ExtResource("1_51jkc")
 playerContainer = NodePath("BattleRoot/PlayerContainer")
 enemyContainer = NodePath("BattleRoot/EnemyContainer")
@@ -14,6 +14,8 @@ TurnEndBtn = NodePath("BattleRoot/TurnEndBtn")
 DragDwonArea = NodePath("BattleRoot/DragDownArea")
 DebugDrawBtn = NodePath("BattleRoot/DebugDrawBtn")
 TurnLabel = NodePath("BattleRoot/TurnLabel")
+DeckBtn = NodePath("BattleRoot/DeckControl/DeckBtn")
+GraveBtn = NodePath("BattleRoot/GraveControl/GraveBtn")
 
 [node name="ColorRect" type="ColorRect" parent="."]
 offset_right = 1920.0
@@ -66,6 +68,14 @@ text = "卡组数量：0"
 horizontal_alignment = 1
 vertical_alignment = 1
 
+[node name="DeckBtn" type="Button" parent="BattleRoot/DeckControl"]
+layout_mode = 0
+offset_left = -40.0
+offset_top = -48.0
+offset_right = 80.0
+theme_override_font_sizes/font_size = 26
+text = "查看卡组"
+
 [node name="GraveControl" type="Control" parent="BattleRoot"]
 anchors_preset = 0
 offset_left = 1728.0
@@ -83,6 +93,14 @@ grow_vertical = 2
 text = "卡组数量：0"
 horizontal_alignment = 1
 vertical_alignment = 1
+
+[node name="GraveBtn" type="Button" parent="BattleRoot/GraveControl"]
+layout_mode = 0
+offset_left = -40.0
+offset_top = -48.0
+offset_right = 80.0
+theme_override_font_sizes/font_size = 26
+text = "查看弃牌堆"
 
 [node name="HandControl" type="Control" parent="BattleRoot"]
 anchors_preset = 0

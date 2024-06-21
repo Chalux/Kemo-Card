@@ -15,7 +15,7 @@ public partial class BuffObject : Control, IEvent
         var modInfo = Datas.Ins.BuffPool.GetValueOrDefault(id, new() { buff_id = 0, buff_name = "", mod_id = "MainPackage" });
         if (modInfo.buff_id != 0)
         {
-            string spath = "res://Mods/{modInfo.mod_id}/buff/B{modInfo.buff_id}.cs";
+            string spath = $"res://Mods/{modInfo.mod_id}/Scripts/Buffs/B{modInfo.buff_id}.cs";
             FileAccess script = FileAccess.Open(spath, FileAccess.ModeFlags.Read);
             data = new();
             if (script != null)
@@ -23,8 +23,8 @@ public partial class BuffObject : Control, IEvent
                 var s = ResourceLoader.Load<CSharpScript>(spath).New().As<BaseBuffScript>();
                 s.OnBuffInit(data);
             }
-            string path = ProjectSettings.GlobalizePath("user://Mods/" + modInfo.mod_id + "/image/B" + modInfo.buff_id + ".jpg");
-            Image res = null;
+            string path = ProjectSettings.GlobalizePath(data.IconPath);
+            Image res;
             if (FileAccess.FileExists(path))
                 res = Image.LoadFromFile(path);
             else
@@ -44,24 +44,26 @@ public partial class BuffObject : Control, IEvent
             Image res = Image.LoadFromFile(path);
             texture.Texture = ImageTexture.CreateFromImage(res);
         }
-        data.BuffObj = this;
-        MouseEntered += new(() =>
+        InitObj();
+    }
+
+    public void Init(BuffImplBase buff)
+    {
+        data = buff;
+        string path = ProjectSettings.GlobalizePath(data.IconPath);
+        Image res;
+        if (FileAccess.FileExists(path))
+            res = Image.LoadFromFile(path);
+        else
         {
-            if (data != null)
-            {
-                StaticInstance.MainRoot.ShowRichHint(StaticUtils.MakeBBCodeString(
-                    "Buff名：" + data.BuffShowname + ",\n" +
-                    "Buff剩余计数：" + (data.IsInfinite ? "永久" : data.BuffCount) + ",\n" +
-                    "Buff量：" + data.BuffValue + ",\n" +
-                    "效果：" + data.Desc
-                    , "left"));
-            }
-        });
-        MouseExited += new(() =>
+            path = ProjectSettings.GlobalizePath("res://Resources/Images/SkillFrame.png");
+            res = Image.LoadFromFile(path);
+        }
+        if (res != null)
         {
-            StaticInstance.MainRoot.HideRichHint();
-        });
-        Update();
+            texture.Texture = ImageTexture.CreateFromImage(res);
+        }
+        InitObj();
     }
 
     public void Update()
@@ -78,6 +80,37 @@ public partial class BuffObject : Control, IEvent
     public void ReceiveEvent(string @event, dynamic datas)
     {
         data.ReceiveEvent(@event, datas);
+    }
+
+    private void InitObj()
+    {
+        data.BuffObj = this;
+        MouseEntered += new(() =>
+        {
+            if (data != null)
+            {
+                string result = "Buff名：" + data.BuffShowname + ",\n" +
+                    "Buff剩余计数：" + (data.IsInfinite ? "永久" : data.BuffCount) + ",\n" +
+                    "Buff量：" + data.BuffValue + ",\n" +
+                    "效果：" + data.Desc;
+                HashSet<string> list = new();
+                foreach (var key in data.tags)
+                {
+                    if (StaticEnums.HintDictionary.ContainsKey(key))
+                    {
+                        var data = StaticEnums.HintDictionary[key];
+                        result += $"\n{data.Alias}:{data.Desc}";
+                        list.Add(key);
+                    }
+                }
+                StaticInstance.MainRoot.ShowRichHint(StaticUtils.MakeBBCodeString(result, "left"));
+            }
+        });
+        MouseExited += new(() =>
+        {
+            StaticInstance.MainRoot.HideRichHint();
+        });
+        Update();
     }
 
     ~BuffObject()

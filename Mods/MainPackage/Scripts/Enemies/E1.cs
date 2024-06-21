@@ -29,11 +29,15 @@ namespace KemoCard.Mods.MainPackage.Scripts.Enemies
             });
             e.AddEvent("StartBattle", new((datas) =>
             {
-                e.Binder.roleObject.IntentRichLabel.Text = StaticUtils.MakeBBCodeString(string.Format(format: "[img=30x30]res://Resources/Images/SkillFrame.png[/img]造成{0:N2}点伤害({1}+0.5*{2})"
-                    , arg0: e.Binder.CurrStrength + e.Binder.Body * 0.5
-                    , arg1: StaticUtils.MakeBBCodeString("力量", "center", 36, StaticInstance.BodyColor)
-                    , arg2: StaticUtils.MakeBBCodeString("身体", "center", 36, StaticInstance.BodyColor)));
+                string Intent = StaticUtils.MakeBBCodeString(
+                    $"[img=30x30]res://Mods/MainPackage/Resources/Icons/icons_78.png[/img]造成" +
+                    $"{e.Binder.CurrStrength + e.Binder.Body * 0.5:N2}点伤害(" +
+                    $"{StaticUtils.MakeColorString("力量", StaticInstance.BodyColor, 36)}+0.5*" +
+                    $"{StaticUtils.MakeColorString("身体", StaticInstance.BodyColor, 36)})");
+                e.ChangeIntent(Intent);
             }));
+            StaticUtils.CreateBuffAndAddToRole(10002, e.Binder);
+            StaticUtils.CreateBuffAndAddToRole(10001, e.Binder);
         }
     }
 }

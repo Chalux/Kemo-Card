@@ -1,4 +1,5 @@
 ﻿using Godot;
+using KemoCard.Scripts.Buffs;
 using KemoCard.Scripts.Cards;
 using StaticClass;
 using System;
@@ -29,7 +30,7 @@ namespace KemoCard.Scripts
             }
             gsd.MajorRole = gsd.MajorRole;
             var json = JsonSerializer.Serialize(gsd);
-            GD.Print(sav, json);
+            //GD.Print(sav, json);
             sav.StoreString(json);
         }
 
@@ -58,7 +59,20 @@ namespace KemoCard.Scripts
                 }
                 //obj = JsonSerializer.Deserialize<GlobalSaveData>(jsonstring);
                 gsd.MajorRole = obj.MajorRole;
-                gsd.MajorRole.buffs.ForEach(buff => buff.Binder = gsd.MajorRole);
+                gsd.MajorRole.Buffs.ForEach(buff =>
+                {
+                    if (Datas.Ins.BuffPool.ContainsKey(buff.BuffId))
+                    {
+                        var modinfo = Datas.Ins.BuffPool[buff.BuffId];
+                        var res = ResourceLoader.Load<CSharpScript>($"res://Mods/{modinfo.mod_id}/Scripts/Buffs/B{buff.BuffId}.cs");
+                        if (res != null)
+                        {
+                            BaseBuffScript script = res.New().As<BaseBuffScript>();
+                            script.OnBuffInit(buff);
+                        }
+                    }
+                    buff.Binder = gsd.MajorRole;
+                });
                 gsd.MajorRole.Deck.ForEach(card =>
                 {
                     card.owner = gsd.MajorRole;
@@ -69,7 +83,7 @@ namespace KemoCard.Scripts
                         throw new Exception(errorLog);
                     }
                     var cfg = Datas.Ins.CardPool[card.Id];
-                    string path = $"user://Mods/{cfg.mod_id}/card/C{card.Id}.cs";
+                    string path = $"res://Mods/{cfg.mod_id}/Scripts/Cards/C{card.Id}.cs";
                     var res = FileAccess.Open(path, FileAccess.ModeFlags.Read);
                     if (res == null)
                     {

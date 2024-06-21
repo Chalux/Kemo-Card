@@ -21,18 +21,20 @@ namespace KemoCard.Scripts
         public Action CustomPutOn;
         public void OnPutOn()
         {
-            if (DoDefaultPutOn && Binder.owner is PlayerRole pr)
+            if (Binder != null && DoDefaultPutOn && Binder.owner is PlayerRole pr)
             {
+                int Count = 0;
                 foreach (var keyValuePair in CardDic)
                 {
                     Card card = new(keyValuePair.Key)
                     {
-                        EquipId = Binder.Id,
+                        EquipId = Binder.Uuid,
                         EquipIdx = keyValuePair.Value,
                     };
                     pr.AddCardIntoDeck(card);
+                    Count++;
                 }
-                GD.Print("角色" + pr.GetName() + "装备了id为" + Binder.Id + "的装备。新增卡牌" + CardDic.Count + "张至卡组中。装备后角色的卡组数量为" + pr.Deck.Count);
+                GD.Print("角色" + pr.GetName() + "装备了id为" + Binder.Id + ",Uuid为" + Binder.Uuid + "的装备。新增卡牌" + Count + "张至卡组中。装备后角色的卡组数量为" + pr.Deck.Count);
             }
             CustomPutOn?.Invoke();
         }
@@ -42,15 +44,19 @@ namespace KemoCard.Scripts
         public Action CustomPutOff;
         public void OnPutOff()
         {
-            if (DoDefaultPutOff && Binder.owner is PlayerRole pr)
+            if (Binder != null && DoDefaultPutOff && Binder.owner is PlayerRole pr)
             {
+                int Count = 0;
                 var tempDeck = pr.Deck.ToList();
                 foreach (var card in tempDeck)
                 {
-                    if (card.EquipId == Binder.Id && CardDic.ContainsKey(card.Id) && card.EquipIdx == CardDic.GetValueOrDefault(card.Id))
+                    if (card.EquipId == Binder.Uuid && CardDic.ContainsKey(card.Id) && card.EquipIdx == CardDic.GetValueOrDefault(card.Id))
+                    {
                         pr.RemoveCardFromDeck(card.Id, card.Idx);
+                        Count++;
+                    }
                 }
-                GD.Print("角色" + pr.GetName() + "脱下了id为" + Binder.Id + "的装备。从卡组中删除卡牌" + CardDic.Count + "张。脱下后角色的卡组数量为" + pr.Deck.Count);
+                GD.Print("角色" + pr.GetName() + "脱下了id为" + Binder.Id + ",Uuid为" + Binder.Uuid + "的装备。从卡组中删除卡牌" + Count + "张。脱下后角色的卡组数量为" + pr.Deck.Count);
             }
             CustomPutOff?.Invoke();
         }

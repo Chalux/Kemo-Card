@@ -2,6 +2,7 @@ using Godot;
 using KemoCard.Pages;
 using KemoCard.Scripts;
 using KemoCard.Scripts.Buffs;
+using KemoCard.Scripts.Equips;
 using StaticClass;
 
 public partial class RoleCreateScene : BaseScene
@@ -136,29 +137,13 @@ public partial class RoleCreateScene : BaseScene
         };
 
         var majorrole = new PlayerRole(player.OriginSpeed, player.OriginStrength, player.OriginEffeciency, player.OriginMantra, player.OriginCraftEquip, player.OriginCraftBook, player.OriginCritical, player.OriginDodge, player.name);
-        majorrole.AddCardIntoDeck(new(10005));
-        majorrole.AddCardIntoDeck(new(10005));
-        majorrole.AddCardIntoDeck(new(10006));
-        majorrole.AddCardIntoDeck(new(10006));
-        majorrole.AddCardIntoDeck(new(10006));
-        majorrole.AddCardIntoDeck(new(10003));
-        majorrole.AddCardIntoDeck(new(10003));
-        majorrole.AddCardIntoDeck(new(10004));
-        if (Datas.Ins.BuffPool.TryGetValue(10001, out Datas.BuffStruct modInfo))
-        {
-            FileAccess script = FileAccess.Open($"res://Mods/{modInfo.mod_id}/buff/B{modInfo.buff_id}.cs", FileAccess.ModeFlags.Read);
-            if (script != null)
-            {
-                BuffImplBase data = new();
-                var res = ResourceLoader.Load<CSharpScript>($"res://Mod/{modInfo.mod_id}/Scripts/Buffs/B{modInfo.buff_id}.cs");
-                if (res != null)
-                {
-                    BaseBuffScript @base = res.New().As<BaseBuffScript>();
-                    @base.OnBuffInit(data);
-                }
-                majorrole.AddBuff(data);
-            }
-        }
+        majorrole.AddCardIntoDeck(new(10001));
+        majorrole.AddCardIntoDeck(new(10002));
+        StaticUtils.CreateBuffAndAddToRole(10003, majorrole);
+        StaticUtils.CreateEquipAndPutOn(10002, majorrole);
+        StaticUtils.CreateEquipAndPutOn(10002, majorrole);
+        StaticUtils.CreateEquipAndPutOn(10002, majorrole);
+        StaticUtils.CreateEquipAndPutOn(10003, majorrole);
         majorrole.ActionPoint = 3;
 
         StaticInstance.playerData.gsd.MajorRole = majorrole;

@@ -287,7 +287,7 @@ namespace KemoCard.Scripts
         public virtual float GetSymbol(string key, float defaultValue = 0f)
         {
             var value = Symbol.GetValueOrDefault(key, defaultValue);
-            buffs.ForEach(buff =>
+            Buffs.ForEach(buff =>
             {
                 value += buff.Symbol.GetValueOrDefault(key, 0);
             });
@@ -329,18 +329,18 @@ namespace KemoCard.Scripts
             StaticInstance.eventMgr.Dispatch("PropertiesChanged", objects);
         }
 
-        public List<BuffImplBase> buffs = new();
+        public List<BuffImplBase> Buffs { get; set; } = new();
 
-        public void AddBuff(BuffImplBase buff)
+        public virtual void AddBuff(BuffImplBase buff)
         {
-            buffs.Add(buff);
+            Buffs.Add(buff);
             StaticInstance.eventMgr.Dispatch("BuffChanged", this);
             buff.OnBuffAdded?.Invoke(buff);
         }
 
         public void RemoveBuff(BuffImplBase buff)
         {
-            buffs.Remove(buff);
+            Buffs.Remove(buff);
             StaticInstance.eventMgr.Dispatch("BuffChanged", this);
             buff.OnBuffRemoved?.Invoke(buff);
         }

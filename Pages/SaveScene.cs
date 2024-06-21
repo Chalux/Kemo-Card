@@ -29,12 +29,12 @@ public partial class SaveScene : BaseScene
                             string imgPath = StaticUtils.GetSaveImgPath(index + 1);
                             //GD.Print(imgPath);
                             StaticInstance.playerData.Save(index + 1);
-                            if (!DirAccess.DirExistsAbsolute(imgPath))
-                            {
-                                var error = DirAccess.MakeDirRecursiveAbsolute(imgPath);
-                                GD.Print(error);
-                                return;
-                            }
+                            //if (!DirAccess.DirExistsAbsolute(imgPath))
+                            //{
+                            //    var error = DirAccess.MakeDirRecursiveAbsolute(imgPath);
+                            //    GD.Print(error);
+                            //    return;
+                            //}
                             StaticInstance.playerData.screen_snapshot.SaveJpg(imgPath);
                             (container.GetChild(0) as TextureRect).Texture = ImageTexture.CreateFromImage(StaticInstance.playerData.screen_snapshot);
                         }));

@@ -13,6 +13,7 @@ config_version=5
 config/name="Kemo Card"
 run/main_scene="res://Pages/main_root.tscn"
 config/features=PackedStringArray("4.2", "C#", "Mobile")
+run/max_fps=240
 config/icon="res://icon.svg"
 
 [autoload]
@@ -46,10 +47,6 @@ right_mouse={
 "events": [Object(InputEventMouseButton,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"button_mask":2,"position":Vector2(404, 13),"global_position":Vector2(408, 54),"factor":1.0,"button_index":2,"canceled":false,"pressed":true,"double_click":false,"script":null)
 ]
 }
-
-[internationalization]
-
-locale/translations_pot_files=PackedStringArray("res://Dialogues/D10001.dialogue")
 
 [rendering]
 

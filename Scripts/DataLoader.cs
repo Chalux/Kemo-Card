@@ -27,6 +27,7 @@ namespace KemoCard.Scripts
         public Dictionary<uint, EquipStruct> EquipPool = new();
         public Dictionary<uint, BuffStruct> BuffPool = new();
         public Dictionary<uint, RoleStruct> RolePool = new();
+        public Dictionary<uint, PresetStruct> PresetPool = new();
 
         private static readonly string MOD_CACHE_PATH = "user://Saves/modCache.json";
 
@@ -214,13 +215,33 @@ namespace KemoCard.Scripts
                                         {
                                             StaticInstance.MainRoot.ShowBanner("Mod间存在冲突。roleid冲突：" + id + "，冲突的两个Mod的id分别为：" + currModId + "，" + RolePool[id].mod_id);
                                             errorModsSet.Add(currModId);
-                                            errorModsSet.Add(BuffPool[id].mod_id);
+                                            errorModsSet.Add(RolePool[id].mod_id);
                                             continue;
                                         }
                                         RolePool.Add(id, new RoleStruct
                                         {
                                             role_id = id,
                                             role_name = data["role_name"].AsString(),
+                                            mod_id = currModId
+                                        });
+                                    }
+                                }
+                                if (JsonData.ContainsKey("preset_list"))
+                                {
+                                    foreach (var data in JsonData["preset_list"].AsGodotArray<Godot.Collections.Dictionary>())
+                                    {
+                                        var id = data["preset_id"].AsUInt32();
+                                        if (PresetPool.ContainsKey(id))
+                                        {
+                                            StaticInstance.MainRoot.ShowBanner("Mod间存在冲突。presetid冲突：" + id + "，冲突的两个Mod的id分别为：" + currModId + "，" + PresetPool[id].mod_id);
+                                            errorModsSet.Add(currModId);
+                                            errorModsSet.Add(PresetPool[id].mod_id);
+                                            continue;
+                                        }
+                                        PresetPool.Add(id, new PresetStruct
+                                        {
+                                            preset_id = id,
+                                            //role_name = data["preset_name"].AsString(),
                                             mod_id = currModId
                                         });
                                     }
@@ -239,26 +260,30 @@ namespace KemoCard.Scripts
             {
                 GD.Print(i.ToString());
             }
-            foreach (var i in CardPool)
-            {
-                GD.Print(i.ToString());
-            }
-            foreach (var i in EnemyPool)
-            {
-                GD.Print(i.ToString());
-            }
-            foreach (var i in EquipPool)
-            {
-                GD.Print(i.ToString());
-            }
-            foreach (var i in BuffPool)
-            {
-                GD.Print(i.ToString());
-            }
-            foreach (var i in RolePool)
-            {
-                GD.Print(i.ToString());
-            }
+            //foreach (var i in CardPool)
+            //{
+            //    GD.Print(i.ToString());
+            //}
+            //foreach (var i in EnemyPool)
+            //{
+            //    GD.Print(i.ToString());
+            //}
+            //foreach (var i in EquipPool)
+            //{
+            //    GD.Print(i.ToString());
+            //}
+            //foreach (var i in BuffPool)
+            //{
+            //    GD.Print(i.ToString());
+            //}
+            //foreach (var i in RolePool)
+            //{
+            //    GD.Print(i.ToString());
+            //}
+            //foreach (var i in PresetPool)
+            //{
+            //    GD.Print(i.ToString());
+            //}
         }
 
         public struct CardStruct
@@ -304,6 +329,12 @@ namespace KemoCard.Scripts
         {
             public uint role_id;
             public string role_name;
+            public string mod_id;
+        }
+
+        public struct PresetStruct
+        {
+            public uint preset_id;
             public string mod_id;
         }
 

@@ -14,10 +14,12 @@ namespace KemoCard.Mods.MainPackage.Scripts.Buffs
     {
         public override void OnBuffInit(BuffImplBase b)
         {
+            b.BuffId = 10002;
             b.BuffName = "fire_resis";
             b.BuffShowname = "火属性抵抗";
             b.IsInfinite = true;
             b.Desc = "受到的火属性伤害降低至0.75倍";
+            b.IconPath = "res://Mods/MainPackage/Resources/Icons/Skillicon14_14.png";
             b.AddEvent("BeforeDealDamageSingle", new(datas =>
             {
                 if (datas != null)

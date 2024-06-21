@@ -143,8 +143,19 @@ public partial class PlayerRoleObject : Control, IEvent
 
     public void AddBuff(uint id)
     {
-        BuffObject buffObject = new();
+        BuffObject buffObject = (BuffObject)ResourceLoader.Load<PackedScene>("res://Pages/BuffObject.tscn").Instantiate();
         buffObject.Init(id);
+        if (buffObject.data != null)
+        {
+            buffContainer.AddChild(buffObject);
+            buffObject.data.Binder = data;
+        }
+    }
+
+    public void AddBuff(BuffImplBase buff)
+    {
+        BuffObject buffObject = (BuffObject)ResourceLoader.Load<PackedScene>("res://Pages/BuffObject.tscn").Instantiate();
+        buffObject.Init(buff);
         if (buffObject.data != null)
         {
             buffContainer.AddChild(buffObject);

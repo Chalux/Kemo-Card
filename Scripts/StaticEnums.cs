@@ -103,9 +103,16 @@ namespace StaticClass
         /// <summary>
         /// 提示词字典，可以在这里面存一些专有名词的说明什么的
         /// </summary>
-        public static Dictionary<string, string> HintDictionary = new()
+        public static Dictionary<string, HintStruct> HintDictionary = new()
         {
-
+            { "KeepInHand", new(){ Alias = "保留", Desc = "回合结束时不送去墓地保留在手上。"} },
+            { "Exhaust", new(){ Alias = "耗尽", Desc = "使用后不送去墓地直接移出游戏。"} },
         };
+
+        public struct HintStruct
+        {
+            public string Alias;
+            public string Desc;
+        }
     }
 }

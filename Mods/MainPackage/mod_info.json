@@ -1,101 +1,101 @@
 {
-    "mod_version": "1.0.0",
-    "name": "主模组",
-    "mod_id": "MainPackage",
-    "description": "主模组",
-    "author_list": [
-        "Chalux"
-    ],
-    "card_list": [
-        {
-            "card_id": 10001,
-            "card_name": "fire_ball",
-            "filter_flag": 2081
-        },
-        {
-            "card_id": 10002,
-            "card_name": "water_slash",
-            "filter_flag": 2065
-        },
-        {
-            "card_id": 10003,
-            "card_name": "self_pblock",
-            "filter_flag": 1026
-        },
-        {
-            "card_id": 10004,
-            "card_name": "self_mblock",
-            "filter_flag": 2050
-        },
-        {
-            "card_id": 10005,
-            "card_name": "punch",
-            "filter_flag": 1033
-        },
-        {
-            "card_id": 10006,
-            "card_name": "magic_missile",
-            "filter_flag": 2057
-        },
-        {
-            "card_id": 10007,
-            "card_name": "测试卡牌7",
-            "filter_flag": 0
-        },
-        {
-            "card_id": 10008,
-            "card_name": "测试卡牌8",
-            "filter_flag": 0
-        },
-        {
-            "card_id": 10009,
-            "card_name": "测试卡牌9",
-            "filter_flag": 0
-        }
-    ],
-    "enemy_list": [
-        {
-            "enemy_id": 1,
-            "enemy_name": "测试敌人1"
-        },
-        {
-            "enemy_id": 10002,
-            "enemy_name": "测试敌人2"
-        },
-        {
-            "enemy_id": 10003,
-            "enemy_name": "测试敌人3"
-        }
-    ],
-    "equip_list": [
-        {
-            "equip_id": 10001,
-            "equip_name": "测试装备1",
-            "equip_type": 1
-        },
-        {
-            "equip_id": 10002,
-            "equip_name": "测试装备2",
-            "equip_type": 8
-        },
-        {
-            "equip_id": 10003,
-            "equip_name": "测试装备3",
-            "equip_type": 8
-        }
-    ],
-    "buff_list": [
-        {
-            "buff_id": 10001,
-            "buff_name": "water_injury"
-        },
-        {
-            "buff_id": 10002,
-            "buff_name": "fire_resis"
-        },
-        {
-            "buff_id": 10003,
-            "buff_name": "测试buff3"
-        }
-    ]
+	"mod_version": "1.0.0",
+	"name": "主模组",
+	"mod_id": "MainPackage",
+	"description": "主模组",
+	"author_list": [
+		"Chalux"
+	],
+	"card_list": [
+		{
+			"card_id": 10001,
+			"card_name": "fire_ball",
+			"filter_flag": 2081
+		},
+		{
+			"card_id": 10002,
+			"card_name": "water_slash",
+			"filter_flag": 2065
+		},
+		{
+			"card_id": 10003,
+			"card_name": "self_pblock",
+			"filter_flag": 1026
+		},
+		{
+			"card_id": 10004,
+			"card_name": "self_mblock",
+			"filter_flag": 2050
+		},
+		{
+			"card_id": 10005,
+			"card_name": "punch",
+			"filter_flag": 1033
+		},
+		{
+			"card_id": 10006,
+			"card_name": "magic_missile",
+			"filter_flag": 2057
+		},
+		{
+			"card_id": 10007,
+			"card_name": "测试卡牌7",
+			"filter_flag": 0
+		},
+		{
+			"card_id": 10008,
+			"card_name": "测试卡牌8",
+			"filter_flag": 0
+		},
+		{
+			"card_id": 10009,
+			"card_name": "测试卡牌9",
+			"filter_flag": 0
+		}
+	],
+	"enemy_list": [
+		{
+			"enemy_id": 1,
+			"enemy_name": "测试敌人1"
+		},
+		{
+			"enemy_id": 10002,
+			"enemy_name": "测试敌人2"
+		},
+		{
+			"enemy_id": 10003,
+			"enemy_name": "测试敌人3"
+		}
+	],
+	"equip_list": [
+		{
+			"equip_id": 10001,
+			"equip_name": "测试装备1",
+			"equip_type": 1
+		},
+		{
+			"equip_id": 10002,
+			"equip_name": "测试装备2",
+			"equip_type": 8
+		},
+		{
+			"equip_id": 10003,
+			"equip_name": "测试装备3",
+			"equip_type": 8
+		}
+	],
+	"buff_list": [
+		{
+			"buff_id": 10001,
+			"buff_name": "water_injury"
+		},
+		{
+			"buff_id": 10002,
+			"buff_name": "fire_resis"
+		},
+		{
+			"buff_id": 10003,
+			"buff_name": "测试buff3"
+		}
+	]
 }

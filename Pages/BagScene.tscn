@@ -4,7 +4,7 @@
 [ext_resource type="Script" path="res://Pages/BagScene.cs" id="1_cx6uk"]
 [ext_resource type="PackedScene" uid="uid://dyv3uci0g4ye4" path="res://Pages/EquipObject.tscn" id="2_8083f"]
 
-[node name="BagScene" type="Node2D" node_paths=PackedStringArray("HalmetSlot", "ArmorSlot", "GloveSlot", "TrouserSlot", "ShoeSlot", "WeaponSlot1", "WeaponSlot2", "OtherSlot1", "OtherSlot2", "OtherSlot3", "OtherSlot4", "OtherSlot5", "GMEdit", "AddBtn", "DeleteBtn", "popup", "flowContainer", "QuitBtn")]
+[node name="BagScene" type="Node2D" node_paths=PackedStringArray("HalmetSlot", "ArmorSlot", "GloveSlot", "TrouserSlot", "ShoeSlot", "WeaponSlot1", "WeaponSlot2", "OtherSlot1", "OtherSlot2", "OtherSlot3", "OtherSlot4", "OtherSlot5", "GMEdit", "AddBtn", "DeleteBtn", "popup", "flowContainer", "QuitBtn", "DebugControl")]
 script = ExtResource("1_cx6uk")
 HalmetSlot = NodePath("ColorRect2/HalmetSlot")
 ArmorSlot = NodePath("ColorRect2/ArmorSlot")
@@ -24,6 +24,7 @@ DeleteBtn = NodePath("DebugControl/DeleteBtn")
 popup = NodePath("PopupMenu")
 flowContainer = NodePath("ColorRect3/Control/ScrollContainer/HBoxContainer")
 QuitBtn = NodePath("QuitBtn")
+DebugControl = NodePath("DebugControl")
 
 [node name="ColorRect" type="ColorRect" parent="."]
 offset_right = 1920.0

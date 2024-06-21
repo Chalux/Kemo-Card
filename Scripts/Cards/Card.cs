@@ -13,7 +13,7 @@ namespace KemoCard.Scripts.Cards
         public BaseRole owner;
         public uint Id { get; set; } = 0;
         // 这里的装备id是为了记录是否是装备加到卡组里的，idx同。非装备的话可以不填。
-        public uint EquipId { get; set; } = 0;
+        public string EquipId { get; set; } = "";
         public uint EquipIdx { get; set; } = 0;
 
         /// <summary>
@@ -30,6 +30,34 @@ namespace KemoCard.Scripts.Cards
         public uint Idx { get; set; } = 0;
         public string CardName { get; set; } = "未命名";
         public string Desc { get; set; } = "无描述";
+        public string GetDesc
+        {
+            get
+            {
+                string str = "";
+                HashSet<string> sets = new();
+                foreach (var key in GlobalDict.Keys)
+                {
+                    if (!sets.Contains(key) && HintDictionary.ContainsKey(key))
+                    {
+                        var data = HintDictionary[key];
+                        str += $"{data.Alias}:{data.Desc}\n";
+                        sets.Add(key);
+                    }
+                }
+                foreach (var key in InGameDict.Keys)
+                {
+                    if (!sets.Contains(key) && HintDictionary.ContainsKey(key))
+                    {
+                        var data = HintDictionary[key];
+                        str += $"{data.Alias}:{data.Desc}\n";
+                        sets.Add(key);
+                    }
+                }
+                if (str != "") str = str.TrimEnd('\n');
+                return str;
+            }
+        }
         public int Cost { get; set; } = 0;
         public CostType CostType { get; set; } = CostType.ACTIONPOINT;
         [JsonIgnore]

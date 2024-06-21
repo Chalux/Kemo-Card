@@ -112,6 +112,11 @@ public partial class CardObject : Control
         object[] objects = new object[] { GetIndex() };
         csm.OnMouseEnter();
         StaticInstance.eventMgr.Dispatch("RepositionHand", objects);
+        string desc = card.GetDesc;
+        if (desc != "")
+        {
+            StaticInstance.MainRoot.ShowRichHint(StaticUtils.MakeBBCodeString(desc, "left"));
+        }
         if (BattleStatic.currCard == this) return;
     }
 
@@ -120,6 +125,7 @@ public partial class CardObject : Control
         object[] objects2 = new object[] { -1 };
         csm.OnMouseExit();
         StaticInstance.eventMgr.Dispatch("RepositionHand", objects2);
+        StaticInstance.MainRoot.HideRichHint();
         //if (ExitTween != null && ExitTween.IsRunning()) ExitTween.Kill();
         //ExitTween = CreateTween().SetEase(Tween.EaseType.Out).SetTrans(Tween.TransitionType.Back).SetParallel(true);
         //ExitTween.TweenProperty(this, "scale", new Vector2(1.2f, 1.2f), 0.5f);

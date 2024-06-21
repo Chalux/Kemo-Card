@@ -9,7 +9,7 @@ namespace KemoCard.Scripts.Equips
 {
     internal partial class BaseEquipScript : GodotObject
     {
-        public virtual void OnEquipInit(Equip eq)
+        public virtual void OnEquipInit(EquipImplBase eq)
         {
 
         }
