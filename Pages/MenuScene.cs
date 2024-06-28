@@ -1,4 +1,3 @@
-using DialogueManagerRuntime;
 using Godot;
 using KemoCard.Pages;
 using StaticClass;
@@ -8,6 +7,7 @@ public partial class MenuScene : BaseScene
     [Export] Godot.Button exit;
     [Export] Godot.Button start;
     [Export] Godot.Button load;
+    [Export] Godot.Button DebugTempBtn;
     public override void _Ready()
     {
         base._Ready();
@@ -41,6 +41,10 @@ public partial class MenuScene : BaseScene
         {
             StaticInstance.windowMgr.ChangeScene(ResourceLoader.Load<PackedScene>("res://Pages/LoadSaveScene.tscn").Instantiate(), new((scene) => { StaticInstance.MainRoot.canPause = true; }));
             StaticInstance.MainRoot.HideRichHint();
+        });
+        DebugTempBtn.Pressed += new(() =>
+        {
+            StaticInstance.windowMgr.ChangeScene(ResourceLoader.Load<PackedScene>("res://Pages/Map/Map.tscn").Instantiate(), new((scene) => { StaticInstance.MainRoot.canPause = true; }));
         });
     }
 }

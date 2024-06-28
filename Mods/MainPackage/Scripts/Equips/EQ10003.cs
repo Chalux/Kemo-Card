@@ -1,10 +1,5 @@
 ﻿using KemoCard.Scripts;
 using KemoCard.Scripts.Equips;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace KemoCard.Mods.MainPackage.Scripts.Equips
 {
@@ -12,9 +7,10 @@ namespace KemoCard.Mods.MainPackage.Scripts.Equips
     {
         public override void OnEquipInit(EquipImplBase eq)
         {
-            eq.TextureUrl = $"res://Mods/MainPackage/Resources/Icons/icons_93.png";
+            eq.TextureUrl = $"res://Mods/MainPackage/Resources/Icons/icons_094.png";
             eq.CardDic.Add(10004, 1);
             eq.CardDic.Add(10003, 1);
+            eq.Desc = "基础防御。\n为卡组添加一张重整魔防(消耗6魔力，自身提高5点魔甲)和重整物防(消耗6魔力，自身提高5点物甲)。";
         }
     }
 }

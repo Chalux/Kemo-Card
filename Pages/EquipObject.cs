@@ -29,8 +29,9 @@ public partial class EquipObject : Control
         }
         else
         {
-            var res = Image.LoadFromFile(Data.EquipScript.TextureUrl);
-            if (res != null) textureRect.Texture = ImageTexture.CreateFromImage(res);
+            var res = ResourceLoader.Load<CompressedTexture2D>(Data.EquipScript.TextureUrl);
+            //if (res != null) textureRect.Texture = ImageTexture.CreateFromImage(res);
+            if (res != null) textureRect.Texture = res;
         }
     }
 
@@ -67,5 +68,17 @@ public partial class EquipObject : Control
                     break;
             }
         }
+    }
+
+    public override void _Ready()
+    {
+        MouseEntered += new(() =>
+        {
+            if (Data != null) StaticInstance.MainRoot.ShowRichHint(Data.ToString());
+        });
+        MouseExited += new(() =>
+        {
+            StaticInstance.MainRoot.HideRichHint();
+        });
     }
 }

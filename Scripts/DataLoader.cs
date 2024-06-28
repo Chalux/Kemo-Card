@@ -241,7 +241,7 @@ namespace KemoCard.Scripts
                                         PresetPool.Add(id, new PresetStruct
                                         {
                                             preset_id = id,
-                                            //role_name = data["preset_name"].AsString(),
+                                            tier = data["tier"].AsUInt32(),
                                             mod_id = currModId
                                         });
                                     }
@@ -335,6 +335,7 @@ namespace KemoCard.Scripts
         public struct PresetStruct
         {
             public uint preset_id;
+            public uint tier;
             public string mod_id;
         }
 

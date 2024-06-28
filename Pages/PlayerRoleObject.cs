@@ -33,6 +33,10 @@ public partial class PlayerRoleObject : Control, IEvent
                 BattleStatic.Targets.Add(data);
                 //GD.Print(BattleStatic.Targets.Count);
             }
+            else
+            {
+                StaticInstance.MainRoot.ShowRichHint(data.GetRichDesc());
+            }
         });
         mainControl.MouseExited += new(() =>
         {
@@ -45,6 +49,7 @@ public partial class PlayerRoleObject : Control, IEvent
                 }
                 //GD.Print(BattleStatic.Targets.Count);
             }
+            StaticInstance.MainRoot.HideRichHint();
         });
     }
 

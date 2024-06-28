@@ -27,14 +27,13 @@ public partial class main_root : Control
         StaticInstance.eventMgr = new();
         StaticInstance.windowMgr = new();
 
-        //StaticInstance.windowMgr.ChangeScene(ResourceLoader.Load<PackedScene>("res://Pages/LoadScene.tscn").Instantiate());
-        StaticInstance.windowMgr.ChangeScene(ResourceLoader.Load<PackedScene>("res://Pages/menu_scene.tscn").Instantiate());
-
         Datas.Ins.Init();
 
         StaticInstance.playerData = new();
         #endregion
 
+        //StaticInstance.windowMgr.ChangeScene(ResourceLoader.Load<PackedScene>("res://Pages/LoadScene.tscn").Instantiate());
+        StaticInstance.windowMgr.ChangeScene(ResourceLoader.Load<PackedScene>("res://Pages/menu_scene.tscn").Instantiate());
         //richHint = colorRect.GetNode<RichTextLabel>("richHint");
         richHint.Position = new Vector2(Hpadding, Vpadding);
 

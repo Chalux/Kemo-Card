@@ -38,7 +38,7 @@ public partial class EnemyRoleObject : Control, IEvent
             }
             else
             {
-                StaticInstance.MainRoot.ShowRichHint(data.script.Intent);
+                StaticInstance.MainRoot.ShowRichHint(data.GetRichDesc() + data.script.Intent);
             }
         });
         mainControl.MouseExited += new(() =>

@@ -74,5 +74,10 @@ namespace KemoCard.Scripts
         {
             owner = null;
         }
+
+        public override string ToString()
+        {
+            return EquipScript != null ? EquipScript.Desc : "";
+        }
     }
 }

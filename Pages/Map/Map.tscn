@@ -1,0 +1,33 @@
+[gd_scene load_steps=2 format=3 uid="uid://bxu5oaf5w8o2p"]
+
+[ext_resource type="Script" path="res://Pages/Map/Map.cs" id="1_wdry2"]
+
+[node name="Map" type="Node2D" node_paths=PackedStringArray("Lines", "Rooms", "Visual", "Camera2D", "HideBtn")]
+script = ExtResource("1_wdry2")
+Lines = NodePath("Visual/Lines")
+Rooms = NodePath("Visual/Rooms")
+Visual = NodePath("Visual")
+Camera2D = NodePath("Camera2D")
+HideBtn = NodePath("Camera2D/HideBtn")
+
+[node name="Visual" type="Node2D" parent="."]
+
+[node name="Lines" type="Node2D" parent="Visual"]
+
+[node name="Rooms" type="Node2D" parent="Visual"]
+
+[node name="Camera2D" type="Camera2D" parent="."]
+offset = Vector2(960, 540)
+
+[node name="Background" type="ColorRect" parent="Camera2D"]
+offset_right = 1920.0
+offset_bottom = 1080.0
+color = Color(0, 0, 0, 0.631373)
+
+[node name="HideBtn" type="Button" parent="Camera2D"]
+offset_left = 64.0
+offset_top = 64.0
+offset_right = 256.0
+offset_bottom = 128.0
+theme_override_font_sizes/font_size = 36
+text = "隐藏地图"

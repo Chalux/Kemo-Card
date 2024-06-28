@@ -1,11 +1,6 @@
 ﻿using Godot;
 using KemoCard.Scripts;
 using KemoCard.Scripts.Buffs;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using static StaticClass.StaticEnums;
 
 namespace KemoCard.Mods.MainPackage.Scripts.Buffs

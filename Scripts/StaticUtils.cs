@@ -1,12 +1,11 @@
 ﻿using DialogueManagerRuntime;
 using Godot;
-using KemoCard.Scripts.Buffs;
 using KemoCard.Scripts;
+using KemoCard.Scripts.Buffs;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
 using static StaticClass.StaticEnums;
-using KemoCard.Scripts.Equips;
 
 namespace StaticClass
 {

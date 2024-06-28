@@ -58,6 +58,8 @@ namespace KemoCard.Scripts
 
         public Dictionary<uint, Dictionary<uint, Card>> deck_idx_dic = new();
 
+        public int Gold { get; set; } = 0;
+
         public void AddCardIntoDeck(Card card)
         {
             if (deck_idx_dic.ContainsKey(card.Id))
@@ -105,6 +107,45 @@ namespace KemoCard.Scripts
                 }
             }
         }
+
+        /// <summary>
+        /// 在读档的时候调用，用来构造deck_idx_dic这个变量的
+        /// </summary>
+        public void BuildDeckIdxDic()
+        {
+            foreach (var card in Deck)
+            {
+                if (deck_idx_dic.ContainsKey(card.Id))
+                {
+                    var dic = deck_idx_dic[card.Id];
+                    if (dic != null)
+                    {
+                        foreach (var idx in dic.Keys)
+                        {
+                            if (!dic.ContainsKey(idx + 1))
+                            {
+                                dic[idx + 1] = card;
+                                card.Idx = idx + 1;
+                                break;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        _ = deck_idx_dic[card.Id] = new();
+                    }
+                    card.owner = this;
+                }
+                else
+                {
+                    var dic = deck_idx_dic[card.Id] = new();
+                    dic[0] = card;
+                    card.Idx = 0;
+                    card.owner = this;
+                }
+            }
+        }
+
         //private List<uint> DeckIds
         //{
         //    get
@@ -214,7 +255,7 @@ namespace KemoCard.Scripts
 
                 if (amt > 0)
                 {
-                    var equip = EquipDic[slot];
+                    Equip equip = EquipDic[slot];
                     if (equip.EquipType == EquipType.DOUBLE_WEAPON && (slot == (uint)EquipType.WEAPON1 || slot == (uint)EquipType.WEAPON2))
                     {
                         AddEquipToBag(equip);
@@ -224,7 +265,7 @@ namespace KemoCard.Scripts
                     else
                     {
                         AddEquipToBag(equip);
-                        EquipDic[slot] = null;
+                        EquipDic.Remove(slot);
                     }
                     equip.EquipScript.OnPutOff();
                     StaticInstance.eventMgr.Dispatch("PlayerEquipUpdated");
@@ -293,5 +334,46 @@ namespace KemoCard.Scripts
 
         public Action<InFightPlayer> OnBattleStart;
 
+        private uint _unUsedPoints = 0;
+        public uint UnUsedPoints { get => _unUsedPoints; set => _unUsedPoints = Math.Max(0, value); }
+        private uint _exp = 0;
+        public uint Exp
+        {
+            get => _exp;
+            set
+            {
+                if (Level >= ExpCfg.MaxLevel)
+                {
+                    _exp = 0;
+                    return;
+                }
+                var NeedExp = ExpCfg.CalUpgradeNeedExp(Level);
+                if (_exp < NeedExp)
+                    _exp = Math.Max(0, value);
+                else
+                {
+                    while (_exp > ExpCfg.CalUpgradeNeedExp(Level))
+                    {
+                        _exp -= ExpCfg.CalUpgradeNeedExp(Level);
+                        UpgradeLevel();
+                    }
+                }
+            }
+        }
+        private uint _level = 1;
+        public uint Level
+        {
+            get => _level;
+            set
+            {
+                _level = Math.Clamp(value, _level, ExpCfg.MaxLevel);
+            }
+        }
+
+        public void UpgradeLevel()
+        {
+            Level++;
+            UnUsedPoints += ExpCfg.GainPointPerUpgrade;
+        }
     }
 }

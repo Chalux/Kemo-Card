@@ -1,10 +1,15 @@
-[gd_resource type="SpriteFrames" load_steps=13 format=3 uid="uid://bvmohyq4iw2yw"]
+[gd_resource type="SpriteFrames" load_steps=18 format=3 uid="uid://bvmohyq4iw2yw"]
 
 [ext_resource type="Texture2D" uid="uid://dgux7c8fceisk" path="res://Mods/MainPackage/Resources/Images/Bat_Full_02.png" id="1_sdbva"]
+[ext_resource type="Texture2D" uid="uid://blg3ot1t8y82h" path="res://Mods/MainPackage/Resources/Images/Bat_Full_14.png" id="1_skgo1"]
+[ext_resource type="Texture2D" uid="uid://b7onrdx83sok4" path="res://Mods/MainPackage/Resources/Images/Bat_Full_15.png" id="2_cxi0y"]
 [ext_resource type="Texture2D" uid="uid://41enjd2aj2nc" path="res://Mods/MainPackage/Resources/Images/Bat_Full_03.png" id="2_ek83a"]
+[ext_resource type="Texture2D" uid="uid://dp7yjr41a07xx" path="res://Mods/MainPackage/Resources/Images/Bat_Full_16.png" id="3_33qs4"]
 [ext_resource type="Texture2D" uid="uid://1v6o42cx71wd" path="res://Mods/MainPackage/Resources/Images/Bat_Full_04.png" id="3_opwqv"]
 [ext_resource type="Texture2D" uid="uid://71ho3tq5bfkx" path="res://Mods/MainPackage/Resources/Images/Bat_Full_05.png" id="4_ipc18"]
+[ext_resource type="Texture2D" uid="uid://b6lbo0yvuctrp" path="res://Mods/MainPackage/Resources/Images/Bat_Full_17.png" id="4_k2qbq"]
 [ext_resource type="Texture2D" uid="uid://cxqigepefwdyc" path="res://Mods/MainPackage/Resources/Images/Bat_Full_06.png" id="5_efbxh"]
+[ext_resource type="Texture2D" uid="uid://bpo8fcn85daml" path="res://Mods/MainPackage/Resources/Images/Bat_Full_18.png" id="5_gnhsq"]
 [ext_resource type="Texture2D" uid="uid://b5maq3b568nf4" path="res://Mods/MainPackage/Resources/Images/Bat_Full_07.png" id="6_6rupv"]
 [ext_resource type="Texture2D" uid="uid://br7y3vrcsoyc8" path="res://Mods/MainPackage/Resources/Images/Bat_Full_08.png" id="7_ra0y2"]
 [ext_resource type="Texture2D" uid="uid://dsakm6snafm0y" path="res://Mods/MainPackage/Resources/Images/Bat_Full_09.png" id="8_q8gso"]
@@ -15,6 +20,38 @@
 
 [resource]
 animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("1_skgo1")
+}, {
+"duration": 1.0,
+"texture": ExtResource("2_cxi0y")
+}, {
+"duration": 1.0,
+"texture": ExtResource("3_33qs4")
+}, {
+"duration": 1.0,
+"texture": ExtResource("4_k2qbq")
+}, {
+"duration": 1.0,
+"texture": ExtResource("5_gnhsq")
+}, {
+"duration": 1.0,
+"texture": ExtResource("4_k2qbq")
+}, {
+"duration": 1.0,
+"texture": ExtResource("3_33qs4")
+}, {
+"duration": 1.0,
+"texture": ExtResource("2_cxi0y")
+}, {
+"duration": 1.0,
+"texture": ExtResource("1_skgo1")
+}],
+"loop": true,
+"name": &"attack",
+"speed": 8.0
+}, {
 "frames": [{
 "duration": 1.0,
 "texture": ExtResource("1_sdbva")
@@ -54,5 +91,5 @@ animations = [{
 }],
 "loop": true,
 "name": &"default",
-"speed": 5.0
+"speed": 8.0
 }]

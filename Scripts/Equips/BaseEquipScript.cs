@@ -1,13 +1,8 @@
 ﻿using Godot;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace KemoCard.Scripts.Equips
 {
-    internal partial class BaseEquipScript : GodotObject
+    internal partial class BaseEquipScript : RefCounted
     {
         public virtual void OnEquipInit(EquipImplBase eq)
         {

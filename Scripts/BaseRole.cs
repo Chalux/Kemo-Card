@@ -352,12 +352,12 @@ namespace KemoCard.Scripts
 
         public string GetRichDesc()
         {
-            string str = "";
-            str += $"名字：{RichName()}\r\n";
-            str += $"身体：{RichBody()}(速度：{RichSpeed()}力量：{RichStrength()})\r\n";
-            str += $"魔法：{RichMagic()}(效率：{RichEfficiency()}咒言：{RichMantra()})\r\n";
-            str += $"知识：{RichKnowledge()}(工艺：{RichCraftEquip()}书写：{RichCraftBook()})\r\n";
-            str += $"技术：{RichTechnique()}(会心：{RichCritical()}敏捷：{RichDodge()})\r\n";
+            string str =
+             $"名字：{RichName()}\r\n" +
+             $"身体：{RichBody()}(速度：{RichSpeed()}力量：{RichStrength()})\r\n" +
+             $"魔法：{RichMagic()}(效率：{RichEfficiency()}咒言：{RichMantra()})\r\n" +
+             $"知识：{RichKnowledge()}(工艺：{RichCraftEquip()}书写：{RichCraftBook()})\r\n" +
+             $"技术：{RichTechnique()}(会心：{RichCritical()}敏捷：{RichDodge()})\r\n";
             return str;
         }
     }

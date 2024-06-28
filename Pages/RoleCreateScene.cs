@@ -1,8 +1,6 @@
 using Godot;
 using KemoCard.Pages;
 using KemoCard.Scripts;
-using KemoCard.Scripts.Buffs;
-using KemoCard.Scripts.Equips;
 using StaticClass;
 
 public partial class RoleCreateScene : BaseScene
@@ -147,6 +145,8 @@ public partial class RoleCreateScene : BaseScene
         majorrole.ActionPoint = 3;
 
         StaticInstance.playerData.gsd.MajorRole = majorrole;
+
+        //StaticInstance.playerData.gsd.MapGenerator.GenerateMap();
 
         MainScene node = (MainScene)ResourceLoader.Load<PackedScene>("res://Pages/MainScene.tscn").Instantiate();
         StaticInstance.windowMgr.ChangeScene(node, new((scene) =>

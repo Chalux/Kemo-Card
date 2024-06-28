@@ -16,6 +16,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+mouse_filter = 2
 script = ExtResource("1_0riev")
 colorRect = NodePath("ColorRect")
 banner = NodePath("Banner")
@@ -32,6 +33,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+mouse_filter = 2
 color = Color(0.266667, 0.4, 0.6, 1)
 
 [node name="DialogRoot" type="Node2D" parent="."]
@@ -46,10 +48,11 @@ mouse_filter = 2
 color = Color(0, 0, 0, 0.431373)
 
 [node name="richHint" type="RichTextLabel" parent="ColorRect"]
-custom_minimum_size = Vector2(400, 0)
+custom_minimum_size = Vector2(500, 0)
 layout_mode = 0
 offset_right = 1.0
 mouse_filter = 2
+theme_override_font_sizes/normal_font_size = 36
 bbcode_enabled = true
 text = "[font_size=36]这是一段描述1111111111111111111111111111111111[/font_size]"
 fit_content = true

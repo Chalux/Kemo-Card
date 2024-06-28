@@ -1,13 +1,8 @@
 ﻿using Godot;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace KemoCard.Scripts.Roles
 {
-    internal partial class BaseRoleScript : GodotObject
+    internal partial class BaseRoleScript : RefCounted
     {
         public virtual void OnRoleInit(PlayerRole r)
         {

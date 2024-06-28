@@ -28,7 +28,7 @@ namespace KemoCard.Scripts
                 FileAccess.GetOpenError();
                 return;
             }
-            gsd.MajorRole = gsd.MajorRole;
+            //gsd.MajorRole = gsd.MajorRole;
             var json = JsonSerializer.Serialize(gsd);
             //GD.Print(sav, json);
             sav.StoreString(json);
@@ -59,6 +59,7 @@ namespace KemoCard.Scripts
                 }
                 //obj = JsonSerializer.Deserialize<GlobalSaveData>(jsonstring);
                 gsd.MajorRole = obj.MajorRole;
+                gsd.MapGenerator = obj.MapGenerator;
                 gsd.MajorRole.Buffs.ForEach(buff =>
                 {
                     if (Datas.Ins.BuffPool.ContainsKey(buff.BuffId))
@@ -103,33 +104,20 @@ namespace KemoCard.Scripts
                     {
                         equip.owner = gsd.MajorRole;
                         equip.EquipScript.Binder = equip;
-                        //if (!Datas.Ins.CardPool.ContainsKey(equip.Id))
-                        //{
-                        //    string errorLog = "未在脚本库中找到装备对应id，请检查Mod配置。id:" + equip.Id;
-                        //    StaticInstance.MainRoot.ShowBanner(errorLog);
-                        //    throw new Exception(errorLog);
-                        //}
-                        //var cfg = Datas.Ins.CardPool[equip.Id];
-                        //var res = FileAccess.Open("user://Mods/" + cfg.mod_id + "/equip/EQ" + equip.Id + ".lua", FileAccess.ModeFlags.Read);
-                        //if (res == null)
-                        //{
-                        //    string errorLog = "未找到装备脚本资源,id:" + equip.Id;
-                        //    StaticInstance.MainRoot.ShowBanner(errorLog);
-                        //    throw new Exception(errorLog);
-                        //}
-                        //else
-                        //{
-                        //    var lua = StaticUtils.GetOneTempLua();
-                        //    lua["eq"] = equip.EquipScript;
-                        //    lua.DoString(res.GetAsText());
-                        //    lua.Close();
-                        //    lua.Dispose();
-                        //}
+                    }
+                }
+                foreach (var equip in gsd.MajorRole.EquipDic.Values)
+                {
+                    if (equip != null)
+                    {
+                        equip.owner = gsd.MajorRole;
+                        equip.EquipScript.Binder = equip;
                     }
                 }
                 //GD.Print(MajorRole);
                 if (gsd.MajorRole != null)
                 {
+                    gsd.MajorRole.BuildDeckIdxDic();
                     MainScene node = (MainScene)ResourceLoader.Load<PackedScene>("res://Pages/MainScene.tscn").Instantiate();
                     StaticInstance.windowMgr.ChangeScene(node);
                 }

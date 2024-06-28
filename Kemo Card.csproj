@@ -8,6 +8,5 @@
   </PropertyGroup>
   <ItemGroup>
     <Folder Include="Mods\MainPackage\Scripts\Roles\" />
-    <Folder Include="Mods\MainPackage\Scripts\Presets\" />
   </ItemGroup>
 </Project>

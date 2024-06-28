@@ -90,7 +90,15 @@ namespace KemoCard.Pages
                                     playerData.PutOnEquip(bagIndex);
                                     break;
                                 case BagOpType.PUT_OFF:
-                                    playerData.PutOffEquip((uint)popupdata.EquipType);
+                                    uint slot = 0;
+                                    foreach (var kvp in playerData.EquipDic)
+                                    {
+                                        if (kvp.Value == popupdata)
+                                        {
+                                            slot = kvp.Key;
+                                        }
+                                    }
+                                    playerData.PutOffEquip(slot);
                                     break;
                             }
                         }
@@ -150,35 +158,66 @@ namespace KemoCard.Pages
             {
                 for (uint i = 1; i <= 12; i++)
                 {
-                    if (playerData.EquipDic.ContainsKey(i) && playerData.EquipDic[i] != null)
+                    switch (i)
                     {
-                        switch (i)
-                        {
-                            case 1:
-                                HalmetSlot.Init(playerData.EquipDic[i]); break;
-                            case 2:
-                                ArmorSlot.Init(playerData.EquipDic[i]); break;
-                            case 3:
-                                GloveSlot.Init(playerData.EquipDic[i]); break;
-                            case 4:
-                                TrouserSlot.Init(playerData.EquipDic[i]); break;
-                            case 5:
-                                ShoeSlot.Init(playerData.EquipDic[i]); break;
-                            case 6:
-                                WeaponSlot1.Init(playerData.EquipDic[i]); break;
-                            case 7:
-                                WeaponSlot2.Init(playerData.EquipDic[i]); break;
-                            case 8:
-                                OtherSlot1.Init(playerData.EquipDic[i]); break;
-                            case 9:
-                                OtherSlot2.Init(playerData.EquipDic[i]); break;
-                            case 10:
-                                OtherSlot3.Init(playerData.EquipDic[i]); break;
-                            case 11:
-                                OtherSlot4.Init(playerData.EquipDic[i]); break;
-                            case 12:
-                                OtherSlot5.Init(playerData.EquipDic[i]); break;
-                        }
+                        case 1:
+                            if (playerData.EquipDic.ContainsKey(i)) HalmetSlot.Init(playerData.EquipDic[i]);
+                            else HalmetSlot.Clear();
+                            break;
+                        case 2:
+                            if (playerData.EquipDic.ContainsKey(i)) ArmorSlot.Init(playerData.EquipDic[i]);
+                            else ArmorSlot.Clear();
+                            break;
+                        case 3:
+                            if (playerData.EquipDic.ContainsKey(i))
+                                GloveSlot.Init(playerData.EquipDic[i]);
+                            else
+                                GloveSlot.Clear(); break;
+                        case 4:
+                            if (playerData.EquipDic.ContainsKey(i))
+                                TrouserSlot.Init(playerData.EquipDic[i]);
+                            else
+                                TrouserSlot.Clear(); break;
+                        case 5:
+                            if (playerData.EquipDic.ContainsKey(i))
+                                ShoeSlot.Init(playerData.EquipDic[i]);
+                            else
+                                ShoeSlot.Clear(); break;
+                        case 6:
+                            if (playerData.EquipDic.ContainsKey(i))
+                                WeaponSlot1.Init(playerData.EquipDic[i]);
+                            else
+                                WeaponSlot1.Clear(); break;
+                        case 7:
+                            if (playerData.EquipDic.ContainsKey(i))
+                                WeaponSlot2.Init(playerData.EquipDic[i]);
+                            else
+                                WeaponSlot2.Clear(); break;
+                        case 8:
+                            if (playerData.EquipDic.ContainsKey(i))
+                                OtherSlot1.Init(playerData.EquipDic[i]);
+                            else
+                                OtherSlot1.Clear(); break;
+                        case 9:
+                            if (playerData.EquipDic.ContainsKey(i))
+                                OtherSlot2.Init(playerData.EquipDic[i]);
+                            else
+                                OtherSlot2.Clear(); break;
+                        case 10:
+                            if (playerData.EquipDic.ContainsKey(i))
+                                OtherSlot3.Init(playerData.EquipDic[i]);
+                            else
+                                OtherSlot3.Clear(); break;
+                        case 11:
+                            if (playerData.EquipDic.ContainsKey(i))
+                                OtherSlot4.Init(playerData.EquipDic[i]);
+                            else
+                                OtherSlot4.Clear(); break;
+                        case 12:
+                            if (playerData.EquipDic.ContainsKey(i))
+                                OtherSlot5.Init(playerData.EquipDic[i]);
+                            else
+                                OtherSlot5.Clear(); break;
                     }
                 }
                 for (uint i = 0; i < StaticEnums.BagCount; i++)

@@ -12,12 +12,21 @@ public partial class MainScene : BaseScene
     [Export] Godot.Button TestBattleButton;
     [Export] Godot.Button EditEquipBtn;
     [Export] Godot.Button TestPresetBtn;
+    [Export] Godot.Button ShowMapBtn;
+    [Export] Godot.Button AllocBtn;
+    [Export] Label AllocLabel;
+    [Export] Label LevelLabel;
+    [Export] Label ExpLabel;
+    [Export] Label GoldLabel;
+    [Export] ProgressBar ExpProg;
     [Export] TextEdit EnemiesInput;
     [Export] TextEdit PresetInput;
-    [Export] Node2D DebugNode;
+    [Export] Control DebugNode;
+    [Export] Map MapView;
 
     public override void OnAdd(dynamic datas = null)
     {
+        var major = StaticInstance.playerData.gsd.MajorRole;
         SaveButton.Pressed += new(() =>
         {
             var img = GetViewport().GetTexture().GetImage();
@@ -28,7 +37,7 @@ public partial class MainScene : BaseScene
         EditDeckButton.Pressed += new(() =>
         {
             StaticInstance.windowMgr.AddScene((BaseScene)ResourceLoader.Load<PackedScene>("res://Pages/DeckView.tscn").Instantiate()
-                , new[] { StaticInstance.playerData.gsd.MajorRole.Deck.ToList() });
+                , new[] { major.Deck.ToList() });
             StaticInstance.MainRoot.HideRichHint();
         });
         TestBattleButton.Pressed += new(() =>
@@ -55,7 +64,7 @@ public partial class MainScene : BaseScene
             BattleScene node = (BattleScene)ResourceLoader.Load<PackedScene>("res://Pages/BattleScene.tscn").Instantiate();
             StaticInstance.windowMgr.ChangeScene(node, new((scene) =>
             {
-                node.NewBattle(StaticInstance.playerData.gsd.MajorRole, array.ToArray());
+                node.NewBattle(major, array.ToArray());
             }));
         });
         TestPresetBtn.Pressed += new(() =>
@@ -76,9 +85,28 @@ public partial class MainScene : BaseScene
         });
         EditEquipBtn.Pressed += new(() =>
         {
-            StaticInstance.windowMgr.AddScene((BaseScene)ResourceLoader.Load<PackedScene>("res://Pages/BagScene.tscn").Instantiate(), new[] { StaticInstance.playerData.gsd.MajorRole });
+            StaticInstance.windowMgr.AddScene((BaseScene)ResourceLoader.Load<PackedScene>("res://Pages/BagScene.tscn").Instantiate(), new[] { major });
             StaticInstance.MainRoot.HideRichHint();
         });
         DebugNode.Visible = OS.IsDebugBuild();
+        ShowMapBtn.Pressed += new(() =>
+        {
+            MapView.ShowMap();
+        });
+        MapView.CreateMap();
+        MapView.HideMap();
+        AllocBtn.Pressed += new(() =>
+        {
+            StaticInstance.windowMgr.AddScene((BaseScene)ResourceLoader.Load<PackedScene>("res://Pages/AllocPointScene.tscn").Instantiate(), new[] { major });
+            StaticInstance.MainRoot.HideRichHint();
+        });
+        var maxExp = ExpCfg.CalUpgradeNeedExp(major.Level);
+        AllocLabel.Text = $"剩余点数：{major.UnUsedPoints}";
+        GoldLabel.Text = $"{major.Gold}";
+        ExpLabel.Text = $"{major.Exp}/{maxExp}";
+        ExpProg.MinValue = 0;
+        ExpProg.MaxValue = maxExp;
+        ExpProg.Value = major.Exp;
+        LevelLabel.Text = $"{major.Level}级";
     }
 }

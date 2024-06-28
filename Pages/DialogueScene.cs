@@ -1,9 +1,6 @@
-﻿using DialogueManagerRuntime;
-using Godot;
-using Godot.Collections;
+﻿using Godot;
 using KemoCard.Pages;
 using StaticClass;
-using System;
 using System.Threading.Tasks;
 
 public partial class DialogueScene : BaseScene

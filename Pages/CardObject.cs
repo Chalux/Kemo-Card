@@ -28,7 +28,24 @@ public partial class CardObject : Control
     [Export] public float AngleXMax = 0.15f;
     [Export] public float AngleYMax = 0.15f;
     public Tween EnterTween;
+    private bool _ShowHint = true;
+    public bool ShowHint
+    {
+        get => _ShowHint; 
+        set
+        {
+            _ShowHint = value;
+            if (!value)
+            {
+                StaticInstance.MainRoot.HideRichHint();
+            }
+        }
+    }
 
+    public override void _Ready()
+    {
+        stateLabel.Visible = OS.IsDebugBuild();
+    }
 
     public void InitData(Card card)
     {
@@ -113,7 +130,7 @@ public partial class CardObject : Control
         csm.OnMouseEnter();
         StaticInstance.eventMgr.Dispatch("RepositionHand", objects);
         string desc = card.GetDesc;
-        if (desc != "")
+        if (desc != "" && ShowHint)
         {
             StaticInstance.MainRoot.ShowRichHint(StaticUtils.MakeBBCodeString(desc, "left"));
         }

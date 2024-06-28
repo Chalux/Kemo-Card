@@ -1,0 +1,103 @@
+[gd_scene load_steps=7 format=3 uid="uid://bwmrhonaeverm"]
+
+[ext_resource type="Script" path="res://Pages/Map/MapRoom.cs" id="1_d7odx"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_w3ewk"]
+radius = 18.0
+
+[sub_resource type="Animation" id="Animation_abfdf"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Visual:scale")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(1, 1)]
+}
+
+[sub_resource type="Animation" id="Animation_ihinl"]
+resource_name = "highlight"
+length = 2.0
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Visual:scale")
+tracks/0/interp = 2
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 1, 2),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [Vector2(1, 1), Vector2(1.2, 1.2), Vector2(1, 1)]
+}
+
+[sub_resource type="Animation" id="Animation_ijktm"]
+resource_name = "select"
+tracks/0/type = "method"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(1),
+"transitions": PackedFloat32Array(1),
+"values": [{
+"args": [],
+"method": &"OnMapRoomSelected"
+}]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Visual/Line2D:modulate")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.7),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Color(1, 1, 1, 0), Color(1, 1, 1, 1)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_bmxfp"]
+_data = {
+"RESET": SubResource("Animation_abfdf"),
+"highlight": SubResource("Animation_ihinl"),
+"select": SubResource("Animation_ijktm")
+}
+
+[node name="MapRoom" type="Area2D" node_paths=PackedStringArray("Sprite", "Line", "Animation")]
+scale = Vector2(2, 2)
+collision_layer = 8
+collision_mask = 0
+script = ExtResource("1_d7odx")
+Sprite = NodePath("Visual/Sprite2D")
+Line = NodePath("Visual/Line2D")
+Animation = NodePath("AnimationPlayer")
+
+[node name="Visual" type="Node2D" parent="."]
+
+[node name="Line2D" type="Line2D" parent="Visual"]
+modulate = Color(1, 1, 1, 0)
+points = PackedVector2Array(0, -18, -13, -12, -18, 0, -13, 12, 0, 18, 14, 11, 18, -1, 13, -13)
+closed = true
+width = 2.0
+
+[node name="Sprite2D" type="Sprite2D" parent="Visual"]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_w3ewk")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+libraries = {
+"": SubResource("AnimationLibrary_bmxfp")
+}
+
+[connection signal="input_event" from="." to="." method="CollInput"]

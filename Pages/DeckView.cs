@@ -2,7 +2,6 @@ using Godot;
 using KemoCard.Pages;
 using KemoCard.Scripts.Cards;
 using StaticClass;
-using System;
 using System.Collections.Generic;
 
 public partial class DeckView : BaseScene

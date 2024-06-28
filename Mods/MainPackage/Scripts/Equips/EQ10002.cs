@@ -1,10 +1,5 @@
 ﻿using KemoCard.Scripts;
 using KemoCard.Scripts.Equips;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace KemoCard.Mods.MainPackage.Scripts.Equips
 {
@@ -12,9 +7,10 @@ namespace KemoCard.Mods.MainPackage.Scripts.Equips
     {
         public override void OnEquipInit(EquipImplBase eq)
         {
-            eq.TextureUrl = $"res://Mods/MainPackage/Resources/Icons/icons_77.png";
+            eq.TextureUrl = $"res://Mods/MainPackage/Resources/Icons/icons_078.png";
             eq.CardDic.Add(10005, 1);
             eq.CardDic.Add(10006, 1);
+            eq.Desc = "基础攻击。\n为卡组添加一张无属性物攻(消耗1行动力，对敌方单体造成5点无属性物理伤害.)和一张无属性魔攻(消耗1行动力，对敌方单体造成5点无属性魔法伤害.)";
         }
     }
 }

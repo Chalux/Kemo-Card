@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using KemoCard.Scripts;
+using System.Collections.Generic;
 
 namespace StaticClass
 {
@@ -114,5 +115,15 @@ namespace StaticClass
             public string Alias;
             public string Desc;
         }
+
+        public static Dictionary<RoomType, string> RoomIconPath = new()
+        {
+            { RoomType.None, null },
+            { RoomType.Monster, "res://Mods/MainPackage/Resources/Icons/icons_087.png" },
+            { RoomType.Treasure, "res://Mods/MainPackage/Resources/Icons/icons_188.png" },
+            { RoomType.Event, "res://Mods/MainPackage/Resources/Icons/icons_228.png" },
+            { RoomType.Shop, "res://Mods/MainPackage/Resources/Icons/icons_206.png" },
+            { RoomType.Boss, "res://Mods/MainPackage/Resources/Icons/icons_002.png" },
+        };
     }
 }

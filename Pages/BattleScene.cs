@@ -27,11 +27,13 @@ public partial class BattleScene : BaseScene, IEvent
     [Export] Label TurnLabel;
     [Export] Godot.Button DeckBtn;
     [Export] Godot.Button GraveBtn;
+    [Export] Godot.Button WholeDeckBtn;
 
     public bool isFighting = false;
 
     private int HoveredIndex = -1;
     private bool IsDragging = false;
+    private Preset BattlePreset = null;
 
     public InFightPlayer nowPlayer;
     public void NewBattle(PlayerRole playerRole, uint[] enemyRoles)
@@ -60,6 +62,7 @@ public partial class BattleScene : BaseScene, IEvent
             var res = ResourceLoader.Load<CSharpScript>($"res://Mods/{preset_info.mod_id}/Scripts/Presets/P{presetId}.cs");
             var PresetScript = res.New().As<BasePresetScript>();
             PresetScript.Init(preset);
+            BattlePreset = preset;
             NewBattle(StaticInstance.playerData.gsd.MajorRole, preset.Enemies.ToArray());
         }
     }
@@ -90,6 +93,11 @@ public partial class BattleScene : BaseScene, IEvent
         {
             StaticInstance.windowMgr.AddScene((BaseScene)ResourceLoader.Load<PackedScene>("res://Pages/DeckView.tscn").Instantiate()
                 , new[] { currentPlayerRoles[0].InFightGrave.ToList() });
+        });
+        WholeDeckBtn.Pressed += new(() =>
+        {
+            StaticInstance.windowMgr.AddScene((BaseScene)ResourceLoader.Load<PackedScene>("res://Pages/DeckView.tscn").Instantiate()
+                , new[] { currentPlayerRoles[0].Deck.ToList() });
         });
     }
 
@@ -394,10 +402,10 @@ public partial class BattleScene : BaseScene, IEvent
                     StaticInstance.eventMgr.Dispatch("BeforeDealDamageSingle", tempDamage);
                     GD.Print("伤害结算后：" + tempDamage.value);
                     int random = new Random().Next(0, 100);
-                    GD.Print("闪避摇点：" + random + "，被击者触发闪避要求的点数：" + target.CurrDodge);
+                    GD.Print("闪避摇点：" + random + "，被击者触发闪避要求的点数不大于：" + target.CurrDodge);
                     if (random <= target.CurrDodge)
                     {
-                        string log = from.name + "对" + target.name + "的攻击被闪避了";
+                        string log = from.name + "对" + target.name + "的攻击被闪避了。闪避摇点：" + random + "，被击者触发闪避要求的点数不大于：" + target.CurrDodge;
                         GD.Print(log);
                         StaticInstance.MainRoot.ShowBanner(log);
                         continue;

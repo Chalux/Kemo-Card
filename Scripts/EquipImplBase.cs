@@ -7,7 +7,7 @@ using System.Text.Json.Serialization;
 
 namespace KemoCard.Scripts
 {
-    public partial class EquipImplBase : GodotObject, IEvent
+    public partial class EquipImplBase : RefCounted, IEvent
     {
         public Equip Binder;
         public Dictionary<uint, uint> CardDic { get; set; } = new();
@@ -19,6 +19,7 @@ namespace KemoCard.Scripts
         public bool DoDefaultPutOn = true;
         [JsonIgnore]
         public Action CustomPutOn;
+        public string Desc = "";
         public void OnPutOn()
         {
             if (Binder != null && DoDefaultPutOn && Binder.owner is PlayerRole pr)

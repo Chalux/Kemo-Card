@@ -9,11 +9,12 @@ font_weight = 800
 font = SubResource("SystemFont_ndu3p")
 font_size = 60
 
-[node name="MenuScene" type="Node2D" node_paths=PackedStringArray("exit", "start", "load")]
+[node name="MenuScene" type="Node2D" node_paths=PackedStringArray("exit", "start", "load", "DebugTempBtn")]
 script = ExtResource("1_ulw2r")
 exit = NodePath("exit")
 start = NodePath("start")
 load = NodePath("load")
+DebugTempBtn = NodePath("DebugTemp")
 
 [node name="ColorRect" type="ColorRect" parent="."]
 offset_right = 1920.0
@@ -48,3 +49,9 @@ offset_top = 592.0
 offset_right = 1080.0
 offset_bottom = 692.0
 text = "读取游戏"
+
+[node name="DebugTemp" type="Button" parent="."]
+offset_right = 128.0
+offset_bottom = 64.0
+text = "DebugTemp
+"
