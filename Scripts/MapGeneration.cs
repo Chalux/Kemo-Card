@@ -1,8 +1,9 @@
-﻿using KemoCard.Scripts.Map;
+﻿using Godot;
+using KemoCard.Scripts.Map;
+using KemoCard.Scripts.Presets;
 using StaticClass;
 using System;
 using System.Collections.Generic;
-using System.Text.Json.Serialization;
 
 namespace KemoCard.Scripts
 {
@@ -20,14 +21,15 @@ namespace KemoCard.Scripts
         public List<List<Room>> MapData { get; set; } = new();
         public int FloorsClimbed { get; set; } = 0;
         public Room LastRoom { get; set; }
+        public bool IsStillRunning { get; set; } = false;
 
-        public void GenerateMap(MapData data)
+        public void GenerateMap(MapData data = null)
         {
-            Data = new();
-            if (data == null)
+            if (data != null)
             {
                 Data = data;
             }
+            //StaticInstance.MainRoot.MapView.CameraEdgeY = StaticInstance.playerData.gsd.MapGenerator.Data.Y_DISTANCE * (StaticInstance.playerData.gsd.MapGenerator.Data.FLOORS - 1);
             MapData = GenerateGrid();
             var StartPoints = GetRandomStartingPoints();
             //GD.Print(string.Join(",", StartPoints));
@@ -50,6 +52,13 @@ namespace KemoCard.Scripts
             SetUpBossRoom();
             SetUpRandomRoomWeight();
             SetUpRoomTypes();
+
+            Data.Rules?.Invoke(MapData);
+            IsStillRunning = true;
+            MainScene MainScene = (MainScene)StaticInstance.windowMgr.GetSceneByName("MainScene");
+            MainScene?.UpdateView();
+            MainScene?.MapView.UnlockFloor(0);
+
             //int i = 0;
             //MapData.ForEach(Rooms =>
             //{
@@ -60,10 +69,10 @@ namespace KemoCard.Scripts
 
         private List<List<Room>> GenerateGrid()
         {
-            List<List<Room>> Result = new(Data.FLOORS);
+            List<List<Room>> Result = new((int)Data.FLOORS);
             for (int i = 0; i < Data.FLOORS; i++)
             {
-                List<Room> AdjacentRooms = new(Data.MAP_WIDTH);
+                List<Room> AdjacentRooms = new((int)Data.MAP_WIDTH);
                 for (int j = 0; j < Data.MAP_WIDTH; j++)
                 {
                     Room CurrentRoom = new();
@@ -96,7 +105,7 @@ namespace KemoCard.Scripts
                 for (int i = 0; i < Data.PATHS; i++)
                 {
                     Random r = new();
-                    int StartingPoint = r.Next(Data.MAP_WIDTH);
+                    int StartingPoint = r.Next((int)Data.MAP_WIDTH);
                     if (!YCoors.Contains(StartingPoint))
                     {
                         UniquePoints += 1;
@@ -114,7 +123,7 @@ namespace KemoCard.Scripts
             while (NextRoom == null || WouldCrossExistingPath(i, j, NextRoom))
             {
                 Random r = new();
-                int RandomJ = Math.Clamp(r.Next(j - 1, j + 2), 0, Data.MAP_WIDTH - 1);
+                int RandomJ = (int)Math.Clamp(r.Next(j - 1, j + 2), 0, Data.MAP_WIDTH - 1);
                 NextRoom = MapData[i + 1][RandomJ];
             }
             CurrentRoom.NextRooms.Add(NextRoom.Row * 100 + NextRoom.Col);
@@ -148,10 +157,10 @@ namespace KemoCard.Scripts
         private void SetUpBossRoom()
         {
             int Middle = (int)Math.Floor(Data.MAP_WIDTH * 0.5);
-            Room BossRoom = MapData[Data.FLOORS - 1][Middle];
+            Room BossRoom = MapData[(int)Data.FLOORS - 1][Middle];
             for (int j = 0; j < Data.MAP_WIDTH; j++)
             {
-                var CurrentRoom = MapData[Data.FLOORS - 2][j];
+                var CurrentRoom = MapData[(int)Data.FLOORS - 2][j];
                 if (CurrentRoom.NextRooms != null && CurrentRoom.NextRooms.Count > 0)
                 {
                     CurrentRoom.NextRooms = new()
@@ -161,6 +170,13 @@ namespace KemoCard.Scripts
                 }
             }
             BossRoom.Type = RoomType.Boss;
+            List<uint> plist = new();
+            foreach (var kvp in Datas.Ins.PresetPool)
+            {
+                if (kvp.Value.is_boss && kvp.Value.tier >= Data.MinTier && kvp.Value.tier <= Data.MaxTier) plist.Add(kvp.Key);
+            }
+            Random r = new();
+            BossRoom.PresetId = plist[r.Next(plist.Count)];
         }
 
         private void SetUpRandomRoomWeight()
@@ -190,7 +206,7 @@ namespace KemoCard.Scripts
                 }
             }
 
-            foreach (var Room in MapData[Data.FLOORS - 2])
+            foreach (var Room in MapData[(int)Data.FLOORS - 2])
             {
                 if (Room.NextRooms != null && Room.NextRooms.Count > 0)
                 {
@@ -214,6 +230,7 @@ namespace KemoCard.Scripts
             }
         }
 
+        private static readonly int OffsetRange = 5;
         private void SetRoomRandomly(Room room)
         {
             bool ConsecutiveShop = true;
@@ -228,9 +245,10 @@ namespace KemoCard.Scripts
                 NoShopUnderFloor4 = room.Row <= 4 && TypeCandidate == RoomType.Shop;
             }
             room.Type = TypeCandidate;
-            if(room.Type == RoomType.Monster)
+            if (room.Type == RoomType.Monster)
             {
-
+                var random = Math.Round(StaticUtils.GenerateRandomValue(0, Data.PresetPool.Count - 1, Data.PresetPool.Count / (Data.FLOORS - room.Row), OffsetRange));
+                room.PresetId = Data.PresetPool[(int)random];
             }
         }
 
@@ -275,6 +293,18 @@ namespace KemoCard.Scripts
                 if (RANDOM_ROOM_TYPE_WEIGHTS[type] > roll) return type;
             }
             return RoomType.Monster;
+        }
+
+        public override string ToString()
+        {
+            string res = "";
+            int i = 0;
+            MapData.ForEach(Rooms =>
+            {
+                res += $"floor {i}:\t[{string.Join(",", Rooms)}]\n";
+                i += 1;
+            });
+            return res;
         }
     }
 }

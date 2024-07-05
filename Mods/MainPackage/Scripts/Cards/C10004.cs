@@ -17,7 +17,7 @@ namespace KemoCard.Mods.MainPackage.Scripts.Cards
             {
                 foreach (var target in targets)
                 {
-                    if (target != null && target is InFightPlayer ifp)
+                    if (target != null && target is PlayerRole ifp)
                     {
                         ifp.CurrMBlock += 5;
                     }

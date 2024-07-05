@@ -1,4 +1,5 @@
 ﻿using Godot;
+using Godot.Collections;
 using StaticClass;
 using System.Collections.Generic;
 using System.Reflection;
@@ -21,13 +22,14 @@ namespace KemoCard.Scripts
 
         public HashSet<string> ModCache;
         public HashSet<string> errorModsSet = new();
-        public Dictionary<string, ModInfoStruct> ModPool = new();
-        public Dictionary<uint, CardStruct> CardPool = new();
-        public Dictionary<uint, EnemyStruct> EnemyPool = new();
-        public Dictionary<uint, EquipStruct> EquipPool = new();
-        public Dictionary<uint, BuffStruct> BuffPool = new();
-        public Dictionary<uint, RoleStruct> RolePool = new();
-        public Dictionary<uint, PresetStruct> PresetPool = new();
+        public System.Collections.Generic.Dictionary<string, ModInfoStruct> ModPool = new();
+        public System.Collections.Generic.Dictionary<uint, CardStruct> CardPool = new();
+        public System.Collections.Generic.Dictionary<uint, EnemyStruct> EnemyPool = new();
+        public System.Collections.Generic.Dictionary<uint, EquipStruct> EquipPool = new();
+        public System.Collections.Generic.Dictionary<uint, BuffStruct> BuffPool = new();
+        public System.Collections.Generic.Dictionary<uint, RoleStruct> RolePool = new();
+        public System.Collections.Generic.Dictionary<uint, PresetStruct> PresetPool = new();
+        public System.Collections.Generic.Dictionary<uint, MapStruct> MapPool = new();
 
         private static readonly string MOD_CACHE_PATH = "user://Saves/modCache.json";
 
@@ -90,7 +92,7 @@ namespace KemoCard.Scripts
             foreach (var name in ModCache)
             {
                 var isLoaded = ProjectSettings.LoadResourcePack($"user://Mods/{name}.pck");
-                if (isLoaded)
+                if (isLoaded || name == "MainPackage")
                 {
                     var res = ResourceLoader.Load<CSharpScript>($"res://Mods/{name}/Scripts/ModBoost.cs");
                     BaseModBoost modBoost = res.New().As<BaseModBoost>();
@@ -102,7 +104,7 @@ namespace KemoCard.Scripts
                         var mod_info = Json.ParseString(f.GetAsText());
                         if ((mod_info as object) != null)
                         {
-                            var JsonData = new Godot.Collections.Dictionary<string, Variant>((Godot.Collections.Dictionary)mod_info);
+                            var JsonData = new Godot.Collections.Dictionary<string, Variant>((Dictionary)mod_info);
                             if (JsonData.ContainsKey("mod_id"))
                             {
                                 string currModId = JsonData["mod_id"].AsString();
@@ -124,7 +126,7 @@ namespace KemoCard.Scripts
                                 });
                                 if (JsonData.ContainsKey("card_list"))
                                 {
-                                    foreach (var data in JsonData["card_list"].AsGodotArray<Godot.Collections.Dictionary>())
+                                    foreach (var data in JsonData["card_list"].AsGodotArray<Dictionary>())
                                     {
                                         var id = data["card_id"].AsUInt32();
                                         if (CardPool.ContainsKey(id))
@@ -145,7 +147,7 @@ namespace KemoCard.Scripts
                                 }
                                 if (JsonData.ContainsKey("enemy_list"))
                                 {
-                                    foreach (var data in JsonData["enemy_list"].AsGodotArray<Godot.Collections.Dictionary>())
+                                    foreach (var data in JsonData["enemy_list"].AsGodotArray<Dictionary>())
                                     {
                                         var id = data["enemy_id"].AsUInt32();
                                         if (EnemyPool.ContainsKey(id))
@@ -166,7 +168,7 @@ namespace KemoCard.Scripts
                                 }
                                 if (JsonData.ContainsKey("equip_list"))
                                 {
-                                    foreach (var data in JsonData["equip_list"].AsGodotArray<Godot.Collections.Dictionary>())
+                                    foreach (var data in JsonData["equip_list"].AsGodotArray<Dictionary>())
                                     {
                                         var id = data["equip_id"].AsUInt32();
                                         if (EquipPool.ContainsKey(id))
@@ -188,7 +190,7 @@ namespace KemoCard.Scripts
                                 }
                                 if (JsonData.ContainsKey("buff_list"))
                                 {
-                                    foreach (var data in JsonData["buff_list"].AsGodotArray<Godot.Collections.Dictionary>())
+                                    foreach (var data in JsonData["buff_list"].AsGodotArray<Dictionary>())
                                     {
                                         var id = data["buff_id"].AsUInt32();
                                         if (BuffPool.ContainsKey(id))
@@ -208,7 +210,7 @@ namespace KemoCard.Scripts
                                 }
                                 if (JsonData.ContainsKey("role_list"))
                                 {
-                                    foreach (var data in JsonData["role_list"].AsGodotArray<Godot.Collections.Dictionary>())
+                                    foreach (var data in JsonData["role_list"].AsGodotArray<Dictionary>())
                                     {
                                         var id = data["role_id"].AsUInt32();
                                         if (RolePool.ContainsKey(id))
@@ -228,7 +230,7 @@ namespace KemoCard.Scripts
                                 }
                                 if (JsonData.ContainsKey("preset_list"))
                                 {
-                                    foreach (var data in JsonData["preset_list"].AsGodotArray<Godot.Collections.Dictionary>())
+                                    foreach (var data in JsonData["preset_list"].AsGodotArray<Dictionary>())
                                     {
                                         var id = data["preset_id"].AsUInt32();
                                         if (PresetPool.ContainsKey(id))
@@ -242,6 +244,32 @@ namespace KemoCard.Scripts
                                         {
                                             preset_id = id,
                                             tier = data["tier"].AsUInt32(),
+                                            is_boss = data["is_boss"].AsBool(),
+                                            mod_id = currModId
+                                        });
+                                    }
+                                }
+                                if (JsonData.ContainsKey("map_list"))
+                                {
+                                    foreach (var data in JsonData["map_list"].AsGodotArray<Dictionary>())
+                                    {
+                                        var id = data["map_id"].AsUInt32();
+                                        if (MapPool.ContainsKey(id))
+                                        {
+                                            StaticInstance.MainRoot.ShowBanner("Mod间存在冲突。mapid冲突：" + id + "，冲突的两个Mod的id分别为：" + currModId + "，" + MapPool[id].mod_id);
+                                            errorModsSet.Add(currModId);
+                                            errorModsSet.Add(MapPool[id].mod_id);
+                                            continue;
+                                        }
+                                        MapPool.Add(id, new MapStruct
+                                        {
+                                            map_id = id,
+                                            min_tier = data["min_tier"].AsUInt32(),
+                                            max_tier = data["max_tier"].AsUInt32(),
+                                            floor = data["floor"].AsUInt32(),
+                                            map_width = data["map_width"].AsUInt32(),
+                                            paths = data["paths"].AsUInt32(),
+                                            show_cond = data.ContainsKey("show_cond") ? data["show_cond"].AsGodotDictionary<string, Array<Variant>>() : new(),
                                             mod_id = currModId
                                         });
                                     }
@@ -336,6 +364,19 @@ namespace KemoCard.Scripts
         {
             public uint preset_id;
             public uint tier;
+            public bool is_boss;
+            public string mod_id;
+        }
+
+        public struct MapStruct
+        {
+            public uint map_id;
+            public uint min_tier;
+            public uint max_tier;
+            public uint floor;
+            public uint map_width;
+            public uint paths;
+            public Godot.Collections.Dictionary<string, Array<Variant>> show_cond;
             public string mod_id;
         }
 

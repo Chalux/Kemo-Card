@@ -40,9 +40,9 @@ namespace KemoCard.Scripts.Cards
                         }
                         break;
                     case CostType.ACTIONPOINT:
-                        if ((cardObject.card.owner as InFightPlayer).CurrentActionPoint >= cardObject.card.Cost)
+                        if ((cardObject.card.owner as PlayerRole).CurrentActionPoint >= cardObject.card.Cost)
                         {
-                            (cardObject.card.owner as InFightPlayer).CurrentActionPoint -= cardObject.card.Cost;
+                            (cardObject.card.owner as PlayerRole).CurrentActionPoint -= cardObject.card.Cost;
                         }
                         else
                         {
@@ -59,7 +59,7 @@ namespace KemoCard.Scripts.Cards
                 cardObject.card.FunctionUse?.Invoke(cardObject.card.owner, roles, null);
                 BattleStatic.currCard = null;
                 BattleStatic.Targets.Clear();
-                if (cardObject.card.owner is InFightPlayer ifp)
+                if (cardObject.card.owner is PlayerRole ifp)
                 {
                     if (!cardObject.card.GlobalDict.ContainsKey("Exhaust")
                     && !cardObject.card.InGameDict.ContainsKey("Exhaust"))

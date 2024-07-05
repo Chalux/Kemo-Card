@@ -5,7 +5,7 @@ using System.Linq;
 
 public partial class PlayerRoleObject : Control, IEvent
 {
-    public InFightPlayer data;
+    public PlayerRole data;
     [Export] private ProgressBar hpProgress;
     [Export] private ProgressBar mpProgress;
     [Export] private RichTextLabel hpLabel;
@@ -59,20 +59,7 @@ public partial class PlayerRoleObject : Control, IEvent
         base._ExitTree();
     }
 
-    public void Init(BaseRole role)
-    {
-        data = new(new(role.OriginSpeed, role.OriginStrength, role.OriginEffeciency, role.OriginMantra, role.OriginCraftEquip, role.OriginCraftBook, role.OriginCritical, role.OriginDodge, role.name));
-        if (data != null && data.CurrHealth == 0)
-        {
-            data.CurrHealth = data.OriginHpLimit;
-        }
-        hpProgress.MaxValue = data.CurrHpLimit;
-        mpProgress.MaxValue = data.CurrMpLimit;
-        PBProgress.MaxValue = MBProgress.MaxValue = data.CurrHpLimit;
-        UpdateObject();
-    }
-
-    public void InitByPlayerRole(InFightPlayer role)
+    public void InitByPlayerRole(PlayerRole role)
     {
         data = role;
         hpProgress.MaxValue = data.CurrHpLimit;
@@ -82,7 +69,7 @@ public partial class PlayerRoleObject : Control, IEvent
         UpdateObject();
     }
 
-    public void UpdateObject(InFightPlayer role = null)
+    public void UpdateObject(PlayerRole role = null)
     {
         if (role != null)
         {

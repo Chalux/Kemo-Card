@@ -1,0 +1,28 @@
+[gd_scene load_steps=2 format=3 uid="uid://btl3r8mnsv7t3"]
+
+[ext_resource type="Script" path="res://Pages/Map/MapSelectScene.cs" id="1_6gao4"]
+
+[node name="MapSelectScene" type="Node2D" node_paths=PackedStringArray("ExitButton", "FlowContainer")]
+script = ExtResource("1_6gao4")
+ExitButton = NodePath("ExitBtn")
+FlowContainer = NodePath("MapBtnContainer")
+
+[node name="Background" type="ColorRect" parent="."]
+custom_minimum_size = Vector2(1920, 1080)
+offset_right = 1920.0
+offset_bottom = 1080.0
+color = Color(0.329412, 0.541176, 0.74902, 1)
+
+[node name="ExitBtn" type="Button" parent="."]
+offset_left = 64.0
+offset_top = 64.0
+offset_right = 256.0
+offset_bottom = 128.0
+theme_override_font_sizes/font_size = 36
+text = "关闭"
+
+[node name="MapBtnContainer" type="HFlowContainer" parent="."]
+offset_left = 64.0
+offset_top = 192.0
+offset_right = 1856.0
+offset_bottom = 1024.0

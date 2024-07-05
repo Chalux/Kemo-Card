@@ -16,7 +16,7 @@ namespace KemoCard.Mods.MainPackage.Scripts.Cards
             c.CostType = StaticEnums.CostType.ACTIONPOINT;
             c.FunctionUse = new((user, targets, datas) =>
             {
-                if (c.owner is InFightPlayer inFightPlayer)
+                if (c.owner is PlayerRole inFightPlayer)
                 {
                     inFightPlayer.CurrentActionPoint += 1;
                 }

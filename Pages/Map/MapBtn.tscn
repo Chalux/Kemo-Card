@@ -1,0 +1,78 @@
+[gd_scene load_steps=2 format=3 uid="uid://clm0bqa32hb5f"]
+
+[ext_resource type="Script" path="res://Pages/Map/MapBtn.cs" id="1_7bhi1"]
+
+[node name="MapBtn" type="Control" node_paths=PackedStringArray("CreateBtn", "ShowNameLab", "TierRangeLab", "MapSizeLab")]
+custom_minimum_size = Vector2(0, 64)
+layout_mode = 3
+anchors_preset = 0
+offset_right = 256.0
+offset_bottom = 320.0
+script = ExtResource("1_7bhi1")
+CreateBtn = NodePath("Button")
+ShowNameLab = NodePath("ShowName")
+TierRangeLab = NodePath("TierRange")
+MapSizeLab = NodePath("MapSize")
+
+[node name="ColorRect" type="ColorRect" parent="."]
+layout_mode = 0
+offset_right = 256.0
+offset_bottom = 320.0
+color = Color(0, 0, 0, 0.431373)
+
+[node name="ShowName" type="Label" parent="."]
+layout_mode = 0
+offset_right = 256.0
+offset_bottom = 64.0
+theme_override_font_sizes/font_size = 36
+text = "描述"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Label" type="Label" parent="."]
+layout_mode = 0
+offset_top = 72.0
+offset_right = 256.0
+offset_bottom = 120.0
+theme_override_font_sizes/font_size = 28
+text = "难度范围"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="TierRange" type="Label" parent="."]
+layout_mode = 0
+offset_top = 112.0
+offset_right = 256.0
+offset_bottom = 160.0
+theme_override_font_sizes/font_size = 28
+text = "1~1"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Label2" type="Label" parent="."]
+layout_mode = 0
+offset_top = 168.0
+offset_right = 256.0
+offset_bottom = 216.0
+theme_override_font_sizes/font_size = 28
+text = "地图尺寸"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="MapSize" type="Label" parent="."]
+layout_mode = 0
+offset_top = 208.0
+offset_right = 256.0
+offset_bottom = 256.0
+theme_override_font_sizes/font_size = 28
+text = "1x1"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Button" type="Button" parent="."]
+layout_mode = 0
+offset_top = 256.0
+offset_right = 256.0
+offset_bottom = 320.0
+theme_override_font_sizes/font_size = 36
+text = "选择地图"

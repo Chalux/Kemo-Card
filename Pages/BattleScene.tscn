@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" path="res://Pages/BattleScene.cs" id="1_51jkc"]
 
-[node name="BattleScene" type="Node2D" node_paths=PackedStringArray("playerContainer", "enemyContainer", "HandControl", "DeckCount", "GraveCount", "ActionPointLabel", "TurnEndBtn", "DragDwonArea", "DebugDrawBtn", "TurnLabel", "DeckBtn", "GraveBtn", "WholeDeckBtn")]
+[node name="BattleScene" type="Node2D" node_paths=PackedStringArray("playerContainer", "enemyContainer", "HandControl", "DeckCount", "GraveCount", "ActionPointLabel", "TurnEndBtn", "DragDwonArea", "DebugDrawBtn", "TurnLabel", "DeckBtn", "GraveBtn", "WholeDeckBtn", "DebugWinBtn")]
 script = ExtResource("1_51jkc")
 playerContainer = NodePath("BattleRoot/PlayerContainer")
 enemyContainer = NodePath("BattleRoot/EnemyContainer")
@@ -17,6 +17,7 @@ TurnLabel = NodePath("BattleRoot/TurnLabel")
 DeckBtn = NodePath("BattleRoot/DeckControl/DeckBtn")
 GraveBtn = NodePath("BattleRoot/GraveControl/GraveBtn")
 WholeDeckBtn = NodePath("BattleRoot/WholeDeckBtn")
+DebugWinBtn = NodePath("BattleRoot/DebugWinBtn")
 
 [node name="ColorRect" type="ColorRect" parent="."]
 offset_right = 1920.0
@@ -136,6 +137,14 @@ offset_right = 8.0
 offset_bottom = 8.0
 theme_override_font_sizes/font_size = 36
 text = "补满手牌"
+
+[node name="DebugWinBtn" type="Button" parent="BattleRoot"]
+layout_mode = 0
+offset_top = 72.0
+offset_right = 152.0
+offset_bottom = 130.0
+theme_override_font_sizes/font_size = 36
+text = "胜利"
 
 [node name="TurnLabel" type="Label" parent="BattleRoot"]
 layout_mode = 0

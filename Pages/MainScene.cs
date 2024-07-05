@@ -22,9 +22,10 @@ public partial class MainScene : BaseScene
     [Export] TextEdit EnemiesInput;
     [Export] TextEdit PresetInput;
     [Export] Control DebugNode;
-    [Export] Map MapView;
+    [Export] Godot.Button SelectMapBtn;
+    [Export] public Map MapView;
 
-    public override void OnAdd(dynamic datas = null)
+    public override void _Ready()
     {
         var major = StaticInstance.playerData.gsd.MajorRole;
         SaveButton.Pressed += new(() =>
@@ -62,10 +63,8 @@ public partial class MainScene : BaseScene
                 return;
             }
             BattleScene node = (BattleScene)ResourceLoader.Load<PackedScene>("res://Pages/BattleScene.tscn").Instantiate();
-            StaticInstance.windowMgr.ChangeScene(node, new((scene) =>
-            {
-                node.NewBattle(major, array.ToArray());
-            }));
+            StaticInstance.windowMgr.AddScene(node);
+            node.NewBattle(major, array.ToArray(), true);
         });
         TestPresetBtn.Pressed += new(() =>
         {
@@ -73,10 +72,8 @@ public partial class MainScene : BaseScene
             if (Datas.Ins.PresetPool.ContainsKey(preset))
             {
                 BattleScene node = (BattleScene)ResourceLoader.Load<PackedScene>("res://Pages/BattleScene.tscn").Instantiate();
-                StaticInstance.windowMgr.ChangeScene(node, new((scene) =>
-                {
-                    node.NewBattleByPreset(preset);
-                }));
+                StaticInstance.windowMgr.AddScene(node);
+                node.NewBattleByPreset(preset, true);
             }
             else
             {
@@ -93,13 +90,22 @@ public partial class MainScene : BaseScene
         {
             MapView.ShowMap();
         });
-        MapView.CreateMap();
-        MapView.HideMap();
         AllocBtn.Pressed += new(() =>
         {
             StaticInstance.windowMgr.AddScene((BaseScene)ResourceLoader.Load<PackedScene>("res://Pages/AllocPointScene.tscn").Instantiate(), new[] { major });
             StaticInstance.MainRoot.HideRichHint();
         });
+        SelectMapBtn.Pressed += new(() =>
+        {
+            StaticInstance.windowMgr.AddScene((BaseScene)ResourceLoader.Load<PackedScene>("res://Pages/Map/MapSelectScene.tscn").Instantiate());
+            StaticInstance.MainRoot.HideRichHint();
+        });
+        UpdateView();
+    }
+
+    public void UpdateView()
+    {
+        var major = StaticInstance.playerData.gsd.MajorRole;
         var maxExp = ExpCfg.CalUpgradeNeedExp(major.Level);
         AllocLabel.Text = $"剩余点数：{major.UnUsedPoints}";
         GoldLabel.Text = $"{major.Gold}";
@@ -108,5 +114,7 @@ public partial class MainScene : BaseScene
         ExpProg.MaxValue = maxExp;
         ExpProg.Value = major.Exp;
         LevelLabel.Text = $"{major.Level}级";
+        SelectMapBtn.Disabled = StaticInstance.playerData.gsd.MapGenerator.IsStillRunning;
+        MapView.CreateMap();
     }
 }

@@ -2,27 +2,24 @@
 
 [ext_resource type="Script" path="res://Pages/Map/Map.cs" id="1_wdry2"]
 
-[node name="Map" type="Node2D" node_paths=PackedStringArray("Lines", "Rooms", "Visual", "Camera2D", "HideBtn")]
+[node name="Map" type="Node2D" node_paths=PackedStringArray("Lines", "Rooms", "Visual", "Camera2D", "HideBtn", "DebugBtn", "DebugBtn2")]
 script = ExtResource("1_wdry2")
 Lines = NodePath("Visual/Lines")
 Rooms = NodePath("Visual/Rooms")
 Visual = NodePath("Visual")
 Camera2D = NodePath("Camera2D")
 HideBtn = NodePath("Camera2D/HideBtn")
-
-[node name="Visual" type="Node2D" parent="."]
-
-[node name="Lines" type="Node2D" parent="Visual"]
-
-[node name="Rooms" type="Node2D" parent="Visual"]
+DebugBtn = NodePath("Camera2D/DebugBtn")
+DebugBtn2 = NodePath("Camera2D/DebugBtn2")
 
 [node name="Camera2D" type="Camera2D" parent="."]
 offset = Vector2(960, 540)
 
 [node name="Background" type="ColorRect" parent="Camera2D"]
+custom_minimum_size = Vector2(1920, 1080)
 offset_right = 1920.0
 offset_bottom = 1080.0
-color = Color(0, 0, 0, 0.631373)
+color = Color(0.329412, 0.541176, 0.74902, 1)
 
 [node name="HideBtn" type="Button" parent="Camera2D"]
 offset_left = 64.0
@@ -31,3 +28,25 @@ offset_right = 256.0
 offset_bottom = 128.0
 theme_override_font_sizes/font_size = 36
 text = "隐藏地图"
+
+[node name="DebugBtn" type="Button" parent="Camera2D"]
+offset_left = 64.0
+offset_top = 152.0
+offset_right = 256.0
+offset_bottom = 216.0
+theme_override_font_sizes/font_size = 36
+text = "爬一层"
+
+[node name="DebugBtn2" type="Button" parent="Camera2D"]
+offset_left = 64.0
+offset_top = 240.0
+offset_right = 256.0
+offset_bottom = 304.0
+theme_override_font_sizes/font_size = 36
+text = "打印地图"
+
+[node name="Visual" type="Node2D" parent="."]
+
+[node name="Lines" type="Node2D" parent="Visual"]
+
+[node name="Rooms" type="Node2D" parent="Visual"]

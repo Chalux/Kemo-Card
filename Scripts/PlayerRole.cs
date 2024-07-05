@@ -4,6 +4,7 @@ using KemoCard.Scripts.Roles;
 using StaticClass;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using static StaticClass.StaticEnums;
 
 namespace KemoCard.Scripts
@@ -58,7 +59,8 @@ namespace KemoCard.Scripts
 
         public Dictionary<uint, Dictionary<uint, Card>> deck_idx_dic = new();
 
-        public int Gold { get; set; } = 0;
+        private int _Gold = 0;
+        public int Gold { get => _Gold; set => _Gold = Math.Max(0, value); }
 
         public void AddCardIntoDeck(Card card)
         {
@@ -332,7 +334,7 @@ namespace KemoCard.Scripts
             return value;
         }
 
-        public Action<InFightPlayer> OnBattleStart;
+        public Action OnBattleStart;
 
         private uint _unUsedPoints = 0;
         public uint UnUsedPoints { get => _unUsedPoints; set => _unUsedPoints = Math.Max(0, value); }
@@ -347,9 +349,10 @@ namespace KemoCard.Scripts
                     _exp = 0;
                     return;
                 }
+                _exp += value;
                 var NeedExp = ExpCfg.CalUpgradeNeedExp(Level);
                 if (_exp < NeedExp)
-                    _exp = Math.Max(0, value);
+                    _exp = Math.Max(0, _exp);
                 else
                 {
                     while (_exp > ExpCfg.CalUpgradeNeedExp(Level))
@@ -375,5 +378,196 @@ namespace KemoCard.Scripts
             Level++;
             UnUsedPoints += ExpCfg.GainPointPerUpgrade;
         }
+
+        private int _CurrPBlock = 0;
+        private int _CurrMBlock = 0;
+
+        public int CurrPBlock
+        {
+            get => _CurrPBlock;
+            set
+            {
+                var oldValue = _CurrPBlock;
+                if (value < 0)
+                {
+                    _CurrPBlock = 0;
+                }
+                else
+                {
+                    _CurrPBlock = value;
+                }
+                object[] param = new object[] { this, "CurrPBlock", oldValue, _CurrPBlock };
+                StaticInstance.eventMgr.Dispatch("PropertiesChanged", param);
+            }
+        }
+
+        public int CurrMBlock
+        {
+            get => _CurrMBlock;
+            set
+            {
+                var oldValue = _CurrMBlock;
+                if (value < 0)
+                {
+                    _CurrMBlock = 0;
+                }
+                else
+                {
+                    _CurrMBlock = value;
+                }
+                object[] param = new object[] { this, "CurrMBlock", oldValue, _CurrPBlock };
+                StaticInstance.eventMgr.Dispatch("PropertiesChanged", param);
+            }
+        }
+
+        #region 战斗中的数据，非战斗中时没有意义
+        public List<Card> InFightDeck = new();
+        public List<Card> InFightHands = new();
+        public List<Card> InFightGrave = new();
+        public List<BuffImplBase> InFightBuffs = new();
+        public int HandLimit = 10;
+        public bool isIFPInited = false;
+        public bool isDead = false;
+        public int InFightDeckCount => InFightDeck.Count;
+        public int InFightGraveCount => InFightGrave.Count;
+        public PlayerRoleObject roleObject;
+
+        public int _turnActionPoint = 0;
+        public int TurnActionPoint
+        {
+            get => _turnActionPoint;
+            set
+            {
+                var oldValue = _turnActionPoint;
+                _turnActionPoint = value;
+                OnPropertyChanged(nameof(TurnActionPoint), oldValue, _turnActionPoint);
+            }
+        }
+
+        public int _currActionPoint = 0;
+        public int CurrentActionPoint
+        {
+            get => _currActionPoint;
+            set
+            {
+                var oldValue = _currActionPoint;
+                _currActionPoint = value;
+                OnPropertyChanged(nameof(CurrentActionPoint), oldValue, _currActionPoint);
+            }
+        }
+
+        public void AddCardToDeck(Card card)
+        {
+            InFightDeck.Add(card);
+            if (StaticInstance.currWindow is BattleScene bs)
+            {
+                if (bs.nowPlayer == this)
+                {
+                    bs.UpdateCounts();
+                }
+            }
+        }
+
+        public void RemoveCardInDeck(Card card)
+        {
+            InFightDeck.Remove(card);
+            if (StaticInstance.currWindow is BattleScene bs)
+            {
+                if (bs.nowPlayer == this)
+                {
+                    bs.UpdateCounts();
+                }
+            }
+        }
+
+        public void AddCardToGrave(Card card)
+        {
+            InFightGrave.Add(card);
+            if (StaticInstance.currWindow is BattleScene bs)
+            {
+                if (bs.nowPlayer == this)
+                {
+                    bs.UpdateCounts();
+                }
+            }
+        }
+
+        public void RemoveCardInGrave(Card card)
+        {
+            InFightGrave.Remove(card);
+            if (StaticInstance.currWindow is BattleScene bs)
+            {
+                if (bs.nowPlayer == this)
+                {
+                    bs.UpdateCounts();
+                }
+            }
+        }
+
+        public void ShuffleGrave()
+        {
+            StaticUtils.ShuffleArray(InFightGrave);
+        }
+
+        public void ShuffleDeck()
+        {
+            StaticUtils.ShuffleArray(InFightDeck);
+        }
+
+        public void InitFighter()
+        {
+            InFightDeck = Deck.ToList();
+            InFightDeck.ForEach(card =>
+            {
+                card.InGameDict.Clear();
+                card.owner = this;
+            });
+            StaticUtils.ShuffleArray(InFightDeck);
+            InFightGrave = new();
+            isIFPInited = true;
+            InitBuff();
+        }
+
+        public void EndFight()
+        {
+            InFightDeck?.Clear();
+            InFightHands?.Clear();
+            InFightGrave?.Clear();
+            isIFPInited = false;
+        }
+
+        public override void AddBuff(BuffImplBase buff)
+        {
+            if (roleObject != null)
+            {
+                buff.Binder = this;
+                roleObject.AddBuff(buff);
+            }
+            base.AddBuff(buff);
+        }
+
+        public void InitBuff()
+        {
+            InFightBuffs = Buffs.ToList();
+            InFightBuffs.ForEach(buff =>
+            {
+                if (roleObject != null)
+                {
+                    buff.Binder = this;
+                    roleObject.AddBuff(buff);
+                }
+            });
+        }
+
+        public void AddInfightBuff(BuffImplBase buff)
+        {
+            InFightBuffs.Add(buff);
+            if (roleObject != null)
+            {
+                buff.Binder = this;
+                roleObject.AddBuff(buff);
+            }
+        }
+        #endregion
     }
 }

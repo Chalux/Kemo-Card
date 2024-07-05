@@ -20,10 +20,14 @@ namespace KemoCard.Scripts
         public float Y { get; set; }
         public List<int> NextRooms { get; set; } = new();
         public bool Selected { get; set; } = false;
+        /// <summary>
+        /// 只有Type是Monster的时候才有意义
+        /// </summary>
+        public uint PresetId { get; set; } = 1;
 
         public override string ToString()
         {
-            return $"{Col}({Type.ToString()[0]})";
+            return $"{Col}({Type.ToString()[0]}{PresetId})";
         }
     }
 }

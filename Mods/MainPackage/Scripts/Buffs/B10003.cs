@@ -22,7 +22,7 @@ namespace KemoCard.Mods.MainPackage.Scripts.Buffs
                 {
                     if (bs.isFighting)
                     {
-                        if (b.Binder is InFightPlayer inFightPlayer)
+                        if (b.Binder is PlayerRole inFightPlayer)
                         {
                             for (int i = 0; i < 2; i++)
                             {

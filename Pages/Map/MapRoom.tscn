@@ -1,9 +1,6 @@
-[gd_scene load_steps=7 format=3 uid="uid://bwmrhonaeverm"]
+[gd_scene load_steps=6 format=3 uid="uid://bwmrhonaeverm"]
 
 [ext_resource type="Script" path="res://Pages/Map/MapRoom.cs" id="1_d7odx"]
-
-[sub_resource type="CircleShape2D" id="CircleShape2D_w3ewk"]
-radius = 18.0
 
 [sub_resource type="Animation" id="Animation_abfdf"]
 length = 0.001
@@ -73,16 +70,21 @@ _data = {
 "select": SubResource("Animation_ijktm")
 }
 
-[node name="MapRoom" type="Area2D" node_paths=PackedStringArray("Sprite", "Line", "Animation")]
+[node name="MapRoom" type="Control" node_paths=PackedStringArray("Sprite", "Line", "Animation")]
+custom_minimum_size = Vector2(32, 32)
+layout_mode = 3
+anchors_preset = 0
+offset_right = 32.0
+offset_bottom = 32.0
 scale = Vector2(2, 2)
-collision_layer = 8
-collision_mask = 0
+pivot_offset = Vector2(32, 32)
 script = ExtResource("1_d7odx")
 Sprite = NodePath("Visual/Sprite2D")
 Line = NodePath("Visual/Line2D")
 Animation = NodePath("AnimationPlayer")
 
 [node name="Visual" type="Node2D" parent="."]
+position = Vector2(16, 16)
 
 [node name="Line2D" type="Line2D" parent="Visual"]
 modulate = Color(1, 1, 1, 0)
@@ -92,12 +94,7 @@ width = 2.0
 
 [node name="Sprite2D" type="Sprite2D" parent="Visual"]
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-shape = SubResource("CircleShape2D_w3ewk")
-
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 libraries = {
 "": SubResource("AnimationLibrary_bmxfp")
 }
-
-[connection signal="input_event" from="." to="." method="CollInput"]

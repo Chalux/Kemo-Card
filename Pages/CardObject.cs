@@ -31,7 +31,7 @@ public partial class CardObject : Control
     private bool _ShowHint = true;
     public bool ShowHint
     {
-        get => _ShowHint; 
+        get => _ShowHint;
         set
         {
             _ShowHint = value;

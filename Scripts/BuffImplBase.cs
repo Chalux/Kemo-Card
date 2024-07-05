@@ -70,7 +70,6 @@ namespace KemoCard.Scripts
             if (Binder is BaseRole br) br?.Buffs.Remove(this);
             Binder = null;
             if (BuffObj != null) BuffObj.data = null;
-            BuffObj?.QueueFree();
             BuffObj = null;
         }
         public void CheckCountNeedMinus(dynamic datas)
@@ -87,7 +86,7 @@ namespace KemoCard.Scripts
         {
             object tempBinder = Binder;
             if (Binder is BaseRole br) br.Buffs.Remove(this);
-            if (Binder is InFightPlayer ifp)
+            if (Binder is PlayerRole ifp)
             {
                 ifp.InFightBuffs.Remove(this);
                 if (ifp.roleObject != null)

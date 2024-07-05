@@ -2,9 +2,8 @@
 using KemoCard.Scripts;
 using StaticClass;
 using System;
-using System.Collections.Generic;
 
-public partial class MapRoom : Area2D
+public partial class MapRoom : Control
 {
     [Export] Sprite2D Sprite;
     [Export] Line2D Line;
@@ -45,20 +44,17 @@ public partial class MapRoom : Area2D
     {
         Line.Modulate = Colors.White;
     }
-    public void CollInput(Node viewport, InputEvent @event, int shape_idx)
-    {
-        if (!Available || !@event.IsActionPressed("left_mouse")) return;
-        Room.Selected = true;
-        Animation.Play("select");
-    }
 
     /// <summary>
     /// 这个函数在AnimationPlayer中的动画轨道调用
     /// </summary>
     public void OnMapRoomSelected()
     {
-        //EmitSignal(SignalName.Select, Room);
         SelectEventHandler.Invoke(Room);
+        if (Room.Type == RoomType.Monster)
+        {
+            StaticUtils.StartNewBattleByPreset(Room.PresetId);
+        }
     }
 
     //public override void _Ready()
@@ -73,4 +69,12 @@ public partial class MapRoom : Area2D
     //    GetTree().CreateTimer(3).Timeout += new(() => { Available = true; });
     //    Connect(SignalName.Select, Callable.From(OnMapRoomSelected));
     //}
+
+    public override void _GuiInput(InputEvent @event)
+    {
+        if (!Available || !@event.IsActionPressed("left_mouse")) return;
+        Room.Selected = true;
+        Animation.Play("select");
+    }
+
 }

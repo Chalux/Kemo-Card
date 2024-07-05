@@ -11,12 +11,14 @@ namespace StaticClass
 {
     static class StaticUtils
     {
+        private static readonly Random _random = new();
+
         public static bool ContainProperty(this Node2D instance, string propertyName)
         {
             if (instance != null && !string.IsNullOrEmpty(propertyName))
             {
                 PropertyInfo _findedPropertyInfo = instance.GetScript().GetType().GetProperty(propertyName);
-                return (_findedPropertyInfo != null);
+                return _findedPropertyInfo != null;
             }
             return false;
         }
@@ -132,6 +134,47 @@ namespace StaticClass
             }
 
             return (T)newObject;
+        }
+
+        /// <summary>  
+        /// 根据正态分布概率随机取一个在目标点附近的偏移量为给定参数的一个值  
+        /// </summary>  
+        /// <param name="minRange">最小范围</param>  
+        /// <param name="maxRange">最大范围</param>  
+        /// <param name="target">目标点</param>  
+        /// <param name="offset">偏移量</param>  
+        /// <returns>一个在目标点附近的随机值</returns>  
+        public static double GenerateRandomValue(double minRange, double maxRange, double target, double offset)
+        {
+            // 使用Box-Muller变换生成标准正态分布的随机数
+            double u1 = 1.0 - _random.NextDouble(); // 随机数(0,1]
+            double u2 = 1.0 - _random.NextDouble();
+            double standardNormal = Math.Sqrt(-2.0 * Math.Log(u1)) * Math.Sin(2.0 * Math.PI * u2);
+
+            // 根据偏移量调整
+            double randomValue = target + standardNormal * offset;
+
+            // 约束在最小范围和最大范围之间
+            if (randomValue < minRange)
+            {
+                randomValue = minRange;
+            }
+            else if (randomValue > maxRange)
+            {
+                randomValue = maxRange;
+            }
+
+            return randomValue;
+        }
+
+        public static void StartNewBattleByPreset(uint PresetId)
+        {
+            var bs = (BattleScene)ResourceLoader.Load<PackedScene>("res://Pages/BattleScene.tscn").Instantiate();
+            //MainScene ms = (MainScene)StaticInstance.windowMgr.GetSceneByName("MainScene");
+            //ms?.MapView.HideMap();
+            //StaticInstance.windowMgr.AddScene(bs);
+            StaticInstance.windowMgr.ChangeScene(bs);
+            bs.NewBattleByPreset(PresetId);
         }
     }
 }

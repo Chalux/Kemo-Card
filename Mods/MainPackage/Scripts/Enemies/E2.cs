@@ -6,7 +6,7 @@ using System.Collections.Generic;
 
 namespace KemoCard.Mods.MainPackage.Scripts.Enemies
 {
-    internal partial class E1 : BaseEnemyScript
+    internal partial class E2 : BaseEnemyScript
     {
         public override void OnEnemyInit(EnemyImplBase e)
         {
@@ -16,7 +16,7 @@ namespace KemoCard.Mods.MainPackage.Scripts.Enemies
             e.Strength = 2;
             e.Dodge = 2;
             e.Critical = 5;
-            e.Name = "火蝙蝠";
+            e.Name = "蝙蝠";
             e.AnimationResourcePath = $"res://Mods/MainPackage/Resources/Animations/Bat.tres";
             e.ActionFunc = new((round, players, enemies) =>
             {
@@ -38,8 +38,6 @@ namespace KemoCard.Mods.MainPackage.Scripts.Enemies
                     $"{StaticUtils.MakeColorString("身体", StaticInstance.BodyColor, 36)})";
                 e.ChangeIntent(Intent);
             }));
-            StaticUtils.CreateBuffAndAddToRole(10002, e.Binder);
-            StaticUtils.CreateBuffAndAddToRole(10001, e.Binder);
         }
     }
 }

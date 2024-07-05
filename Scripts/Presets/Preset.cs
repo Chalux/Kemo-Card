@@ -10,6 +10,7 @@ namespace KemoCard.Scripts.Presets
         public int MinGoldReward { get; set; } = 0;
         public int MaxGoldReward { get; set; } = 0;
         public int GainExp { get; set; } = 0;
+        public bool IsBoss { get; set; } = false;
 
         public Preset(uint id)
         {
@@ -17,6 +18,7 @@ namespace KemoCard.Scripts.Presets
             {
                 var modinfo = Datas.Ins.PresetPool[id];
                 Tier = modinfo.tier;
+                IsBoss = modinfo.is_boss;
                 var path = $"res://Mods/{modinfo.mod_id}/Scripts/Presets/P{modinfo.preset_id}.cs";
                 var res = ResourceLoader.Load<CSharpScript>(path);
                 if (res != null)

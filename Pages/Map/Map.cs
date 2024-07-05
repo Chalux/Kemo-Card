@@ -17,8 +17,10 @@ public partial class Map : BaseScene
     [Export] Node2D Visual;
     [Export] Camera2D Camera2D;
     [Export] Godot.Button HideBtn;
+    [Export] Godot.Button DebugBtn;
+    [Export] Godot.Button DebugBtn2;
 
-    private float CameraEdgeY { get; set; } = 0;
+    public float CameraEdgeY { get; set; } = 0;
     private bool isDrag = false;
 
     public override void _Ready()
@@ -26,6 +28,10 @@ public partial class Map : BaseScene
         CameraEdgeY = StaticInstance.playerData.gsd.MapGenerator.Data.Y_DISTANCE * (StaticInstance.playerData.gsd.MapGenerator.Data.FLOORS - 1);
 
         HideBtn.Pressed += HideMap;
+
+        DebugBtn2.Visible = DebugBtn.Visible = OS.IsDebugBuild();
+        DebugBtn.Pressed += UnlockNextRooms;
+        DebugBtn2.Pressed += new(() => GD.Print(StaticInstance.playerData.gsd.MapGenerator.ToString()));
     }
 
     public override void _Input(InputEvent @event)
@@ -51,6 +57,7 @@ public partial class Map : BaseScene
         }
         Y = Math.Clamp(Y, -CameraEdgeY, 0);
         Camera2D.Position = new(Camera2D.Position.X, Y);
+        //GD.Print(Camera2D.Position);
     }
 
     public void GenerateNewMap(MapData mapData)
@@ -62,8 +69,19 @@ public partial class Map : BaseScene
 
     public void CreateMap()
     {
+        foreach (var child in Rooms.GetChildren())
+        {
+            Rooms.RemoveChild(child);
+            child.QueueFree();
+        }
+        foreach (var child in Lines.GetChildren())
+        {
+            Lines.RemoveChild(child);
+            child.QueueFree();
+        }
         var map = StaticInstance.playerData.gsd.MapGenerator.Data;
-        StaticInstance.playerData.gsd.MapGenerator.MapData.ForEach(CurrentFloor =>
+        var mapdata = StaticInstance.playerData.gsd.MapGenerator.MapData;
+        mapdata.ForEach(CurrentFloor =>
         {
             CurrentFloor.ForEach(Room =>
             {
@@ -72,7 +90,8 @@ public partial class Map : BaseScene
         });
 
         int Middle = (int)Math.Floor(map.MAP_WIDTH * 0.5);
-        SpawnRoom(StaticInstance.playerData.gsd.MapGenerator.MapData[map.FLOORS - 1][Middle]);
+        var row = (int)map.FLOORS - 1;
+        if (mapdata.Count > row && mapdata[row].Count > Middle) SpawnRoom(mapdata[row][Middle]);
         float MapWidthPixels = map.X_DISTANCE * (map.MAP_WIDTH - 1);
         var s = GetViewportRect().Size;
         Visual.Position = new((s.X - MapWidthPixels) / 2, s.Y / 2);
@@ -109,7 +128,7 @@ public partial class Map : BaseScene
     {
         foreach (var RoomNode in Rooms.GetChildren().Cast<MapRoom>())
         {
-            if (RoomNode.Room.Row == room.Row)
+            if (RoomNode.Room.Row == room.Row || !StaticInstance.playerData.gsd.MapGenerator.IsStillRunning)
             {
                 RoomNode.Available = false;
             }
@@ -123,7 +142,8 @@ public partial class Map : BaseScene
     {
         foreach (MapRoom RoomNode in Rooms.GetChildren().Cast<MapRoom>())
         {
-            if (RoomNode.Room.Row == floor) RoomNode.Available = true;
+            if (RoomNode.Room.Row == floor && StaticInstance.playerData.gsd.MapGenerator.IsStillRunning)
+                RoomNode.Available = true;
         }
     }
 
@@ -131,7 +151,7 @@ public partial class Map : BaseScene
     {
         foreach (MapRoom RoomNode in Rooms.GetChildren().Cast<MapRoom>())
         {
-            if (StaticInstance.playerData.gsd.MapGenerator.LastRoom.NextRooms.Contains(RoomNode.Room.Row * 100 + RoomNode.Room.Col)) RoomNode.Available = true;
+            if (StaticInstance.playerData.gsd.MapGenerator.IsStillRunning && StaticInstance.playerData.gsd.MapGenerator.LastRoom.NextRooms.Contains(RoomNode.Room.Row * 100 + RoomNode.Room.Col)) RoomNode.Available = true;
         }
     }
 

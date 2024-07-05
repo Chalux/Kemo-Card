@@ -14,9 +14,9 @@ namespace KemoCard.Scripts
 
         public GlobalSaveData gsd = new();
 
-        public void Save(uint index)
+        public void Save(uint index, bool isquick = false)
         {
-            if (index == 1)
+            if (index == 1 && !isquick)
             {
                 AlertView.PopupAlert("选择的是自动存档位，是否继续？", false, null, new(() => { return; }));
             }
@@ -120,6 +120,13 @@ namespace KemoCard.Scripts
                     gsd.MajorRole.BuildDeckIdxDic();
                     MainScene node = (MainScene)ResourceLoader.Load<PackedScene>("res://Pages/MainScene.tscn").Instantiate();
                     StaticInstance.windowMgr.ChangeScene(node);
+                    if (StaticInstance.playerData.gsd.MapGenerator.IsStillRunning)
+                    {
+                        if (StaticInstance.playerData.gsd.MapGenerator.FloorsClimbed == 0)
+                            node?.MapView.UnlockFloor(0);
+                        else
+                            node?.MapView.UnlockNextRooms();
+                    }
                 }
             }
         }
