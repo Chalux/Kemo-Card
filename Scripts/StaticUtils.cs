@@ -61,7 +61,7 @@ namespace StaticClass
             StaticInstance.MainRoot.HideRichHint();
         }
 
-        public static void CreateBuffAndAddToRole(uint id, BaseRole role)
+        public static void CreateBuffAndAddToRole(string id, BaseRole role)
         {
             if (Datas.Ins.BuffPool.TryGetValue(id, out Datas.BuffStruct modInfo))
             {
@@ -92,7 +92,7 @@ namespace StaticClass
             }
         }
 
-        public static void CreateEquipAndPutOn(uint id, PlayerRole playerRole)
+        public static void CreateEquipAndPutOn(string id, PlayerRole playerRole)
         {
             if (Datas.Ins.EquipPool.TryGetValue(id, out Datas.EquipStruct modInfo))
             {
@@ -167,7 +167,7 @@ namespace StaticClass
             return randomValue;
         }
 
-        public static void StartNewBattleByPreset(uint PresetId)
+        public static void StartNewBattleByPreset(string PresetId)
         {
             var bs = (BattleScene)ResourceLoader.Load<PackedScene>("res://Pages/BattleScene.tscn").Instantiate();
             //MainScene ms = (MainScene)StaticInstance.windowMgr.GetSceneByName("MainScene");

@@ -62,7 +62,7 @@ public partial class EnemyRoleObject : Control, IEvent
         base._ExitTree();
     }
 
-    public void Init(uint id)
+    public void Init(string id)
     {
         data = new(id);
         monsterName.Text = StaticUtils.MakeBBCodeString(data.name);
@@ -148,7 +148,7 @@ public partial class EnemyRoleObject : Control, IEvent
         }
     }
 
-    public void AddBuff(uint id)
+    public void AddBuff(string id)
     {
         BuffObject bobj = (BuffObject)ResourceLoader.Load<PackedScene>("res://Pages/BuffObject.tscn").Instantiate();
         bobj.Init(id);

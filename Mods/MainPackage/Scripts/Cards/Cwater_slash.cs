@@ -1,0 +1,34 @@
+﻿using Godot;
+using KemoCard.Scripts;
+using KemoCard.Scripts.Cards;
+using StaticClass;
+
+namespace KemoCard.Mods.MainPackage.Scripts.Cards
+{
+    internal partial class Cwater_slash : BaseCardScript
+    {
+        public override void OnCardScriptInit(Card c)
+        {
+            c.Cost = 10;
+            c.Alias = "水属性魔攻";
+            c.Desc = "造成 敌方/单体/魔法/水属性/7点伤害";
+            c.TargetType = StaticEnums.TargetType.ENEMY_SINGLE;
+            c.CostType = StaticEnums.CostType.MAGIC;
+            c.UseFilter = new((user, targets, datas) =>
+            {
+                return targets != null && targets.Count > 0 && targets[0] is EnemyRole er && er.isFriendly == false;
+            });
+            c.FunctionUse = new((user, targets, datas) =>
+            {
+                if (StaticInstance.currWindow is BattleScene bs)
+                {
+                    if (BattleStatic.isFighting)
+                    {
+                        bs.DealDamage(7, StaticEnums.AttackType.Magic, user, targets, StaticEnums.AttributeEnum.WATER);
+                    }
+                }
+                GD.Print($"卡牌C{c.Id}已使用");
+            });
+        }
+    }
+}

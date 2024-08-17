@@ -1,0 +1,30 @@
+[gd_scene load_steps=2 format=3 uid="uid://yoq6dtq8bbyt"]
+
+[ext_resource type="Script" path="res://Pages/SelectCardScene.cs" id="1_0v21a"]
+
+[node name="SelectCardScene" type="Node2D" node_paths=PackedStringArray("boxContainer", "SelectBtn")]
+script = ExtResource("1_0v21a")
+boxContainer = NodePath("HBoxContainer")
+SelectBtn = NodePath("SelectBtn")
+
+[node name="ColorRect" type="ColorRect" parent="."]
+custom_minimum_size = Vector2(1920, 1080)
+offset_right = 1920.0
+offset_bottom = 1080.0
+color = Color(0.137255, 0.137255, 0.137255, 0.541176)
+
+[node name="HBoxContainer" type="HBoxContainer" parent="."]
+offset_left = 288.0
+offset_top = 256.0
+offset_right = 1632.0
+offset_bottom = 576.0
+theme_override_constants/separation = 60
+alignment = 1
+
+[node name="SelectBtn" type="Button" parent="."]
+offset_left = 864.0
+offset_top = 704.0
+offset_right = 1056.0
+offset_bottom = 768.0
+theme_override_font_sizes/font_size = 36
+text = "选择"

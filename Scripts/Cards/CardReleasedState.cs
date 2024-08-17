@@ -65,6 +65,24 @@ namespace KemoCard.Scripts.Cards
                     && !cardObject.card.InGameDict.ContainsKey("Exhaust"))
                     {
                         ifp.AddCardToGrave(cardObject.card);
+                        //if (StaticInstance.currWindow is BattleScene bs)
+                        //{
+                        //    Vector2 startPos = cardObject.Position;
+                        //    Vector2 endPos = bs.GraveCount.GlobalPosition;
+                        //    cardObject.MouseFilter = MouseFilterEnum.Ignore;
+                        //    cardObject.Reparent(cardObject.GetParent());
+                        //    Tween tween = cardObject.GetTree().CreateTween();
+                        //    float duration = 1.0f;
+                        //    tween.SetEase(Tween.EaseType.Out);
+                        //    tween.SetParallel(true);
+                        //    tween.TweenProperty(cardObject, "global_position", bs.GraveCount.GlobalPosition, duration);
+                        //    tween.TweenProperty(cardObject, "scale", Vector2.Zero, duration);
+                        //    tween.TweenCallback(Callable.From(cardObject.QueueFree));
+                        //}
+                        //else
+                        //{
+                        //    cardObject.QueueFree();
+                        //}
                         cardObject.QueueFree();
                     }
                     else

@@ -11,10 +11,10 @@ namespace KemoCard.Scripts
 {
     public class Equip
     {
-        private uint _id;
+        private string _id;
         // 临时的属性修改都放在这里面，只有永久修改的才写代码改属性值
         public Dictionary<string, float> Symbol { get; set; } = new();
-        public uint Id
+        public string Id
         {
             get => _id;
             set
@@ -27,7 +27,7 @@ namespace KemoCard.Scripts
         [JsonIgnore]
         public BaseRole owner;
         public EquipType EquipType { get; set; } = EquipType.OTHER;
-        public Equip(uint id, BaseRole owner = null)
+        public Equip(string id, BaseRole owner = null)
         {
             this.owner = owner;
             Id = id;

@@ -23,7 +23,7 @@ namespace KemoCard.Scripts
         /// <summary>
         /// 只有Type是Monster的时候才有意义
         /// </summary>
-        public uint PresetId { get; set; } = 1;
+        public string PresetId { get; set; }
 
         public override string ToString()
         {

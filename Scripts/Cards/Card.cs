@@ -11,7 +11,7 @@ namespace KemoCard.Scripts.Cards
     {
         [JsonIgnore]
         public BaseRole owner;
-        public uint Id { get; set; } = 0;
+        public string Id { get; set; }
         // 这里的装备id是为了记录是否是装备加到卡组里的，idx同。非装备的话可以不填。
         public string EquipId { get; set; } = "";
         public uint EquipIdx { get; set; } = 0;
@@ -28,8 +28,9 @@ namespace KemoCard.Scripts.Cards
 
         // 这里的idx是记录在牌组里的idx顺位
         public uint Idx { get; set; } = 0;
-        public string CardName { get; set; } = "未命名";
+        public string Alias { get; set; } = "未命名";
         public string Desc { get; set; } = "无描述";
+        public bool isTemp { get; set; } = false;
         public string GetDesc
         {
             get
@@ -64,7 +65,7 @@ namespace KemoCard.Scripts.Cards
         public Func<BaseRole, List<BaseRole>, dynamic[], bool> UseFilter { get; set; }
         [JsonIgnore]
         public Action<BaseRole, List<BaseRole>, dynamic[]> FunctionUse { get; set; }
-        public Card(uint id)
+        public Card(string id)
         {
             Id = id;
 

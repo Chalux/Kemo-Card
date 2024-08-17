@@ -104,9 +104,9 @@ public partial class RoleCreateScene : BaseScene
 
     void DoConfirm()
     {
-        if (PresetRoleInput.Text.Length > 0 && PresetRoleInput.Text.ToInt() > 0)
+        if (PresetRoleInput.Text.Length > 0)
         {
-            PlayerRole role = new((uint)PresetRoleInput.Text.ToInt());
+            PlayerRole role = new(PresetRoleInput.Text);
             AlertView.PopupAlert($"检测到已填入预设角色id。角色的数据为：\r\n{role.GetRichDesc()}是否确定？", false, new(() => role.StartFunction?.Invoke()));
         }
         if (CurrentPoint > 0)
@@ -135,13 +135,13 @@ public partial class RoleCreateScene : BaseScene
         };
 
         var majorrole = new PlayerRole(player.OriginSpeed, player.OriginStrength, player.OriginEffeciency, player.OriginMantra, player.OriginCraftEquip, player.OriginCraftBook, player.OriginCritical, player.OriginDodge, player.name);
-        majorrole.AddCardIntoDeck(new(10001));
-        majorrole.AddCardIntoDeck(new(10002));
-        StaticUtils.CreateBuffAndAddToRole(10003, majorrole);
-        StaticUtils.CreateEquipAndPutOn(10002, majorrole);
-        StaticUtils.CreateEquipAndPutOn(10002, majorrole);
-        StaticUtils.CreateEquipAndPutOn(10002, majorrole);
-        StaticUtils.CreateEquipAndPutOn(10003, majorrole);
+        majorrole.AddCardIntoDeck(new("fire_ball"));
+        majorrole.AddCardIntoDeck(new("water_slash"));
+        StaticUtils.CreateBuffAndAddToRole("get_lucky", majorrole);
+        StaticUtils.CreateEquipAndPutOn("base_attack", majorrole);
+        StaticUtils.CreateEquipAndPutOn("base_attack", majorrole);
+        StaticUtils.CreateEquipAndPutOn("base_defense", majorrole);
+        StaticUtils.CreateEquipAndPutOn("base_defense", majorrole);
         majorrole.ActionPoint = 3;
 
         StaticInstance.playerData.gsd.MajorRole = majorrole;

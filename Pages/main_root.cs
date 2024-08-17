@@ -56,8 +56,8 @@ public partial class main_root : Control
         richHintAction?.Invoke();
         richHintAction = new Action(() =>
         {
-            colorRect.Visible = true;
             richHint.Text = hint;
+            colorRect.Visible = true;
         });
         timer.Timeout += richHintAction;
         timer.WaitTime = 0.1f;

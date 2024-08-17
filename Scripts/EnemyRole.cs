@@ -48,7 +48,7 @@ namespace KemoCard.Scripts
                 StaticInstance.eventMgr.Dispatch("PropertiesChanged", null);
             }
         }
-        public EnemyRole(uint id)
+        public EnemyRole(string id)
         {
             if (Datas.Ins.EnemyPool.ContainsKey(id))
             {

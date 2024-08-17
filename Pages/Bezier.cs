@@ -12,7 +12,7 @@ namespace KemoCard.Pages
         Vector2 ctrl_a_pos = new();
         Vector2 ctrl_b_pos = new();
 
-        private static Vector2 CalculateCubicBezierPoint(Vector2 p0, Vector2 p1, Vector2 p2, Vector2 p3, float t)
+        public static Vector2 CalculateCubicBezierPoint(Vector2 p0, Vector2 p1, Vector2 p2, Vector2 p3, float t)
         {
             float u = 1 - t;
             float tt = t * t;
@@ -26,6 +26,17 @@ namespace KemoCard.Pages
             );
 
             return point;
+        }
+
+        public static Vector2 AutoCalculateBezier(Vector2 startPos, Vector2 endPos, float t)
+        {
+            Vector2 tempPos1 = new Vector2();
+            Vector2 tempPos2 = new Vector2();
+            tempPos1.X = (float)(startPos.X + (startPos.X - endPos.X) * 0.1);
+            tempPos1.Y = (float)(endPos.Y - (endPos.Y - startPos.Y) * 0.2);
+            tempPos2.X = (float)(startPos.X - (startPos.X - endPos.X) * 0.3);
+            tempPos2.Y = (float)(endPos.Y + (endPos.Y - startPos.Y) * 0.3);
+            return CalculateCubicBezierPoint(startPos, tempPos1, tempPos2, endPos, t);
         }
 
         public override void _Ready()

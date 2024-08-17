@@ -58,7 +58,7 @@ namespace KemoCard.Pages
             }
             AddBtn.Pressed += new(() =>
             {
-                uint eqid = (uint)GMEdit.Text.ToInt();
+                string eqid = GMEdit.Text;
                 if (Datas.Ins.EquipPool.ContainsKey(eqid))
                 {
                     int idx = playerData.GetFirstEmptyBagIndex();

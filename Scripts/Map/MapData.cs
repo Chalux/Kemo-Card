@@ -42,7 +42,7 @@ namespace KemoCard.Scripts.Map
         /// 生成事件房间的权重
         /// </summary>
         public double EVENT_ROOM_WEIGHT { get; set; } = 4.0;
-        public List<uint> PresetPool { get; set; } = new();
+        public List<string> PresetPool { get; set; } = new();
         public uint MinTier { get; set; } = 1;
         public uint MaxTier { get; set; } = 1;
         public string ShowName { get; set; } = "";
@@ -52,7 +52,7 @@ namespace KemoCard.Scripts.Map
         /// </summary>
         public Action<List<List<Room>>> Rules;
 
-        public MapData(uint id)
+        public MapData(string id)
         {
             if (Datas.Ins.MapPool.TryGetValue(id, out var pool))
             {
@@ -81,7 +81,7 @@ namespace KemoCard.Scripts.Map
                 }
                 if (PresetPool.Count == 0)
                 {
-                    PresetPool.Add(1);
+                    PresetPool.Add("test_preset_1");
                 }
                 PresetPool.Sort((a, b) => (int)(Datas.Ins.PresetPool[a].tier - Datas.Ins.PresetPool[b].tier));
             }

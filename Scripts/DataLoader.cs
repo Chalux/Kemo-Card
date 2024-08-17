@@ -23,13 +23,14 @@ namespace KemoCard.Scripts
         public HashSet<string> ModCache;
         public HashSet<string> errorModsSet = new();
         public System.Collections.Generic.Dictionary<string, ModInfoStruct> ModPool = new();
-        public System.Collections.Generic.Dictionary<uint, CardStruct> CardPool = new();
-        public System.Collections.Generic.Dictionary<uint, EnemyStruct> EnemyPool = new();
-        public System.Collections.Generic.Dictionary<uint, EquipStruct> EquipPool = new();
-        public System.Collections.Generic.Dictionary<uint, BuffStruct> BuffPool = new();
-        public System.Collections.Generic.Dictionary<uint, RoleStruct> RolePool = new();
-        public System.Collections.Generic.Dictionary<uint, PresetStruct> PresetPool = new();
-        public System.Collections.Generic.Dictionary<uint, MapStruct> MapPool = new();
+        public System.Collections.Generic.Dictionary<string, CardStruct> CardPool = new();
+        public System.Collections.Generic.Dictionary<string, EnemyStruct> EnemyPool = new();
+        public System.Collections.Generic.Dictionary<string, EquipStruct> EquipPool = new();
+        public System.Collections.Generic.Dictionary<string, BuffStruct> BuffPool = new();
+        public System.Collections.Generic.Dictionary<string, RoleStruct> RolePool = new();
+        public System.Collections.Generic.Dictionary<string, PresetStruct> PresetPool = new();
+        public System.Collections.Generic.Dictionary<string, MapStruct> MapPool = new();
+        public System.Collections.Generic.Dictionary<string, EventStruct> EventPool = new();
 
         private static readonly string MOD_CACHE_PATH = "user://Saves/modCache.json";
 
@@ -128,7 +129,7 @@ namespace KemoCard.Scripts
                                 {
                                     foreach (var data in JsonData["card_list"].AsGodotArray<Dictionary>())
                                     {
-                                        var id = data["card_id"].AsUInt32();
+                                        var id = data["card_id"].AsString();
                                         if (CardPool.ContainsKey(id))
                                         {
                                             StaticInstance.MainRoot.ShowBanner("Mod间存在冲突。卡牌id冲突：" + id
@@ -140,7 +141,6 @@ namespace KemoCard.Scripts
                                         CardPool.Add(id, new CardStruct
                                         {
                                             card_id = id,
-                                            card_name = data["card_name"].AsString(),
                                             mod_id = currModId
                                         });
                                     }
@@ -149,7 +149,7 @@ namespace KemoCard.Scripts
                                 {
                                     foreach (var data in JsonData["enemy_list"].AsGodotArray<Dictionary>())
                                     {
-                                        var id = data["enemy_id"].AsUInt32();
+                                        var id = data["enemy_id"].AsString();
                                         if (EnemyPool.ContainsKey(id))
                                         {
                                             StaticInstance.MainRoot.ShowBanner("Mod间存在冲突。敌人id冲突：" + id
@@ -161,7 +161,6 @@ namespace KemoCard.Scripts
                                         EnemyPool.Add(id, new EnemyStruct
                                         {
                                             enemy_id = id,
-                                            enemy_name = data["enemy_name"].AsString(),
                                             mod_id = currModId
                                         });
                                     }
@@ -170,7 +169,7 @@ namespace KemoCard.Scripts
                                 {
                                     foreach (var data in JsonData["equip_list"].AsGodotArray<Dictionary>())
                                     {
-                                        var id = data["equip_id"].AsUInt32();
+                                        var id = data["equip_id"].AsString();
                                         if (EquipPool.ContainsKey(id))
                                         {
                                             StaticInstance.MainRoot.ShowBanner("Mod间存在冲突。装备id冲突：" + id
@@ -182,7 +181,6 @@ namespace KemoCard.Scripts
                                         EquipPool.Add(id, new EquipStruct
                                         {
                                             equip_id = id,
-                                            equip_name = data["equip_name"].AsString(),
                                             equip_type = data["equip_type"].AsUInt16(),
                                             mod_id = currModId
                                         });
@@ -192,7 +190,7 @@ namespace KemoCard.Scripts
                                 {
                                     foreach (var data in JsonData["buff_list"].AsGodotArray<Dictionary>())
                                     {
-                                        var id = data["buff_id"].AsUInt32();
+                                        var id = data["buff_id"].AsString();
                                         if (BuffPool.ContainsKey(id))
                                         {
                                             StaticInstance.MainRoot.ShowBanner("Mod间存在冲突。buffid冲突：" + id + "，冲突的两个Mod的id分别为：" + currModId + "，" + BuffPool[id].mod_id);
@@ -203,7 +201,6 @@ namespace KemoCard.Scripts
                                         BuffPool.Add(id, new BuffStruct
                                         {
                                             buff_id = id,
-                                            buff_name = data["buff_name"].AsString(),
                                             mod_id = currModId
                                         });
                                     }
@@ -212,7 +209,7 @@ namespace KemoCard.Scripts
                                 {
                                     foreach (var data in JsonData["role_list"].AsGodotArray<Dictionary>())
                                     {
-                                        var id = data["role_id"].AsUInt32();
+                                        var id = data["role_id"].AsString();
                                         if (RolePool.ContainsKey(id))
                                         {
                                             StaticInstance.MainRoot.ShowBanner("Mod间存在冲突。roleid冲突：" + id + "，冲突的两个Mod的id分别为：" + currModId + "，" + RolePool[id].mod_id);
@@ -223,7 +220,6 @@ namespace KemoCard.Scripts
                                         RolePool.Add(id, new RoleStruct
                                         {
                                             role_id = id,
-                                            role_name = data["role_name"].AsString(),
                                             mod_id = currModId
                                         });
                                     }
@@ -232,7 +228,7 @@ namespace KemoCard.Scripts
                                 {
                                     foreach (var data in JsonData["preset_list"].AsGodotArray<Dictionary>())
                                     {
-                                        var id = data["preset_id"].AsUInt32();
+                                        var id = data["preset_id"].AsString();
                                         if (PresetPool.ContainsKey(id))
                                         {
                                             StaticInstance.MainRoot.ShowBanner("Mod间存在冲突。presetid冲突：" + id + "，冲突的两个Mod的id分别为：" + currModId + "，" + PresetPool[id].mod_id);
@@ -253,7 +249,7 @@ namespace KemoCard.Scripts
                                 {
                                     foreach (var data in JsonData["map_list"].AsGodotArray<Dictionary>())
                                     {
-                                        var id = data["map_id"].AsUInt32();
+                                        var id = data["map_id"].AsString();
                                         if (MapPool.ContainsKey(id))
                                         {
                                             StaticInstance.MainRoot.ShowBanner("Mod间存在冲突。mapid冲突：" + id + "，冲突的两个Mod的id分别为：" + currModId + "，" + MapPool[id].mod_id);
@@ -270,6 +266,25 @@ namespace KemoCard.Scripts
                                             map_width = data["map_width"].AsUInt32(),
                                             paths = data["paths"].AsUInt32(),
                                             show_cond = data.ContainsKey("show_cond") ? data["show_cond"].AsGodotDictionary<string, Array<Variant>>() : new(),
+                                            mod_id = currModId
+                                        });
+                                    }
+                                }
+                                if (JsonData.ContainsKey("event_list"))
+                                {
+                                    foreach (var data in JsonData["event_list"].AsGodotArray<Dictionary>())
+                                    {
+                                        var id = data["event_list"].AsString();
+                                        if (EventPool.ContainsKey(id))
+                                        {
+                                            StaticInstance.MainRoot.ShowBanner("Mod间存在冲突。eventid冲突：" + id + "，冲突的两个Mod的id分别为：" + currModId + "，" + MapPool[id].mod_id);
+                                            errorModsSet.Add(currModId);
+                                            errorModsSet.Add(MapPool[id].mod_id);
+                                            continue;
+                                        }
+                                        EventPool.Add(id, new EventStruct
+                                        {
+                                            event_id = id,
                                             mod_id = currModId
                                         });
                                     }
@@ -316,8 +331,7 @@ namespace KemoCard.Scripts
 
         public struct CardStruct
         {
-            public uint card_id;
-            public string card_name;
+            public string card_id;
             public ulong filter_flag;
             public string mod_id;
         }
@@ -333,36 +347,32 @@ namespace KemoCard.Scripts
 
         public struct EnemyStruct
         {
-            public uint enemy_id;
-            public string enemy_name;
+            public string enemy_id;
             public string mod_id;
         }
 
         public struct EquipStruct
         {
-            public uint equip_id;
-            public string equip_name;
+            public string equip_id;
             public uint equip_type;
             public string mod_id;
         }
 
         public struct BuffStruct
         {
-            public uint buff_id;
-            public string buff_name;
+            public string buff_id;
             public string mod_id;
         }
 
         public struct RoleStruct
         {
-            public uint role_id;
-            public string role_name;
+            public string role_id;
             public string mod_id;
         }
 
         public struct PresetStruct
         {
-            public uint preset_id;
+            public string preset_id;
             public uint tier;
             public bool is_boss;
             public string mod_id;
@@ -370,13 +380,19 @@ namespace KemoCard.Scripts
 
         public struct MapStruct
         {
-            public uint map_id;
+            public string map_id;
             public uint min_tier;
             public uint max_tier;
             public uint floor;
             public uint map_width;
             public uint paths;
             public Godot.Collections.Dictionary<string, Array<Variant>> show_cond;
+            public string mod_id;
+        }
+
+        public struct EventStruct
+        {
+            public string event_id;
             public string mod_id;
         }
 

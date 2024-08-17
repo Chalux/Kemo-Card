@@ -133,7 +133,7 @@ public partial class PlayerRoleObject : Control, IEvent
         }
     }
 
-    public void AddBuff(uint id)
+    public void AddBuff(string id)
     {
         BuffObject buffObject = (BuffObject)ResourceLoader.Load<PackedScene>("res://Pages/BuffObject.tscn").Instantiate();
         buffObject.Init(id);
@@ -155,7 +155,7 @@ public partial class PlayerRoleObject : Control, IEvent
         }
     }
 
-    public void MinusBuffCountAndValue(uint id, int count = 0, int value = 0)
+    public void MinusBuffCountAndValue(string id, int count = 0, int value = 0)
     {
         bool HasBuff = false;
         BuffImplBase temp = null;

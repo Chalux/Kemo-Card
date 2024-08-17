@@ -272,21 +272,32 @@ namespace KemoCard.Scripts
         }
 
         public Dictionary<string, float> Symbol = new();
-        public void AddSymbolValue(string key, float value)
+        public Dictionary<string, float> RunSymbol = new();
+        public Dictionary<string, float> FightSymbol = new();
+        public void AddSymbolValue(string key, float value, int symbolType = 1)
         {
             float oldValue = 0;
-            if (Symbol.ContainsKey(key))
+            Dictionary<string, float> s = null;
+            switch (symbolType)
+            {
+                case 1: s = Symbol; break;
+                case 2: s = RunSymbol; break;
+                case 3: s = FightSymbol; break;
+            }
+            if (s.ContainsKey(key))
             {
                 oldValue = Symbol[key];
-                Symbol[key] += value;
+                s[key] += value;
             }
-            else Symbol.Add(key, value);
+            else s.Add(key, value);
             OnPropertyChanged(key, oldValue, value);
         }
 
         public virtual float GetSymbol(string key, float defaultValue = 0f)
         {
             var value = Symbol.GetValueOrDefault(key, defaultValue);
+            value += RunSymbol.GetValueOrDefault(key, 0);
+            value += FightSymbol.GetValueOrDefault(key, 0);
             Buffs.ForEach(buff =>
             {
                 value += buff.Symbol.GetValueOrDefault(key, 0);

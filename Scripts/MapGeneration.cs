@@ -1,6 +1,4 @@
-﻿using Godot;
-using KemoCard.Scripts.Map;
-using KemoCard.Scripts.Presets;
+﻿using KemoCard.Scripts.Map;
 using StaticClass;
 using System;
 using System.Collections.Generic;
@@ -53,9 +51,16 @@ namespace KemoCard.Scripts
             SetUpRandomRoomWeight();
             SetUpRoomTypes();
 
-            Data.Rules?.Invoke(MapData);
+            var major = StaticInstance.playerData.gsd.MajorRole;
+            major.TempDeck = new();
+            major.CurrHealth = major.CurrHpLimit;
+            major.CurrMagic = major.CurrMpLimit;
+            major.RunSymbol.Clear();
+            major.FightSymbol.Clear();
             IsStillRunning = true;
+            Data.Rules?.Invoke(MapData);
             MainScene MainScene = (MainScene)StaticInstance.windowMgr.GetSceneByName("MainScene");
+            //MainScene?.MapView.GenerateNewMap(Data);
             MainScene?.UpdateView();
             MainScene?.MapView.UnlockFloor(0);
 
@@ -170,7 +175,7 @@ namespace KemoCard.Scripts
                 }
             }
             BossRoom.Type = RoomType.Boss;
-            List<uint> plist = new();
+            List<string> plist = new();
             foreach (var kvp in Datas.Ins.PresetPool)
             {
                 if (kvp.Value.is_boss && kvp.Value.tier >= Data.MinTier && kvp.Value.tier <= Data.MaxTier) plist.Add(kvp.Key);
@@ -195,6 +200,8 @@ namespace KemoCard.Scripts
                 if (Room.NextRooms != null && Room.NextRooms.Count > 0)
                 {
                     Room.Type = RoomType.Monster;
+                    var random = Math.Round(StaticUtils.GenerateRandomValue(0, Data.PresetPool.Count - 1, Data.PresetPool.Count / (Data.FLOORS - Room.Row), OffsetRange));
+                    Room.PresetId = Data.PresetPool[(int)random];
                 }
             }
 
@@ -221,7 +228,7 @@ namespace KemoCard.Scripts
                     foreach (var NextRoom in Room.NextRooms)
                     {
                         var r = StaticInstance.playerData.gsd.MapGenerator.MapData[NextRoom / 100][NextRoom % 100];
-                        if (r.Type == RoomType.None)
+                        if (r.Type == RoomType.None || (r.PresetId == null && r.Type == RoomType.Monster))
                         {
                             SetRoomRandomly(r);
                         }

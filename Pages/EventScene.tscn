@@ -1,0 +1,44 @@
+[gd_scene load_steps=3 format=3 uid="uid://ckqphu5q3ciru"]
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_o4rr6"]
+frequency = 0.0002
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_4moqu"]
+width = 576
+height = 704
+noise = SubResource("FastNoiseLite_o4rr6")
+
+[node name="EventScene" type="Node2D"]
+
+[node name="Root" type="Control" parent="."]
+custom_minimum_size = Vector2(1920, 1080)
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="Bg" type="ColorRect" parent="Root"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.0321884, 0.390136, 0.358944, 1)
+
+[node name="EventImg" type="TextureRect" parent="Root"]
+layout_mode = 0
+offset_left = 128.0
+offset_top = 192.0
+offset_right = 704.0
+offset_bottom = 896.0
+texture = SubResource("NoiseTexture2D_4moqu")
+
+[node name="BtnContainer" type="VBoxContainer" parent="Root"]
+layout_mode = 0
+offset_left = 832.0
+offset_top = 192.0
+offset_right = 1728.0
+offset_bottom = 896.0
+theme_override_constants/separation = 30
+alignment = 2

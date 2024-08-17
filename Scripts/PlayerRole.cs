@@ -4,6 +4,7 @@ using KemoCard.Scripts.Roles;
 using StaticClass;
 using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Linq;
 using static StaticClass.StaticEnums;
 
@@ -23,7 +24,7 @@ namespace KemoCard.Scripts
 
         }
 
-        public PlayerRole(uint id)
+        public PlayerRole(string id)
         {
             if (!Datas.Ins.RolePool.ContainsKey(id))
             {
@@ -57,7 +58,7 @@ namespace KemoCard.Scripts
 
         public List<Card> Deck { get; set; } = new();
 
-        public Dictionary<uint, Dictionary<uint, Card>> deck_idx_dic = new();
+        public Dictionary<string, Dictionary<uint, Card>> deck_idx_dic = new();
 
         private int _Gold = 0;
         public int Gold { get => _Gold; set => _Gold = Math.Max(0, value); }
@@ -96,7 +97,7 @@ namespace KemoCard.Scripts
             }
         }
 
-        public void RemoveCardFromDeck(uint cardid, uint idx)
+        public void RemoveCardFromDeck(string cardid, uint idx)
         {
             if (deck_idx_dic.ContainsKey(cardid))
             {
@@ -419,7 +420,7 @@ namespace KemoCard.Scripts
                 StaticInstance.eventMgr.Dispatch("PropertiesChanged", param);
             }
         }
-
+        public List<Card> TempDeck { get; set; } = new();
         #region 战斗中的数据，非战斗中时没有意义
         public List<Card> InFightDeck = new();
         public List<Card> InFightHands = new();
@@ -514,9 +515,12 @@ namespace KemoCard.Scripts
             StaticUtils.ShuffleArray(InFightDeck);
         }
 
+        /// <summary>
+        /// 赛局开始时调用,初始化赛局数据
+        /// </summary>
         public void InitFighter()
         {
-            InFightDeck = Deck.ToList();
+            InFightDeck = Deck.Concat(TempDeck).ToList();
             InFightDeck.ForEach(card =>
             {
                 card.InGameDict.Clear();

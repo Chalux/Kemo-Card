@@ -67,7 +67,7 @@ namespace KemoCard.Scripts.Cards
                 //cardObject.GlobalPosition = cardObject.GetGlobalMousePosition() - cardObject.PivotOffset;
                 (cardObject.BezierControl as Bezier).Reset(cardObject.GlobalPosition + cardObject.Size / 2, GetGlobalMousePosition());
             }
-            else if (confirm)
+            else if (confirm && BattleStatic.isFighting)
             {
                 //GD.Print(RecordTimeStamp + 10000 + ":" + Time.GetTicksMsec());
                 GetViewport().SetInputAsHandled();

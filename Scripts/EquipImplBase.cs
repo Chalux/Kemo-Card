@@ -10,7 +10,7 @@ namespace KemoCard.Scripts
     public partial class EquipImplBase : RefCounted, IEvent
     {
         public Equip Binder;
-        public Dictionary<uint, uint> CardDic { get; set; } = new();
+        public Dictionary<string, uint> CardDic { get; set; } = new();
 
         public string TextureUrl { get; set; } = "";
         [JsonIgnore]

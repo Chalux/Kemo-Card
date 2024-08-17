@@ -10,7 +10,7 @@ public partial class MapBtn : Control
     [Export] Label TierRangeLab;
     [Export] Label MapSizeLab;
 
-    public MapData mapData
+    public MapData MapData
     {
         get => _mapData;
         set
@@ -28,7 +28,12 @@ public partial class MapBtn : Control
         {
             if (_mapData != null && !StaticInstance.playerData.gsd.MapGenerator.IsStillRunning)
             {
-                StaticInstance.playerData.gsd.MapGenerator.GenerateMap(_mapData);
+                //StaticInstance.playerData.gsd.MapGenerator.GenerateMap(_mapData);
+                if (StaticInstance.windowMgr.GetSceneByName("MainScene") is MainScene mainScene && mainScene != null)
+                {
+                    mainScene.MapView.GenerateNewMap(MapData);
+                    mainScene.MapView.UnlockFloor(StaticInstance.playerData.gsd.MapGenerator.FloorsClimbed);
+                }
                 if (StaticInstance.currWindow is MapSelectScene mss)
                 {
                     StaticInstance.windowMgr.RemoveTopestPopup();

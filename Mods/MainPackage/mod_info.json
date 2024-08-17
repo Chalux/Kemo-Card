@@ -8,135 +8,121 @@
   ],
   "card_list": [
     {
-      "card_id": 10001,
-      "card_name": "fire_ball",
+      "card_id": "fire_ball",
       "filter_flag": 2081
     },
     {
-      "card_id": 10002,
-      "card_name": "water_slash",
+      "card_id": "water_slash",
       "filter_flag": 2065
     },
     {
-      "card_id": 10003,
-      "card_name": "self_pblock",
+      "card_id": "self_pblock",
       "filter_flag": 1026
     },
     {
-      "card_id": 10004,
-      "card_name": "self_mblock",
+      "card_id": "self_mblock",
       "filter_flag": 2050
     },
     {
-      "card_id": 10005,
-      "card_name": "punch",
+      "card_id": "punch",
       "filter_flag": 1033
     },
     {
-      "card_id": 10006,
-      "card_name": "magic_missile",
+      "card_id": "magic_missile",
       "filter_flag": 2057
     },
     {
-      "card_id": 10007,
-      "card_name": "测试卡牌7",
+      "card_id": "lucky",
       "filter_flag": 0
     },
     {
-      "card_id": 10008,
-      "card_name": "测试卡牌8",
+      "card_id": "test_card_8",
       "filter_flag": 0
     },
     {
-      "card_id": 10009,
-      "card_name": "测试卡牌9",
+      "card_id": "test_card_9",
       "filter_flag": 0
     }
   ],
   "enemy_list": [
     {
-      "enemy_id": 1,
-      "enemy_name": "火蝙蝠"
+      "enemy_id": "fire_bat"
     },
     {
-      "enemy_id": 2,
-      "enemy_name": "蝙蝠"
+      "enemy_id": "bat"
     },
     {
-      "enemy_id": 3,
-      "enemy_name": "水蝙蝠"
+      "enemy_id": "water_bat"
     },
     {
-      "enemy_id": 4,
-      "enemy_name": "巨魔"
+      "enemy_id": "troll"
     }
   ],
   "equip_list": [
     {
-      "equip_id": 10001,
-      "equip_name": "测试装备1",
+      "equip_id": "test_equip_1",
       "equip_type": 1
     },
     {
-      "equip_id": 10002,
-      "equip_name": "测试装备2",
+      "equip_id": "base_attack",
       "equip_type": 8
     },
     {
-      "equip_id": 10003,
-      "equip_name": "测试装备3",
+      "equip_id": "base_defense",
       "equip_type": 8
     }
   ],
   "buff_list": [
     {
-      "buff_id": 10001,
-      "buff_name": "water_injury"
+      "buff_id": "water_injury"
     },
     {
-      "buff_id": 10002,
-      "buff_name": "fire_resis"
+      "buff_id": "fire_resis"
     },
     {
-      "buff_id": 10003,
-      "buff_name": "测试buff3"
+      "buff_id": "fire_injury"
     },
     {
-      "buff_id": 10006,
-      "buff_name": "愤怒"
+      "buff_id": "anger"
+    },
+    {
+      "buff_id": "water_resis"
+    },
+    {
+      "buff_id": "get_lucky"
     }
   ],
   "role_list": [
     {
       "role_id": 1,
-      "role_name": "未完成"
+      "role_name": "not_complete"
     }
   ],
   "preset_list": [
     {
-      "preset_id": 1,
+      "preset_id": "test_preset_1",
       "is_boss": false,
       "tier": 1
     },
     {
-      "preset_id": 2,
+      "preset_id": "test_preset_2",
       "is_boss": false,
       "tier": 1
     },
     {
-      "preset_id": 3,
+      "preset_id": "test_preset_3",
       "is_boss": false,
       "tier": 1
     },
     {
-      "preset_id": 4,
+      "preset_id": "test_preset_4",
       "is_boss": true,
       "tier": 1
     }
   ],
   "map_list": [
     {
-      "map_id": 1,
+      "map_id": "test_map_1",
       "min_tier": 1,
       "max_tier": 3,
       "floor": 15,

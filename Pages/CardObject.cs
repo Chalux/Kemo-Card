@@ -56,7 +56,7 @@ public partial class CardObject : Control
 
     void UpdateCardObject()
     {
-        cardName.Text = StaticUtils.MakeBBCodeString(card.CardName);
+        cardName.Text = StaticUtils.MakeBBCodeString(card.Alias);
         cardDesc.Text = StaticUtils.MakeBBCodeString(card.Desc);
         cardCost.Text = card.Cost.ToString();
         costBg.Color = new(StaticEnums.CostBgColor[card.CostType]);

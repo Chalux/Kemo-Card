@@ -10,6 +10,7 @@ public partial class MapRoom : Control
     [Export] AnimationPlayer Animation;
     private bool _available = false;
     public Action<Room> SelectEventHandler;
+    public bool onlyRunHandlerWhenSelected = false;
     public bool Available
     {
         get => _available;
@@ -51,9 +52,14 @@ public partial class MapRoom : Control
     public void OnMapRoomSelected()
     {
         SelectEventHandler.Invoke(Room);
+        if (onlyRunHandlerWhenSelected) return;
         if (Room.Type == RoomType.Monster)
         {
             StaticUtils.StartNewBattleByPreset(Room.PresetId);
+        }
+        else if (Room.Type == RoomType.Event)
+        {
+
         }
     }
 

@@ -1,0 +1,40 @@
+[gd_scene load_steps=3 format=3 uid="uid://18ga8wx0cygn"]
+
+[ext_resource type="Script" path="res://Pages/RewardScene.cs" id="1_7jeu3"]
+[ext_resource type="Script" path="res://Pages/CustonSContainer.cs" id="1_atvxh"]
+
+[node name="RewardScene" type="Node2D" node_paths=PackedStringArray("vBox", "ReturnBtn")]
+script = ExtResource("1_7jeu3")
+vBox = NodePath("Control/ScrollContainer/vBox")
+ReturnBtn = NodePath("ReturnBtn")
+
+[node name="Control" type="Control" parent="." node_paths=PackedStringArray("scrollContainer")]
+custom_minimum_size = Vector2(1920, 1080)
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+script = ExtResource("1_atvxh")
+scrollContainer = NodePath("ScrollContainer")
+
+[node name="ScrollContainer" type="ScrollContainer" parent="Control"]
+custom_minimum_size = Vector2(576, 640)
+layout_mode = 0
+offset_left = 672.0
+offset_top = 220.0
+offset_right = 1248.0
+offset_bottom = 860.0
+
+[node name="vBox" type="VBoxContainer" parent="Control/ScrollContainer"]
+custom_minimum_size = Vector2(576, 640)
+layout_mode = 2
+theme_override_constants/separation = 20
+
+[node name="ReturnBtn" type="Button" parent="."]
+offset_left = 832.0
+offset_top = 896.0
+offset_right = 1088.0
+offset_bottom = 960.0
+theme_override_font_sizes/font_size = 36
+text = "返回
+"

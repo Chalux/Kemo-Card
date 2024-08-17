@@ -16,7 +16,7 @@ public partial class CardShowObject : Control
     public Tween AnimTween;
     public Card card;
 
-    public void InitData(uint id)
+    public void InitData(string id)
     {
         if (!Datas.Ins.CardPool.ContainsKey(id)) return;
         var cdata = Datas.Ins.CardPool[id];
@@ -70,7 +70,7 @@ public partial class CardShowObject : Control
 
     void UpdateCardObject()
     {
-        cardName.Text = StaticUtils.MakeBBCodeString(card.CardName);
+        cardName.Text = StaticUtils.MakeBBCodeString(card.Alias);
         cardDesc.Text = StaticUtils.MakeBBCodeString(card.Desc);
         cardCost.Text = card.Cost.ToString();
         costBg.Color = new(StaticEnums.CostBgColor[card.CostType]);

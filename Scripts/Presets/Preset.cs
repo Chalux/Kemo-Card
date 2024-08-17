@@ -3,16 +3,16 @@ using System.Collections.Generic;
 
 namespace KemoCard.Scripts.Presets
 {
-    internal class Preset
+    public class Preset
     {
-        public List<uint> Enemies { get; set; } = new() { 1 };
+        public List<string> Enemies { get; set; } = new() { "bat" };
         public uint Tier { get; set; } = 1;
         public int MinGoldReward { get; set; } = 0;
         public int MaxGoldReward { get; set; } = 0;
         public int GainExp { get; set; } = 0;
         public bool IsBoss { get; set; } = false;
 
-        public Preset(uint id)
+        public Preset(string id)
         {
             if (Datas.Ins.PresetPool.ContainsKey(id))
             {

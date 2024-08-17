@@ -9,13 +9,18 @@ using System.Collections.Generic;
 using System.Linq;
 using static StaticClass.StaticEnums;
 
+public struct RewardStruct
+{
+    public RewardType type;
+    public List<string> rewards;
+}
 public partial class BattleScene : BaseScene, IEvent
 {
     [Export] HBoxContainer playerContainer;
     [Export] HBoxContainer enemyContainer;
     [Export] public Control HandControl;
     [Export] Label DeckCount;
-    [Export] Label GraveCount;
+    [Export] public Label GraveCount;
     [Export] Label ActionPointLabel;
     [Export] float TweenSpeed = 0.25f;
     [Export] float TotalAngle = 0f;
@@ -29,19 +34,19 @@ public partial class BattleScene : BaseScene, IEvent
     [Export] Godot.Button GraveBtn;
     [Export] Godot.Button WholeDeckBtn;
     [Export] Godot.Button DebugWinBtn;
+    [Export] Godot.Button ReturnBtn;
+    [Export] Control EndControl;
 
-    public bool isFighting = false;
     private bool isDebugFight = false;
 
     private int HoveredIndex = -1;
     private bool IsDragging = false;
     private Preset BattlePreset = null;
-    private bool isMapBattle = false;
+    private Action AfterBattleHandler;
 
     public PlayerRole nowPlayer;
-    public void NewBattle(PlayerRole playerRole, uint[] enemyRoles, bool isDebugFight = false)
+    public void NewBattle(PlayerRole playerRole, string[] enemyRoles, bool isDebugFight = false, Action afterBattleHandler = null)
     {
-        isFighting = true;
         //playerRole.Init();
         List<PlayerRole> players = new()
         {
@@ -55,9 +60,10 @@ public partial class BattleScene : BaseScene, IEvent
         BattleStatic.Reset();
         this.isDebugFight = isDebugFight;
         NewBattleCore(players, enemies);
+        AfterBattleHandler = afterBattleHandler;
     }
 
-    public void NewBattleByPreset(uint presetId, bool isDebugFight = false)
+    public void NewBattleByPreset(string presetId, bool isDebugFight = false, Action afterBattleHandler = null)
     {
         Preset preset = new();
         if (Datas.Ins.PresetPool.ContainsKey(presetId))
@@ -67,7 +73,7 @@ public partial class BattleScene : BaseScene, IEvent
             var PresetScript = res.New().As<BasePresetScript>();
             PresetScript.Init(preset);
             BattlePreset = preset;
-            NewBattle(StaticInstance.playerData.gsd.MajorRole, preset.Enemies.ToArray(), isDebugFight);
+            NewBattle(StaticInstance.playerData.gsd.MajorRole, preset.Enemies.ToArray(), isDebugFight, afterBattleHandler);
         }
     }
 
@@ -106,6 +112,27 @@ public partial class BattleScene : BaseScene, IEvent
         {
             StaticInstance.windowMgr.AddScene((BaseScene)ResourceLoader.Load<PackedScene>("res://Pages/DeckView.tscn").Instantiate()
                 , new[] { currentPlayerRoles[0].Deck.ToList() });
+        });
+        ReturnBtn.Pressed += new(() =>
+        {
+            if (!BattleStatic.isFighting)
+            {
+                if (AfterBattleHandler != null)
+                {
+                    AfterBattleHandler.Invoke();
+                    AfterBattleHandler = null;
+                }
+                else
+                {
+                    //StaticInstance.windowMgr.RemoveScene(this);
+                    PackedScene res = ResourceLoader.Load<PackedScene>("res://Pages/MainScene.tscn");
+                    if (res != null)
+                    {
+                        StaticInstance.windowMgr.ChangeScene(res.Instantiate<MainScene>());
+                    }
+                }
+                StaticInstance.playerData.Save(1, true);
+            }
         });
     }
 
@@ -250,6 +277,8 @@ public partial class BattleScene : BaseScene, IEvent
 
     public void NewBattleCore(List<PlayerRole> players, List<EnemyRole> enemies)
     {
+        BattleStatic.isFighting = true;
+        EndControl.Visible = false;
         foreach (PlayerRole i in players)
         {
             i.Deck.ForEach(card =>
@@ -315,7 +344,7 @@ public partial class BattleScene : BaseScene, IEvent
 
     public void NextTurn()
     {
-        if (!isFighting) return;
+        if (!BattleStatic.isFighting) return;
         turns++;
         TurnLabel.Text = "回合数：" + turns;
         foreach (var player in currentPlayerRoles)
@@ -363,7 +392,7 @@ public partial class BattleScene : BaseScene, IEvent
         }
         for (int i = 0; i < currentEnemyRoles.Count; i++)
         {
-            if (currentEnemyRoles[i] == null || !isFighting) return;
+            if (currentEnemyRoles[i] == null || !BattleStatic.isFighting) return;
             currentEnemyRoles[i].script.ActionFunc?.Invoke(turns, currentPlayerRoles, currentEnemyRoles);
         }
         NextTurn();
@@ -371,7 +400,7 @@ public partial class BattleScene : BaseScene, IEvent
 
     public AttackResult DealDamage(double value, AttackType attackType, BaseRole from, List<BaseRole> targets, AttributeEnum atrribute = AttributeEnum.None)
     {
-        if (!isFighting) return AttackResult.Failed;
+        if (!BattleStatic.isFighting) return AttackResult.Failed;
         Damage damage = new()
         {
             validTag = true,
@@ -583,46 +612,53 @@ public partial class BattleScene : BaseScene, IEvent
     public void EndBattle(bool win)
     {
         StaticInstance.eventMgr.UnregistIEvent(this);
-        startPlayerRoles.ForEach(obj => StaticInstance.eventMgr.UnregistIEvent(obj));
+        startPlayerRoles.ForEach(obj =>
+        {
+            obj.EndFight();
+            StaticInstance.eventMgr.UnregistIEvent(obj);
+        });
         startEnemyRoles.ForEach(obj => StaticInstance.eventMgr.UnregistIEvent(obj));
-        isFighting = false;
         playerRoles.Clear();
         currentEnemyRoles.Clear();
         currentPlayerRoles.Clear();
         enemyRoles.Clear();
         startEnemyRoles.Clear();
         startPlayerRoles.Clear();
+        foreach (Node node in HandControl.GetChildren())
+        {
+            node.QueueFree();
+        }
         foreach (var i in playerContainer.GetChildren())
         {
             i.QueueFree();
         }
         BattleStatic.Reset();
-        //MainScene ms = (MainScene)StaticInstance.windowMgr.GetSceneByName("MainScene");
-        //StaticInstance.windowMgr.RemoveScene(this);
-        MainScene ms = (MainScene)ResourceLoader.Load<PackedScene>("res://Pages/MainScene.tscn").Instantiate();
-        StaticInstance.windowMgr.ChangeScene(ms, (scene) =>
+        StaticInstance.playerData.gsd.MajorRole.FightSymbol.Clear();
+        if (win)
         {
-            var ms = scene as MainScene;
-            var MapGenerator = StaticInstance.playerData.gsd.MapGenerator;
-            if (win && MapGenerator.IsStillRunning)
+            RewardScene rewardScene = (RewardScene)ResourceLoader.Load<PackedScene>("res://Pages/RewardScene.tscn").Instantiate();
+            List<RewardStruct> datas = new();
+            RewardStruct @struct = new()
             {
-                if (MapGenerator.FloorsClimbed == MapGenerator.Data.FLOORS)
-                {
-                    MapGenerator.IsStillRunning = false;
-                }
-                else
-                {
-                    ms.GetTree().CreateTimer(1).Timeout += ms.MapView.UnlockNextRooms;
-                }
-                StaticInstance.playerData.gsd.MajorRole.Exp += (uint)BattlePreset.GainExp;
-                Random r = new();
-                StaticInstance.playerData.gsd.MajorRole.Gold += (int)r.NextInt64(BattlePreset.MinGoldReward, BattlePreset.MaxGoldReward);
-                StaticInstance.playerData.Save(1, true);
+                type = RewardType.Gold
+            };
+            Random r = new();
+            uint gold = (uint)r.Next(BattlePreset.MinGoldReward, BattlePreset.MaxGoldReward);
+            if (gold > 0)
+            {
+                @struct.rewards = new() { gold.ToString() };
+                datas.Add(@struct);
             }
-            ms.UpdateView();
-        });
-        isMapBattle = false;
-        BattlePreset = null;
+            RewardStruct @struct2 = new()
+            {
+                type = RewardType.Exp,
+                rewards = new() { BattlePreset.GainExp.ToString() }
+            };
+            if (BattlePreset.GainExp > 0) datas.Add(@struct2);
+            StaticInstance.windowMgr.AddScene(rewardScene, datas);
+            BattlePreset = null;
+        }
+        EndControl.Visible = true;
     }
 
     public void UpdateCounts()

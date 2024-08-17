@@ -10,10 +10,10 @@ public partial class BuffObject : Control, IEvent
     [Export] public TextureRect texture;
     [Export] public ColorRect color;
     public BuffImplBase data;
-    public void Init(uint id)
+    public void Init(string id)
     {
-        var modInfo = Datas.Ins.BuffPool.GetValueOrDefault(id, new() { buff_id = 0, buff_name = "", mod_id = "MainPackage" });
-        if (modInfo.buff_id != 0)
+        var modInfo = Datas.Ins.BuffPool.GetValueOrDefault(id, new() { buff_id = null, mod_id = "MainPackage" });
+        if (modInfo.buff_id != null)
         {
             string spath = $"res://Mods/{modInfo.mod_id}/Scripts/Buffs/B{modInfo.buff_id}.cs";
             FileAccess script = FileAccess.Open(spath, FileAccess.ModeFlags.Read);

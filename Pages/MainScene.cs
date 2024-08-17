@@ -38,18 +38,18 @@ public partial class MainScene : BaseScene
         EditDeckButton.Pressed += new(() =>
         {
             StaticInstance.windowMgr.AddScene((BaseScene)ResourceLoader.Load<PackedScene>("res://Pages/DeckView.tscn").Instantiate()
-                , new[] { major.Deck.ToList() });
+                , new[] { major.Deck.ToList().Concat(major.TempDeck.ToList()) });
             StaticInstance.MainRoot.HideRichHint();
         });
         TestBattleButton.Pressed += new(() =>
         {
             string[] strings = EnemiesInput.Text.Split(",");
-            List<uint> array = new();
+            List<string> array = new();
             try
             {
                 foreach (var s in strings)
                 {
-                    if (s != "") array.Add((uint)s.ToInt());
+                    if (s != "") array.Add(s);
                 }
             }
             catch
@@ -68,7 +68,7 @@ public partial class MainScene : BaseScene
         });
         TestPresetBtn.Pressed += new(() =>
         {
-            uint preset = (uint)PresetInput.Text.ToInt();
+            string preset = PresetInput.Text;
             if (Datas.Ins.PresetPool.ContainsKey(preset))
             {
                 BattleScene node = (BattleScene)ResourceLoader.Load<PackedScene>("res://Pages/BattleScene.tscn").Instantiate();
@@ -100,6 +100,7 @@ public partial class MainScene : BaseScene
             StaticInstance.windowMgr.AddScene((BaseScene)ResourceLoader.Load<PackedScene>("res://Pages/Map/MapSelectScene.tscn").Instantiate());
             StaticInstance.MainRoot.HideRichHint();
         });
+        MapView.CreateMap();
         UpdateView();
     }
 
@@ -115,6 +116,7 @@ public partial class MainScene : BaseScene
         ExpProg.Value = major.Exp;
         LevelLabel.Text = $"{major.Level}级";
         SelectMapBtn.Disabled = StaticInstance.playerData.gsd.MapGenerator.IsStillRunning;
-        MapView.CreateMap();
+        if (StaticInstance.playerData.gsd.MapGenerator.FloorsClimbed == 0) MapView.UnlockFloor(StaticInstance.playerData.gsd.MapGenerator.FloorsClimbed);
+        else MapView.UnlockNextRooms();
     }
 }

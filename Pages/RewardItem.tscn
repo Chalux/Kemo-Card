@@ -1,0 +1,26 @@
+[gd_scene load_steps=3 format=3 uid="uid://d27acyaxv4l27"]
+
+[ext_resource type="Texture2D" uid="uid://dyygagjf1l0r6" path="res://Mods/MainPackage/Resources/Icons/icons_204.png" id="1_esx2y"]
+[ext_resource type="Script" path="res://Pages/RewardItem.cs" id="1_rayhw"]
+
+[node name="RewardItem" type="Control" node_paths=PackedStringArray("btn")]
+custom_minimum_size = Vector2(300, 64)
+layout_mode = 3
+anchors_preset = 0
+script = ExtResource("1_rayhw")
+btn = NodePath("Button")
+
+[node name="Button" type="Button" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/h_separation = 20
+theme_override_constants/icon_max_width = 36
+theme_override_font_sizes/font_size = 36
+text = "金币"
+icon = ExtResource("1_esx2y")
+alignment = 0
+expand_icon = true

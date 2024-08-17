@@ -8,7 +8,7 @@ namespace KemoCard.Scripts
 {
     public partial class BuffImplBase : IEvent
     {
-        public uint BuffId { get; set; } = 0;
+        public string BuffId { get; set; }
         private int _buffCount = 1;
         public string IconPath { get; set; } = "";
         // 临时的属性修改都放在这里面，只有永久修改的才写代码改属性值
@@ -41,7 +41,6 @@ namespace KemoCard.Scripts
         public bool CanStack { get; set; } = false;
         public bool IsInfinite { get; set; } = false;
         public HashSet<string> tags = new();
-        public string BuffName { get; set; } = "";
         public StaticEnums.EffectTriggerTiming CountTriTiming { get; set; } = StaticEnums.EffectTriggerTiming.ON_TURN_END;
         [JsonIgnore]
         public object Binder;

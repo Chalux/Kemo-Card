@@ -20,7 +20,7 @@ public partial class MapSelectScene : BaseScene
             if (CondMgr.Ins.CheckCond(m.Cond))
             {
                 MapBtn btn = (MapBtn)ResourceLoader.Load<PackedScene>("res://Pages/Map/MapBtn.tscn").Instantiate();
-                btn.mapData = m;
+                btn.MapData = m;
                 FlowContainer.AddChild(btn);
             }
         }
