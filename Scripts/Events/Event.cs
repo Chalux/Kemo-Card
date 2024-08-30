@@ -1,5 +1,6 @@
 ﻿using Godot;
 using System;
+using System.Collections.Generic;
 
 namespace KemoCard.Scripts.Events
 {
@@ -7,6 +8,14 @@ namespace KemoCard.Scripts.Events
     {
         public string Id { get; set; }
         public Action StartEvent;
+        /// <summary>
+        /// 这三个属性的数量必须相等
+        /// </summary>
+        public List<Action> EventActions = new();
+        public List<string> EventDesc = new();
+        public List<string> EventIconPath = new();
+        public string EventTitle = "";
+        public string EventImgPath = "";
         public Event(string id)
         {
             Id = id;
@@ -20,6 +29,13 @@ namespace KemoCard.Scripts.Events
                     baseEventScript.Init(this);
                 }
             }
+        }
+
+        public void AddEvent(string Desc,string IconPath, Action action)
+        {
+            EventDesc.Add(Desc);
+            EventIconPath.Add(IconPath);
+            EventActions.Add(action);
         }
     }
 

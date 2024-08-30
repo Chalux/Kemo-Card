@@ -226,6 +226,11 @@ namespace KemoCard.Scripts
             }
         }
 
+        public void RecoverMagic()
+        {
+            CurrMagic += CurrEffeciency * 3;
+        }
+
         public bool isFriendly = true;
 
         // 结合数据区，这里始终取实际数据区的值，所以是一种特殊的实际数据
@@ -331,7 +336,7 @@ namespace KemoCard.Scripts
 
         public string RichDodge() => string.Format(format: "[color={0}]{1}[/color]", arg0: StaticInstance.TechniqueColor, arg1: CurrDodge);
 
-        public virtual void ReceiveEvent(string @event, dynamic datas) { }
+        public virtual void ReceiveEvent(string @event, params object[] datas) { }
         #endregion
 
         public void OnPropertyChanged(string propName, dynamic oldValue, dynamic newValue)

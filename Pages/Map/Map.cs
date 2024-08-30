@@ -95,6 +95,7 @@ public partial class Map : BaseScene
         float MapWidthPixels = map.X_DISTANCE * (map.MAP_WIDTH - 1);
         var s = GetViewportRect().Size;
         Visual.Position = new((s.X - MapWidthPixels) / 2, s.Y / 2);
+        Camera2D.Enabled = false;
     }
 
     private void SpawnRoom(Room room)

@@ -43,5 +43,10 @@ namespace KemoCard.Scripts.Cards
         {
 
         }
+
+        public virtual void ReceiveEvent(string @event, params object[] datas)
+        {
+
+        }
     }
 }

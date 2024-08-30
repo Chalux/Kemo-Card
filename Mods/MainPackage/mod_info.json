@@ -9,39 +9,105 @@
   "card_list": [
     {
       "card_id": "fire_ball",
-      "filter_flag": 2081
+      "filter_flag": 2081,
+      "rare": 1,
+      "is_special": false
     },
     {
       "card_id": "water_slash",
-      "filter_flag": 2065
+      "filter_flag": 2065,
+      "rare": 1,
+      "is_special": false
     },
     {
       "card_id": "self_pblock",
-      "filter_flag": 1026
+      "filter_flag": 1026,
+      "rare": 1,
+      "is_special": true
     },
     {
       "card_id": "self_mblock",
-      "filter_flag": 2050
+      "filter_flag": 2050,
+      "rare": 1,
+      "is_special": true
     },
     {
       "card_id": "punch",
-      "filter_flag": 1033
+      "filter_flag": 1033,
+      "rare": 1,
+      "is_special": true
     },
     {
       "card_id": "magic_missile",
-      "filter_flag": 2057
+      "filter_flag": 2057,
+      "rare": 1,
+      "is_special": true
     },
     {
       "card_id": "lucky",
-      "filter_flag": 0
+      "filter_flag": 0,
+      "rare": 1,
+      "is_special": true
     },
     {
       "card_id": "test_card_8",
-      "filter_flag": 0
+      "filter_flag": 0,
+      "rare": 1,
+      "is_special": true
     },
     {
       "card_id": "test_card_9",
-      "filter_flag": 0
+      "filter_flag": 0,
+      "rare": 1,
+      "is_special": true
+    },
+    {
+      "card_id": "graceful_charity",
+      "filter_flag": 12288,
+      "rare": 1,
+      "is_special": false
+    },
+    {
+      "card_id": "rock_drill",
+      "filter_flag": 17473,
+      "rare": 1,
+      "is_special": false
+    },
+    {
+      "card_id": "mag_draw",
+      "filter_flag": 6153,
+      "rare": 1,
+      "is_special": false
+    },
+    {
+      "card_id": "no_defense",
+      "filter_flag": 9225,
+      "rare": 2,
+      "is_special": false
+    },
+    {
+      "card_id": "no_attack",
+      "filter_flag": 8206,
+      "rare": 2,
+      "is_special": false
+    },
+    {
+      "card_id": "double_hit",
+      "filter_flag": 33801,
+      "rare": 1,
+      "is_special": false
+    },
+    {
+      "card_id": "create_equip",
+      "filter_flag": 65536,
+      "rare": 1,
+      "is_special": false
+    },
+    {
+      "card_id": "create_book",
+      "filter_flag": 65536,
+      "rare": 1,
+      "is_special": false
     }
   ],
   "enemy_list": [
@@ -61,15 +127,18 @@
   "equip_list": [
     {
       "equip_id": "test_equip_1",
-      "equip_type": 1
+      "equip_type": 1,
+      "is_special": true
     },
     {
       "equip_id": "base_attack",
-      "equip_type": 8
+      "equip_type": 8,
+      "is_special": true
     },
     {
       "equip_id": "base_defense",
-      "equip_type": 8
+      "equip_type": 8,
+      "is_special": true
     }
   ],
   "buff_list": [
@@ -102,22 +171,26 @@
     {
       "preset_id": "test_preset_1",
       "is_boss": false,
-      "tier": 1
+      "tier": 1,
+      "is_special": false
     },
     {
       "preset_id": "test_preset_2",
       "is_boss": false,
-      "tier": 1
+      "tier": 1,
+      "is_special": false
     },
     {
       "preset_id": "test_preset_3",
       "is_boss": false,
-      "tier": 1
+      "tier": 1,
+      "is_special": false
     },
     {
       "preset_id": "test_preset_4",
       "is_boss": true,
-      "tier": 1
+      "tier": 1,
+      "is_special": false
     }
   ],
   "map_list": [
@@ -128,6 +201,12 @@
       "floor": 15,
       "map_width": 7,
       "paths": 6
+    }
+  ],
+  "event_list": [
+    {
+      "event_id": "test_event_1",
+      "is_special": false
     }
   ]
 }

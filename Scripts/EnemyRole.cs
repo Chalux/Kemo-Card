@@ -123,7 +123,7 @@ namespace KemoCard.Scripts
             isEnemyInited = true;
         }
 
-        public override void ReceiveEvent(string @event, dynamic datas)
+        public override void ReceiveEvent(string @event, params object[] datas)
         {
             script?.ReceiveEvent(@event, datas);
         }

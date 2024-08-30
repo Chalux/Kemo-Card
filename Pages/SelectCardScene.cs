@@ -45,7 +45,7 @@ public partial class SelectCardScene : BaseScene, IEvent
             {
                 var card = new Card(id)
                 {
-                    isTemp = true
+                    IsTemp = true
                 };
                 SelectCardItem item = ResourceLoader.Load<PackedScene>("res://Pages/SelectCardItem.tscn").Instantiate<SelectCardItem>();
                 item.showObject.InitDataByCard(card);
@@ -70,7 +70,7 @@ public partial class SelectCardScene : BaseScene, IEvent
         });
     }
 
-    public void ReceiveEvent(string @event, dynamic datas)
+    public void ReceiveEvent(string @event, params object[] datas)
     {
 
     }

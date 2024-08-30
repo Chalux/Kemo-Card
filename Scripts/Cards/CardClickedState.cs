@@ -12,7 +12,7 @@ namespace KemoCard.Scripts.Cards
 
         void OnEnter()
         {
-            cardObject.colorRect.Color = Colors.Orange;
+            //cardObject.BgRect.Color = Colors.Orange;
             cardObject.PivotOffset = Vector2.Zero;
             cardObject.dropPointDetector.Monitoring = true;
             cardObject.stateLabel.Text = "CLICKED";

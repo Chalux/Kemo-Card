@@ -239,7 +239,7 @@ namespace KemoCard.Pages
             }
         }
 
-        public void ReceiveEvent(string @event, dynamic datas)
+        public void ReceiveEvent(string @event, params object[] datas)
         {
             if (@event == "PlayerEquipUpdated")
             {

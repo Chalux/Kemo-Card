@@ -77,7 +77,7 @@ public partial class BuffObject : Control, IEvent
         }
     }
 
-    public void ReceiveEvent(string @event, dynamic datas)
+    public void ReceiveEvent(string @event, params object[] datas)
     {
         data.ReceiveEvent(@event, datas);
     }

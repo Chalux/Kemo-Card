@@ -16,7 +16,7 @@ namespace KemoCard.Scripts.Cards
 
         void OnEnter()
         {
-            StaticInstance.eventMgr.Dispatch("DraggingCard", new object[] { true });
+            StaticInstance.eventMgr.Dispatch("DraggingCard", true);
             cardObject.AnimTween.Stop();
             cardObject.BindRoot(cardObject.GetParent());
             Node uiLayer = StaticInstance.MainRoot;
@@ -24,7 +24,7 @@ namespace KemoCard.Scripts.Cards
             {
                 cardObject.Reparent(uiLayer);
             }
-            cardObject.colorRect.Color = Colors.NavyBlue;
+            //cardObject.BgRect.Color = Colors.NavyBlue;
             cardObject.Rotation = 0;
             cardObject.stateLabel.Text = "DRAGGING";
             RecordTimeStamp = Time.GetTicksMsec();

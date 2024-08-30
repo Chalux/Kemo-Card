@@ -1,4 +1,4 @@
-[gd_scene load_steps=22 format=3 uid="uid://w7e40lauidt0"]
+[gd_scene load_steps=28 format=3 uid="uid://w7e40lauidt0"]
 
 [ext_resource type="Shader" path="res://Resources/burn_shader.gdshader" id="1_8ochk"]
 [ext_resource type="Script" path="res://Pages/CardObject.cs" id="1_bld5k"]
@@ -8,10 +8,13 @@
 [ext_resource type="Script" path="res://Scripts/Cards/CardBaseState.cs" id="3_kyomr"]
 [ext_resource type="Texture2D" uid="uid://byn85mmoj86ck" path="res://Resources/Cursor/104.png" id="3_wi0nh"]
 [ext_resource type="Texture2D" uid="uid://lhm0o7fr7df3" path="res://Resources/Cursor/75.png" id="4_7smcf"]
+[ext_resource type="Shader" path="res://Pages/CardFrame.gdshader" id="4_kdjdm"]
 [ext_resource type="Script" path="res://Scripts/Cards/CardClickedState.cs" id="4_wim2r"]
 [ext_resource type="Script" path="res://Scripts/Cards/CardDraggingState.cs" id="5_ff1ko"]
+[ext_resource type="Material" uid="uid://btgvdfeaqsxas" path="res://Resources/EffectFrameMaterial.tres" id="5_q2jmy"]
 [ext_resource type="Script" path="res://Scripts/Cards/CardReleasedState.cs" id="6_iatr0"]
 [ext_resource type="Script" path="res://Scripts/Cards/CardAllState.cs" id="8_m444i"]
+[ext_resource type="Script" path="res://Scripts/Cards/CardDiscardingState.cs" id="15_dok7q"]
 
 [sub_resource type="Gradient" id="Gradient_mcxnm"]
 
@@ -52,10 +55,25 @@ shader_parameter/burn_size = 0.2
 shader_parameter/burn_color = Color(0.922391, 0.121125, 0, 1)
 shader_parameter/dissolve_texture = SubResource("NoiseTexture2D_hp427")
 
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_auwai"]
+shader = ExtResource("4_kdjdm")
+shader_parameter/color = Color(1, 0, 0, 1)
+shader_parameter/width = 0.015
+shader_parameter/pattern = 0
+shader_parameter/inside = true
+shader_parameter/add_margins = false
+
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_btin5"]
 size = Vector2(256, 320)
 
-[node name="CardObject" type="Control" node_paths=PackedStringArray("cardName", "cardDesc", "cardCost", "colorRect", "costBg", "dropPointDetector", "stateLabel", "csm", "BezierControl", "SVContainer")]
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_sk25p"]
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_fwgws"]
+width = 256
+height = 320
+noise = SubResource("FastNoiseLite_sk25p")
+
+[node name="CardObject" type="Control" node_paths=PackedStringArray("cardName", "cardDesc", "cardCost", "BgRect", "costBg", "dropPointDetector", "stateLabel", "csm", "BezierControl", "SVContainer", "FrameRect", "EFRect")]
 material = SubResource("ShaderMaterial_proen")
 custom_minimum_size = Vector2(256, 320)
 layout_mode = 3
@@ -68,13 +86,15 @@ script = ExtResource("1_bld5k")
 cardName = NodePath("Container/SubViewportContainer/SubViewport/CardName")
 cardDesc = NodePath("Container/SubViewportContainer/SubViewport/CardDesc")
 cardCost = NodePath("Container/SubViewportContainer/SubViewport/CostBg/CardCost")
-colorRect = NodePath("Container/SubViewportContainer/SubViewport/ColorRect")
+BgRect = NodePath("Container/SubViewportContainer/SubViewport/BgRect")
 costBg = NodePath("Container/SubViewportContainer/SubViewport/CostBg")
 dropPointDetector = NodePath("Container/SubViewportContainer/SubViewport/Area2D")
 stateLabel = NodePath("Container/SubViewportContainer/SubViewport/Label")
 csm = NodePath("CardStateMachine")
 BezierControl = NodePath("Bezier")
 SVContainer = NodePath("Container/SubViewportContainer")
+FrameRect = NodePath("Container/SubViewportContainer/SubViewport/FrameRect")
+EFRect = NodePath("Container/SubViewportContainer/SubViewport/EFRect")
 AngleXMax = 0.08
 AngleYMax = 0.08
 
@@ -102,13 +122,22 @@ handle_input_locally = false
 size = Vector2i(256, 320)
 render_target_update_mode = 4
 
-[node name="ColorRect" type="ColorRect" parent="Container/SubViewportContainer/SubViewport"]
-modulate = Color(0, 0, 0, 0.431373)
+[node name="FrameRect" type="ColorRect" parent="Container/SubViewportContainer/SubViewport"]
+material = SubResource("ShaderMaterial_auwai")
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="BgRect" type="ColorRect" parent="Container/SubViewportContainer/SubViewport"]
 custom_minimum_size = Vector2(128, 192)
 offset_right = 256.0
 offset_bottom = 320.0
 pivot_offset = Vector2(128, 320)
 mouse_filter = 2
+color = Color(0, 0, 0, 0.556863)
 
 [node name="CardName" type="RichTextLabel" parent="Container/SubViewportContainer/SubViewport"]
 offset_left = 16.0
@@ -163,6 +192,14 @@ theme_override_font_sizes/font_size = 72
 text = "StateText"
 horizontal_alignment = 1
 
+[node name="EFRect" type="TextureRect" parent="Container/SubViewportContainer/SubViewport"]
+visible = false
+material = ExtResource("5_q2jmy")
+offset_right = 256.0
+offset_bottom = 320.0
+mouse_filter = 2
+texture = SubResource("NoiseTexture2D_fwgws")
+
 [node name="Bezier" type="Control" parent="."]
 visible = false
 layout_mode = 3
@@ -213,3 +250,10 @@ offset_right = 40.0
 offset_bottom = 40.0
 script = ExtResource("8_m444i")
 state = 2
+
+[node name="CardDiscardingState" type="Control" parent="CardStateMachine"]
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+script = ExtResource("15_dok7q")
+state = 6

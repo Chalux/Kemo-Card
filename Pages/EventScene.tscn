@@ -1,4 +1,6 @@
-[gd_scene load_steps=3 format=3 uid="uid://ckqphu5q3ciru"]
+[gd_scene load_steps=4 format=3 uid="uid://ckqphu5q3ciru"]
+
+[ext_resource type="Script" path="res://Pages/EventScene.cs" id="1_qalbm"]
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_o4rr6"]
 frequency = 0.0002
@@ -8,7 +10,11 @@ width = 576
 height = 704
 noise = SubResource("FastNoiseLite_o4rr6")
 
-[node name="EventScene" type="Node2D"]
+[node name="EventScene" type="Node2D" node_paths=PackedStringArray("BtnContainer", "EventImg", "EventTitle")]
+script = ExtResource("1_qalbm")
+BtnContainer = NodePath("Root/BtnContainer")
+EventImg = NodePath("Root/EventImg")
+EventTitle = NodePath("Root/EventTitle")
 
 [node name="Root" type="Control" parent="."]
 custom_minimum_size = Vector2(1920, 1080)
@@ -42,3 +48,12 @@ offset_right = 1728.0
 offset_bottom = 896.0
 theme_override_constants/separation = 30
 alignment = 2
+
+[node name="EventTitle" type="Label" parent="Root"]
+layout_mode = 0
+offset_left = 832.0
+offset_top = 192.0
+offset_right = 1728.0
+offset_bottom = 576.0
+theme_override_font_sizes/font_size = 36
+text = "事件描述"

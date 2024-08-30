@@ -67,7 +67,7 @@ namespace KemoCard.Scripts
 
         [JsonIgnore]
         public Dictionary<string, List<Action<dynamic>>> EventDic { get; set; } = new();
-        public void ReceiveEvent(string @event, dynamic datas)
+        public void ReceiveEvent(string @event, params object[] datas)
         {
             if (EventDic.ContainsKey(@event)) EventDic[@event]?.ForEach(function => function?.Invoke(datas));
         }

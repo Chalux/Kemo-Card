@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using KemoCard.Scripts.Events;
+using System.Collections.Generic;
 
 namespace KemoCard.Scripts
 {
@@ -23,11 +24,19 @@ namespace KemoCard.Scripts
         /// <summary>
         /// 只有Type是Monster的时候才有意义
         /// </summary>
-        public string PresetId { get; set; }
+        public string RoomPresetId { get; set; }
+        /// <summary>
+        /// 只有Type是Event的时候才有意义
+        /// </summary>
+        public string RoomEventId { get; set; }
+        /// <summary>
+        /// 只有Type是Equip的时候才有意义
+        /// </summary>
+        public string RoomEquipId { get; set; }
 
         public override string ToString()
         {
-            return $"{Col}({Type.ToString()[0]}{PresetId})";
+            return $"{Col}({Type.ToString()[0]}{RoomPresetId ?? RoomEventId ?? RoomEquipId})";
         }
     }
 }

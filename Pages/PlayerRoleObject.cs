@@ -87,7 +87,7 @@ public partial class PlayerRoleObject : Control, IEvent
         roleName.Text = StaticUtils.MakeBBCodeString(data.name);
     }
 
-    public void ReceiveEvent(string @event, dynamic datas)
+    public void ReceiveEvent(string @event, params object[] datas)
     {
         if (@event == "PropertiesChanged")
         {
@@ -95,13 +95,13 @@ public partial class PlayerRoleObject : Control, IEvent
         }
         else if (@event == "StartSelectTarget")
         {
-            var type = (StaticEnums.TargetType)datas;
+            var type = (StaticEnums.TargetType)datas[0];
             if (type == StaticEnums.TargetType.ALL_SINGLE || type == StaticEnums.TargetType.TEAM_SINGLE)
                 SelectingTarget = true;
         }
         else if (@event == "SelectTargetOwner")
         {
-            var target = (BaseRole)datas;
+            var target = (BaseRole)datas[0];
             if (target != null && target == data)
             {
                 SelectingTarget = false;
@@ -115,7 +115,7 @@ public partial class PlayerRoleObject : Control, IEvent
         }
         else if (@event == "SelectTargetAll")
         {
-            var type = (StaticEnums.TargetType)datas;
+            var type = (StaticEnums.TargetType)datas[0];
             if (type == StaticEnums.TargetType.ALL || type == StaticEnums.TargetType.TEAM_ALL)
             {
                 SelectingTarget = false;

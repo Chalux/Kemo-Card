@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json.Serialization;
+using static StaticClass.StaticEnums;
 
 namespace KemoCard.Scripts
 {
@@ -47,7 +48,7 @@ namespace KemoCard.Scripts
         [JsonIgnore]
         public BuffObject BuffObj;
         public string BuffShowname { get; set; } = "未命名";
-        public void ReceiveEvent(string @event, dynamic datas)
+        public void ReceiveEvent(string @event, params object[] datas)
         {
             if (EventDic.ContainsKey(@event)) EventDic[@event]?.ForEach(function => function.Invoke(datas));
             CheckCountNeedMinus(datas);
@@ -71,9 +72,9 @@ namespace KemoCard.Scripts
             if (BuffObj != null) BuffObj.data = null;
             BuffObj = null;
         }
-        public void CheckCountNeedMinus(dynamic datas)
+        public void CheckCountNeedMinus(params object[] datas)
         {
-            if (CustomBuffCountCalculate || !(datas != null && datas is object[] && datas[0] != null && datas[0] is StaticEnums.EffectTriggerTiming && datas[0] == CountTriTiming)) { return; }
+            if (CustomBuffCountCalculate || !(datas != null && datas.Length > 0 && datas[0] is EffectTriggerTiming timing && timing == CountTriTiming)) { return; }
             BuffCount -= 1;
             if (BuffCount <= 0)
             {

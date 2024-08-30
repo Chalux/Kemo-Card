@@ -11,5 +11,6 @@ namespace KemoCard.Scripts
         public AttributeEnum atrribute;
         public AttackType attackType;
         public bool validTag;
+        public int times;
     }
 }

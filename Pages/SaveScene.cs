@@ -26,7 +26,6 @@ public partial class SaveScene : BaseScene
                         GD.Print("Control" + container.GetIndex() + " has been clicked");
                         AlertView.PopupAlert("是否在此存档位存档？该操作会覆盖已有的存档。", false, new(() =>
                         {
-                            string imgPath = StaticUtils.GetSaveImgPath(index + 1);
                             //GD.Print(imgPath);
                             StaticInstance.playerData.Save(index + 1);
                             //if (!DirAccess.DirExistsAbsolute(imgPath))
@@ -35,7 +34,6 @@ public partial class SaveScene : BaseScene
                             //    GD.Print(error);
                             //    return;
                             //}
-                            StaticInstance.playerData.screen_snapshot.SaveJpg(imgPath);
                             (container.GetChild(0) as TextureRect).Texture = ImageTexture.CreateFromImage(StaticInstance.playerData.screen_snapshot);
                         }));
                     }

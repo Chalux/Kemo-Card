@@ -67,4 +67,9 @@ public partial class CardStateMachine : Control
     {
         currentState?.Process(delta);
     }
+
+    public void ReceiveEvent(string @event, params object[] datas)
+    {
+        currentState.ReceiveEvent(@event, datas);
+    }
 }

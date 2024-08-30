@@ -141,6 +141,8 @@ namespace KemoCard.Scripts
                                         CardPool.Add(id, new CardStruct
                                         {
                                             card_id = id,
+                                            filter_flag = data["filter_flag"].AsUInt64(),
+                                            rare = data["rare"].AsUInt16(),
                                             mod_id = currModId
                                         });
                                     }
@@ -182,6 +184,7 @@ namespace KemoCard.Scripts
                                         {
                                             equip_id = id,
                                             equip_type = data["equip_type"].AsUInt16(),
+                                            is_special = data["is_special"].AsBool(),
                                             mod_id = currModId
                                         });
                                     }
@@ -241,6 +244,7 @@ namespace KemoCard.Scripts
                                             preset_id = id,
                                             tier = data["tier"].AsUInt32(),
                                             is_boss = data["is_boss"].AsBool(),
+                                            is_special = data["is_special"].AsBool(),
                                             mod_id = currModId
                                         });
                                     }
@@ -274,7 +278,7 @@ namespace KemoCard.Scripts
                                 {
                                     foreach (var data in JsonData["event_list"].AsGodotArray<Dictionary>())
                                     {
-                                        var id = data["event_list"].AsString();
+                                        var id = data["event_id"].AsString();
                                         if (EventPool.ContainsKey(id))
                                         {
                                             StaticInstance.MainRoot.ShowBanner("Mod间存在冲突。eventid冲突：" + id + "，冲突的两个Mod的id分别为：" + currModId + "，" + MapPool[id].mod_id);
@@ -285,6 +289,7 @@ namespace KemoCard.Scripts
                                         EventPool.Add(id, new EventStruct
                                         {
                                             event_id = id,
+                                            is_special = data["is_special"].AsBool(),
                                             mod_id = currModId
                                         });
                                     }
@@ -333,6 +338,8 @@ namespace KemoCard.Scripts
         {
             public string card_id;
             public ulong filter_flag;
+            public uint rare;
+            public bool is_special;
             public string mod_id;
         }
 
@@ -355,6 +362,7 @@ namespace KemoCard.Scripts
         {
             public string equip_id;
             public uint equip_type;
+            public bool is_special;
             public string mod_id;
         }
 
@@ -375,6 +383,10 @@ namespace KemoCard.Scripts
             public string preset_id;
             public uint tier;
             public bool is_boss;
+            /// <summary>
+            /// 特殊的预设不会进到随机池子里
+            /// </summary>
+            public bool is_special;
             public string mod_id;
         }
 
@@ -393,6 +405,10 @@ namespace KemoCard.Scripts
         public struct EventStruct
         {
             public string event_id;
+            /// <summary>
+            /// 特殊的预设不会进到随机池子里
+            /// </summary>
+            public bool is_special;
             public string mod_id;
         }
 

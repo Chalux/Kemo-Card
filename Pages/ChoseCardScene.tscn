@@ -1,0 +1,38 @@
+[gd_scene load_steps=2 format=3 uid="uid://quntyt1e00nf"]
+
+[ext_resource type="Script" path="res://Pages/ChoseCardScene.cs" id="1_qiuks"]
+
+[node name="ChoseCardScene" type="Node2D"]
+script = ExtResource("1_qiuks")
+
+[node name="Root" type="Control" parent="."]
+custom_minimum_size = Vector2(1920, 1080)
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="ColorRect" type="ColorRect" parent="Root"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.537255)
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Root"]
+layout_mode = 0
+offset_left = 320.0
+offset_top = 128.0
+offset_right = 1600.0
+offset_bottom = 640.0
+
+[node name="Button" type="Button" parent="Root"]
+layout_mode = 0
+offset_left = 896.0
+offset_top = 800.0
+offset_right = 1024.0
+offset_bottom = 864.0
+theme_override_font_sizes/font_size = 36
+text = "确 定"

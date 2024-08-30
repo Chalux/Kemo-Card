@@ -1,12 +1,7 @@
-[gd_scene load_steps=7 format=3 uid="uid://demprxrejhkpd"]
+[gd_scene load_steps=6 format=3 uid="uid://demprxrejhkpd"]
 
 [ext_resource type="Script" path="res://Pages/PlayerRoleObject.cs" id="1_18ktr"]
-[ext_resource type="Shader" path="res://Resources/SelectorShader.gdshader" id="2_yg3i5"]
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_fttja"]
-shader = ExtResource("2_yg3i5")
-shader_parameter/edge_color = Color(0.235294, 0.52549, 0.772549, 1)
-shader_parameter/threshold = 0.526
+[ext_resource type="Material" uid="uid://btgvdfeaqsxas" path="res://Resources/EffectFrameMaterial.tres" id="2_2oqn8"]
 
 [sub_resource type="Gradient" id="Gradient_elmam"]
 
@@ -157,7 +152,7 @@ layout_mode = 2
 [node name="ColorRect" type="TextureRect" parent="PlayerContainer1/Control"]
 visible = false
 show_behind_parent = true
-material = SubResource("ShaderMaterial_fttja")
+material = ExtResource("2_2oqn8")
 layout_mode = 0
 offset_right = 300.0
 offset_bottom = 448.0

@@ -14,6 +14,14 @@ public struct RewardStruct
     public RewardType type;
     public List<string> rewards;
 }
+
+public struct ShopStruct
+{
+    public Card card;
+    public int price;
+    public bool isBuyed;
+}
+
 public partial class BattleScene : BaseScene, IEvent
 {
     [Export] HBoxContainer playerContainer;
@@ -36,6 +44,8 @@ public partial class BattleScene : BaseScene, IEvent
     [Export] Godot.Button DebugWinBtn;
     [Export] Godot.Button ReturnBtn;
     [Export] Control EndControl;
+    [Export] Godot.Button SelectConfirmBtn;
+    [Export] Control SelectControl;
 
     private bool isDebugFight = false;
 
@@ -131,7 +141,7 @@ public partial class BattleScene : BaseScene, IEvent
                         StaticInstance.windowMgr.ChangeScene(res.Instantiate<MainScene>());
                     }
                 }
-                StaticInstance.playerData.Save(1, true);
+                StaticUtils.AutoSave();
             }
         });
     }
@@ -212,11 +222,11 @@ public partial class BattleScene : BaseScene, IEvent
         else return Vector2.One;
     }
 
-    public void ReceiveEvent(string @event, dynamic datas)
+    public void ReceiveEvent(string @event, params object[] datas)
     {
         if (@event == "RepositionHand")
         {
-            if (datas != null && datas[0] != null)
+            if (datas != null && datas.Length > 0)
             {
                 HoveredIndex = (int)datas[0];
             }
@@ -228,7 +238,7 @@ public partial class BattleScene : BaseScene, IEvent
         }
         else if (@event == "DraggingCard")
         {
-            if (datas != null && datas[0] != null)
+            if (datas != null && datas.Length > 0)
             {
                 IsDragging = (bool)datas[0];
             }
@@ -240,7 +250,7 @@ public partial class BattleScene : BaseScene, IEvent
         }
         else if (@event == "Attack")
         {
-            DealDamage((int)datas[0], (AttackType)datas[1], datas[2], datas[3]);
+            DealDamage((int)datas[0], (AttackType)datas[1], (BaseRole)datas[2], (List<BaseRole>)datas[3]);
         }
         else if (@event == "PropertiesChanged")
         {
@@ -262,6 +272,10 @@ public partial class BattleScene : BaseScene, IEvent
         else if (@event == "EndSelectTarget")
         {
             DragDwonArea.Visible = true;
+        }
+        else if (@event == "SelectCard")
+        {
+            UpdateSelectBtn();
         }
     }
 
@@ -349,8 +363,12 @@ public partial class BattleScene : BaseScene, IEvent
         TurnLabel.Text = "回合数：" + turns;
         foreach (var player in currentPlayerRoles)
         {
-            player.CurrMagic += player.CurrEffeciency * 3;
+            player.RecoverMagic();
             player.CurrentActionPoint = player.TurnActionPoint;
+        }
+        foreach (var enemy in currentEnemyRoles)
+        {
+            enemy.RecoverMagic();
         }
         if (currentController == TeamEnum.Player)
         {
@@ -371,19 +389,21 @@ public partial class BattleScene : BaseScene, IEvent
             //player.InFightHands.ForEach(c => player.InFightGrave.Add(c));
             //player.InFightHands.Clear();
             var list = player.InFightHands.ToList();
-            for (int i = 0; i < list.Count; i++)
-            {
-                var c = list[i];
-                if (c.InGameDict.ContainsKey("KeepInHand") || c.GlobalDict.ContainsKey("KeepInHand"))
-                {
-                    continue;
-                }
-                else
-                {
-                    player.InFightGrave.Add(c);
-                    player.InFightHands.Remove(c);
-                }
-            }
+            var discardlist = list.Where((Card c) => !c.InGameDict.ContainsKey("KeepInHand") && !c.GlobalDict.ContainsKey("KeepInHand")).ToList();
+            DisCard(discardlist, player, DisCardReason.END_TURN);
+            //for (int i = 0; i < list.Count; i++)
+            //{
+            //    var c = list[i];
+            //    if (c.InGameDict.ContainsKey("KeepInHand") || c.GlobalDict.ContainsKey("KeepInHand"))
+            //    {
+            //        continue;
+            //    }
+            //    else
+            //    {
+            //        player.InFightGrave.Add(c);
+            //        player.InFightHands.Remove(c);
+            //    }
+            //}
         }
         foreach (CardObject i in HandControl.GetChildren().Cast<CardObject>())
         {
@@ -398,7 +418,7 @@ public partial class BattleScene : BaseScene, IEvent
         NextTurn();
     }
 
-    public AttackResult DealDamage(double value, AttackType attackType, BaseRole from, List<BaseRole> targets, AttributeEnum atrribute = AttributeEnum.None)
+    public AttackResult DealDamage(double value, AttackType attackType, BaseRole from, List<BaseRole> targets, AttributeEnum atrribute = AttributeEnum.None, int times = 1)
     {
         if (!BattleStatic.isFighting) return AttackResult.Failed;
         Damage damage = new()
@@ -408,7 +428,8 @@ public partial class BattleScene : BaseScene, IEvent
             from = from,
             targets = targets,
             atrribute = atrribute,
-            attackType = attackType
+            attackType = attackType,
+            times = times
         };
         StaticInstance.eventMgr.Dispatch("BeforeAttacked", damage);
         StaticInstance.eventMgr.Dispatch("BeforeDealDamage", damage);
@@ -423,7 +444,8 @@ public partial class BattleScene : BaseScene, IEvent
                     from = damage.from,
                     targets = new() { target },
                     atrribute = damage.atrribute,
-                    attackType = damage.attackType
+                    attackType = damage.attackType,
+                    times = damage.times
                 };
                 GD.Print("伤害结算前：" + tempDamage.value);
                 StaticInstance.eventMgr.Dispatch("BeforeAttackedSingle", tempDamage);
@@ -433,72 +455,79 @@ public partial class BattleScene : BaseScene, IEvent
                             (1 + target.GetSymbol(AttributeDic[atrribute] + "ResisPerm", 0f)) * (1 + from.GetSymbol(AttributeDic[atrribute] + "AtkPerm", 0f)));
                     StaticInstance.eventMgr.Dispatch("BeforeDealDamageSingle", tempDamage);
                     GD.Print("伤害结算后：" + tempDamage.value);
-                    int random = new Random().Next(0, 100);
-                    GD.Print("闪避摇点：" + random + "，被击者触发闪避要求的点数不大于：" + target.CurrDodge);
-                    if (random <= target.CurrDodge)
+                    for (int i = 0; i < times; i++)
                     {
-                        string log = from.name + "对" + target.name + "的攻击被闪避了。闪避摇点：" + random + "，被击者触发闪避要求的点数不大于：" + target.CurrDodge;
-                        GD.Print(log);
-                        StaticInstance.MainRoot.ShowBanner(log);
-                        continue;
-                        //return AttackResult.Dodged;
-                    }
-                    int diff;
-                    if (tempDamage.attackType == AttackType.Physics)
-                    {
-                        if (target is EnemyRole er)
-                            diff = (int)(tempDamage.value - er.CurrPBlock);
-                        else diff = (int)(tempDamage.value - (target as PlayerRole).CurrPBlock);
-                    }
-                    else
-                    {
-                        if (target is EnemyRole er)
-                            diff = (int)(tempDamage.value - er.CurrMBlock);
-                        else diff = (int)(tempDamage.value - (target as PlayerRole).CurrMBlock);
-                    }
-                    if (diff > 0)
-                    {
+                        int random = new Random().Next(0, 100);
+                        GD.Print("闪避摇点：" + random + "，被击者触发闪避要求的点数不大于：" + target.CurrDodge);
+                        if (random <= target.CurrDodge)
+                        {
+                            string log = from.name + "对" + target.name + "的攻击被闪避了。闪避摇点：" + random + "，被击者触发闪避要求的点数不大于：" + target.CurrDodge;
+                            GD.Print(log);
+                            StaticInstance.MainRoot.ShowBanner(log);
+                            continue;
+                            //return AttackResult.Dodged;
+                        }
+                        int diff;
                         if (tempDamage.attackType == AttackType.Physics)
                         {
                             if (target is EnemyRole er)
-                                er.CurrPBlock = 0;
-                            else
-                                (target as PlayerRole).CurrPBlock = 0;
+                                diff = (int)(tempDamage.value - er.CurrPBlock);
+                            else diff = (int)(tempDamage.value - (target as PlayerRole).CurrPBlock);
                         }
                         else
                         {
                             if (target is EnemyRole er)
-                                er.CurrMBlock = 0;
-                            else
-                                (target as PlayerRole).CurrMBlock = 0;
+                                diff = (int)(tempDamage.value - er.CurrMBlock);
+                            else diff = (int)(tempDamage.value - (target as PlayerRole).CurrMBlock);
                         }
-                        target.CurrHealth -= diff;
-                    }
-                    else
-                    {
-                        if (tempDamage.attackType == AttackType.Physics)
+                        if (diff > 0)
                         {
-                            if (target is EnemyRole er) er.CurrPBlock -= (int)tempDamage.value;
-                            else (target as PlayerRole).CurrPBlock -= (int)tempDamage.value;
+                            if (tempDamage.attackType == AttackType.Physics)
+                            {
+                                if (target is EnemyRole er)
+                                    er.CurrPBlock = 0;
+                                else
+                                    (target as PlayerRole).CurrPBlock = 0;
+                            }
+                            else
+                            {
+                                if (target is EnemyRole er)
+                                    er.CurrMBlock = 0;
+                                else
+                                    (target as PlayerRole).CurrMBlock = 0;
+                            }
+                            target.CurrHealth -= diff;
                         }
                         else
                         {
-                            if (target is EnemyRole er) er.CurrMBlock -= (int)tempDamage.value;
-                            else (target as PlayerRole).CurrMBlock -= (int)tempDamage.value;
+                            if (tempDamage.attackType == AttackType.Physics)
+                            {
+                                if (target is EnemyRole er) er.CurrPBlock -= (int)tempDamage.value;
+                                else (target as PlayerRole).CurrPBlock -= (int)tempDamage.value;
+                            }
+                            else
+                            {
+                                if (target is EnemyRole er) er.CurrMBlock -= (int)tempDamage.value;
+                                else (target as PlayerRole).CurrMBlock -= (int)tempDamage.value;
+                            }
                         }
-                    }
-                    if (target is EnemyRole ter)
-                    {
-                        FindEnemyObjectByRole(ter)?.hitFlashAnimationPlayer.Play("hit_flash");
-                    }
+                        if (target is EnemyRole ter)
+                        {
+                            FindEnemyObjectByRole(ter)?.hitFlashAnimationPlayer.Play("hit_flash");
+                        }
 
-                    if (target.CurrHealth <= 0)
-                    {
-                        GD.Print(target.GetName() + "死了");
-                        StaticInstance.eventMgr.Dispatch("BeforeDie", target);
-                        if (target.CurrHealth > 0) continue;
-                        if (target is PlayerRole ifp) PlayerRoleDie(ifp);
-                        else if (target is EnemyRole er) EnemyRoleDie(er);
+                        if (target.CurrHealth <= 0)
+                        {
+                            GD.Print(target.GetName() + "死了");
+                            StaticInstance.eventMgr.Dispatch("BeforeDie", target);
+                            if (target.CurrHealth > 0) continue;
+                            else
+                            {
+                                if (target is PlayerRole ifp) PlayerRoleDie(ifp);
+                                else if (target is EnemyRole er) EnemyRoleDie(er);
+                                return AttackResult.Success;
+                            }
+                        }
                     }
                 }
                 else
@@ -612,6 +641,7 @@ public partial class BattleScene : BaseScene, IEvent
     public void EndBattle(bool win)
     {
         StaticInstance.eventMgr.UnregistIEvent(this);
+        StaticInstance.playerData.gsd.MajorRole.RecoverMagic();
         startPlayerRoles.ForEach(obj =>
         {
             obj.EndFight();
@@ -634,7 +664,7 @@ public partial class BattleScene : BaseScene, IEvent
         }
         BattleStatic.Reset();
         StaticInstance.playerData.gsd.MajorRole.FightSymbol.Clear();
-        if (win)
+        if (win && BattlePreset != null)
         {
             RewardScene rewardScene = (RewardScene)ResourceLoader.Load<PackedScene>("res://Pages/RewardScene.tscn").Instantiate();
             List<RewardStruct> datas = new();
@@ -656,6 +686,10 @@ public partial class BattleScene : BaseScene, IEvent
             };
             if (BattlePreset.GainExp > 0) datas.Add(@struct2);
             StaticInstance.windowMgr.AddScene(rewardScene, datas);
+            if (BattlePreset.IsBoss)
+            {
+                StaticInstance.playerData.gsd.MapGenerator.EndMap();
+            }
             BattlePreset = null;
         }
         EndControl.Visible = true;
@@ -678,5 +712,93 @@ public partial class BattleScene : BaseScene, IEvent
             }
         }
         return null;
+    }
+
+    /// <summary>
+    /// 选择卡牌，用于弃牌或者别的操作，暂时没想好要怎么实现
+    /// </summary>
+    /// <param name="max">最大数量</param>
+    /// <param name="min">最小数量</param>
+    /// <param name="filter">过滤条件</param>
+    /// <param name="ConfirmAction">确定按钮的回调函数</param>
+    /// <param name="mustlist">必须选择的位置，以列表的形式传递</param>
+    public void SelectCard(int max, int min, Func<Card, bool> filter, Action<List<Card>> ConfirmAction, List<int> mustlist = null)
+    {
+        BattleStatic.MaxSelectCount = max;
+        BattleStatic.MinSelectCount = min;
+        BattleStatic.isDiscarding = true;
+        if (mustlist != null) BattleStatic.MustList = mustlist.ToList();
+        SelectConfirmBtn.Visible = true;
+        SelectControl.Visible = true;
+        BattleStatic.ConfirmAction = ConfirmAction;
+        BattleStatic.SelectFilterFunc = filter;
+        SelectConfirmBtn.Pressed += SelectConfirmAction;
+        UpdateSelectBtn();
+    }
+
+    private void SelectConfirmAction()
+    {
+        if (BattleStatic.discard_list.Count >= BattleStatic.MinSelectCount && BattleStatic.discard_list.Count <= BattleStatic.MaxSelectCount)
+        {
+            BattleStatic.ConfirmAction?.Invoke(SelectConfirm());
+            BattleStatic.EndSelect();
+            DispatchEvent("SelectConfirm");
+        }
+    }
+
+    public List<Card> SelectConfirm()
+    {
+        SelectConfirmBtn.Visible = false;
+        SelectControl.Visible = false;
+        var res = BattleStatic.discard_list.ToList();
+        BattleStatic.SelectFilterFunc = null;
+        BattleStatic.ConfirmAction = null;
+        BattleStatic.discard_list.Clear();
+        BattleStatic.isDiscarding = false;
+        return res;
+    }
+
+    public enum DisCardReason
+    {
+        END_TURN,
+        EFFECT,
+    }
+    public void DisCard(List<Card> cards, PlayerRole owner, DisCardReason reason)
+    {
+        foreach (var card in cards)
+        {
+            owner.InFightHands.Remove(card);
+            owner.InFightGrave.Add(card);
+            card.DiscardAction?.Invoke(owner, reason);
+            if (owner == nowPlayer)
+            {
+                foreach (CardObject cobj in HandControl.GetChildren().Cast<CardObject>())
+                {
+                    if (cobj.card == card)
+                    {
+                        cobj.QueueFree();
+                        break;
+                    }
+                }
+            }
+        }
+        GetTree().CreateTimer(0.5f).Timeout += () =>
+        {
+            HoveredIndex = -1;
+            UpdateCardPosition();
+        };
+        DispatchEvent("DISCARD", cards, owner, reason);
+    }
+
+    private void UpdateSelectBtn()
+    {
+        if (BattleStatic.discard_list.Count < BattleStatic.MinSelectCount || BattleStatic.discard_list.Count > BattleStatic.MaxSelectCount)
+        {
+            SelectConfirmBtn.Disabled = true;
+        }
+        else
+        {
+            SelectConfirmBtn.Disabled = false;
+        }
     }
 }

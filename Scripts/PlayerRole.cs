@@ -61,7 +61,14 @@ namespace KemoCard.Scripts
         public Dictionary<string, Dictionary<uint, Card>> deck_idx_dic = new();
 
         private int _Gold = 0;
-        public int Gold { get => _Gold; set => _Gold = Math.Max(0, value); }
+        public int Gold
+        {
+            get => _Gold; set
+            {
+                _Gold = Math.Max(0, value);
+                StaticInstance.eventMgr.Dispatch("GoldChanged");
+            }
+        }
 
         public void AddCardIntoDeck(Card card)
         {
@@ -467,6 +474,11 @@ namespace KemoCard.Scripts
                     bs.UpdateCounts();
                 }
             }
+        }
+
+        public void AddCardToTempDeck(Card card)
+        {
+            TempDeck.Add(card);
         }
 
         public void RemoveCardInDeck(Card card)

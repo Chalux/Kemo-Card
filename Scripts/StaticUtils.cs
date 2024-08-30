@@ -176,5 +176,49 @@ namespace StaticClass
             StaticInstance.windowMgr.ChangeScene(bs);
             bs.NewBattleByPreset(PresetId);
         }
+
+        public static void CloseEvent()
+        {
+            StaticInstance.eventMgr.Dispatch("close_eventscene");
+        }
+
+        public static string GetFrameColorByRare(uint rare)
+        {
+            return rare switch
+            {
+                1 => Colors.White.ToHtml(),
+                2 => Colors.Green.ToHtml(),
+                3 => Colors.Blue.ToHtml(),
+                4 => Colors.Purple.ToHtml(),
+                5 => Colors.Orange.ToHtml(),
+                _ => Colors.White.ToHtml(),
+            };
+        }
+
+        public static void AutoSave()
+        {
+            StaticInstance.playerData.Save(1, true);
+        }
+
+        public static List<string> GetRandomCardIdFromPool(int cardNum = 3)
+        {
+            List<string> res = new();
+            var pool = StaticInstance.playerData.gsd.MapGenerator.Data.CardPool;
+            if (pool.Count > 0)
+            {
+                Random r = new();
+                string cid = "";
+                int ErrorCount = 0;
+                for (int i = 0; i < cardNum; i++)
+                {
+                    while ((cid == "" || res.IndexOf(cid) != -1) && ErrorCount < 1000)
+                    {
+                        cid = pool[r.Next(pool.Count)];
+                    }
+                    if (cid != "") res.Add(cid);
+                }
+            }
+            return res;
+        }
     }
 }

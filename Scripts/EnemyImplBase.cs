@@ -23,7 +23,7 @@ namespace KemoCard.Scripts
         public Action<int, List<PlayerRole>, List<EnemyRole>> ActionFunc;
         public Dictionary<string, List<Action<dynamic>>> EventDic { get; set; } = new();
 
-        public virtual void ReceiveEvent(string @event, dynamic datas)
+        public virtual void ReceiveEvent(string @event, params object[] datas)
         {
             if (EventDic.ContainsKey(@event))
             {

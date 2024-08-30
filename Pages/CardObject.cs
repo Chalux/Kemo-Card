@@ -9,13 +9,15 @@ public partial class CardObject : Control
     [Export] public RichTextLabel cardName;
     [Export] public RichTextLabel cardDesc;
     [Export] public Label cardCost;
-    [Export] public ColorRect colorRect;
+    [Export] public ColorRect BgRect;
     [Export] public Polygon2D costBg;
     [Export] public Area2D dropPointDetector;
     [Export] public Label stateLabel;
     [Export] public CardStateMachine csm;
     [Export] public Control BezierControl;
     [Export] public SubViewportContainer SVContainer;
+    [Export] public ColorRect FrameRect;
+    [Export] public TextureRect EFRect;
     private Vector2 DestinationTransform = new();
     private Vector2 DestinationScales = new();
     private float DestinationRotation;
@@ -60,6 +62,7 @@ public partial class CardObject : Control
         cardDesc.Text = StaticUtils.MakeBBCodeString(card.Desc);
         cardCost.Text = card.Cost.ToString();
         costBg.Color = new(StaticEnums.CostBgColor[card.CostType]);
+        SetRare();
     }
 
     void Reposition()
@@ -190,5 +193,10 @@ public partial class CardObject : Control
     public override void _Process(double delta)
     {
         csm.Process(delta);
+    }
+
+    private void SetRare()
+    {
+        (FrameRect.Material as ShaderMaterial).SetShaderParameter("color", StaticUtils.GetFrameColorByRare(card.Rare));
     }
 }

@@ -3,6 +3,7 @@ using StaticClass;
 using System;
 using System.Collections.Generic;
 using System.Text.Json.Serialization;
+using static BattleScene;
 using static StaticClass.StaticEnums;
 
 namespace KemoCard.Scripts.Cards
@@ -15,6 +16,7 @@ namespace KemoCard.Scripts.Cards
         // 这里的装备id是为了记录是否是装备加到卡组里的，idx同。非装备的话可以不填。
         public string EquipId { get; set; } = "";
         public uint EquipIdx { get; set; } = 0;
+        public uint Rare { get; set; } = 0;
 
         /// <summary>
         /// 全局的词条，可以理解为永久的词条加成
@@ -30,7 +32,9 @@ namespace KemoCard.Scripts.Cards
         public uint Idx { get; set; } = 0;
         public string Alias { get; set; } = "未命名";
         public string Desc { get; set; } = "无描述";
-        public bool isTemp { get; set; } = false;
+        public bool IsTemp { get; set; } = false;
+        [JsonIgnore]
+        public ulong FilterFlags { get; set; } = 0;
         public string GetDesc
         {
             get
@@ -65,6 +69,8 @@ namespace KemoCard.Scripts.Cards
         public Func<BaseRole, List<BaseRole>, dynamic[], bool> UseFilter { get; set; }
         [JsonIgnore]
         public Action<BaseRole, List<BaseRole>, dynamic[]> FunctionUse { get; set; }
+        [JsonIgnore]
+        public Action<BaseRole, DisCardReason> DiscardAction { get; set; }
         public Card(string id)
         {
             Id = id;
@@ -78,6 +84,8 @@ namespace KemoCard.Scripts.Cards
             else
             {
                 var cfg = Datas.Ins.CardPool[id];
+                Rare = cfg.rare;
+                FilterFlags = cfg.filter_flag;
                 var path = $"res://Mods/{cfg.mod_id}/Scripts/Cards/C{id}.cs";
                 var res = ResourceLoader.Load<CSharpScript>(path);
                 if (res != null)

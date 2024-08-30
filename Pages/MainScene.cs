@@ -1,11 +1,12 @@
 ﻿using Godot;
 using KemoCard.Pages;
 using KemoCard.Scripts;
+using KemoCard.Scripts.Cards;
 using StaticClass;
 using System.Collections.Generic;
 using System.Linq;
 
-public partial class MainScene : BaseScene
+public partial class MainScene : BaseScene, IEvent
 {
     [Export] Godot.Button SaveButton;
     [Export] Godot.Button EditDeckButton;
@@ -24,6 +25,12 @@ public partial class MainScene : BaseScene
     [Export] Control DebugNode;
     [Export] Godot.Button SelectMapBtn;
     [Export] public Map MapView;
+    [Export] Label HpLabel;
+    [Export] ProgressBar HpProg;
+    [Export] Label MpLabel;
+    [Export] ProgressBar MpProg;
+    [Export] Godot.Button TestAddCardBtn;
+    [Export] TextEdit AddCardInput;
 
     public override void _Ready()
     {
@@ -38,7 +45,7 @@ public partial class MainScene : BaseScene
         EditDeckButton.Pressed += new(() =>
         {
             StaticInstance.windowMgr.AddScene((BaseScene)ResourceLoader.Load<PackedScene>("res://Pages/DeckView.tscn").Instantiate()
-                , new[] { major.Deck.ToList().Concat(major.TempDeck.ToList()) });
+                , new[] { major.Deck.ToList().Concat(major.TempDeck.ToList()).ToList() });
             StaticInstance.MainRoot.HideRichHint();
         });
         TestBattleButton.Pressed += new(() =>
@@ -100,6 +107,19 @@ public partial class MainScene : BaseScene
             StaticInstance.windowMgr.AddScene((BaseScene)ResourceLoader.Load<PackedScene>("res://Pages/Map/MapSelectScene.tscn").Instantiate());
             StaticInstance.MainRoot.HideRichHint();
         });
+        TestAddCardBtn.Pressed += new(() =>
+        {
+            Card c = new(AddCardInput.Text);
+            if (c != null && c.Id != "")
+            {
+                StaticInstance.playerData.gsd.MajorRole.AddCardToTempDeck(c);
+                StaticInstance.MainRoot.ShowBanner($"已添加卡牌{c.Id}至牌库");
+            }
+            else
+            {
+                StaticInstance.MainRoot.ShowBanner($"卡牌{c.Id}不存在或者错误");
+            }
+        });
         MapView.CreateMap();
         UpdateView();
     }
@@ -115,8 +135,24 @@ public partial class MainScene : BaseScene
         ExpProg.MaxValue = maxExp;
         ExpProg.Value = major.Exp;
         LevelLabel.Text = $"{major.Level}级";
+        HpLabel.Text = $"{major.CurrHealth}/{major.CurrHpLimit}";
+        HpProg.MinValue = 0;
+        HpProg.MaxValue = major.CurrHpLimit;
+        HpProg.Value = major.CurrHealth;
+        MpLabel.Text = $"{major.CurrMagic}/{major.CurrMpLimit}";
+        MpProg.MinValue = 0;
+        MpProg.MaxValue = major.CurrMpLimit;
+        MpProg.Value = major.CurrMagic;
         SelectMapBtn.Disabled = StaticInstance.playerData.gsd.MapGenerator.IsStillRunning;
         if (StaticInstance.playerData.gsd.MapGenerator.FloorsClimbed == 0) MapView.UnlockFloor(StaticInstance.playerData.gsd.MapGenerator.FloorsClimbed);
         else MapView.UnlockNextRooms();
+    }
+
+    public void ReceiveEvent(string @event, params object[] datas)
+    {
+        if (@event == "PropertiesChanged")
+        {
+            UpdateView();
+        }
     }
 }

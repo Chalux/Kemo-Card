@@ -9,5 +9,6 @@ namespace KemoCard.Scripts
         public Dictionary<string, bool> BoolData { get; set; } = new();
         public PlayerRole MajorRole { get; set; }
         public MapGeneration MapGenerator { get; set; } = new();
+        public List<ShopStruct> CurrShopStructs = new();
     }
 }

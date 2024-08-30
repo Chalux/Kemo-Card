@@ -1,4 +1,5 @@
-﻿using KemoCard.Scripts.Map;
+﻿using KemoCard.Scripts.Events;
+using KemoCard.Scripts.Map;
 using StaticClass;
 using System;
 using System.Collections.Generic;
@@ -181,7 +182,7 @@ namespace KemoCard.Scripts
                 if (kvp.Value.is_boss && kvp.Value.tier >= Data.MinTier && kvp.Value.tier <= Data.MaxTier) plist.Add(kvp.Key);
             }
             Random r = new();
-            BossRoom.PresetId = plist[r.Next(plist.Count)];
+            BossRoom.RoomPresetId = plist[r.Next(plist.Count)];
         }
 
         private void SetUpRandomRoomWeight()
@@ -201,7 +202,7 @@ namespace KemoCard.Scripts
                 {
                     Room.Type = RoomType.Monster;
                     var random = Math.Round(StaticUtils.GenerateRandomValue(0, Data.PresetPool.Count - 1, Data.PresetPool.Count / (Data.FLOORS - Room.Row), OffsetRange));
-                    Room.PresetId = Data.PresetPool[(int)random];
+                    Room.RoomPresetId = Data.PresetPool[(int)random];
                 }
             }
 
@@ -228,7 +229,7 @@ namespace KemoCard.Scripts
                     foreach (var NextRoom in Room.NextRooms)
                     {
                         var r = StaticInstance.playerData.gsd.MapGenerator.MapData[NextRoom / 100][NextRoom % 100];
-                        if (r.Type == RoomType.None || (r.PresetId == null && r.Type == RoomType.Monster))
+                        if (r.Type == RoomType.None || (r.RoomPresetId == null && r.Type == RoomType.Monster))
                         {
                             SetRoomRandomly(r);
                         }
@@ -255,7 +256,19 @@ namespace KemoCard.Scripts
             if (room.Type == RoomType.Monster)
             {
                 var random = Math.Round(StaticUtils.GenerateRandomValue(0, Data.PresetPool.Count - 1, Data.PresetPool.Count / (Data.FLOORS - room.Row), OffsetRange));
-                room.PresetId = Data.PresetPool[(int)random];
+                room.RoomPresetId = Data.PresetPool[(int)random];
+            }
+            else if (room.Type == RoomType.Event)
+            {
+                Random r = new();
+                var random = r.Next(0, Data.EventPool.Count);
+                room.RoomEventId = Data.EventPool[random];
+            }
+            else if (room.Type == RoomType.Treasure)
+            {
+                Random r = new();
+                var random = r.Next(0, Data.EquipPool.Count);
+                room.RoomEquipId = Data.EquipPool[random];
             }
         }
 
@@ -311,7 +324,16 @@ namespace KemoCard.Scripts
                 res += $"floor {i}:\t[{string.Join(",", Rooms)}]\n";
                 i += 1;
             });
+            res += $"CardPoolCount:{Data.CardPool.Count}\n";
+            res += $"EquipPoolCount:{Data.EquipPool.Count}\n";
+            res += $"PresetPoolCount:{Data.PresetPool.Count}\n";
+            res += $"EventPoolCount:{Data.EventPool.Count}\n";
             return res;
+        }
+
+        public void EndMap()
+        {
+            Data.MapEndAction?.Invoke();
         }
     }
 }

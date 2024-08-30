@@ -1,7 +1,8 @@
-[gd_scene load_steps=8 format=3 uid="uid://bhiqlhvrt8uq2"]
+[gd_scene load_steps=10 format=3 uid="uid://bhiqlhvrt8uq2"]
 
 [ext_resource type="Script" path="res://Pages/CardShowObject.cs" id="1_mqmob"]
 [ext_resource type="Shader" path="res://Resources/fake3d.gdshader" id="1_nu6xd"]
+[ext_resource type="Shader" path="res://Pages/CardFrame.gdshader" id="3_psduj"]
 
 [sub_resource type="Gradient" id="Gradient_kotth"]
 
@@ -25,10 +26,18 @@ shader_parameter/burn_size = 0.2
 shader_parameter/burn_color = Color(0.922391, 0.121125, 0, 1)
 shader_parameter/dissolve_texture = SubResource("NoiseTexture2D_hp427")
 
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_lmy76"]
+shader = ExtResource("3_psduj")
+shader_parameter/color = Color(1, 0, 0, 1)
+shader_parameter/width = 0.015
+shader_parameter/pattern = 0
+shader_parameter/inside = true
+shader_parameter/add_margins = false
+
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_6damg"]
 size = Vector2(256, 320)
 
-[node name="CardShowObject" type="Control" node_paths=PackedStringArray("cardName", "cardDesc", "cardCost", "colorRect", "costBg", "SVContainer")]
+[node name="CardShowObject" type="Control" node_paths=PackedStringArray("cardName", "cardDesc", "cardCost", "BgRect", "costBg", "FrameRect", "SVContainer")]
 custom_minimum_size = Vector2(256, 320)
 layout_mode = 3
 anchors_preset = 15
@@ -43,8 +52,9 @@ script = ExtResource("1_mqmob")
 cardName = NodePath("SubViewportContainer/SubViewport/CardName")
 cardDesc = NodePath("SubViewportContainer/SubViewport/CardDesc")
 cardCost = NodePath("SubViewportContainer/SubViewport/CostBg/CardCost")
-colorRect = NodePath("SubViewportContainer/SubViewport/ColorRect")
+BgRect = NodePath("SubViewportContainer/SubViewport/ColorRect")
 costBg = NodePath("SubViewportContainer/SubViewport/CostBg")
+FrameRect = NodePath("SubViewportContainer/SubViewport/FrameRect")
 SVContainer = NodePath("SubViewportContainer")
 metadata/_edit_use_anchors_ = true
 
@@ -60,6 +70,15 @@ transparent_bg = true
 handle_input_locally = false
 size = Vector2i(256, 320)
 render_target_update_mode = 4
+
+[node name="FrameRect" type="ColorRect" parent="SubViewportContainer/SubViewport"]
+material = SubResource("ShaderMaterial_lmy76")
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
 
 [node name="ColorRect" type="ColorRect" parent="SubViewportContainer/SubViewport"]
 modulate = Color(0, 0, 0, 0.431373)

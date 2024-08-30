@@ -27,7 +27,7 @@ namespace KemoCard.Scripts.Cards
             object[] param = { -1 };
             StaticInstance.eventMgr.Dispatch("RepositionHand", param);
             StaticInstance.eventMgr.Dispatch("DraggingCard");
-            cardObject.colorRect.Color = new("0000006e");
+            //cardObject.BgRect.Color = new("0000006e");
             //cardObject.PivotOffset = Vector2.Zero;
             cardObject.PivotOffset = new(cardObject.Size.X / 2, cardObject.Size.Y);
             cardObject.stateLabel.Text = "BASE";
@@ -43,8 +43,18 @@ namespace KemoCard.Scripts.Cards
         {
             if (@event.IsActionPressed("left_mouse"))
             {
-                cardObject.PivotOffset = cardObject.GetGlobalMousePosition() - cardObject.GlobalPosition;
-                cardObject.csm.OnTransitionRequest(this, State.CLICKED);
+                if (BattleStatic.isDiscarding)
+                {
+                    if (BattleStatic.SelectFilterFunc == null || BattleStatic.SelectFilterFunc.Invoke(cardObject.card))
+                    {
+                        cardObject.csm.OnTransitionRequest(this, State.DISCARDING);
+                    }
+                }
+                else
+                {
+                    cardObject.PivotOffset = cardObject.GetGlobalMousePosition() - cardObject.GlobalPosition;
+                    cardObject.csm.OnTransitionRequest(this, State.CLICKED);
+                }
             }
         }
     }

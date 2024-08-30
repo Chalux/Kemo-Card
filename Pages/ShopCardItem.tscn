@@ -1,0 +1,33 @@
+[gd_scene load_steps=4 format=3 uid="uid://djonegxt0fxoh"]
+
+[ext_resource type="PackedScene" uid="uid://bhiqlhvrt8uq2" path="res://Pages/CardShowObject.tscn" id="1_3eo5o"]
+[ext_resource type="Script" path="res://Pages/ShopCardItem.cs" id="1_o7eah"]
+[ext_resource type="Texture2D" uid="uid://dyygagjf1l0r6" path="res://Mods/MainPackage/Resources/Icons/icons_204.png" id="2_sby5r"]
+
+[node name="Control" type="Control"]
+custom_minimum_size = Vector2(286, 400)
+layout_mode = 3
+anchors_preset = 0
+script = ExtResource("1_o7eah")
+
+[node name="CardShowObject" parent="." instance=ExtResource("1_3eo5o")]
+layout_mode = 1
+anchors_preset = 0
+anchor_right = 0.0
+anchor_bottom = 0.0
+offset_left = 15.0
+offset_top = 15.0
+offset_right = 271.0
+offset_bottom = 335.0
+grow_horizontal = 1
+grow_vertical = 1
+
+[node name="Button" type="Button" parent="."]
+layout_mode = 0
+offset_left = 15.0
+offset_top = 343.0
+offset_right = 271.0
+offset_bottom = 377.0
+text = "999
+"
+icon = ExtResource("2_sby5r")

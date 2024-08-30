@@ -115,7 +115,7 @@ public partial class EnemyRoleObject : Control, IEvent
         mpLabel.Text = StaticUtils.MakeBBCodeString(data.CurrMagic + "/" + data.CurrHpLimit);
     }
 
-    public void ReceiveEvent(string @event, dynamic datas)
+    public void ReceiveEvent(string @event, params object[] datas)
     {
         if (@event == "PropertiesChanged")
         {
@@ -123,7 +123,7 @@ public partial class EnemyRoleObject : Control, IEvent
         }
         else if (@event == "StartSelectTarget")
         {
-            var type = (TargetType)datas;
+            var type = (TargetType)datas[0];
             if (type == TargetType.ALL_SINGLE || type == TargetType.ENEMY_SINGLE)
                 SelectingTarget = true;
         }
@@ -134,7 +134,7 @@ public partial class EnemyRoleObject : Control, IEvent
         }
         else if (@event == "SelectTargetAll")
         {
-            var type = (TargetType)datas;
+            var type = (TargetType)datas[0];
             if (type == TargetType.ENEMY_ALL || type == TargetType.ALL)
             {
                 SelectingTarget = false;

@@ -1,7 +1,9 @@
 ﻿using Godot;
 using KemoCard.Scripts;
+using KemoCard.Scripts.Events;
 using StaticClass;
 using System;
+using System.Collections.Generic;
 
 public partial class MapRoom : Control
 {
@@ -55,11 +57,75 @@ public partial class MapRoom : Control
         if (onlyRunHandlerWhenSelected) return;
         if (Room.Type == RoomType.Monster)
         {
-            StaticUtils.StartNewBattleByPreset(Room.PresetId);
+            StaticUtils.StartNewBattleByPreset(Room.RoomPresetId);
         }
         else if (Room.Type == RoomType.Event)
         {
-
+            PackedScene res = ResourceLoader.Load<PackedScene>("res://Pages/EventScene.tscn");
+            if (res != null)
+            {
+                if (StaticInstance.currWindow is MainScene ms)
+                {
+                    ms.MapView.HideMap();
+                }
+                EventScene eventScene = res.Instantiate<EventScene>();
+                Event e = new(Room.RoomEventId);
+                StaticInstance.windowMgr.AddScene(eventScene, e);
+            }
+        }
+        else if (Room.Type == RoomType.Treasure)
+        {
+            PackedScene res = ResourceLoader.Load<PackedScene>("res://Pages/RewardScene.tscn");
+            if (res != null)
+            {
+                RewardStruct r1 = new()
+                {
+                    type = RewardType.Equip,
+                    rewards = new() { Room.RoomEquipId }
+                };
+                RewardStruct r2 = new()
+                {
+                    type = RewardType.Card,
+                    rewards = StaticUtils.GetRandomCardIdFromPool()
+                };
+                List<RewardStruct> datas = new() { r1 };
+                RewardScene rs = res.Instantiate<RewardScene>();
+                StaticInstance.windowMgr.AddScene(rs, datas);
+            }
+        }
+        else if (Room.Type == RoomType.Shop)
+        {
+            PackedScene res = ResourceLoader.Load<PackedScene>("res://Pages/ShopScene.tscn");
+            if (res != null)
+            {
+                Random rand = new();
+                List<string> cardIds = new();
+                List<ShopStruct> shopStructs = new();
+                int ErrorCount = 0;
+                for (int i = 0; i < 10; i++)
+                {
+                    string cid = "";
+                    var pool = StaticInstance.playerData.gsd.MapGenerator.Data.CardPool;
+                    while (cid != "" && cardIds.IndexOf(cid) != -1 && ErrorCount < 1000)
+                    {
+                        cid = pool[rand.Next(pool.Count)];
+                        ErrorCount++;
+                    }
+                    if (cid != "")
+                    {
+                        ShopStruct shopStruct = new()
+                        {
+                            card = new(cid),
+                            isBuyed = false,
+                        };
+                        shopStruct.price = rand.Next(50, 100) * (int)shopStruct.card.Rare;
+                        shopStructs.Add(shopStruct);
+                    }
+                }
+                StaticInstance.playerData.gsd.CurrShopStructs = shopStructs;
+                ShopScene ss = res.Instantiate<ShopScene>();
+                StaticInstance.windowMgr.AddScene(ss);
+            }
         }
     }
 
@@ -78,9 +144,15 @@ public partial class MapRoom : Control
 
     public override void _GuiInput(InputEvent @event)
     {
-        if (!Available || !@event.IsActionPressed("left_mouse")) return;
-        Room.Selected = true;
-        Animation.Play("select");
+        if (Available && @event.IsActionReleased("left_mouse"))
+        {
+            //GD.Print(GetGlobalMousePosition(), GetGlobalRect().HasPoint(GetGlobalMousePosition()));
+            if (GetGlobalRect().HasPoint(GetGlobalMousePosition()))
+            {
+                Room.Selected = true;
+                Animation.Play("select");
+            }
+        }
     }
 
 }

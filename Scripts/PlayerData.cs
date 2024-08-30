@@ -32,6 +32,14 @@ namespace KemoCard.Scripts
             var json = JsonSerializer.Serialize(gsd);
             //GD.Print(sav, json);
             sav.StoreString(json);
+            string imgPath = StaticUtils.GetSaveImgPath(index);
+            if (screen_snapshot == null)
+            {
+                var img = StaticInstance.MainRoot.GetViewport().GetTexture().GetImage();
+                img.Resize(256, 135);
+                screen_snapshot = img;
+            }
+            screen_snapshot.SaveJpg(imgPath);
         }
 
         public void Load(uint index)
@@ -60,6 +68,11 @@ namespace KemoCard.Scripts
                 //obj = JsonSerializer.Deserialize<GlobalSaveData>(jsonstring);
                 gsd.MajorRole = obj.MajorRole;
                 gsd.MapGenerator = obj.MapGenerator;
+                gsd.DoubleData = obj.DoubleData;
+                gsd.IntData = obj.IntData;
+                gsd.BoolData = obj.BoolData;
+                gsd.CurrShopStructs = obj.CurrShopStructs;
+                gsd.MapGenerator.Data.ReloadPools();
                 gsd.MajorRole.Buffs.ForEach(buff =>
                 {
                     if (Datas.Ins.BuffPool.ContainsKey(buff.BuffId))
@@ -74,30 +87,8 @@ namespace KemoCard.Scripts
                     }
                     buff.Binder = gsd.MajorRole;
                 });
-                gsd.MajorRole.Deck.ForEach(card =>
-                {
-                    card.owner = gsd.MajorRole;
-                    if (!Datas.Ins.CardPool.ContainsKey(card.Id))
-                    {
-                        string errorLog = "未在脚本库中找到卡牌对应id，请检查Mod配置。id:" + card.Id;
-                        StaticInstance.MainRoot.ShowBanner(errorLog);
-                        throw new Exception(errorLog);
-                    }
-                    var cfg = Datas.Ins.CardPool[card.Id];
-                    string path = $"res://Mods/{cfg.mod_id}/Scripts/Cards/C{card.Id}.cs";
-                    var res = FileAccess.Open(path, FileAccess.ModeFlags.Read);
-                    if (res == null)
-                    {
-                        string errorLog = "未找到卡牌脚本资源,id:" + card.Id;
-                        StaticInstance.MainRoot.ShowBanner(errorLog);
-                        throw new Exception(errorLog);
-                    }
-                    else
-                    {
-                        var s = ResourceLoader.Load<CSharpScript>(path).New().As<BaseCardScript>();
-                        s.OnCardScriptInit(card);
-                    }
-                });
+                gsd.MajorRole.Deck.ForEach(LoadCardScript);
+                gsd.MajorRole.TempDeck.ForEach(LoadCardScript);
                 foreach (var equip in gsd.MajorRole.EquipList)
                 {
                     if (equip != null)
@@ -128,6 +119,31 @@ namespace KemoCard.Scripts
                             node?.MapView.UnlockNextRooms();
                     }
                 }
+            }
+        }
+
+        private void LoadCardScript(Card card)
+        {
+            card.owner = gsd.MajorRole;
+            if (!Datas.Ins.CardPool.ContainsKey(card.Id))
+            {
+                string errorLog = "未在脚本库中找到卡牌对应id，请检查Mod配置。id:" + card.Id;
+                StaticInstance.MainRoot.ShowBanner(errorLog);
+                throw new Exception(errorLog);
+            }
+            var cfg = Datas.Ins.CardPool[card.Id];
+            string path = $"res://Mods/{cfg.mod_id}/Scripts/Cards/C{card.Id}.cs";
+            var res = FileAccess.Open(path, FileAccess.ModeFlags.Read);
+            if (res == null)
+            {
+                string errorLog = "未找到卡牌脚本资源,id:" + card.Id;
+                StaticInstance.MainRoot.ShowBanner(errorLog);
+                throw new Exception(errorLog);
+            }
+            else
+            {
+                var s = ResourceLoader.Load<CSharpScript>(path).New().As<BaseCardScript>();
+                s.OnCardScriptInit(card);
             }
         }
     }

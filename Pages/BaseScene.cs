@@ -1,4 +1,5 @@
 using Godot;
+using KemoCard.Scripts;
 using StaticClass;
 
 namespace KemoCard.Pages
@@ -25,7 +26,19 @@ namespace KemoCard.Pages
         {
             StaticInstance.windowMgr.RemoveScene(this);
             OnRemove();
+            if (this is IEvent eventScene) StaticInstance.eventMgr.UnregistIEvent(eventScene);
             base._ExitTree();
+        }
+
+        public override void _EnterTree()
+        {
+            base._EnterTree();
+            if (this is IEvent eventScene) StaticInstance.eventMgr.RegistIEvent(eventScene);
+        }
+
+        public static void DispatchEvent(string @event, params object[] datas)
+        {
+            StaticInstance.eventMgr.Dispatch(@event, datas);
         }
     }
 }

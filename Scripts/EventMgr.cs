@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using StaticClass;
+using System.Collections.Generic;
 
 namespace KemoCard.Scripts
 {
@@ -16,7 +17,7 @@ namespace KemoCard.Scripts
             Reset();
         }
 
-        public void Dispatch(string @event, dynamic datas = null)
+        public void Dispatch(string @event, params object[] datas)
         {
             foreach (var i in events)
             {
@@ -42,6 +43,6 @@ namespace KemoCard.Scripts
 
     public interface IEvent
     {
-        public abstract void ReceiveEvent(string @event, dynamic datas);
+        public abstract void ReceiveEvent(string @event, params object[] datas);
     }
 }

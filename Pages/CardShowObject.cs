@@ -8,8 +8,9 @@ public partial class CardShowObject : Control
     [Export] public RichTextLabel cardName;
     [Export] public RichTextLabel cardDesc;
     [Export] public Label cardCost;
-    [Export] public ColorRect colorRect;
+    [Export] public ColorRect BgRect;
     [Export] public Polygon2D costBg;
+    [Export] public ColorRect FrameRect; 
     [Export] public SubViewportContainer SVContainer;
     [Export] public float AngleXMax = 0.15f;
     [Export] public float AngleYMax = 0.15f;
@@ -74,5 +75,11 @@ public partial class CardShowObject : Control
         cardDesc.Text = StaticUtils.MakeBBCodeString(card.Desc);
         cardCost.Text = card.Cost.ToString();
         costBg.Color = new(StaticEnums.CostBgColor[card.CostType]);
+        SetRare();
+    }
+
+    private void SetRare()
+    {
+        (FrameRect.Material as ShaderMaterial).SetShaderParameter("color", StaticUtils.GetFrameColorByRare(card.Rare));
     }
 }

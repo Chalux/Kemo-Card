@@ -1,6 +1,7 @@
 ﻿using Godot;
 using System;
 using System.Collections.Generic;
+using System.Text.Json.Serialization;
 
 namespace KemoCard.Scripts.Map
 {
@@ -42,7 +43,14 @@ namespace KemoCard.Scripts.Map
         /// 生成事件房间的权重
         /// </summary>
         public double EVENT_ROOM_WEIGHT { get; set; } = 4.0;
+        [JsonIgnore]
         public List<string> PresetPool { get; set; } = new();
+        [JsonIgnore]
+        public List<string> EventPool { get; set; } = new();
+        [JsonIgnore]
+        public List<string> EquipPool { get; set; } = new();
+        [JsonIgnore]
+        public List<string> CardPool { get; set; } = new();
         public uint MinTier { get; set; } = 1;
         public uint MaxTier { get; set; } = 1;
         public string ShowName { get; set; } = "";
@@ -56,6 +64,7 @@ namespace KemoCard.Scripts.Map
         {
             if (Datas.Ins.MapPool.TryGetValue(id, out var pool))
             {
+                ReloadPools();
                 var path = $"res://Mods/{pool.mod_id}/Scripts/Maps/M{pool.map_id}.cs";
                 using var res = ResourceLoader.Load<CSharpScript>(path);
                 if (res != null)
@@ -69,24 +78,68 @@ namespace KemoCard.Scripts.Map
                     PATHS = pool.paths;
                     MapScript.Init(this);
                 }
-                if (PresetPool != null && PresetPool.Count == 0)
-                {
-                    foreach (var p in Datas.Ins.PresetPool.Values)
-                    {
-                        if (p.tier >= MinTier && p.tier <= MaxTier && p.is_boss == false)
-                        {
-                            PresetPool.Add(p.preset_id);
-                        }
-                    }
-                }
-                if (PresetPool.Count == 0)
-                {
-                    PresetPool.Add("test_preset_1");
-                }
-                PresetPool.Sort((a, b) => (int)(Datas.Ins.PresetPool[a].tier - Datas.Ins.PresetPool[b].tier));
             }
         }
 
         public MapData() { }
+
+        public Action MapEndAction;
+
+        public void ReloadPools()
+        {
+            if (PresetPool != null && PresetPool.Count == 0)
+            {
+                foreach (var p in Datas.Ins.PresetPool.Values)
+                {
+                    if (p.tier >= MinTier && p.tier <= MaxTier && p.is_boss == false && p.is_special != false)
+                    {
+                        PresetPool.Add(p.preset_id);
+                    }
+                }
+            }
+            if (PresetPool.Count == 0)
+            {
+                PresetPool.Add("test_preset_1");
+            }
+            PresetPool.Sort((a, b) => (int)(Datas.Ins.PresetPool[a].tier - Datas.Ins.PresetPool[b].tier));
+            if (EventPool != null && EventPool.Count == 0)
+            {
+                foreach (var e in Datas.Ins.EventPool.Values)
+                {
+                    if (e.is_special != false)
+                    {
+                        EventPool.Add(e.event_id);
+                    }
+                }
+            }
+            if (EventPool.Count == 0)
+            {
+                EventPool.Add("test_event_1");
+            }
+            if (EquipPool != null && EquipPool.Count == 0)
+            {
+                foreach (var eq in Datas.Ins.EquipPool.Values)
+                {
+                    if (eq.is_special != false)
+                    {
+                        EquipPool.Add(eq.equip_id);
+                    }
+                }
+            }
+            if (EquipPool.Count == 0)
+            {
+                EquipPool.Add("test_equip_1");
+            }
+            if (CardPool != null && CardPool.Count == 0)
+            {
+                foreach (var card in Datas.Ins.CardPool.Values)
+                {
+                    if (card.is_special != false)
+                    {
+                        CardPool.Add(card.card_id);
+                    }
+                }
+            }
+        }
     }
 }
