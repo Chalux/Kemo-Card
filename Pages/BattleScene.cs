@@ -389,7 +389,7 @@ public partial class BattleScene : BaseScene, IEvent
             //player.InFightHands.ForEach(c => player.InFightGrave.Add(c));
             //player.InFightHands.Clear();
             var list = player.InFightHands.ToList();
-            var discardlist = list.Where((Card c) => !c.InGameDict.ContainsKey("KeepInHand") && !c.GlobalDict.ContainsKey("KeepInHand")).ToList();
+            var discardlist = list.Where((Card c) => !c.CheckHasSymbol("KeepInHand")).ToList();
             DisCard(discardlist, player, DisCardReason.END_TURN);
             //for (int i = 0; i < list.Count; i++)
             //{
@@ -407,13 +407,14 @@ public partial class BattleScene : BaseScene, IEvent
         }
         foreach (CardObject i in HandControl.GetChildren().Cast<CardObject>())
         {
-            if (i.card.InGameDict.ContainsKey("KeepInHand") || i.card.GlobalDict.ContainsKey("KeepInHand")) continue;
+            if (i.card.CheckHasSymbol("KeepInHand")) continue;
             else i.QueueFree();
         }
         for (int i = 0; i < currentEnemyRoles.Count; i++)
         {
-            if (currentEnemyRoles[i] == null || !BattleStatic.isFighting) return;
-            currentEnemyRoles[i].script.ActionFunc?.Invoke(turns, currentPlayerRoles, currentEnemyRoles);
+            var currEnemy = currentEnemyRoles[i];
+            if (currEnemy == null || !BattleStatic.isFighting) return;
+            currEnemy.script.ActionFunc?.Invoke(turns, currentPlayerRoles, currentEnemyRoles, currEnemy.script);
         }
         NextTurn();
     }
@@ -686,11 +687,19 @@ public partial class BattleScene : BaseScene, IEvent
             };
             if (BattlePreset.GainExp > 0) datas.Add(@struct2);
             StaticInstance.windowMgr.AddScene(rewardScene, datas);
-            if (BattlePreset.IsBoss)
+            var nextrooms = StaticInstance.playerData.gsd.MapGenerator.LastRoom.NextRooms;
+            if (nextrooms == null || nextrooms.Count == 0)
             {
                 StaticInstance.playerData.gsd.MapGenerator.EndMap();
             }
             BattlePreset = null;
+        }
+        else
+        {
+            BattleStatic.Reset();
+            StaticInstance.playerData.gsd = new();
+            StaticInstance.windowMgr.RemoveAllScene();
+            StaticInstance.windowMgr.ChangeScene(ResourceLoader.Load<PackedScene>("res://Pages/menu_scene.tscn").Instantiate());
         }
         EndControl.Visible = true;
     }

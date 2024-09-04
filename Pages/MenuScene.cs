@@ -11,6 +11,7 @@ public partial class MenuScene : BaseScene
     public override void _Ready()
     {
         base._Ready();
+        DebugTempBtn.Visible = OS.IsDebugBuild();
         exit.Pressed += new(() =>
         {
             GD.Print("MenuScene退出了游戏");
@@ -42,9 +43,12 @@ public partial class MenuScene : BaseScene
             StaticInstance.windowMgr.ChangeScene(ResourceLoader.Load<PackedScene>("res://Pages/LoadSaveScene.tscn").Instantiate(), new((scene) => { StaticInstance.MainRoot.canPause = true; }));
             StaticInstance.MainRoot.HideRichHint();
         });
-        DebugTempBtn.Pressed += new(() =>
+        if (DebugTempBtn.Visible)
         {
-            StaticInstance.windowMgr.ChangeScene(ResourceLoader.Load<PackedScene>("res://Pages/Map/Map.tscn").Instantiate(), new((scene) => { StaticInstance.MainRoot.canPause = true; }));
-        });
+            DebugTempBtn.Pressed += new(() =>
+            {
+                StaticInstance.windowMgr.ChangeScene(ResourceLoader.Load<PackedScene>("res://Pages/Map/Map.tscn").Instantiate(), new((scene) => { StaticInstance.MainRoot.canPause = true; }));
+            });
+        }
     }
 }

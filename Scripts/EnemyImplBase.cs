@@ -20,7 +20,7 @@ namespace KemoCard.Scripts
         public int Dodge { get; set; } = 1;
         public string Name { get; set; } = "未命名";
         public string Intent { get; set; } = "";
-        public Action<int, List<PlayerRole>, List<EnemyRole>> ActionFunc;
+        public Action<int, List<PlayerRole>, List<EnemyRole>, EnemyImplBase> ActionFunc;
         public Dictionary<string, List<Action<dynamic>>> EventDic { get; set; } = new();
 
         public virtual void ReceiveEvent(string @event, params object[] datas)

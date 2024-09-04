@@ -40,9 +40,10 @@ namespace KemoCard.Scripts.Cards
                         }
                         break;
                     case CostType.ACTIONPOINT:
-                        if ((cardObject.card.owner as PlayerRole).CurrentActionPoint >= cardObject.card.Cost)
+                        var owner = cardObject.card.owner as PlayerRole;
+                        if (owner != null && owner.CurrentActionPoint >= cardObject.card.Cost)
                         {
-                            (cardObject.card.owner as PlayerRole).CurrentActionPoint -= cardObject.card.Cost;
+                            owner.CurrentActionPoint -= cardObject.card.Cost;
                         }
                         else
                         {
@@ -61,8 +62,7 @@ namespace KemoCard.Scripts.Cards
                 BattleStatic.Targets.Clear();
                 if (cardObject.card.owner is PlayerRole ifp)
                 {
-                    if (!cardObject.card.GlobalDict.ContainsKey("Exhaust")
-                    && !cardObject.card.InGameDict.ContainsKey("Exhaust"))
+                    if (!cardObject.card.CheckHasSymbol("Exhaust"))
                     {
                         ifp.AddCardToGrave(cardObject.card);
                         //if (StaticInstance.currWindow is BattleScene bs)
@@ -107,7 +107,7 @@ namespace KemoCard.Scripts.Cards
                 GetViewport().SetInputAsHandled();
                 BattleStatic.Targets.Clear();
                 StaticInstance.eventMgr.Dispatch("EndSelectTarget");
-                cardObject.csm.OnTransitionRequest(this, State.BASE);
+                cardObject.csm.OnTransitionRequest(this, CardStateEnum.BASE);
                 BattleStatic.currCard = null;
             }
             BattleStatic.Targets.Clear();

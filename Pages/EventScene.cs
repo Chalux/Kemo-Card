@@ -11,9 +11,9 @@ public partial class EventScene : BaseScene, IEvent
     [Export] TextureRect EventImg;
     [Export] Label EventTitle;
     private Event eventData;
-    public override void OnAdd(dynamic datas = null)
+    public override void OnAdd(params object[] datas)
     {
-        eventData = datas as Event;
+        eventData = datas[0] as Event;
         int maxLen = Math.Max(eventData.EventActions.Count, Math.Max(eventData.EventDesc.Count, eventData.EventIconPath.Count));
         foreach (var node in BtnContainer.GetChildren())
         {
@@ -37,7 +37,7 @@ public partial class EventScene : BaseScene, IEvent
 
     public void ReceiveEvent(string @event, params object[] datas)
     {
-        if(@event == "close_eventscene")
+        if (@event == "close_eventscene")
         {
             StaticInstance.windowMgr.RemoveScene(this);
         }

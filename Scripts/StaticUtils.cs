@@ -220,5 +220,13 @@ namespace StaticClass
             }
             return res;
         }
+
+        public static BattleScene TryGetBattleScene()
+        {
+            if (!BattleStatic.isFighting) return null;
+            BattleScene bs = StaticInstance.windowMgr.GetSceneByName("BattleScene") as BattleScene;
+            return bs;
+        }
+
     }
 }

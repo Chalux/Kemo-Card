@@ -1,5 +1,4 @@
-﻿using StaticClass;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace KemoCard.Scripts
 {

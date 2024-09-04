@@ -10,6 +10,7 @@ namespace KemoCard.Scripts
     public partial class EquipImplBase : RefCounted, IEvent
     {
         public Equip Binder;
+        public string Name { get; set; }
         public Dictionary<string, uint> CardDic { get; set; } = new();
 
         public string TextureUrl { get; set; } = "";
@@ -18,7 +19,7 @@ namespace KemoCard.Scripts
 
         public bool DoDefaultPutOn = true;
         [JsonIgnore]
-        public Action CustomPutOn;
+        public Action<EquipImplBase> CustomPutOn;
         public string Desc = "";
         public void OnPutOn()
         {
@@ -37,12 +38,12 @@ namespace KemoCard.Scripts
                 }
                 GD.Print("角色" + pr.GetName() + "装备了id为" + Binder.Id + ",Uuid为" + Binder.Uuid + "的装备。新增卡牌" + Count + "张至卡组中。装备后角色的卡组数量为" + pr.Deck.Count);
             }
-            CustomPutOn?.Invoke();
+            CustomPutOn?.Invoke(this);
         }
 
         public bool DoDefaultPutOff = true;
         [JsonIgnore]
-        public Action CustomPutOff;
+        public Action<EquipImplBase> CustomPutOff;
         public void OnPutOff()
         {
             if (Binder != null && DoDefaultPutOff && Binder.owner is PlayerRole pr)
@@ -59,7 +60,7 @@ namespace KemoCard.Scripts
                 }
                 GD.Print("角色" + pr.GetName() + "脱下了id为" + Binder.Id + ",Uuid为" + Binder.Uuid + "的装备。从卡组中删除卡牌" + Count + "张。脱下后角色的卡组数量为" + pr.Deck.Count);
             }
-            CustomPutOff?.Invoke();
+            CustomPutOff?.Invoke(this);
         }
 
         [JsonIgnore]

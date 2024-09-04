@@ -4,7 +4,7 @@
 [ext_resource type="PackedScene" uid="uid://bxu5oaf5w8o2p" path="res://Pages/Map/Map.tscn" id="2_ask6y"]
 [ext_resource type="Texture2D" uid="uid://dyygagjf1l0r6" path="res://Mods/MainPackage/Resources/Icons/icons_204.png" id="3_rnj1p"]
 
-[node name="MainScene" type="Node2D" node_paths=PackedStringArray("SaveButton", "EditDeckButton", "TestBattleButton", "EditEquipBtn", "TestPresetBtn", "ShowMapBtn", "AllocBtn", "AllocLabel", "LevelLabel", "ExpLabel", "GoldLabel", "ExpProg", "EnemiesInput", "PresetInput", "DebugNode", "SelectMapBtn", "MapView", "HpLabel", "HpProg", "MpLabel", "MpProg", "TestAddCardBtn", "AddCardInput")]
+[node name="MainScene" type="Node2D" node_paths=PackedStringArray("SaveButton", "EditDeckButton", "TestBattleButton", "EditEquipBtn", "TestPresetBtn", "ShowMapBtn", "AllocBtn", "AllocLabel", "LevelLabel", "ExpLabel", "GoldLabel", "ExpProg", "EnemiesInput", "PresetInput", "DebugNode", "SelectMapBtn", "MapView", "HpLabel", "HpProg", "MpLabel", "MpProg", "TestAddCardBtn", "AddCardInput", "ReturnMenuBtn")]
 script = ExtResource("1_ejl3x")
 SaveButton = NodePath("SaveBtn")
 EditDeckButton = NodePath("EditDeckBtn")
@@ -29,6 +29,7 @@ MpLabel = NodePath("MpLabel")
 MpProg = NodePath("MpProg")
 TestAddCardBtn = NodePath("DebugNode/TestAddCardBtn")
 AddCardInput = NodePath("DebugNode/AddCardInput")
+ReturnMenuBtn = NodePath("ReturnMenuBtn")
 
 [node name="ColorRect" type="ColorRect" parent="."]
 offset_right = 1920.0
@@ -84,6 +85,14 @@ offset_right = 256.0
 offset_bottom = 656.0
 theme_override_font_sizes/font_size = 36
 text = "选择地图"
+
+[node name="ReturnMenuBtn" type="Button" parent="."]
+offset_left = 64.0
+offset_top = 680.0
+offset_right = 256.0
+offset_bottom = 744.0
+theme_override_font_sizes/font_size = 36
+text = "返回主菜单"
 
 [node name="AllocLabel" type="Label" parent="."]
 offset_left = 280.0

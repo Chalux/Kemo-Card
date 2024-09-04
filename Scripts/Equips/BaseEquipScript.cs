@@ -8,5 +8,10 @@ namespace KemoCard.Scripts.Equips
         {
 
         }
+
+        public virtual void UpdateAction(EquipImplBase eq)
+        {
+
+        }
     }
 }

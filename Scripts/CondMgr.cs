@@ -25,7 +25,7 @@ namespace KemoCard.Scripts
             return true;
         }
 
-        public bool CheckCond(Godot.Collections.Dictionary<string, Array<Variant>> CondList)
+        public bool CheckCond(Dictionary<string, Array<Variant>> CondList)
         {
             if (CondList == null) return true;
             foreach (var Cond in CondList)
@@ -45,7 +45,17 @@ namespace KemoCard.Scripts
         {
             CondActions.Add("Map", (Array<Variant> variants) =>
             {
-                return StaticInstance.playerData.gsd.BoolData.ContainsKey($"Map{variants[0].AsUInt32()}Passed");
+                bool res = false;
+                foreach (var id in variants)
+                {
+                    string key = $"Map{variants[0].AsString()}Passed";
+                    if (StaticInstance.playerData.gsd.IntData.ContainsKey(key) && StaticInstance.playerData.gsd.IntData[key] > 0)
+                    {
+                        res = true;
+                        break;
+                    }
+                }
+                return res;
             });
             CondActions.Add("Level", (Array<Variant> variants) =>
             {

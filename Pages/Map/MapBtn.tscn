@@ -3,7 +3,7 @@
 [ext_resource type="Script" path="res://Pages/Map/MapBtn.cs" id="1_7bhi1"]
 
 [node name="MapBtn" type="Control" node_paths=PackedStringArray("CreateBtn", "ShowNameLab", "TierRangeLab", "MapSizeLab")]
-custom_minimum_size = Vector2(0, 64)
+custom_minimum_size = Vector2(256, 320)
 layout_mode = 3
 anchors_preset = 0
 offset_right = 256.0

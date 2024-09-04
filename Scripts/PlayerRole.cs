@@ -550,6 +550,7 @@ namespace KemoCard.Scripts
             InFightHands?.Clear();
             InFightGrave?.Clear();
             isIFPInited = false;
+            CurrPBlock = CurrMBlock = 0;
         }
 
         public override void AddBuff(BuffImplBase buff)
@@ -582,6 +583,27 @@ namespace KemoCard.Scripts
             {
                 buff.Binder = this;
                 roleObject.AddBuff(buff);
+            }
+        }
+
+        /// <summary>
+        /// 只有在战斗中才有用
+        /// </summary>
+        /// <param name="card">添加到手牌的card数据</param>
+        public void AddCardIntoInfightHand(Card card)
+        {
+            if (StaticInstance.windowMgr.GetSceneByName("BattleScene") is not BattleScene bs) return;
+            card.owner = this;
+            InFightHands.Add(card);
+            PackedScene res = ResourceLoader.Load<PackedScene>("res://Pages/CardObject.tscn");
+            if (res != null)
+            {
+                var obj = res.Instantiate<CardObject>();
+                obj.InitData(card);
+                if (bs.nowPlayer == this)
+                {
+                    bs.HandControl.AddChild(obj);
+                }
             }
         }
         #endregion

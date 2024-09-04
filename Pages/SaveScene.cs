@@ -8,7 +8,7 @@ public partial class SaveScene : BaseScene
     [Export] HFlowContainer SaveList;
 
     // Called when the node enters the scene tree for the first time.
-    public override void OnAdd(dynamic datas = null)
+    public override void OnAdd(params object[] datas)
     {
         PackedScene save_list_item = ResourceLoader.Load<PackedScene>("res://Pages/save_list_item.tscn");
         save_list_item.ResourceLocalToScene = true;

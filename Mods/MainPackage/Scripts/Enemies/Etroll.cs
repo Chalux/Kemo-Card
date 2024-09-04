@@ -10,20 +10,23 @@ namespace KemoCard.Mods.MainPackage.Scripts.Enemies
     {
         public override void OnEnemyInit(EnemyImplBase e)
         {
-            e.Strength = 15;
+            e.Strength = 6;
             e.CraftBook = 0;
             e.CraftEquip = 0;
-            e.Strength = 2;
             e.Dodge = 2;
             e.Critical = 25;
             e.Speed = 3;
             e.Name = "巨魔";
             e.AnimationResourcePath = $"res://Mods/MainPackage/Resources/Animations/Bat.tres";
-            e.ActionFunc = new((round, players, enemies) =>
+            e.ActionFunc = new((round, players, enemies, @base) =>
             {
                 if (e.InGameDict.TryGetValue("action", out var tag))
                 {
-                    if (tag == 2)
+                    if (tag == 1)
+                    {
+                        StaticUtils.CreateBuffAndAddToRole("angry", e.Binder);
+                    }
+                    else if (tag == 2)
                     {
                         if (players.Count == 0) return;
                         var rand = new Random();
@@ -48,15 +51,29 @@ namespace KemoCard.Mods.MainPackage.Scripts.Enemies
                     $"{StaticUtils.MakeColorString("力量", StaticInstance.BodyColor, 36)}+0.5*" +
                     $"{StaticUtils.MakeColorString("身体", StaticInstance.BodyColor, 36)}+3*{StaticUtils.MakeColorString("手牌", "#f70101", 36)})";
                 e.ChangeIntent(Intent);
-                e.InGameDict.Add("action", 2);
+                if (e.InGameDict.ContainsKey("action"))
+                {
+                    e.InGameDict["action"] = 2;
+                }
+                else
+                {
+                    e.InGameDict.Add("action", 2);
+                }
             }));
-            e.AddEvent("BattleStart", new((datas) =>
+            e.AddEvent("StartBattle", new((datas) =>
             {
                 string Intent =
                     $"[img=30x30]res://Mods/MainPackage/Resources/Icons/icons_031.png[/img]获得Buff-愤怒(每回合提高自身3点{StaticUtils.MakeColorString("力量", StaticInstance.BodyColor, 36)})";
                 e.ChangeIntent(Intent);
-                StaticUtils.CreateBuffAndAddToRole("angry", e.Binder);
-                e.InGameDict.Add("action", 1);
+                //StaticUtils.CreateBuffAndAddToRole("angry", e.Binder);
+                if (e.InGameDict.ContainsKey("action"))
+                {
+                    e.InGameDict["action"] = 1;
+                }
+                else
+                {
+                    e.InGameDict.Add("action", 1);
+                }
             }));
             StaticUtils.CreateBuffAndAddToRole("fire_injury", e.Binder);
             StaticUtils.CreateBuffAndAddToRole("water_injury", e.Binder);

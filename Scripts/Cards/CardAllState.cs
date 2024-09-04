@@ -58,7 +58,7 @@ namespace KemoCard.Scripts.Cards
                     break;
                 default:
                     StaticInstance.eventMgr.Dispatch("EndSelectTarget");
-                    cardObject.csm.OnTransitionRequest(this, State.BASE);
+                    cardObject.csm.OnTransitionRequest(this, CardStateEnum.BASE);
                     BattleStatic.currCard = null;
                     break;
             }
@@ -85,14 +85,14 @@ namespace KemoCard.Scripts.Cards
                 //GD.Print(RecordTimeStamp + 10000 + ":" + Time.GetTicksMsec());
                 GetViewport().SetInputAsHandled();
                 StaticInstance.eventMgr.Dispatch("EndSelectTarget");
-                cardObject.csm.OnTransitionRequest(this, State.RELEASED);
+                cardObject.csm.OnTransitionRequest(this, CardStateEnum.RELEASED);
             }
             else if (cancel || !confirm)
             {
                 GetViewport().SetInputAsHandled();
                 BattleStatic.Targets.Clear();
                 StaticInstance.eventMgr.Dispatch("EndSelectTarget");
-                cardObject.csm.OnTransitionRequest(this, State.BASE);
+                cardObject.csm.OnTransitionRequest(this, CardStateEnum.BASE);
                 BattleStatic.currCard = null;
             }
         }

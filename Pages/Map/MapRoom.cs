@@ -55,7 +55,9 @@ public partial class MapRoom : Control
     {
         SelectEventHandler.Invoke(Room);
         if (onlyRunHandlerWhenSelected) return;
-        if (Room.Type == RoomType.Monster)
+        MainScene ms = StaticInstance.windowMgr.GetSceneByName("MainScene") as MainScene;
+        ms?.MapView.HideMap();
+        if (Room.Type == RoomType.Monster || Room.Type == RoomType.Boss)
         {
             StaticUtils.StartNewBattleByPreset(Room.RoomPresetId);
         }
@@ -64,10 +66,6 @@ public partial class MapRoom : Control
             PackedScene res = ResourceLoader.Load<PackedScene>("res://Pages/EventScene.tscn");
             if (res != null)
             {
-                if (StaticInstance.currWindow is MainScene ms)
-                {
-                    ms.MapView.HideMap();
-                }
                 EventScene eventScene = res.Instantiate<EventScene>();
                 Event e = new(Room.RoomEventId);
                 StaticInstance.windowMgr.AddScene(eventScene, e);
@@ -102,11 +100,11 @@ public partial class MapRoom : Control
                 List<string> cardIds = new();
                 List<ShopStruct> shopStructs = new();
                 int ErrorCount = 0;
+                var pool = StaticInstance.playerData.gsd.MapGenerator.Data.CardPool;
                 for (int i = 0; i < 10; i++)
                 {
                     string cid = "";
-                    var pool = StaticInstance.playerData.gsd.MapGenerator.Data.CardPool;
-                    while (cid != "" && cardIds.IndexOf(cid) != -1 && ErrorCount < 1000)
+                    while ((cid == "" || (cid != "" && cardIds.IndexOf(cid) != -1)) && ErrorCount < 1000)
                     {
                         cid = pool[rand.Next(pool.Count)];
                         ErrorCount++;

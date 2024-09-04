@@ -47,13 +47,13 @@ namespace KemoCard.Scripts.Cards
                 {
                     if (BattleStatic.SelectFilterFunc == null || BattleStatic.SelectFilterFunc.Invoke(cardObject.card))
                     {
-                        cardObject.csm.OnTransitionRequest(this, State.DISCARDING);
+                        cardObject.csm.OnTransitionRequest(this, CardStateEnum.DISCARDING);
                     }
                 }
                 else
                 {
                     cardObject.PivotOffset = cardObject.GetGlobalMousePosition() - cardObject.GlobalPosition;
-                    cardObject.csm.OnTransitionRequest(this, State.CLICKED);
+                    cardObject.csm.OnTransitionRequest(this, CardStateEnum.CLICKED);
                 }
             }
         }

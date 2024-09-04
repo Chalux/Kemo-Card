@@ -110,5 +110,10 @@ namespace KemoCard.Scripts.Cards
             InGameDict?.Clear();
             InGameDict = null;
         }
+
+        public bool CheckHasSymbol(string symbol)
+        {
+            return GlobalDict.ContainsKey(symbol) || InGameDict.ContainsKey(symbol);
+        }
     }
 }

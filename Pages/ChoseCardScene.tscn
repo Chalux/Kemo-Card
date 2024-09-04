@@ -2,8 +2,10 @@
 
 [ext_resource type="Script" path="res://Pages/ChoseCardScene.cs" id="1_qiuks"]
 
-[node name="ChoseCardScene" type="Node2D"]
+[node name="ChoseCardScene" type="Node2D" node_paths=PackedStringArray("hBox", "confirmBtn")]
 script = ExtResource("1_qiuks")
+hBox = NodePath("Root/HBoxContainer")
+confirmBtn = NodePath("Root/Button")
 
 [node name="Root" type="Control" parent="."]
 custom_minimum_size = Vector2(1920, 1080)
@@ -24,9 +26,11 @@ color = Color(0, 0, 0, 0.537255)
 [node name="HBoxContainer" type="HBoxContainer" parent="Root"]
 layout_mode = 0
 offset_left = 320.0
-offset_top = 128.0
+offset_top = 256.0
 offset_right = 1600.0
-offset_bottom = 640.0
+offset_bottom = 576.0
+theme_override_constants/separation = 36
+alignment = 1
 
 [node name="Button" type="Button" parent="Root"]
 layout_mode = 0

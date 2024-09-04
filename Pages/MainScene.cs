@@ -31,6 +31,7 @@ public partial class MainScene : BaseScene, IEvent
     [Export] ProgressBar MpProg;
     [Export] Godot.Button TestAddCardBtn;
     [Export] TextEdit AddCardInput;
+    [Export] Godot.Button ReturnMenuBtn;
 
     public override void _Ready()
     {
@@ -119,6 +120,16 @@ public partial class MainScene : BaseScene, IEvent
             {
                 StaticInstance.MainRoot.ShowBanner($"卡牌{c.Id}不存在或者错误");
             }
+        });
+        ReturnMenuBtn.Pressed += new(() =>
+        {
+            AlertView.PopupAlert("确定要返回主菜单吗？未保存的进度将丢失。", false, new(() =>
+            {
+                BattleStatic.Reset();
+                StaticInstance.playerData.gsd = new();
+                StaticInstance.windowMgr.RemoveAllScene();
+                StaticInstance.windowMgr.ChangeScene(ResourceLoader.Load<PackedScene>("res://Pages/menu_scene.tscn").Instantiate());
+            }));
         });
         MapView.CreateMap();
         UpdateView();

@@ -54,6 +54,7 @@ namespace KemoCard.Scripts.Map
         public uint MinTier { get; set; } = 1;
         public uint MaxTier { get; set; } = 1;
         public string ShowName { get; set; } = "";
+        public string Id { get; set; } = "";
         public Godot.Collections.Dictionary<string, Godot.Collections.Array<Variant>> Cond;
         /// <summary>
         /// 在地图生成后，会将生成完的地图传给这个委托。作者可以用自己的规则来给地图重新规定房间内容。
@@ -70,6 +71,7 @@ namespace KemoCard.Scripts.Map
                 if (res != null)
                 {
                     var MapScript = res.New().As<BaseMapScript>();
+                    Id = pool.map_id;
                     MinTier = pool.min_tier;
                     MaxTier = pool.max_tier;
                     Cond = pool.show_cond;
@@ -84,6 +86,8 @@ namespace KemoCard.Scripts.Map
         public MapData() { }
 
         public Action MapEndAction;
+
+        public Action MapStartAction;
 
         public void ReloadPools()
         {
@@ -134,7 +138,7 @@ namespace KemoCard.Scripts.Map
             {
                 foreach (var card in Datas.Ins.CardPool.Values)
                 {
-                    if (card.is_special != false)
+                    if (card.is_special == false)
                     {
                         CardPool.Add(card.card_id);
                     }

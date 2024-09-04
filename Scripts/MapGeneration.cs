@@ -1,5 +1,4 @@
-﻿using KemoCard.Scripts.Events;
-using KemoCard.Scripts.Map;
+﻿using KemoCard.Scripts.Map;
 using StaticClass;
 using System;
 using System.Collections.Generic;
@@ -22,7 +21,7 @@ namespace KemoCard.Scripts
         public Room LastRoom { get; set; }
         public bool IsStillRunning { get; set; } = false;
 
-        public void GenerateMap(MapData data = null)
+        public void GenerateMap(MapData data = null, bool runStartAction = false)
         {
             if (data != null)
             {
@@ -64,6 +63,11 @@ namespace KemoCard.Scripts
             //MainScene?.MapView.GenerateNewMap(Data);
             MainScene?.UpdateView();
             MainScene?.MapView.UnlockFloor(0);
+
+            if (runStartAction)
+            {
+                Data.MapStartAction?.Invoke();
+            }
 
             //int i = 0;
             //MapData.ForEach(Rooms =>
@@ -181,6 +185,11 @@ namespace KemoCard.Scripts
             {
                 if (kvp.Value.is_boss && kvp.Value.tier >= Data.MinTier && kvp.Value.tier <= Data.MaxTier) plist.Add(kvp.Key);
             }
+            if (plist.Count == 0)
+            {
+                StaticInstance.MainRoot.ShowBanner($"找不到任何处于此地图设定范围内的怪物配置，生成地图出错");
+                return;
+            }
             Random r = new();
             BossRoom.RoomPresetId = plist[r.Next(plist.Count)];
         }
@@ -211,6 +220,7 @@ namespace KemoCard.Scripts
                 if (Room.NextRooms != null && Room.NextRooms.Count > 0)
                 {
                     Room.Type = RoomType.Treasure;
+                    SetTreasureRoom(Room);
                 }
             }
 
@@ -219,6 +229,7 @@ namespace KemoCard.Scripts
                 if (Room.NextRooms != null && Room.NextRooms.Count > 0)
                 {
                     Room.Type = RoomType.Treasure;
+                    SetTreasureRoom(Room);
                 }
             }
 
@@ -266,9 +277,7 @@ namespace KemoCard.Scripts
             }
             else if (room.Type == RoomType.Treasure)
             {
-                Random r = new();
-                var random = r.Next(0, Data.EquipPool.Count);
-                room.RoomEquipId = Data.EquipPool[random];
+                SetTreasureRoom(room);
             }
         }
 
@@ -333,7 +342,32 @@ namespace KemoCard.Scripts
 
         public void EndMap()
         {
+            string key = $"Map{Data.Id}Passed";
+            if (StaticInstance.playerData.gsd.IntData.ContainsKey(key))
+            {
+                StaticInstance.playerData.gsd.IntData[key] += 1;
+            }
+            else
+            {
+                StaticInstance.playerData.gsd.IntData.Add(key, 1);
+            }
+            var oldMapId = Data.Id;
             Data.MapEndAction?.Invoke();
+            if (oldMapId == Data.Id)
+            {
+                Data = new();
+                IsStillRunning = false;
+                FloorsClimbed = 0;
+                LastRoom = null;
+                MapData = new();
+            }
+        }
+
+        private void SetTreasureRoom(Room room)
+        {
+            Random r = new();
+            var random = r.Next(0, Data.EquipPool.Count);
+            room.RoomEquipId = Data.EquipPool[random];
         }
     }
 }

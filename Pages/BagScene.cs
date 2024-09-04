@@ -34,7 +34,7 @@ namespace KemoCard.Pages
         private Equip popupdata;
         private uint bagIndex;
         private BagOpType opType = BagOpType.PUT_ON;
-        public override void OnAdd(dynamic data)
+        public override void OnAdd(params object[] data)
         {
             if ((data == null && data[0] != null) || data[0] is not PlayerRole)
             {
@@ -43,7 +43,7 @@ namespace KemoCard.Pages
             }
             else
             {
-                playerData = data[0];
+                playerData = (PlayerRole)data[0];
             }
             var prefab = ResourceLoader.Load<PackedScene>("res://Pages/EquipObject.tscn");
             if (prefab != null)

@@ -2,8 +2,6 @@ using Godot;
 using KemoCard.Pages;
 using KemoCard.Scripts;
 using StaticClass;
-using System;
-using System.Collections.Generic;
 using System.Linq;
 
 public partial class ShopScene : BaseScene, IEvent
@@ -11,7 +9,7 @@ public partial class ShopScene : BaseScene, IEvent
     [Export] FlowContainer shopContainer;
     [Export] Godot.Button LeaveBtn;
     [Export] Label GoldLabel;
-    public override void OnAdd(dynamic datas = null)
+    public override void OnAdd(params object[] datas)
     {
         foreach (ShopStruct @struct in StaticInstance.playerData.gsd.CurrShopStructs)
         {
@@ -43,6 +41,9 @@ public partial class ShopScene : BaseScene, IEvent
             node.QueueFree();
         }
         StaticInstance.playerData.gsd.CurrShopStructs = new();
+        MainScene ms = (MainScene)StaticInstance.windowMgr.GetSceneByName("MainScene");
+        //ms?.MapView.UnlockFloor(StaticInstance.playerData.gsd.MapGenerator.FloorsClimbed);
+        ms?.MapView.UnlockNextRooms();
         StaticInstance.windowMgr.RemoveScene(this);
         StaticUtils.AutoSave();
     }

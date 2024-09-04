@@ -31,7 +31,7 @@ namespace KemoCard.Scripts.Events
             }
         }
 
-        public void AddEvent(string Desc,string IconPath, Action action)
+        public void AddEvent(string Desc, string IconPath, Action action)
         {
             EventDesc.Add(Desc);
             EventIconPath.Add(IconPath);

@@ -12,12 +12,18 @@ namespace KemoCard.Scripts
         }
         public BaseRole(double speed, double strength, double effeciency, double mantra, double craftequip, double craftbook, double critical, double dodge, int CurrHealth = 0, int CurrMagic = 0, int OriginHpLimit = 0, int OriginMpLimit = 0)
         {
+            int oldCurrHpLimit = CurrHpLimit, oldCurrMpLimit = CurrMpLimit;
             OriginSpeed = speed; OriginStrength = strength; OriginEffeciency = effeciency; OriginMantra = mantra; OriginCraftBook = craftbook; OriginCritical = critical; OriginDodge = dodge; OriginCraftEquip = craftequip;
-            this.OriginHpLimit = OriginHpLimit > 0 ? OriginHpLimit : (int)(Body * 3 + strength * 3);
+            UpdateHpAndMp();
             this.CurrHealth = CurrHealth > 0 ? CurrHealth : CurrHpLimit;
-            this.OriginMpLimit = OriginMpLimit > 0 ? OriginMpLimit : (int)(MagicAbility * 3 + OriginMantra * 3);
             this.CurrMagic = CurrMagic > 0 ? CurrMagic : CurrMpLimit;
             StaticInstance.eventMgr.RegistIEvent(this);
+        }
+
+        private void UpdateHpAndMp()
+        {
+            OriginHpLimit = (int)(Body * 3 + CurrStrength * 3);
+            OriginMpLimit = (int)(MagicAbility * 3 + CurrMantra * 3);
         }
 
         ~BaseRole()
@@ -47,7 +53,9 @@ namespace KemoCard.Scripts
             get => _OriginSpeed;
             set
             {
-                var oldValue = _OriginSpeed; _OriginSpeed = value; OnPropertyChanged(nameof(OriginSpeed), oldValue, _OriginSpeed);
+                var oldValue = _OriginSpeed; _OriginSpeed = value; 
+                UpdateHpAndMp();
+                OnPropertyChanged(nameof(OriginSpeed), oldValue, _OriginSpeed);
             }
         }
         public double OriginStrength
@@ -55,7 +63,9 @@ namespace KemoCard.Scripts
             get => _OriginStrength;
             set
             {
-                var oldValue = _OriginStrength; _OriginStrength = value; OnPropertyChanged(nameof(OriginStrength), oldValue, _OriginStrength);
+                var oldValue = _OriginStrength; _OriginStrength = value; 
+                UpdateHpAndMp();
+                OnPropertyChanged(nameof(OriginStrength), oldValue, _OriginStrength);
             }
         }
         public double OriginEffeciency
@@ -63,7 +73,9 @@ namespace KemoCard.Scripts
             get => _OriginEffeciency;
             set
             {
-                var oldValue = _OriginEffeciency; _OriginEffeciency = value; OnPropertyChanged(nameof(OriginEffeciency), oldValue, _OriginEffeciency);
+                var oldValue = _OriginEffeciency; _OriginEffeciency = value; 
+                UpdateHpAndMp();
+                OnPropertyChanged(nameof(OriginEffeciency), oldValue, _OriginEffeciency);
             }
         }
         public double OriginMantra
@@ -71,7 +83,9 @@ namespace KemoCard.Scripts
             get => _OriginMantra;
             set
             {
-                var oldValue = _OriginMantra; _OriginMantra = value; OnPropertyChanged(nameof(OriginMantra), oldValue, _OriginMantra);
+                var oldValue = _OriginMantra; _OriginMantra = value;
+                UpdateHpAndMp();
+                OnPropertyChanged(nameof(OriginMantra), oldValue, _OriginMantra);
             }
         }
         public double OriginCraftEquip

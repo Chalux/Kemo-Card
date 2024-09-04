@@ -57,14 +57,21 @@ public partial class Map : BaseScene
         }
         Y = Math.Clamp(Y, -CameraEdgeY, 0);
         Camera2D.Position = new(Camera2D.Position.X, Y);
-        //GD.Print(Camera2D.Position);
+        //GD.Print(Camera2D.Position, Y, -CameraEdgeY);
     }
 
     public void GenerateNewMap(MapData mapData)
     {
         StaticInstance.playerData.gsd.MapGenerator.FloorsClimbed = 0;
-        StaticInstance.playerData.gsd.MapGenerator.GenerateMap(mapData);
+        StaticInstance.playerData.gsd.MapGenerator.GenerateMap(mapData, true);
         CreateMap();
+        if (StaticInstance.windowMgr.GetSceneByName("MainScene") is MainScene ms)
+        {
+            ms.MapView.CameraEdgeY = StaticInstance.playerData.gsd.MapGenerator.Data.Y_DISTANCE * (StaticInstance.playerData.gsd.MapGenerator.Data.FLOORS - 1);
+        }
+        var major = StaticInstance.playerData.gsd.MajorRole;
+        major.CurrHealth = major.CurrHpLimit;
+        major.CurrMagic = major.CurrMpLimit;
     }
 
     public void CreateMap()

@@ -39,12 +39,17 @@ public partial class RewardItem : Control
                     break;
                 case RewardType.Equip:
                     btn.Pressed += EquipAction;
-                    btn.Icon = ResourceLoader.Load<CompressedTexture2D>("res://Mods/MainPackage/Resources/Icons/icons_041.png");
                     if (Rewards.Count > 0)
                     {
                         Equip e = new(Rewards[0]);
+                        btn.Icon = ResourceLoader.Load<CompressedTexture2D>(e.EquipScript.TextureUrl);
 
-                        btn.Text = $"装备()";
+                        btn.Text = $"装备({e.EquipScript.Name})";
+                        btn.MouseEntered += new(() =>
+                        {
+                            StaticInstance.MainRoot.ShowRichHint(e.EquipScript.Desc);
+                        });
+                        btn.MouseExited += StaticInstance.MainRoot.HideRichHint;
                     }
                     else btn.Text = $"装备(出错)";
                     break;

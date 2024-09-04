@@ -48,7 +48,7 @@ namespace StaticClass
             Magic,
         }
 
-        public enum State { BASE, CLICKED, ALL_OR_SELF_DRAGGING, TARGET_DRAGGING, AIMING, RELEASED, DISCARDING }
+        public enum CardStateEnum { BASE, CLICKED, ALL_OR_SELF_DRAGGING, TARGET_DRAGGING, AIMING, RELEASED, DISCARDING }
 
         [System.Flags]
         public enum TargetType

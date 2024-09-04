@@ -21,7 +21,7 @@ namespace KemoCard.Scripts.Cards
                 if (BattleStatic.isDiscarding)
                 {
                     BattleStatic.SelectCard(cardObject);
-                    cardObject.csm.OnTransitionRequest(this, State.BASE);
+                    cardObject.csm.OnTransitionRequest(this, CardStateEnum.BASE);
                 }
             }
         }

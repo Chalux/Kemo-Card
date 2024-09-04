@@ -1,7 +1,6 @@
 ﻿using Godot;
 using KemoCard.Pages;
 using StaticClass;
-using System.Collections.Generic;
 using System.Linq;
 
 public partial class DeckEditScene : BaseScene
@@ -11,7 +10,7 @@ public partial class DeckEditScene : BaseScene
     [Export] TextEdit NameFilter;
     [Export] Godot.Button clearBtn;
     private int flags;
-    
+
     // Called when the node enters the scene tree for the first time.
     public override void _Ready()
     {

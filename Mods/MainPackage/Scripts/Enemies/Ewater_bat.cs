@@ -18,7 +18,7 @@ namespace KemoCard.Mods.MainPackage.Scripts.Enemies
             e.Critical = 5;
             e.Name = "冰蝙蝠";
             e.AnimationResourcePath = $"res://Mods/MainPackage/Resources/Animations/Bat.tres";
-            e.ActionFunc = new((round, players, enemies) =>
+            e.ActionFunc = new((round, players, enemies, @base) =>
             {
                 if (players.Count == 0) return;
                 var rand = new Random();

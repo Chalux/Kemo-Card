@@ -24,9 +24,9 @@ namespace KemoCard.Scripts.Cards
             {
                 var type = cardObject.card.TargetType;
                 if (type == TargetType.ALL_SINGLE || type == TargetType.ENEMY_SINGLE || type == TargetType.TEAM_SINGLE)
-                    cardObject.csm.OnTransitionRequest(this, State.TARGET_DRAGGING);
+                    cardObject.csm.OnTransitionRequest(this, CardStateEnum.TARGET_DRAGGING);
                 else
-                    cardObject.csm.OnTransitionRequest(this, State.ALL_OR_SELF_DRAGGING);
+                    cardObject.csm.OnTransitionRequest(this, CardStateEnum.ALL_OR_SELF_DRAGGING);
             }
         }
     }

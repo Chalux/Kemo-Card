@@ -57,5 +57,14 @@ namespace KemoCard.Scripts
             SelectFilterFunc = null;
             ConfirmAction = null;
         }
+
+        public static void StartSelect()
+        {
+            discard_list = new();
+            isDiscarding = true;
+            MustList = new();
+            SelectFilterFunc = null;
+            ConfirmAction = null;
+        }
     }
 }

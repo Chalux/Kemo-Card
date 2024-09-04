@@ -10,7 +10,7 @@ public partial class CardShowObject : Control
     [Export] public Label cardCost;
     [Export] public ColorRect BgRect;
     [Export] public Polygon2D costBg;
-    [Export] public ColorRect FrameRect; 
+    [Export] public ColorRect FrameRect;
     [Export] public SubViewportContainer SVContainer;
     [Export] public float AngleXMax = 0.15f;
     [Export] public float AngleYMax = 0.15f;

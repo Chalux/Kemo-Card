@@ -1,5 +1,4 @@
-﻿using KemoCard.Scripts.Events;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace KemoCard.Scripts
 {

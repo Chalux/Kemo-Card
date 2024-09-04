@@ -34,9 +34,10 @@ public partial class MapBtn : Control
                     mainScene.MapView.GenerateNewMap(MapData);
                     mainScene.MapView.UnlockFloor(StaticInstance.playerData.gsd.MapGenerator.FloorsClimbed);
                 }
-                if (StaticInstance.currWindow is MapSelectScene mss)
+                var mss = StaticInstance.windowMgr.GetSceneByName("MapSelectScene");
+                if (mss != null)
                 {
-                    StaticInstance.windowMgr.RemoveTopestPopup();
+                    StaticInstance.windowMgr.RemoveScene(mss);
                 }
             }
         });

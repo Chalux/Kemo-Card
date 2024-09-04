@@ -1,6 +1,7 @@
 ﻿using Godot;
 using KemoCard.Scripts.Buffs;
 using KemoCard.Scripts.Cards;
+using KemoCard.Scripts.Equips;
 using StaticClass;
 using System;
 using System.Text;
@@ -95,6 +96,13 @@ namespace KemoCard.Scripts
                     {
                         equip.owner = gsd.MajorRole;
                         equip.EquipScript.Binder = equip;
+                        if (Datas.Ins.BuffPool.ContainsKey(equip.Id))
+                        {
+                            var modinfo = Datas.Ins.BuffPool[equip.Id];
+                            CSharpScript res = ResourceLoader.Load<CSharpScript>($"res://Mods/{modinfo.mod_id}/Scripts/Equips/B{equip.Id}.cs");
+                            BaseEquipScript bes = res.New().As<BaseEquipScript>();
+                            bes.UpdateAction(equip.EquipScript);
+                        }
                     }
                 }
                 foreach (var equip in gsd.MajorRole.EquipDic.Values)
@@ -103,6 +111,13 @@ namespace KemoCard.Scripts
                     {
                         equip.owner = gsd.MajorRole;
                         equip.EquipScript.Binder = equip;
+                        if (Datas.Ins.BuffPool.ContainsKey(equip.Id))
+                        {
+                            var modinfo = Datas.Ins.BuffPool[equip.Id];
+                            CSharpScript res = ResourceLoader.Load<CSharpScript>($"res://Mods/{modinfo.mod_id}/Scripts/Equips/B{equip.Id}.cs");
+                            BaseEquipScript bes = res.New().As<BaseEquipScript>();
+                            bes.UpdateAction(equip.EquipScript);
+                        }
                     }
                 }
                 //GD.Print(MajorRole);

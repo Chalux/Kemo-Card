@@ -8,7 +8,7 @@ public partial class DeckView : BaseScene
 {
     [Export] FlowContainer FlowContainer;
     [Export] Godot.Button ExitBtn;
-    public override void OnAdd(dynamic datas)
+    public override void OnAdd(params object[] datas)
     {
         ExitBtn.Pressed += new(() =>
         {

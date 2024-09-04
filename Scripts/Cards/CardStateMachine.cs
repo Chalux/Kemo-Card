@@ -7,7 +7,7 @@ public partial class CardStateMachine : Control
 {
     [Export] public CardState initialState;
     public CardState currentState;
-    public Dictionary<State, CardState> states = new();
+    public Dictionary<CardStateEnum, CardState> states = new();
 
     public void Init(CardObject card)
     {
@@ -47,7 +47,7 @@ public partial class CardStateMachine : Control
         currentState?.OnMouseExit();
     }
 
-    public void OnTransitionRequest(CardState from, State to)
+    public void OnTransitionRequest(CardState from, CardStateEnum to)
     {
         if (from != currentState)
         {

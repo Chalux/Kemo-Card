@@ -70,7 +70,7 @@ public partial class AllocPointScene : BaseScene
         CancelBtn.Pressed += DoCancel;
     }
 
-    public override void OnAdd(dynamic datas = null)
+    public override void OnAdd(params object[] datas)
     {
         if (datas != null && datas[0] != null)
         {
@@ -110,7 +110,7 @@ public partial class AllocPointScene : BaseScene
         if (Get(propertyName).Obj != null && CurrentPoint > 0)
         {
             CurrentPoint--;
-            Set(propertyName, (long)Get(propertyName).Obj + 1);
+            Set(propertyName, (double)Get(propertyName).Obj + 1);
         }
         UpdateView();
     }
@@ -120,9 +120,9 @@ public partial class AllocPointScene : BaseScene
         Variant v = Get(protertyName);
         if (v.Obj != null)
         {
-            if (((long)v) > 0)
+            if (((double)v) > 0)
             {
-                Set(protertyName, ((long)v) - 1);
+                Set(protertyName, ((double)v) - 1);
                 CurrentPoint++;
             }
         }
@@ -146,6 +146,7 @@ public partial class AllocPointScene : BaseScene
                 player.UnUsedPoints = CurrentPoint;
                 MainScene node = (MainScene)ResourceLoader.Load<PackedScene>("res://Pages/MainScene.tscn").Instantiate();
                 StaticInstance.windowMgr.ChangeScene(node);
+                node.UpdateView();
             }
         }));
     }

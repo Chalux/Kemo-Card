@@ -31,7 +31,7 @@ namespace KemoCard.Scripts
             AddScene(scene);
         }
 
-        public void AddScene(BaseScene scene, dynamic datas = null)
+        public void AddScene(BaseScene scene, params object[] datas)
         {
             if (_scenes.ContainsKey(scene.Name))
             {
@@ -229,6 +229,24 @@ namespace KemoCard.Scripts
         public BaseScene GetSceneByName(string sceneName)
         {
             return _scenes.ContainsKey(sceneName) ? _scenes[sceneName] : null;
+        }
+
+        public void RemoveAllScene()
+        {
+            foreach (var i in PopUpRoot.GetChildren())
+            {
+                if (i != null && i.IsInsideTree())
+                {
+                    RemoveScene(i as BaseScene);
+                }
+            }
+            foreach (var i in _scenes.Values)
+            {
+                if (i != null && i.IsInsideTree())
+                {
+                    RemoveScene(i);
+                }
+            }
         }
     }
 }

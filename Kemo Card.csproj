@@ -7,6 +7,10 @@
     <RootNamespace>KemoCard</RootNamespace>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Remove="Mods\MainPackage\Scripts\Dialogues\**" />
+    <EmbeddedResource Remove="Mods\MainPackage\Scripts\Dialogues\**" />
+  </ItemGroup>
+  <ItemGroup>
     <Folder Include="Mods\MainPackage\Scripts\Roles\" />
   </ItemGroup>
 </Project>

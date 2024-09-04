@@ -22,8 +22,8 @@ namespace KemoCard.Mods.MainPackage.Scripts.Cards
                 }
                 GD.Print($"卡牌C{c.Id}已使用");
             });
-            c.InGameDict.Add("Exhaust", 1);
-            c.InGameDict.Add("KeepInHand", 1);
+            c.GlobalDict.Add("Exhaust", 1);
+            c.GlobalDict.Add("KeepInHand", 1);
         }
     }
 }

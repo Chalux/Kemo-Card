@@ -5,7 +5,7 @@ namespace KemoCard.Scripts.Cards
 {
     public partial class CardState : Control
     {
-        [Export] public State state = State.BASE;
+        [Export] public CardStateEnum state = CardStateEnum.BASE;
 
         //[Signal] public delegate void TransitionRequestEventHandler(CardState from, State to);
 

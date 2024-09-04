@@ -127,9 +127,12 @@ public partial class PlayerRoleObject : Control, IEvent
         {
             buffObject.ReceiveEvent(@event, datas);
         }
-        foreach (Equip equip in data.EquipDic.Values)
+        if (data != null)
         {
-            equip?.EquipScript.ReceiveEvent(@event, datas);
+            foreach (Equip equip in data.EquipDic.Values)
+            {
+                equip?.EquipScript.ReceiveEvent(@event, datas);
+            }
         }
     }
 

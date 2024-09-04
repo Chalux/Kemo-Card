@@ -3,10 +3,11 @@
 [ext_resource type="Script" path="res://Pages/ShopScene.cs" id="1_2lsj4"]
 [ext_resource type="Texture2D" uid="uid://dyygagjf1l0r6" path="res://Mods/MainPackage/Resources/Icons/icons_204.png" id="2_3obe0"]
 
-[node name="ShopScene" type="Node2D" node_paths=PackedStringArray("shopContainer", "LeaveBtn")]
+[node name="ShopScene" type="Node2D" node_paths=PackedStringArray("shopContainer", "LeaveBtn", "GoldLabel")]
 script = ExtResource("1_2lsj4")
 shopContainer = NodePath("Root/FlowContainer")
 LeaveBtn = NodePath("Root/LeaveBtn")
+GoldLabel = NodePath("Root/GoldLabel")
 
 [node name="Root" type="Control" parent="."]
 custom_minimum_size = Vector2(1920, 1080)
@@ -14,6 +15,15 @@ layout_mode = 3
 anchors_preset = 0
 offset_right = 40.0
 offset_bottom = 40.0
+
+[node name="ColorRect" type="ColorRect" parent="Root"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.537255)
 
 [node name="FlowContainer" type="FlowContainer" parent="Root"]
 custom_minimum_size = Vector2(1200, 830)

@@ -143,6 +143,7 @@ namespace KemoCard.Scripts
                                             card_id = id,
                                             filter_flag = data["filter_flag"].AsUInt64(),
                                             rare = data["rare"].AsUInt16(),
+                                            is_special = data["is_special"].AsBool(),
                                             mod_id = currModId
                                         });
                                     }

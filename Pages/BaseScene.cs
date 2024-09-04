@@ -9,7 +9,7 @@ namespace KemoCard.Pages
         [Export] public bool ShowBlackWhenAdd = false;
         [Export] public bool ShowBlackWhenRemove = false;
 
-        public virtual void OnAdd(dynamic datas = null)
+        public virtual void OnAdd(params object[] datas)
         {
         }
 

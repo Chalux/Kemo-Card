@@ -1,7 +1,6 @@
 using Godot;
 using KemoCard.Scripts.Interfaces;
 using StaticClass;
-using System;
 
 public partial class ShopCardItem : Control, IUpdateAble
 {
