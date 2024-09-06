@@ -364,15 +364,17 @@ namespace KemoCard.Scripts
         public virtual void AddBuff(BuffImplBase buff)
         {
             Buffs.Add(buff);
-            StaticInstance.eventMgr.Dispatch("BuffChanged", this);
+            StaticInstance.eventMgr.Dispatch("BeforeBuffChange", this, buff, "Add");
             buff.OnBuffAdded?.Invoke(buff);
+            StaticInstance.eventMgr.Dispatch("BuffChanged", this);
         }
 
         public void RemoveBuff(BuffImplBase buff)
         {
             Buffs.Remove(buff);
-            StaticInstance.eventMgr.Dispatch("BuffChanged", this);
+            StaticInstance.eventMgr.Dispatch("BeforeBuffChange", this, buff, "Remove");
             buff.OnBuffRemoved?.Invoke(buff);
+            StaticInstance.eventMgr.Dispatch("BuffChanged", this);
         }
 
         public string GetDesc()

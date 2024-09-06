@@ -1,0 +1,38 @@
+[gd_scene format=3 uid="uid://2jwwqhwq25wh"]
+
+[node name="InitialLoadScene" type="Node2D"]
+
+[node name="Root" type="Control" parent="."]
+custom_minimum_size = Vector2(1920, 1080)
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="ColorRect" type="ColorRect" parent="Root"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.329412, 0.541176, 0.74902, 1)
+
+[node name="LoadTitle" type="Label" parent="Root"]
+layout_mode = 0
+offset_left = 192.0
+offset_top = 128.0
+offset_right = 1728.0
+offset_bottom = 640.0
+theme_override_font_sizes/font_size = 120
+text = "LoadTitle"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="LoadProg" type="ProgressBar" parent="Root"]
+layout_mode = 0
+offset_left = 192.0
+offset_top = 768.0
+offset_right = 1728.0
+offset_bottom = 832.0
+theme_override_font_sizes/font_size = 44

@@ -1,4 +1,4 @@
-using Godot;
+﻿using Godot;
 using KemoCard.Pages;
 using KemoCard.Scripts;
 using KemoCard.Scripts.Map;
@@ -6,7 +6,7 @@ using StaticClass;
 using System;
 using System.Linq;
 
-public partial class Map : BaseScene
+public partial class Map : BaseScene, IEvent
 {
     private const int SCROLL_SPEED = 75;
     private const string MapRoomPath = $"res://Pages/Map/MapRoom.tscn";
@@ -19,6 +19,8 @@ public partial class Map : BaseScene
     [Export] Godot.Button HideBtn;
     [Export] Godot.Button DebugBtn;
     [Export] Godot.Button DebugBtn2;
+    [Export] Godot.Button HealBtn;
+    [Export] Label HealLabel;
 
     public float CameraEdgeY { get; set; } = 0;
     private bool isDrag = false;
@@ -32,6 +34,8 @@ public partial class Map : BaseScene
         DebugBtn2.Visible = DebugBtn.Visible = OS.IsDebugBuild();
         DebugBtn.Pressed += UnlockNextRooms;
         DebugBtn2.Pressed += new(() => GD.Print(StaticInstance.playerData.gsd.MapGenerator.ToString()));
+        HealBtn.Pressed += TryHeal;
+        UpdateView();
     }
 
     public override void _Input(InputEvent @event)
@@ -72,6 +76,10 @@ public partial class Map : BaseScene
         var major = StaticInstance.playerData.gsd.MajorRole;
         major.CurrHealth = major.CurrHpLimit;
         major.CurrMagic = major.CurrMpLimit;
+        foreach (var card in major.GetDeck())
+        {
+            card.InRoundDict.Clear();
+        }
     }
 
     public void CreateMap()
@@ -173,5 +181,24 @@ public partial class Map : BaseScene
     {
         Hide();
         Camera2D.Enabled = false;
+    }
+
+    private void TryHeal()
+    {
+        var major = StaticInstance.playerData.gsd.MajorRole;
+        AlertView.PopupAlert($"确定要休息吗？将回复生命上限一半的血量。\n当前血量：{major.CurrHealth}/{major.CurrHpLimit}", false, new(() => StaticInstance.playerData.gsd.MapGenerator.Data?.TryHeal()));
+    }
+
+    private void UpdateView()
+    {
+        HealLabel.Text = $"休息次数：{StaticInstance.playerData.gsd.MapGenerator.Data?.HealTimes ?? 0}";
+    }
+
+    public void ReceiveEvent(string @event, params object[] datas)
+    {
+        if (@event == "AfterHeal")
+        {
+            UpdateView();
+        }
     }
 }

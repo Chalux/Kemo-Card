@@ -148,6 +148,7 @@ namespace StaticClass
             { 0x4000 , "对护甲特效" },
             { 0x8000 , "被弃牌特效" },
             { 0x10000 , "创造" },
+            { 0x20000 , "回复法力" },
         };
 
         [Flags]
@@ -170,6 +171,7 @@ namespace StaticClass
             ARMOR_EFFECT = 0x4000,
             DISCARD_EFFECT = 0x8000,
             CREATE = 0x10000,
+            RECOVER_MANA = 0x20000,
         }
     }
 }

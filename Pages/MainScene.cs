@@ -45,8 +45,10 @@ public partial class MainScene : BaseScene, IEvent
         });
         EditDeckButton.Pressed += new(() =>
         {
-            StaticInstance.windowMgr.AddScene((BaseScene)ResourceLoader.Load<PackedScene>("res://Pages/DeckView.tscn").Instantiate()
-                , new[] { major.Deck.ToList().Concat(major.TempDeck.ToList()).ToList() });
+            //StaticInstance.windowMgr.AddScene((BaseScene)ResourceLoader.Load<PackedScene>("res://Pages/DeckView.tscn").Instantiate()
+            //    , new[] { major.Deck.ToList().Concat(major.TempDeck.ToList()).ToList() });
+            StaticInstance.windowMgr.AddScene((BaseScene)ResourceLoader.Load<PackedScene>("res://Pages/RoleDeckView.tscn").Instantiate()
+                , new[] { major });
             StaticInstance.MainRoot.HideRichHint();
         });
         TestBattleButton.Pressed += new(() =>
@@ -96,7 +98,7 @@ public partial class MainScene : BaseScene, IEvent
         DebugNode.Visible = OS.IsDebugBuild();
         ShowMapBtn.Pressed += new(() =>
         {
-            MapView.ShowMap();
+            MapView?.ShowMap();
         });
         AllocBtn.Pressed += new(() =>
         {
@@ -131,7 +133,7 @@ public partial class MainScene : BaseScene, IEvent
                 StaticInstance.windowMgr.ChangeScene(ResourceLoader.Load<PackedScene>("res://Pages/menu_scene.tscn").Instantiate());
             }));
         });
-        MapView.CreateMap();
+        MapView?.CreateMap();
         UpdateView();
     }
 
@@ -155,8 +157,8 @@ public partial class MainScene : BaseScene, IEvent
         MpProg.MaxValue = major.CurrMpLimit;
         MpProg.Value = major.CurrMagic;
         SelectMapBtn.Disabled = StaticInstance.playerData.gsd.MapGenerator.IsStillRunning;
-        if (StaticInstance.playerData.gsd.MapGenerator.FloorsClimbed == 0) MapView.UnlockFloor(StaticInstance.playerData.gsd.MapGenerator.FloorsClimbed);
-        else MapView.UnlockNextRooms();
+        if (StaticInstance.playerData.gsd.MapGenerator.FloorsClimbed == 0) MapView?.UnlockFloor(StaticInstance.playerData.gsd.MapGenerator.FloorsClimbed);
+        else MapView?.UnlockNextRooms();
     }
 
     public void ReceiveEvent(string @event, params object[] datas)

@@ -549,6 +549,7 @@ namespace KemoCard.Scripts
             InFightDeck?.Clear();
             InFightHands?.Clear();
             InFightGrave?.Clear();
+            InFightBuffs?.ForEach((BuffImplBase buff) => { buff.RemoveThisFromBinder(); });
             isIFPInited = false;
             CurrPBlock = CurrMBlock = 0;
         }
@@ -565,7 +566,12 @@ namespace KemoCard.Scripts
 
         public void InitBuff()
         {
-            InFightBuffs = Buffs.ToList();
+            InFightBuffs = new();
+            Buffs.ForEach(buff =>
+            {
+                var obj = StaticUtils.TransExp<BuffImplBase, BuffImplBase>.Trans(buff);
+                InFightBuffs.Add(obj);
+            });
             InFightBuffs.ForEach(buff =>
             {
                 if (roleObject != null)
@@ -607,5 +613,10 @@ namespace KemoCard.Scripts
             }
         }
         #endregion
+
+        public List<Card> GetDeck()
+        {
+            return Deck.Concat(TempDeck).ToList();
+        }
     }
 }

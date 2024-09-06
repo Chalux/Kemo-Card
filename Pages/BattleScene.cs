@@ -138,7 +138,9 @@ public partial class BattleScene : BaseScene, IEvent
                     PackedScene res = ResourceLoader.Load<PackedScene>("res://Pages/MainScene.tscn");
                     if (res != null)
                     {
-                        StaticInstance.windowMgr.ChangeScene(res.Instantiate<MainScene>());
+                        MainScene ms = res.Instantiate<MainScene>();
+                        StaticInstance.windowMgr.ChangeScene(ms);
+                        ms.MapView?.ShowMap();
                     }
                 }
                 StaticUtils.AutoSave();
@@ -390,7 +392,7 @@ public partial class BattleScene : BaseScene, IEvent
             //player.InFightHands.Clear();
             var list = player.InFightHands.ToList();
             var discardlist = list.Where((Card c) => !c.CheckHasSymbol("KeepInHand")).ToList();
-            DisCard(discardlist, player, DisCardReason.END_TURN);
+            DisCard(discardlist, player, DisCardReason.END_TURN, nowPlayer);
             //for (int i = 0; i < list.Count; i++)
             //{
             //    var c = list[i];
@@ -419,9 +421,20 @@ public partial class BattleScene : BaseScene, IEvent
         NextTurn();
     }
 
-    public AttackResult DealDamage(double value, AttackType attackType, BaseRole from, List<BaseRole> targets, AttributeEnum atrribute = AttributeEnum.None, int times = 1)
+    /// <summary>
+    /// 造成一次伤害
+    /// </summary>
+    /// <param name="value">伤害值</param>
+    /// <param name="attackType">攻击类型</param>
+    /// <param name="from">伤害来源</param>
+    /// <param name="targets">目标列表</param>
+    /// <param name="atrribute">伤害的属性</param>
+    /// <param name="times">伤害次数</param>
+    /// <param name="tempAddCri">临时增加的暴击率(固定值)</param>
+    /// <param name="tempMulCri">临时增加的暴击率(百分比)</param>
+    public void DealDamage(double value, AttackType attackType, BaseRole from, List<BaseRole> targets, AttributeEnum atrribute = AttributeEnum.None, int times = 1, double tempAddCri = 0f, double tempMulCri = 0f)
     {
-        if (!BattleStatic.isFighting) return AttackResult.Failed;
+        //if (!BattleStatic.isFighting) return AttackResult.Failed;
         Damage damage = new()
         {
             validTag = true,
@@ -430,7 +443,8 @@ public partial class BattleScene : BaseScene, IEvent
             targets = targets,
             atrribute = atrribute,
             attackType = attackType,
-            times = times
+            times = times,
+            criticaltimes = 0
         };
         StaticInstance.eventMgr.Dispatch("BeforeAttacked", damage);
         StaticInstance.eventMgr.Dispatch("BeforeDealDamage", damage);
@@ -446,12 +460,14 @@ public partial class BattleScene : BaseScene, IEvent
                     targets = new() { target },
                     atrribute = damage.atrribute,
                     attackType = damage.attackType,
-                    times = damage.times
+                    times = damage.times,
+                    criticaltimes = 0
                 };
                 GD.Print("伤害结算前：" + tempDamage.value);
                 StaticInstance.eventMgr.Dispatch("BeforeAttackedSingle", tempDamage);
                 if (tempDamage.validTag)
                 {
+                    if (target.CurrHealth <= 0) continue;
                     tempDamage.value = (int)Math.Round((tempDamage.value + target.GetSymbol(AttributeDic[atrribute] + "ResisProp", 0f) - from.GetSymbol(AttributeDic[atrribute] + "AtkProp", 0f)) *
                             (1 + target.GetSymbol(AttributeDic[atrribute] + "ResisPerm", 0f)) * (1 + from.GetSymbol(AttributeDic[atrribute] + "AtkPerm", 0f)));
                     StaticInstance.eventMgr.Dispatch("BeforeDealDamageSingle", tempDamage);
@@ -459,14 +475,27 @@ public partial class BattleScene : BaseScene, IEvent
                     for (int i = 0; i < times; i++)
                     {
                         int random = new Random().Next(0, 100);
-                        GD.Print("闪避摇点：" + random + "，被击者触发闪避要求的点数不大于：" + target.CurrDodge);
-                        if (random <= target.CurrDodge)
+                        int needvalue = target.CurrDodge;
+                        GD.Print("闪避摇点：" + random + "，被击者触发闪避要求的点数不大于：" + needvalue);
+                        if (random <= needvalue)
                         {
-                            string log = from.name + "对" + target.name + "的攻击被闪避了。闪避摇点：" + random + "，被击者触发闪避要求的点数不大于：" + target.CurrDodge;
+                            string log = from.name + "对" + target.name + "的攻击被闪避了。闪避摇点：" + random + "，被击者触发闪避要求的点数不大于：" + needvalue;
                             GD.Print(log);
                             StaticInstance.MainRoot.ShowBanner(log);
                             continue;
                             //return AttackResult.Dodged;
+                        }
+                        random = new Random().Next(0, 100);
+                        needvalue = (int)Math.Floor(target.CurrCritical * tempMulCri + tempAddCri);
+                        GD.Print($"暴击摇点：{random}，触发暴击要求的点数不大于：{needvalue}");
+                        if (random <= needvalue)
+                        {
+                            string log = from.name + "对" + target.name + "的攻击暴击了。暴击摇点：" + random + "，触发暴击要求的点数不大于：" + needvalue;
+                            GD.Print(log);
+                            StaticInstance.MainRoot.ShowBanner(log);
+                            tempDamage.value *= 2 + from.GetSymbol("CriticalDamageAdd") - target.GetSymbol("CriticalDamageResis");
+                            tempDamage.criticaltimes += 1;
+                            damage.criticaltimes += 1;
                         }
                         int diff;
                         if (tempDamage.attackType == AttackType.Physics)
@@ -526,7 +555,7 @@ public partial class BattleScene : BaseScene, IEvent
                             {
                                 if (target is PlayerRole ifp) PlayerRoleDie(ifp);
                                 else if (target is EnemyRole er) EnemyRoleDie(er);
-                                return AttackResult.Success;
+                                //return AttackResult.Success;
                             }
                         }
                     }
@@ -535,17 +564,17 @@ public partial class BattleScene : BaseScene, IEvent
                 {
                     StaticInstance.eventMgr.Dispatch("AttackInvalided", tempDamage);
                     GD.Print(from.name + "对" + target.name + "的攻击被无效了");
-                    return AttackResult.Invalidated;
+                    //return AttackResult.Invalidated;
                 }
             }
             StaticInstance.eventMgr.Dispatch("AfterAttacked", damage);
-            return AttackResult.Success;
+            //return AttackResult.Success;
         }
         else
         {
             StaticInstance.eventMgr.Dispatch("AttackInvalided", damage);
             GD.Print("攻击被无效了");
-            return AttackResult.Invalidated;
+            //return AttackResult.Invalidated;
         }
     }
 
@@ -772,13 +801,13 @@ public partial class BattleScene : BaseScene, IEvent
         END_TURN,
         EFFECT,
     }
-    public void DisCard(List<Card> cards, PlayerRole owner, DisCardReason reason)
+    public void DisCard(List<Card> cards, PlayerRole owner, DisCardReason reason, BaseRole from)
     {
         foreach (var card in cards)
         {
             owner.InFightHands.Remove(card);
             owner.InFightGrave.Add(card);
-            card.DiscardAction?.Invoke(owner, reason);
+            card.DiscardAction?.Invoke(owner, reason, from);
             if (owner == nowPlayer)
             {
                 foreach (CardObject cobj in HandControl.GetChildren().Cast<CardObject>())

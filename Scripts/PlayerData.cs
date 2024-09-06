@@ -129,9 +129,9 @@ namespace KemoCard.Scripts
                     if (StaticInstance.playerData.gsd.MapGenerator.IsStillRunning)
                     {
                         if (StaticInstance.playerData.gsd.MapGenerator.FloorsClimbed == 0)
-                            node?.MapView.UnlockFloor(0);
+                            node?.MapView?.UnlockFloor(0);
                         else
-                            node?.MapView.UnlockNextRooms();
+                            node?.MapView?.UnlockNextRooms();
                     }
                 }
             }

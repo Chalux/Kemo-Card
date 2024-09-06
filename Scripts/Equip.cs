@@ -41,6 +41,7 @@ namespace KemoCard.Scripts
         private void InitScript()
         {
             EquipScript = new();
+            EquipScript.Binder = this;
             if (Ins.EquipPool.ContainsKey(Id))
             {
                 @struct = Ins.EquipPool[Id];
@@ -66,7 +67,6 @@ namespace KemoCard.Scripts
                 GD.PrintErr(errorLog);
             }
             EquipScript.OnCreated?.Invoke();
-            EquipScript.Binder = this;
             Uuid = Guid.NewGuid().ToString();
         }
 
@@ -77,7 +77,21 @@ namespace KemoCard.Scripts
 
         public override string ToString()
         {
-            return EquipScript != null ? EquipScript.Desc : "";
+            string str = "";
+            if (EquipScript != null)
+            {
+                str += EquipScript.Name ?? "";
+                str += EquipScript.Desc ?? "";
+                foreach (var cardid in EquipScript.CardDic.Keys)
+                {
+                    if (Ins.CardPool.TryGetValue(cardid, out var card_info))
+                    {
+                        str += card_info.alias;
+                        str += card_info.desc;
+                    }
+                }
+            }
+            return str;
         }
     }
 }

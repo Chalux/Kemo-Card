@@ -144,6 +144,11 @@ namespace KemoCard.Scripts
                                             filter_flag = data["filter_flag"].AsUInt64(),
                                             rare = data["rare"].AsUInt16(),
                                             is_special = data["is_special"].AsBool(),
+                                            alias = data["alias"].AsString(),
+                                            desc = data["desc"].AsString(),
+                                            cost = data["cost"].AsUInt32(),
+                                            cost_type = data["cost_type"].AsUInt32(),
+                                            target_type = data["target_type"].AsUInt32(),
                                             mod_id = currModId
                                         });
                                     }
@@ -271,6 +276,7 @@ namespace KemoCard.Scripts
                                             map_width = data["map_width"].AsUInt32(),
                                             paths = data["paths"].AsUInt32(),
                                             show_cond = data.ContainsKey("show_cond") ? data["show_cond"].AsGodotDictionary<string, Array<Variant>>() : new(),
+                                            heal_times = data["heal_times"].AsUInt32(),
                                             mod_id = currModId
                                         });
                                     }
@@ -341,6 +347,11 @@ namespace KemoCard.Scripts
             public ulong filter_flag;
             public uint rare;
             public bool is_special;
+            public string alias;
+            public string desc;
+            public uint cost;
+            public uint target_type;
+            public uint cost_type;
             public string mod_id;
         }
 
@@ -400,6 +411,7 @@ namespace KemoCard.Scripts
             public uint map_width;
             public uint paths;
             public Godot.Collections.Dictionary<string, Array<Variant>> show_cond;
+            public uint heal_times;
             public string mod_id;
         }
 

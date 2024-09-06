@@ -12,13 +12,8 @@ namespace KemoCard.Mods.MainPackage.Scripts.Cards
     {
         public override void OnCardScriptInit(Card c)
         {
-            c.Cost = 0;
-            c.Alias = "连击";
-            c.Desc = "无法打出。当被丢弃时，对一名随机的敌人造成 单体/物理/无属性/14点伤害";
-            c.CostType = StaticEnums.CostType.HEALTH;
-            c.TargetType = StaticEnums.TargetType.ENEMY_ALL;
             c.UseFilter = new((_, _, _) => false);
-            c.DiscardAction = new((BaseRole user, DisCardReason reason) =>
+            c.DiscardAction = new((BaseRole user, DisCardReason reason, BaseRole from) =>
             {
                 if (reason == DisCardReason.EFFECT)
                 {
@@ -33,7 +28,6 @@ namespace KemoCard.Mods.MainPackage.Scripts.Cards
                         }
                     }
                 }
-                GD.Print($"卡牌C{c.Id}已使用");
             });
         }
     }

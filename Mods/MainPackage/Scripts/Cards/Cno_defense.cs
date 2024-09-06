@@ -10,11 +10,6 @@ namespace KemoCard.Mods.MainPackage.Scripts.Cards
     {
         public override void OnCardScriptInit(Card c)
         {
-            c.Cost = 1;
-            c.Alias = "弃守为攻";
-            c.Desc = "丢弃手牌中所有护甲/魔防牌，每丢弃一张对敌方单体造成1次无属性物理4点伤害";
-            c.TargetType = StaticEnums.TargetType.ENEMY_SINGLE;
-            c.CostType = StaticEnums.CostType.ACTIONPOINT;
             c.UseFilter = new((user, targets, datas) =>
             {
                 return targets != null && targets.Count > 0 && targets[0] is EnemyRole er && er.isFriendly == false;
@@ -34,11 +29,10 @@ namespace KemoCard.Mods.MainPackage.Scripts.Cards
                                 cards.Add(card);
                             }
                         }
-                        bs.DisCard(cards, pr, BattleScene.DisCardReason.EFFECT);
+                        bs.DisCard(cards, pr, BattleScene.DisCardReason.EFFECT, user);
                         bs.DealDamage(4, StaticEnums.AttackType.Physics, user, targets, StaticEnums.AttributeEnum.None, cards.Count);
                     }
                 }
-                GD.Print($"卡牌C{c.Id}已使用");
             });
         }
     }

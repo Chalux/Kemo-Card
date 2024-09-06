@@ -1,4 +1,5 @@
 ﻿using Godot;
+using StaticClass;
 using System;
 using System.Collections.Generic;
 using System.Text.Json.Serialization;
@@ -55,6 +56,7 @@ namespace KemoCard.Scripts.Map
         public uint MaxTier { get; set; } = 1;
         public string ShowName { get; set; } = "";
         public string Id { get; set; } = "";
+        public uint HealTimes { get; set; } = 3;
         public Godot.Collections.Dictionary<string, Godot.Collections.Array<Variant>> Cond;
         /// <summary>
         /// 在地图生成后，会将生成完的地图传给这个委托。作者可以用自己的规则来给地图重新规定房间内容。
@@ -78,6 +80,7 @@ namespace KemoCard.Scripts.Map
                     FLOORS = pool.floor;
                     MAP_WIDTH = pool.map_width;
                     PATHS = pool.paths;
+                    HealTimes = pool.heal_times;
                     MapScript.Init(this);
                 }
             }
@@ -143,6 +146,22 @@ namespace KemoCard.Scripts.Map
                         CardPool.Add(card.card_id);
                     }
                 }
+            }
+        }
+
+        public void TryHeal()
+        {
+            if (HealTimes > 0)
+            {
+                StaticInstance.eventMgr.Dispatch("BeforeHeal");
+                StaticInstance.playerData.gsd.MajorRole.CurrHealth += StaticInstance.playerData.gsd.MajorRole.CurrHpLimit / 2;
+                StaticInstance.MainRoot.ShowBanner($"已治疗生命上限一半的血量");
+                HealTimes -= 1;
+                StaticInstance.eventMgr.Dispatch("AfterHeal");
+            }
+            else
+            {
+                StaticInstance.MainRoot.ShowBanner($"休息次数不足");
             }
         }
     }

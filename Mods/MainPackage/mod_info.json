@@ -11,103 +11,254 @@
       "card_id": "fire_ball",
       "filter_flag": 2081,
       "rare": 1,
-      "is_special": false
+      "is_special": false,
+      "alias": "火球术",
+      "desc": "造成 敌方/单体/魔法/火属性/7点伤害",
+      "cost": 10,
+      "cost_type": 0,
+      "target_type": 1
     },
     {
       "card_id": "water_slash",
       "filter_flag": 2065,
       "rare": 1,
-      "is_special": false
+      "is_special": false,
+      "alias": "水刃",
+      "desc": "造成 敌方/单体/魔法/水属性/7点伤害",
+      "cost": 10,
+      "cost_type": 0,
+      "target_type": 1
     },
     {
       "card_id": "self_pblock",
       "filter_flag": 1026,
       "rare": 1,
-      "is_special": true
+      "is_special": true,
+      "alias": "重整护甲",
+      "desc": "自身/护甲+8",
+      "cost": 6,
+      "cost_type": 0,
+      "target_type": 16
     },
     {
       "card_id": "self_mblock",
       "filter_flag": 2050,
       "rare": 1,
-      "is_special": true
+      "is_special": true,
+      "alias": "重整魔甲",
+      "desc": "自身/魔甲+8",
+      "cost": 6,
+      "cost_type": 0,
+      "target_type": 16
     },
     {
       "card_id": "punch",
       "filter_flag": 1033,
       "rare": 1,
-      "is_special": true
+      "is_special": true,
+      "alias": "拳击",
+      "desc": "造成 敌方/单体/物理/无属性/5点伤害",
+      "cost": 1,
+      "cost_type": 2,
+      "target_type": 1
     },
     {
       "card_id": "magic_missile",
       "filter_flag": 2057,
       "rare": 1,
-      "is_special": true
+      "is_special": true,
+      "alias": "魔法箭",
+      "desc": "造成 敌方/单体/魔法/无属性/5点伤害",
+      "cost": 1,
+      "cost_type": 2,
+      "target_type": 1
     },
     {
       "card_id": "lucky",
       "filter_flag": 0,
       "rare": 1,
-      "is_special": true
-    },
-    {
-      "card_id": "test_card_8",
-      "filter_flag": 0,
-      "rare": 1,
-      "is_special": true
-    },
-    {
-      "card_id": "test_card_9",
-      "filter_flag": 0,
-      "rare": 1,
-      "is_special": true
+      "is_special": true,
+      "alias": "幸运",
+      "desc": "获得1点行动力,耗尽,保留",
+      "cost": 0,
+      "cost_type": 2,
+      "target_type": 16
     },
     {
       "card_id": "graceful_charity",
       "filter_flag": 12288,
       "rare": 1,
-      "is_special": false
+      "is_special": false,
+      "alias": "天使的○舍",
+      "desc": "抽3张牌，然后选择2张手牌丢弃",
+      "cost": 8,
+      "cost_type": 0,
+      "target_type": 16
     },
     {
       "card_id": "rock_drill",
       "filter_flag": 17473,
       "rare": 1,
-      "is_special": false
+      "is_special": false,
+      "alias": "石钻",
+      "desc": "造成 敌方/单体/物理/土属性/4点伤害。\n如果伤害结算前敌方有护甲，那么额外造成4 + (1*力量)点伤害。",
+      "cost": 1,
+      "cost_type": 2,
+      "target_type": 1
     },
     {
       "card_id": "mag_draw",
       "filter_flag": 6153,
       "rare": 1,
-      "is_special": false
+      "is_special": false,
+      "alias": "魔能",
+      "desc": "造成 敌方/单体/魔法/无属性/3 + (1*效率)点伤害，如果此卡对目标造成了伤害，则抽一张卡",
+      "cost": 6,
+      "cost_type": 0,
+      "target_type": 1
     },
     {
       "card_id": "no_defense",
       "filter_flag": 9225,
       "rare": 2,
-      "is_special": false
+      "is_special": false,
+      "alias": "弃守为攻",
+      "desc": "丢弃手牌中所有护甲/魔防牌，每丢弃一张对敌方单体造成1次无属性物理4点伤害",
+      "cost": 1,
+      "cost_type": 2,
+      "target_type": 1
     },
     {
       "card_id": "no_attack",
       "filter_flag": 8206,
       "rare": 2,
-      "is_special": false
+      "is_special": false,
+      "alias": "弃攻为守",
+      "desc": "丢弃手牌中所有攻击牌，每丢弃一张获得3点护甲和3点魔防",
+      "cost": 1,
+      "cost_type": 2,
+      "target_type": 16
     },
     {
       "card_id": "double_hit",
       "filter_flag": 33801,
       "rare": 1,
-      "is_special": false
+      "is_special": false,
+      "alias": "连击",
+      "desc": "无法打出。当被丢弃时，对一名随机的敌人造成 单体/物理/无属性/14点伤害",
+      "cost": 0,
+      "cost_type": 1,
+      "target_type": 2
     },
     {
       "card_id": "create_equip",
       "filter_flag": 65536,
       "rare": 1,
-      "is_special": false
+      "is_special": false,
+      "alias": "创物",
+      "desc": "消耗。从2张牌中选择1张牌临时加入你的牌组。敌方单体造成5 + (1*工艺)点无属性物理伤害/获得2 + (1*工艺)点护甲",
+      "cost": 1,
+      "cost_type": 2,
+      "target_type": 16
     },
     {
       "card_id": "create_book",
       "filter_flag": 65536,
       "rare": 1,
-      "is_special": false
+      "is_special": false,
+      "alias": "创术",
+      "desc": "消耗。从2张牌中选择1张牌临时加入你的牌组。敌方单体造成5 + (1*书写)点无属性魔法伤害/获得2 + (1*书写)点魔甲",
+      "cost": 1,
+      "cost_type": 2,
+      "target_type": 16
+    },
+    {
+      "card_id": "create_book_attack",
+      "filter_flag": 2057,
+      "rare": 1,
+      "is_special": true,
+      "alias": "创术-攻击",
+      "desc": "造成5 + (1*书写)点无属性魔法伤害",
+      "cost": 1,
+      "cost_type": 2,
+      "target_type": 1
+    },
+    {
+      "card_id": "create_book_armor",
+      "filter_flag": 2050,
+      "rare": 1,
+      "is_special": true,
+      "alias": "创术-防御",
+      "desc": "获得2 + (1*书写)点魔甲",
+      "cost": 1,
+      "cost_type": 2,
+      "target_type": 16
+    },
+    {
+      "card_id": "create_equip_attack",
+      "filter_flag": 1033,
+      "rare": 1,
+      "is_special": true,
+      "alias": "创物-攻击",
+      "desc": "造成5 + (1*工艺)点无属性物理伤害",
+      "cost": 1,
+      "cost_type": 2,
+      "target_type": 1
+    },
+    {
+      "card_id": "create_equip_armor",
+      "filter_flag": 1026,
+      "rare": 1,
+      "is_special": true,
+      "alias": "创物-防御",
+      "desc": "获得2 + (1*工艺)点护甲",
+      "cost": 1,
+      "cost_type": 2,
+      "target_type": 16
+    },
+    {
+      "card_id": "shadow_shot",
+      "alias": "暗影魔弹",
+      "filter_flag": 2561,
+      "rare": 2,
+      "is_special": true,
+      "desc": "造成 敌方/单体/魔法/暗属性/3 + (2*效率)点伤害",
+      "cost": 7,
+      "cost_type": 1,
+      "target_type": 1
+    },
+    {
+      "alias": "法力狂潮",
+      "card_id": "mana_tide",
+      "filter_flag": 133122,
+      "rare": 2,
+      "is_special": true,
+      "desc": "回复(3*咒言) + (1*魔法)点法力值,溢出部分的1/3转化为魔甲(向下取整)",
+      "cost": 0,
+      "cost_type": 1,
+      "target_type": 16
+    },
+    {
+      "alias": "铁片",
+      "card_id": "iron_shard",
+      "filter_flag": 1026,
+      "rare": 1,
+      "is_special": false,
+      "desc": "获得10点护甲。在每局对战中，每使用一次获得的数量减少2点",
+      "cost": 0,
+      "cost_type": 2,
+      "target_type": 16
+    },
+    {
+      "alias": "念力护罩",
+      "card_id": "telekinesis",
+      "filter_flag": 2050,
+      "rare": 1,
+      "is_special": false,
+      "desc": "获得buff:念力护罩(持续1回合，每次受到攻击后，获得伤害值一半点魔甲)",
+      "cost": 0,
+      "cost_type": 2,
+      "target_type": 16
     }
   ],
   "enemy_list": [
@@ -125,6 +276,9 @@
     },
     {
       "enemy_id": "zombie"
+    },
+    {
+      "enemy_id": "frog"
     }
   ],
   "equip_list": [
@@ -155,6 +309,11 @@
     },
     {
       "equip_id": "wood_sword",
+      "equip_type": 6,
+      "is_special": false
+    },
+    {
+      "equip_id": "magic_book",
       "equip_type": 6,
       "is_special": false
     }
@@ -236,7 +395,8 @@
       "max_tier": 3,
       "floor": 15,
       "map_width": 7,
-      "paths": 6
+      "paths": 6,
+      "heal_times": 3
     },
     {
       "map_id": "swamp",
@@ -244,7 +404,8 @@
       "max_tier": 3,
       "floor": 8,
       "map_width": 9,
-      "paths": 10
+      "paths": 10,
+      "heal_times": 2
     },
     {
       "map_id": "cave",
@@ -252,7 +413,8 @@
       "max_tier": 5,
       "floor": 25,
       "map_width": 7,
-      "paths": 8
+      "paths": 8,
+      "heal_times": 4
     }
   ],
   "event_list": [

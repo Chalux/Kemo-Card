@@ -1,0 +1,43 @@
+[gd_scene load_steps=2 format=3 uid="uid://dftcu548agdnv"]
+
+[ext_resource type="Script" path="res://Pages/RoleDeckView.cs" id="1_5dcx7"]
+
+[node name="RoleDeckView" type="Node2D" node_paths=PackedStringArray("FlowContainer", "ExitBtn", "Tab")]
+script = ExtResource("1_5dcx7")
+FlowContainer = NodePath("FlowContainer")
+ExitBtn = NodePath("Button")
+Tab = NodePath("Tab")
+
+[node name="ColorRect" type="ColorRect" parent="."]
+custom_minimum_size = Vector2(1920, 1080)
+offset_right = 40.0
+offset_bottom = 40.0
+color = Color(0, 0, 0, 0.6)
+
+[node name="Button" type="Button" parent="."]
+offset_left = 64.0
+offset_top = 64.0
+offset_right = 192.0
+offset_bottom = 128.0
+theme_override_font_sizes/font_size = 36
+text = "返回"
+
+[node name="FlowContainer" type="FlowContainer" parent="."]
+offset_left = 64.0
+offset_top = 144.0
+offset_right = 1856.0
+offset_bottom = 1024.0
+theme_override_constants/h_separation = 50
+theme_override_constants/v_separation = 50
+
+[node name="Tab" type="TabBar" parent="."]
+offset_left = 256.0
+offset_top = 64.0
+offset_right = 960.0
+offset_bottom = 128.0
+theme_override_font_sizes/font_size = 36
+tab_count = 4
+tab_0/title = "全部"
+tab_1/title = "角色牌组"
+tab_2/title = "装备牌组"
+tab_3/title = "临时牌组"

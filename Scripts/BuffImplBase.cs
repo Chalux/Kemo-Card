@@ -42,7 +42,7 @@ namespace KemoCard.Scripts
         public bool CanStack { get; set; } = false;
         public bool IsInfinite { get; set; } = false;
         public HashSet<string> tags = new();
-        public StaticEnums.EffectTriggerTiming CountTriTiming { get; set; } = StaticEnums.EffectTriggerTiming.ON_TURN_END;
+        public EffectTriggerTiming CountTriTiming { get; set; } = StaticEnums.EffectTriggerTiming.ON_TURN_END;
         [JsonIgnore]
         public object Binder;
         [JsonIgnore]
@@ -74,7 +74,7 @@ namespace KemoCard.Scripts
         }
         public void CheckCountNeedMinus(params object[] datas)
         {
-            if (CustomBuffCountCalculate || !(datas != null && datas.Length > 0 && datas[0] is EffectTriggerTiming timing && timing == CountTriTiming)) { return; }
+            if (CustomBuffCountCalculate || !(datas != null && datas.Length > 0 && datas[0] is EffectTriggerTiming timing && (timing & CountTriTiming) > 0)) { return; }
             BuffCount -= 1;
             if (BuffCount <= 0)
             {
@@ -85,41 +85,49 @@ namespace KemoCard.Scripts
         public void RemoveThisFromBinder()
         {
             object tempBinder = Binder;
-            if (Binder is BaseRole br) br.Buffs.Remove(this);
-            if (Binder is PlayerRole ifp)
+            if (Binder is BaseRole br && br.Buffs.Contains(this))
             {
-                ifp.InFightBuffs.Remove(this);
-                if (ifp.roleObject != null)
+                Binder = null;
+                br.Buffs.Remove(this);
+            }
+            else
+            {
+                if (Binder is PlayerRole ifp)
                 {
-                    foreach (BuffObject i in ifp.roleObject.buffContainer.GetChildren().Cast<BuffObject>())
+                    ifp.InFightBuffs.Remove(this);
+                    if (ifp.roleObject != null)
                     {
-                        if (i.data == this)
+                        foreach (BuffObject i in ifp.roleObject.buffContainer.GetChildren().Cast<BuffObject>())
                         {
-                            i.data = null;
-                            Binder = null;
-                            i.QueueFree();
-                            break;
+                            if (i.data == this)
+                            {
+                                i.data = null;
+                                Binder = null;
+                                i.QueueFree();
+                                break;
+                            }
+                        }
+                    }
+                }
+                else if (Binder is EnemyRole em)
+                {
+                    em.InFightBuffs.Remove(this);
+                    if (em.roleObject != null)
+                    {
+                        foreach (BuffObject i in em.roleObject.buffContainer.GetChildren().Cast<BuffObject>())
+                        {
+                            if (i.data == this)
+                            {
+                                i.data = null;
+                                Binder = null;
+                                i.QueueFree();
+                                break;
+                            }
                         }
                     }
                 }
             }
-            else if (Binder is EnemyRole em)
-            {
-                em.InFightBuffs.Remove(this);
-                if (em.roleObject != null)
-                {
-                    foreach (BuffObject i in em.roleObject.buffContainer.GetChildren().Cast<BuffObject>())
-                    {
-                        if (i.data == this)
-                        {
-                            i.data = null;
-                            Binder = null;
-                            i.QueueFree();
-                            break;
-                        }
-                    }
-                }
-            }
+            StaticInstance.eventMgr.Dispatch("BeforeBuffChange", Binder, this, "Remove");
             OnBuffRemoved?.Invoke(this);
             StaticInstance.eventMgr.Dispatch("BuffChanged", tempBinder);
         }

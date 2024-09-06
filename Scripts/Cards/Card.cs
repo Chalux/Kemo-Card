@@ -26,6 +26,7 @@ namespace KemoCard.Scripts.Cards
         /// 战斗内的词条，在战斗开始和结束时会清除掉
         /// </summary>
         public Dictionary<string, float> InGameDict { get; set; } = new();
+        public Dictionary<string, float> InRoundDict { get; set; } = new();
         public TargetType TargetType { get; set; } = TargetType.SELF;
 
         // 这里的idx是记录在牌组里的idx顺位
@@ -33,6 +34,7 @@ namespace KemoCard.Scripts.Cards
         public string Alias { get; set; } = "未命名";
         public string Desc { get; set; } = "无描述";
         public bool IsTemp { get; set; } = false;
+        public HashSet<string> HintCardIds { get; set; } = new();
         [JsonIgnore]
         public ulong FilterFlags { get; set; } = 0;
         public string GetDesc
@@ -59,6 +61,23 @@ namespace KemoCard.Scripts.Cards
                         sets.Add(key);
                     }
                 }
+                foreach (var key in InRoundDict.Keys)
+                {
+                    if (!sets.Contains(key) && HintDictionary.ContainsKey(key))
+                    {
+                        var data = HintDictionary[key];
+                        str += $"{data.Alias}:{data.Desc}\n";
+                        sets.Add(key);
+                    }
+                }
+                foreach (var cardid in HintCardIds)
+                {
+                    if (Datas.Ins.CardPool.ContainsKey(cardid))
+                    {
+                        var card_info = Datas.Ins.CardPool[cardid];
+                        str += $"{card_info.alias}:{card_info.desc}\n";
+                    }
+                }
                 if (str != "") str = str.TrimEnd('\n');
                 return str;
             }
@@ -70,7 +89,7 @@ namespace KemoCard.Scripts.Cards
         [JsonIgnore]
         public Action<BaseRole, List<BaseRole>, dynamic[]> FunctionUse { get; set; }
         [JsonIgnore]
-        public Action<BaseRole, DisCardReason> DiscardAction { get; set; }
+        public Action<BaseRole, DisCardReason, BaseRole> DiscardAction { get; set; }
         public Card(string id)
         {
             Id = id;
@@ -86,6 +105,11 @@ namespace KemoCard.Scripts.Cards
                 var cfg = Datas.Ins.CardPool[id];
                 Rare = cfg.rare;
                 FilterFlags = cfg.filter_flag;
+                Alias = cfg.alias;
+                Desc = cfg.desc;
+                Cost = (int)cfg.cost;
+                TargetType = (TargetType)cfg.target_type;
+                CostType = (CostType)cfg.cost_type;
                 var path = $"res://Mods/{cfg.mod_id}/Scripts/Cards/C{id}.cs";
                 var res = ResourceLoader.Load<CSharpScript>(path);
                 if (res != null)

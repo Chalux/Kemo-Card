@@ -12,5 +12,6 @@ namespace KemoCard.Scripts
         public AttackType attackType;
         public bool validTag;
         public int times;
+        public int criticaltimes;
     }
 }

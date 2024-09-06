@@ -10,14 +10,9 @@ namespace KemoCard.Mods.MainPackage.Scripts.Cards
     {
         public override void OnCardScriptInit(Card c)
         {
-            c.Cost = 1;
-            c.Alias = "弃攻为守";
-            c.Desc = "丢弃手牌中所有攻击牌，每丢弃一张获得3点护甲和3点魔防";
-            c.TargetType = StaticEnums.TargetType.SELF;
-            c.CostType = StaticEnums.CostType.ACTIONPOINT;
             c.FunctionUse = new((user, targets, datas) =>
             {
-                if (StaticInstance.currWindow is BattleScene bs)
+                if (StaticUtils.TryGetBattleScene() is BattleScene bs)
                 {
                     if (BattleStatic.isFighting)
                     {
@@ -30,12 +25,11 @@ namespace KemoCard.Mods.MainPackage.Scripts.Cards
                                 cards.Add(card);
                             }
                         }
-                        bs.DisCard(cards, pr, BattleScene.DisCardReason.EFFECT);
+                        bs.DisCard(cards, pr, BattleScene.DisCardReason.EFFECT, user);
                         pr.CurrPBlock += cards.Count * 3;
                         pr.CurrMBlock += cards.Count * 3;
                     }
                 }
-                GD.Print($"卡牌C{c.Id}已使用");
             });
         }
     }

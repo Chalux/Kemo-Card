@@ -167,8 +167,10 @@ public partial class CardObject : Control
         var Diff = (SVContainer.GlobalPosition + SVContainer.Size) - MousePos;
         var LerpValueX = Mathf.Remap(Diff.X, 0, Size.X, 0, 1);
         var LerpValueY = Mathf.Remap(Diff.Y, 0, Size.Y, 0, 1);
-        var RotX = Mathf.RadToDeg(Mathf.LerpAngle(-AngleXMax, AngleXMax, LerpValueX));
-        var RotY = Mathf.RadToDeg(Mathf.LerpAngle(-AngleYMax, AngleYMax, LerpValueY));
+        //var RotX = Mathf.RadToDeg(Mathf.LerpAngle(-AngleXMax, AngleXMax, LerpValueX));
+        //var RotY = Mathf.RadToDeg(Mathf.LerpAngle(-AngleYMax, AngleYMax, LerpValueY));
+        var RotX = Mathf.RadToDeg(Mathf.LerpAngle(-AngleYMax, AngleYMax, LerpValueY));
+        var RotY = Mathf.RadToDeg(Mathf.LerpAngle(AngleXMax, -AngleXMax, LerpValueX));
         //GD.Print(RotX, RotY);
         (SVContainer.Material as ShaderMaterial).SetShaderParameter("x_rot", RotX);
         (SVContainer.Material as ShaderMaterial).SetShaderParameter("y_rot", RotY);

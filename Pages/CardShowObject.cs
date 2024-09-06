@@ -45,6 +45,11 @@ public partial class CardShowObject : Control
             AnimTween?.Kill();
             AnimTween = CreateTween();
             AnimTween.TweenProperty(this, "scale", new Vector2(1.2f, 1.2f), 0.5f).SetEase(Tween.EaseType.Out).SetTrans(Tween.TransitionType.Elastic);
+            string desc = card.GetDesc;
+            if (desc != "")
+            {
+                StaticInstance.MainRoot.ShowRichHint(StaticUtils.MakeBBCodeString(desc, "left"));
+            }
         });
         MouseExited += new(() =>
         {
@@ -53,6 +58,7 @@ public partial class CardShowObject : Control
             AnimTween.TweenProperty(this, "scale", Vector2.One, 0.5f).SetEase(Tween.EaseType.Out).SetTrans(Tween.TransitionType.Elastic);
             (SVContainer.Material as ShaderMaterial).SetShaderParameter("x_rot", 0);
             (SVContainer.Material as ShaderMaterial).SetShaderParameter("y_rot", 0);
+            StaticInstance.MainRoot.HideRichHint();
         });
     }
 
@@ -63,8 +69,10 @@ public partial class CardShowObject : Control
         var Diff = (SVContainer.GlobalPosition + SVContainer.Size) - MousePos;
         var LerpValueX = Mathf.Remap(Diff.X, 0, Size.X, 0, 1);
         var LerpValueY = Mathf.Remap(Diff.Y, 0, Size.Y, 0, 1);
-        var RotX = Mathf.RadToDeg(Mathf.LerpAngle(-AngleXMax, AngleXMax, LerpValueX));
-        var RotY = Mathf.RadToDeg(Mathf.LerpAngle(-AngleYMax, AngleYMax, LerpValueY));
+        //var RotX = Mathf.RadToDeg(Mathf.LerpAngle(-AngleXMax, AngleXMax, LerpValueX));
+        //var RotY = Mathf.RadToDeg(Mathf.LerpAngle(-AngleYMax, AngleYMax, LerpValueY));
+        var RotX = Mathf.RadToDeg(Mathf.LerpAngle(-AngleYMax, AngleYMax, LerpValueY));
+        var RotY = Mathf.RadToDeg(Mathf.LerpAngle(AngleXMax, -AngleXMax, LerpValueX));
         (SVContainer.Material as ShaderMaterial).SetShaderParameter("x_rot", RotX);
         (SVContainer.Material as ShaderMaterial).SetShaderParameter("y_rot", RotY);
     }

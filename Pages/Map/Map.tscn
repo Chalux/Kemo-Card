@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" path="res://Pages/Map/Map.cs" id="1_wdry2"]
 
-[node name="Map" type="Node2D" node_paths=PackedStringArray("Lines", "Rooms", "Visual", "Camera2D", "HideBtn", "DebugBtn", "DebugBtn2")]
+[node name="Map" type="Node2D" node_paths=PackedStringArray("Lines", "Rooms", "Visual", "Camera2D", "HideBtn", "DebugBtn", "DebugBtn2", "HealBtn", "HealLabel")]
 script = ExtResource("1_wdry2")
 Lines = NodePath("Visual/Lines")
 Rooms = NodePath("Visual/Rooms")
@@ -11,6 +11,8 @@ Camera2D = NodePath("Camera2D")
 HideBtn = NodePath("Camera2D/HideBtn")
 DebugBtn = NodePath("Camera2D/DebugBtn")
 DebugBtn2 = NodePath("Camera2D/DebugBtn2")
+HealBtn = NodePath("Camera2D/HealBtn")
+HealLabel = NodePath("Camera2D/HealLabel")
 
 [node name="Camera2D" type="Camera2D" parent="."]
 offset = Vector2(960, 540)
@@ -29,19 +31,36 @@ offset_bottom = 128.0
 theme_override_font_sizes/font_size = 36
 text = "隐藏地图"
 
-[node name="DebugBtn" type="Button" parent="Camera2D"]
+[node name="HealBtn" type="Button" parent="Camera2D"]
 offset_left = 64.0
 offset_top = 152.0
 offset_right = 256.0
 offset_bottom = 216.0
 theme_override_font_sizes/font_size = 36
+text = "休息"
+
+[node name="HealLabel" type="Label" parent="Camera2D"]
+offset_left = 280.0
+offset_top = 152.0
+offset_right = 512.0
+offset_bottom = 216.0
+theme_override_font_sizes/font_size = 36
+text = "休息次数：0"
+vertical_alignment = 1
+
+[node name="DebugBtn" type="Button" parent="Camera2D"]
+offset_left = 1664.0
+offset_top = 64.0
+offset_right = 1856.0
+offset_bottom = 128.0
+theme_override_font_sizes/font_size = 36
 text = "爬一层"
 
 [node name="DebugBtn2" type="Button" parent="Camera2D"]
-offset_left = 64.0
-offset_top = 240.0
-offset_right = 256.0
-offset_bottom = 304.0
+offset_left = 1664.0
+offset_top = 152.0
+offset_right = 1856.0
+offset_bottom = 216.0
 theme_override_font_sizes/font_size = 36
 text = "打印地图"
 

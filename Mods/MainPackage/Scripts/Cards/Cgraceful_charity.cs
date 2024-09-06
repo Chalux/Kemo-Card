@@ -28,11 +28,10 @@ namespace KemoCard.Mods.MainPackage.Scripts.Cards
                         bs.DrawCard(3, (PlayerRole)targets[0]);
                         bs.SelectCard(2, 2, null, (List<Card> Cards) =>
                         {
-                            bs.DisCard(Cards, (PlayerRole)targets[0], BattleScene.DisCardReason.EFFECT);
+                            bs.DisCard(Cards, (PlayerRole)targets[0], BattleScene.DisCardReason.EFFECT, user);
                         });
                     }
                 }
-                GD.Print($"卡牌C{c.Id}已使用");
             });
         }
     }
