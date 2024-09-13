@@ -284,6 +284,7 @@ namespace KemoCard.Scripts
                                             paths = data["paths"].AsUInt32(),
                                             show_cond = data.ContainsKey("show_cond") ? data["show_cond"].AsGodotDictionary<string, Array<Variant>>() : new(),
                                             heal_times = data["heal_times"].AsUInt32(),
+                                            can_abort = data["can_abort"].AsBool(),
                                             mod_id = currModId
                                         });
                                     }
@@ -426,6 +427,7 @@ namespace KemoCard.Scripts
             public uint paths;
             public Godot.Collections.Dictionary<string, Array<Variant>> show_cond;
             public uint heal_times;
+            public bool can_abort;
             public string mod_id;
         }
 

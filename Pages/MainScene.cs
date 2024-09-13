@@ -22,7 +22,6 @@ public partial class MainScene : BaseScene, IEvent
     [Export] TextEdit EnemiesInput;
     [Export] TextEdit PresetInput;
     [Export] Control DebugNode;
-    [Export] Godot.Button SelectMapBtn;
     [Export] public Map MapView;
     [Export] Label HpLabel;
     [Export] ProgressBar HpProg;
@@ -98,16 +97,19 @@ public partial class MainScene : BaseScene, IEvent
         DebugNode.Visible = OS.IsDebugBuild();
         ShowMapBtn.Pressed += new(() =>
         {
-            MapView?.ShowMap();
+            if (StaticInstance.playerData.gsd.MapGenerator.IsStillRunning)
+            {
+                MapView?.ShowMap();
+            }
+            else
+            {
+                StaticInstance.windowMgr.AddScene((BaseScene)ResourceLoader.Load<PackedScene>("res://Pages/Map/MapSelectScene.tscn").Instantiate());
+                StaticInstance.MainRoot.HideRichHint();
+            }
         });
         AllocBtn.Pressed += new(() =>
         {
             StaticInstance.windowMgr.AddScene((BaseScene)ResourceLoader.Load<PackedScene>("res://Pages/AllocPointScene.tscn").Instantiate(), new[] { major });
-            StaticInstance.MainRoot.HideRichHint();
-        });
-        SelectMapBtn.Pressed += new(() =>
-        {
-            StaticInstance.windowMgr.AddScene((BaseScene)ResourceLoader.Load<PackedScene>("res://Pages/Map/MapSelectScene.tscn").Instantiate());
             StaticInstance.MainRoot.HideRichHint();
         });
         TestAddCardBtn.Pressed += new(() =>
@@ -161,14 +163,22 @@ public partial class MainScene : BaseScene, IEvent
         MpProg.MinValue = 0;
         MpProg.MaxValue = major.CurrMpLimit;
         MpProg.Value = major.CurrMagic;
-        SelectMapBtn.Disabled = StaticInstance.playerData.gsd.MapGenerator.IsStillRunning;
+        //SelectMapBtn.Disabled = StaticInstance.playerData.gsd.MapGenerator.IsStillRunning;
+        if (StaticInstance.playerData.gsd.MapGenerator.IsStillRunning)
+        {
+            ShowMapBtn.Text = "查看地图";
+        }
+        else
+        {
+            ShowMapBtn.Text = "选择地图";
+        }
         if (StaticInstance.playerData.gsd.MapGenerator.FloorsClimbed == 0) MapView?.UnlockFloor(StaticInstance.playerData.gsd.MapGenerator.FloorsClimbed);
         else MapView?.UnlockNextRooms();
     }
 
     public void ReceiveEvent(string @event, params object[] datas)
     {
-        if (@event == "PropertiesChanged")
+        if (@event == "PropertiesChanged" || @event == "MapStateChange")
         {
             UpdateView();
         }

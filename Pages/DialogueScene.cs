@@ -18,9 +18,9 @@ public partial class DialogueScene : BaseScene
     }
     public async Task ChangeBG(string url, float duration = 1.0f)
     {
-        if (FileAccess.FileExists(url))
+        CompressedTexture2D image = ResourceLoader.Load<CompressedTexture2D>(url);
+        if (image != null)
         {
-            CompressedTexture2D image = ResourceLoader.Load<CompressedTexture2D>(url);
             var toTexture = image;
             switchTween?.Kill();
             switchTween = GetTree().CreateTween();

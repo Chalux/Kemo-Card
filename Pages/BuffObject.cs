@@ -11,37 +11,14 @@ public partial class BuffObject : Control, IEvent
     public BuffImplBase data;
     public void Init(string id, object Creator)
     {
-        var modInfo = Datas.Ins.BuffPool.GetValueOrDefault(id, new() { buff_id = null, mod_id = "MainPackage" });
-        if (modInfo.buff_id != null)
+        data = new(id)
         {
-            data = new(id);
-            data.Creator = Creator;
-            //if (script != null)
-            //{
-            //    var s = ResourceLoader.Load<CSharpScript>(spath).New().As<BaseBuffScript>();
-            //    s.OnBuffInit(data);
-            //}
-            string path = ProjectSettings.GlobalizePath(data.IconPath);
-            Image res;
-            if (FileAccess.FileExists(path))
-                res = Image.LoadFromFile(path);
-            else
-            {
-                path = ProjectSettings.GlobalizePath("res://Resources/Images/SkillFrame.png");
-                res = Image.LoadFromFile(path);
-            }
-            if (res != null)
-            {
-                texture.Texture = ImageTexture.CreateFromImage(res);
-            }
-        }
-        else
+            Creator = Creator
+        };
+        CompressedTexture2D res = ResourceLoader.Load<CompressedTexture2D>(data.IconPath);
+        if (res != null)
         {
-            data = new(id);
-            data.Creator = Creator;
-            string path = ProjectSettings.GlobalizePath("res://Resources/Images/SkillFrame.png");
-            Image res = Image.LoadFromFile(path);
-            texture.Texture = ImageTexture.CreateFromImage(res);
+            texture.Texture = res;
         }
         InitObj();
     }
@@ -49,18 +26,10 @@ public partial class BuffObject : Control, IEvent
     public void Init(BuffImplBase buff)
     {
         data = buff;
-        string path = ProjectSettings.GlobalizePath(data.IconPath);
-        Image res;
-        if (FileAccess.FileExists(path))
-            res = Image.LoadFromFile(path);
-        else
-        {
-            path = ProjectSettings.GlobalizePath("res://Resources/Images/SkillFrame.png");
-            res = Image.LoadFromFile(path);
-        }
+        CompressedTexture2D res = ResourceLoader.Load<CompressedTexture2D>(data.IconPath);
         if (res != null)
         {
-            texture.Texture = ImageTexture.CreateFromImage(res);
+            texture.Texture = res;
         }
         InitObj();
     }

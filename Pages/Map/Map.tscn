@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" path="res://Pages/Map/Map.cs" id="1_wdry2"]
 
-[node name="Map" type="Node2D" node_paths=PackedStringArray("Lines", "Rooms", "Visual", "Camera2D", "HideBtn", "DebugBtn", "DebugBtn2", "HealBtn", "HealLabel")]
+[node name="Map" type="Node2D" node_paths=PackedStringArray("Lines", "Rooms", "Visual", "Camera2D", "HideBtn", "DebugBtn", "DebugBtn2", "HealBtn", "AbortBtn", "HealLabel")]
 script = ExtResource("1_wdry2")
 Lines = NodePath("Visual/Lines")
 Rooms = NodePath("Visual/Rooms")
@@ -12,6 +12,7 @@ HideBtn = NodePath("Camera2D/HideBtn")
 DebugBtn = NodePath("Camera2D/DebugBtn")
 DebugBtn2 = NodePath("Camera2D/DebugBtn2")
 HealBtn = NodePath("Camera2D/HealBtn")
+AbortBtn = NodePath("Camera2D/AbortBtn")
 HealLabel = NodePath("Camera2D/HealLabel")
 
 [node name="Camera2D" type="Camera2D" parent="."]
@@ -38,6 +39,14 @@ offset_right = 256.0
 offset_bottom = 216.0
 theme_override_font_sizes/font_size = 36
 text = "休息"
+
+[node name="AbortBtn" type="Button" parent="Camera2D"]
+offset_left = 64.0
+offset_top = 240.0
+offset_right = 256.0
+offset_bottom = 304.0
+theme_override_font_sizes/font_size = 36
+text = "放弃"
 
 [node name="HealLabel" type="Label" parent="Camera2D"]
 offset_left = 280.0

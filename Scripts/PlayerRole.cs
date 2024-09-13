@@ -391,7 +391,7 @@ namespace KemoCard.Scripts
                     _exp = Math.Max(0, _exp);
                 else
                 {
-                    while (_exp > ExpCfg.CalUpgradeNeedExp(Level))
+                    while (_exp >= ExpCfg.CalUpgradeNeedExp(Level))
                     {
                         _exp -= ExpCfg.CalUpgradeNeedExp(Level);
                         UpgradeLevel();
@@ -584,7 +584,8 @@ namespace KemoCard.Scripts
             InFightDeck?.Clear();
             InFightHands?.Clear();
             InFightGrave?.Clear();
-            InFightBuffs?.ToList().ForEach((BuffImplBase buff) => { buff.RemoveThisFromBinder(); });
+            //InFightBuffs?.ToList().ForEach((BuffImplBase buff) => { buff.RemoveThisFromBinder(); });
+            InFightBuffs?.Clear();
             isIFPInited = false;
             CurrPBlock = CurrMBlock = 0;
         }
@@ -604,8 +605,8 @@ namespace KemoCard.Scripts
             InFightBuffs = new();
             Buffs.ForEach(buff =>
             {
-                var obj = StaticUtils.TransExp<BuffImplBase, BuffImplBase>.Trans(buff);
-                InFightBuffs.Add(obj);
+                //var obj = StaticUtils.TransExp<BuffImplBase, BuffImplBase>.Trans(buff);
+                InFightBuffs.Add(buff);
             });
             InFightBuffs.ForEach(buff =>
             {

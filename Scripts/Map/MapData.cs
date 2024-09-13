@@ -58,6 +58,7 @@ namespace KemoCard.Scripts.Map
         public string Id { get; set; } = "";
         public uint HealTimes { get; set; } = 3;
         public Godot.Collections.Dictionary<string, Godot.Collections.Array<Variant>> Cond;
+        public bool CanAbort { get; set; } = true;
         [JsonIgnore]
         /// <summary>
         /// 在地图生成后，会将生成完的地图传给这个委托。作者可以用自己的规则来给地图重新规定房间内容。
@@ -68,7 +69,6 @@ namespace KemoCard.Scripts.Map
         {
             if (Datas.Ins.MapPool.TryGetValue(id, out var pool))
             {
-                ReloadPools();
                 var path = $"res://Mods/{pool.mod_id}/Scripts/Maps/M{pool.map_id}.cs";
                 using var res = ResourceLoader.Load<CSharpScript>(path);
                 if (res != null)
@@ -82,6 +82,8 @@ namespace KemoCard.Scripts.Map
                     MAP_WIDTH = pool.map_width;
                     PATHS = pool.paths;
                     HealTimes = pool.heal_times;
+                    CanAbort = pool.can_abort;
+                    ReloadPools();
                     MapScript.Init(this);
                 }
             }

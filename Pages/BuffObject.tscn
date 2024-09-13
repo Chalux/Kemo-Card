@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" path="res://Pages/BuffObject.cs" id="1_ucjft"]
 [ext_resource type="Texture2D" uid="uid://b4gerankrm2lu" path="res://Resources/Images/SkillFrame.png" id="2_py020"]
-[ext_resource type="Texture2D" uid="uid://byn85mmoj86ck" path="res://Resources/Cursor/104.png" id="3_k2r07"]
+[ext_resource type="Texture2D" uid="uid://c6n6m45s5sa3u" path="res://Mods/MainPackage/Resources/Icons/icons_001.png" id="3_b5y20"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_xwc7o"]
 line_spacing = 0.0
@@ -50,7 +50,7 @@ expand_mode = 1
 layout_mode = 0
 offset_right = 32.0
 offset_bottom = 32.0
-texture = ExtResource("3_k2r07")
+texture = ExtResource("3_b5y20")
 
 [node name="Label" type="Label" parent="."]
 layout_mode = 0

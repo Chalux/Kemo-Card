@@ -57,12 +57,21 @@ public partial class MapRoom : Control
         if (onlyRunHandlerWhenSelected) return;
         MainScene ms = StaticInstance.windowMgr.GetSceneByName("MainScene") as MainScene;
         ms?.MapView.HideMap();
+        var Data = StaticInstance.playerData.gsd.MapGenerator.Data;
         if (Room.Type == RoomType.Monster || Room.Type == RoomType.Boss)
         {
+            if (Room.RoomPresetId == null)
+            {
+                MapGeneration.SetMonsterRoom(Room, Room.Type == RoomType.Boss);
+            }
             StaticUtils.StartNewBattleByPreset(Room.RoomPresetId);
         }
         else if (Room.Type == RoomType.Event)
         {
+            if (Room.RoomEventId == null)
+            {
+                MapGeneration.SetEventRoom(Room);
+            }
             PackedScene res = ResourceLoader.Load<PackedScene>("res://Pages/EventScene.tscn");
             if (res != null)
             {
@@ -73,6 +82,10 @@ public partial class MapRoom : Control
         }
         else if (Room.Type == RoomType.Treasure)
         {
+            if (Room.RoomEquipId == null)
+            {
+                MapGeneration.SetTreasureRoom(Room);
+            }
             PackedScene res = ResourceLoader.Load<PackedScene>("res://Pages/RewardScene.tscn");
             if (res != null)
             {

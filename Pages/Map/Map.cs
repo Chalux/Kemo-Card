@@ -20,6 +20,7 @@ public partial class Map : BaseScene, IEvent
     [Export] Godot.Button DebugBtn;
     [Export] Godot.Button DebugBtn2;
     [Export] Godot.Button HealBtn;
+    [Export] Godot.Button AbortBtn;
     [Export] Label HealLabel;
 
     public float CameraEdgeY { get; set; } = 0;
@@ -35,6 +36,7 @@ public partial class Map : BaseScene, IEvent
         DebugBtn.Pressed += UnlockNextRooms;
         DebugBtn2.Pressed += new(() => GD.Print(StaticInstance.playerData.gsd.MapGenerator.ToString()));
         HealBtn.Pressed += TryHeal;
+        AbortBtn.Pressed += AbortMap;
         UpdateView();
     }
 
@@ -174,6 +176,7 @@ public partial class Map : BaseScene, IEvent
     public void ShowMap()
     {
         Show();
+        UpdateView();
         Camera2D.Enabled = true;
     }
 
@@ -185,13 +188,16 @@ public partial class Map : BaseScene, IEvent
 
     private void TryHeal()
     {
+        if (!StaticInstance.playerData.gsd.MapGenerator.IsStillRunning) return;
         var major = StaticInstance.playerData.gsd.MajorRole;
         AlertView.PopupAlert($"确定要休息吗？将回复生命上限一半的血量。\n当前血量：{major.CurrHealth}/{major.CurrHpLimit}", false, new(() => StaticInstance.playerData.gsd.MapGenerator.Data?.TryHeal()));
     }
 
     private void UpdateView()
     {
-        HealLabel.Text = $"休息次数：{StaticInstance.playerData.gsd.MapGenerator.Data?.HealTimes ?? 0}";
+        var mapGeneration = StaticInstance.playerData.gsd.MapGenerator;
+        HealLabel.Text = $"休息次数：{mapGeneration.Data?.HealTimes ?? 0}";
+        AbortBtn.Disabled = !mapGeneration.Data.CanAbort;
     }
 
     public void ReceiveEvent(string @event, params object[] datas)
@@ -200,5 +206,14 @@ public partial class Map : BaseScene, IEvent
         {
             UpdateView();
         }
+    }
+
+    private void AbortMap()
+    {
+        AlertView.PopupAlert($"是否放弃此次地图？", false, () =>
+        {
+            StaticInstance.playerData.gsd.MapGenerator.EndMap();
+            HideMap();
+        });
     }
 }

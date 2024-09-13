@@ -315,7 +315,7 @@
       "is_debuff": true,
       "showname": "水属性易伤",
       "desc": "受到的水属性伤害提高至1.5倍",
-      "icon_path": "res://Mods/MainPackage/Resources/Icons/Skillicon14_04.png",
+      "icon_path": "res://Mods/MainPackage/Resources/Icons/icons_020.png",
       "is_infinite": true,
       "buff_count": 1,
       "buff_value": 1
@@ -325,7 +325,7 @@
       "is_debuff": false,
       "showname": "火属性抗性",
       "desc": "受到的火属性伤害减少至0.75倍",
-      "icon_path": "res://Mods/MainPackage/Resources/Icons/Skillicon14_14.png",
+      "icon_path": "res://Mods/MainPackage/Resources/Icons/icons_066.png",
       "is_infinite": true,
       "buff_count": 1,
       "buff_value": 1
@@ -335,7 +335,7 @@
       "is_debuff": true,
       "showname": "火属性易伤",
       "desc": "受到的火属性伤害提高至1.5倍",
-      "icon_path": "res://Mods/MainPackage/Resources/Icons/Skillicon14_14.png",
+      "icon_path": "res://Mods/MainPackage/Resources/Icons/icons_066.png",
       "is_infinite": true,
       "buff_count": 1,
       "buff_value": 1
@@ -355,7 +355,7 @@
       "is_debuff": false,
       "showname": "水属性抗性",
       "desc": "受到的水属性伤害减少至0.75倍",
-      "icon_path": "res://Mods/MainPackage/Resources/Icons/Skillicon14_14.png",
+      "icon_path": "res://Mods/MainPackage/Resources/Icons/icons_020.png",
       "is_infinite": true,
       "buff_count": 1,
       "buff_value": 1
@@ -365,7 +365,7 @@
       "is_debuff": false,
       "showname": "幸运",
       "desc": "每次战斗开始时，将2张幸运(0行动力,获得1点行动力,保留,耗尽)加入手牌。",
-      "icon_path": "res://Mods/MainPackage/Resources/Icons/Skillicon14_25.png",
+      "icon_path": "res://Mods/MainPackage/Resources/Icons/icons_032.png",
       "is_infinite": true,
       "buff_count": 1,
       "buff_value": 1
@@ -375,7 +375,7 @@
       "is_debuff": false,
       "showname": "念力护罩",
       "desc": "每次受到攻击后，获得伤害值一半点魔甲",
-      "icon_path": "res://Mods/MainPackage/Resources/Icons/Skillicon14_04.png",
+      "icon_path": "res://Mods/MainPackage/Resources/Icons/icons_030.png",
       "is_infinite": false,
       "buff_count": 1,
       "buff_value": 1
@@ -385,7 +385,7 @@
       "is_debuff": true,
       "showname": "流血",
       "desc": "每回合开始时，受到(1*力量)点无属性物理伤害",
-      "icon_path": "res://Mods/MainPackage/Resources/Icons/Skillicon14_04.png",
+      "icon_path": "res://Mods/MainPackage/Resources/Icons/icons_039.png",
       "is_infinite": false,
       "buff_count": 3,
       "buff_value": 1
@@ -584,7 +584,8 @@
       "floor": 15,
       "map_width": 7,
       "paths": 6,
-      "heal_times": 3
+      "heal_times": 3,
+      "can_abort": true
     },
     {
       "map_id": "swamp",
@@ -593,7 +594,8 @@
       "floor": 8,
       "map_width": 9,
       "paths": 10,
-      "heal_times": 2
+      "heal_times": 2,
+      "can_abort": true
     },
     {
       "map_id": "cave",
@@ -602,7 +604,8 @@
       "floor": 25,
       "map_width": 7,
       "paths": 8,
-      "heal_times": 4
+      "heal_times": 4,
+      "can_abort": false
     }
   ],
   "event_list": [

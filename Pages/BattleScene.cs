@@ -728,12 +728,12 @@ public partial class BattleScene : BaseScene, IEvent
                 };
                 if (BattlePreset.GainExp > 0) datas.Add(@struct2);
                 StaticInstance.windowMgr.AddScene(rewardScene, datas);
-            }
 
-            var nextrooms = StaticInstance.playerData.gsd.MapGenerator?.LastRoom?.NextRooms;
-            if (nextrooms == null || nextrooms.Count == 0)
-            {
-                StaticInstance.playerData.gsd.MapGenerator.EndMap();
+                var nextrooms = StaticInstance.playerData.gsd.MapGenerator?.LastRoom?.NextRooms;
+                if (nextrooms == null || nextrooms.Count == 0)
+                {
+                    StaticInstance.playerData.gsd.MapGenerator.EndMap();
+                }
             }
             BattlePreset = null;
         }

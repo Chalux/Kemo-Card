@@ -35,7 +35,8 @@ namespace KemoCard.Scripts
 
         public override string ToString()
         {
-            return $"{Col}({Type.ToString()[0]}{RoomPresetId ?? RoomEventId ?? RoomEquipId})";
+            if (Type == RoomType.None) return $"{Col}(N)";
+            else return $"{Col}({Type.ToString()[0]}{RoomPresetId ?? RoomEventId ?? RoomEquipId ?? "未确定"})";
         }
     }
 }

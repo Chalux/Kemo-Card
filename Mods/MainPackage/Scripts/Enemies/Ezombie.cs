@@ -8,19 +8,26 @@ namespace KemoCard.Mods.MainPackage.Scripts.Enemies
 {
     internal partial class Ezombie : BaseEnemyScript
     {
+        private EnemyImplBase _data;
         public override void OnEnemyInit(EnemyImplBase enemy)
         {
+            _data = enemy;
             enemy.Speed = 6;
             enemy.Strength = 24;
             enemy.Critical = 6;
             enemy.Name = "丧尸";
             enemy.AnimationResourcePath = $"res://Mods/MainPackage/Resources/Animations/Bat.tres";
             enemy.ActionFunc = ZombieAction;
+            enemy.AddEvent("StartBattle", UpdateIntent);
+        }
+
+        private void UpdateIntent(dynamic dynamic)
+        {
             string Intent =
                     $"[img=30x30]res://Mods/MainPackage/Resources/Icons/icons_079.png[/img]造成" +
-                    $"{enemy.Binder.CurrStrength:N2}点物理伤害(" +
+                    $"{_data.Binder.CurrStrength:N2}点物理伤害(" +
                     $"{StaticUtils.MakeColorString("力量", StaticInstance.BodyColor, 36)})，将造成的伤害值转化为生命值治疗丧尸";
-            enemy.ChangeIntent(Intent);
+            _data.ChangeIntent(Intent);
         }
 
         private void ZombieAction(int round, List<PlayerRole> players, List<EnemyRole> enemies, EnemyImplBase @base)

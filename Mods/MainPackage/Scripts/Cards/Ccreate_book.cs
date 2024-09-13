@@ -10,7 +10,7 @@ namespace KemoCard.Mods.MainPackage.Scripts.Cards
     {
         public override void OnCardScriptInit(Card c)
         {
-            c.GlobalDict.Add("Exhaust", 1);
+            c.GlobalDict["Exhaust"] = 1;
             c.FunctionUse = new(UseFunction);
             c.HintCardIds = new() { "create_book_attack", "create_book_armor" };
         }

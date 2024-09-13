@@ -11,6 +11,7 @@ config_version=5
 [application]
 
 config/name="Kemo Card"
+config/version="0.1"
 run/main_scene="res://Pages/main_root.tscn"
 config/features=PackedStringArray("4.2", "C#", "Mobile")
 run/max_fps=240

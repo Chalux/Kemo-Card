@@ -85,7 +85,8 @@ namespace KemoCard.Scripts
         public string BuffShowname { get; set; } = "未命名";
         public void ReceiveEvent(string @event, params object[] datas)
         {
-            if (EventDic.ContainsKey(@event)) EventDic[@event]?.ForEach(function => function.Invoke(datas));
+            if (EventDic.ContainsKey(@event))
+                EventDic[@event]?.ForEach(function => function.Invoke(datas));
             CheckCountNeedMinus(datas);
         }
         [JsonIgnore]

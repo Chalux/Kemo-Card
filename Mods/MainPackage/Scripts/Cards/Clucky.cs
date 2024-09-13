@@ -14,8 +14,8 @@ namespace KemoCard.Mods.MainPackage.Scripts.Cards
                     inFightPlayer.CurrentActionPoint += 1;
                 }
             });
-            c.GlobalDict.Add("Exhaust", 1);
-            c.GlobalDict.Add("KeepInHand", 1);
+            c.GlobalDict["Exhaust"] = 1;
+            c.GlobalDict["KeepInHand"] = 1;
         }
     }
 }

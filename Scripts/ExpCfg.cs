@@ -8,7 +8,7 @@ namespace KemoCard.Scripts
         public const uint MaxLevel = 30;
         public static uint CalUpgradeNeedExp(uint level)
         {
-            return level < 10 ? 2 * (uint)Math.Pow(level, 2) + 10 : 3 * level + 180;
+            return level < 10 ? 5 * (uint)Math.Pow(level, 2) + 10 : 5 * level + 500;
         }
     }
 }
