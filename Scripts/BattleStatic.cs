@@ -19,12 +19,21 @@ namespace KemoCard.Scripts
         public static int MaxSelectCount = 0;
         public static int MinSelectCount = 0;
 
+        public static List<Card> GameUsedCard = new();
+        public static List<Card> TurnUsedCard = new();
+        public static Dictionary<string, double> GameTags = new();
+        public static Dictionary<string, double> TurnTags = new();
+
         public static void Reset()
         {
             currCard = null;
             Targets?.Clear();
             isFighting = false;
             EndSelect();
+            GameUsedCard.Clear();
+            TurnUsedCard.Clear();
+            GameTags.Clear();
+            TurnTags.Clear();
         }
 
         public static void SelectCard(CardObject obj)
@@ -65,6 +74,12 @@ namespace KemoCard.Scripts
             MustList = new();
             SelectFilterFunc = null;
             ConfirmAction = null;
+        }
+
+        public static void AddUsedCard(Card card)
+        {
+            GameUsedCard.Add(card);
+            TurnUsedCard.Add(card);
         }
     }
 }

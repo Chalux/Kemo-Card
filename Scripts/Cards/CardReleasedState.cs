@@ -58,6 +58,7 @@ namespace KemoCard.Scripts.Cards
             if (isCosted && BattleStatic.Targets.Count > 0 && flag)
             {
                 cardObject.card.FunctionUse?.Invoke(cardObject.card.owner, roles, new[] { cardObject.card });
+                BattleStatic.AddUsedCard(cardObject.card);
                 GD.Print($"卡牌C{cardObject.card.Id}已使用");
                 BattleStatic.currCard = null;
                 BattleStatic.Targets.Clear();

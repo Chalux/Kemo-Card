@@ -53,7 +53,7 @@ namespace KemoCard.Scripts
             get => _OriginSpeed;
             set
             {
-                var oldValue = _OriginSpeed; _OriginSpeed = value; 
+                var oldValue = _OriginSpeed; _OriginSpeed = value;
                 UpdateHpAndMp();
                 OnPropertyChanged(nameof(OriginSpeed), oldValue, _OriginSpeed);
             }
@@ -63,7 +63,7 @@ namespace KemoCard.Scripts
             get => _OriginStrength;
             set
             {
-                var oldValue = _OriginStrength; _OriginStrength = value; 
+                var oldValue = _OriginStrength; _OriginStrength = value;
                 UpdateHpAndMp();
                 OnPropertyChanged(nameof(OriginStrength), oldValue, _OriginStrength);
             }
@@ -73,7 +73,7 @@ namespace KemoCard.Scripts
             get => _OriginEffeciency;
             set
             {
-                var oldValue = _OriginEffeciency; _OriginEffeciency = value; 
+                var oldValue = _OriginEffeciency; _OriginEffeciency = value;
                 UpdateHpAndMp();
                 OnPropertyChanged(nameof(OriginEffeciency), oldValue, _OriginEffeciency);
             }

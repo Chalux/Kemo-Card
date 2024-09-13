@@ -224,7 +224,7 @@
       "is_special": true,
       "desc": "造成 敌方/单体/魔法/暗属性/3 + (2*效率)点伤害",
       "cost": 7,
-      "cost_type": 1,
+      "cost_type": 0,
       "target_type": 1
     },
     {
@@ -235,7 +235,7 @@
       "is_special": true,
       "desc": "回复(3*咒言) + (1*魔法)点法力值,溢出部分的1/3转化为魔甲(向下取整)",
       "cost": 0,
-      "cost_type": 1,
+      "cost_type": 0,
       "target_type": 16
     },
     {
@@ -259,26 +259,17 @@
       "cost": 0,
       "cost_type": 2,
       "target_type": 16
-    }
-  ],
-  "enemy_list": [
-    {
-      "enemy_id": "fire_bat"
     },
     {
-      "enemy_id": "bat"
-    },
-    {
-      "enemy_id": "water_bat"
-    },
-    {
-      "enemy_id": "troll"
-    },
-    {
-      "enemy_id": "zombie"
-    },
-    {
-      "enemy_id": "frog"
+      "alias": "无限",
+      "card_id": "infinite",
+      "filter_flag": 2050,
+      "rare": 5,
+      "is_special": true,
+      "desc": "造成 敌方/单体/物理/无属性/(属性点之和)点伤害",
+      "cost": 10,
+      "cost_type": 0,
+      "target_type": 1
     }
   ],
   "equip_list": [
@@ -320,22 +311,94 @@
   ],
   "buff_list": [
     {
-      "buff_id": "water_injury"
+      "buff_id": "water_injury",
+      "is_debuff": true,
+      "showname": "水属性易伤",
+      "desc": "受到的水属性伤害提高至1.5倍",
+      "icon_path": "res://Mods/MainPackage/Resources/Icons/Skillicon14_04.png",
+      "is_infinite": true,
+      "buff_count": 1,
+      "buff_value": 1
     },
     {
-      "buff_id": "fire_resis"
+      "buff_id": "fire_resis",
+      "is_debuff": false,
+      "showname": "火属性抗性",
+      "desc": "受到的火属性伤害减少至0.75倍",
+      "icon_path": "res://Mods/MainPackage/Resources/Icons/Skillicon14_14.png",
+      "is_infinite": true,
+      "buff_count": 1,
+      "buff_value": 1
     },
     {
-      "buff_id": "fire_injury"
+      "buff_id": "fire_injury",
+      "is_debuff": true,
+      "showname": "火属性易伤",
+      "desc": "受到的火属性伤害提高至1.5倍",
+      "icon_path": "res://Mods/MainPackage/Resources/Icons/Skillicon14_14.png",
+      "is_infinite": true,
+      "buff_count": 1,
+      "buff_value": 1
     },
     {
-      "buff_id": "angry"
+      "buff_id": "angry",
+      "is_debuff": false,
+      "showname": "愤怒",
+      "desc": "回合开始时获得3点力量",
+      "icon_path": "res://Mods/MainPackage/Resources/Icons/icons_031.png",
+      "is_infinite": true,
+      "buff_count": 1,
+      "buff_value": 1
     },
     {
-      "buff_id": "water_resis"
+      "buff_id": "water_resis",
+      "is_debuff": false,
+      "showname": "水属性抗性",
+      "desc": "受到的水属性伤害减少至0.75倍",
+      "icon_path": "res://Mods/MainPackage/Resources/Icons/Skillicon14_14.png",
+      "is_infinite": true,
+      "buff_count": 1,
+      "buff_value": 1
     },
     {
-      "buff_id": "get_lucky"
+      "buff_id": "get_lucky",
+      "is_debuff": false,
+      "showname": "幸运",
+      "desc": "每次战斗开始时，将2张幸运(0行动力,获得1点行动力,保留,耗尽)加入手牌。",
+      "icon_path": "res://Mods/MainPackage/Resources/Icons/Skillicon14_25.png",
+      "is_infinite": true,
+      "buff_count": 1,
+      "buff_value": 1
+    },
+    {
+      "buff_id": "telekinesis",
+      "is_debuff": false,
+      "showname": "念力护罩",
+      "desc": "每次受到攻击后，获得伤害值一半点魔甲",
+      "icon_path": "res://Mods/MainPackage/Resources/Icons/Skillicon14_04.png",
+      "is_infinite": false,
+      "buff_count": 1,
+      "buff_value": 1
+    },
+    {
+      "buff_id": "bleed_wolf",
+      "is_debuff": true,
+      "showname": "流血",
+      "desc": "每回合开始时，受到(1*力量)点无属性物理伤害",
+      "icon_path": "res://Mods/MainPackage/Resources/Icons/Skillicon14_04.png",
+      "is_infinite": false,
+      "buff_count": 3,
+      "buff_value": 1
+    },
+    {
+      "buff_id": "ghost_body",
+      "is_debuff": false,
+      "showname": "幽灵之躯",
+      "desc": "结算伤害前，如果受到的伤害是物理伤害，则将其降至0.5倍",
+      "icon_path": "res://Mods/MainPackage/Resources/Icons/icons_267.png",
+      "is_infinite": true,
+      "buff_count": 1,
+      "buff_value": 1
     }
   ],
   "role_list": [
@@ -344,47 +407,172 @@
       "role_name": "not_complete"
     }
   ],
+  "enemy_list": [
+    {
+      "enemy_id": "fire_bat"
+    },
+    {
+      "enemy_id": "bat"
+    },
+    {
+      "enemy_id": "water_bat"
+    },
+    {
+      "enemy_id": "troll"
+    },
+    {
+      "enemy_id": "zombie"
+    },
+    {
+      "enemy_id": "frog"
+    },
+    {
+      "enemy_id": "wolf"
+    },
+    {
+      "enemy_id": "goblin"
+    },
+    {
+      "enemy_id": "slime"
+    },
+    {
+      "enemy_id": "skeleton"
+    },
+    {
+      "enemy_id": "giant"
+    },
+    {
+      "enemy_id": "gnome"
+    },
+    {
+      "enemy_id": "ghost"
+    }
+  ],
   "preset_list": [
     {
-      "preset_id": "test_preset_1",
+      "preset_id": "bat",
       "is_boss": false,
       "tier": 1,
       "is_special": false
     },
     {
-      "preset_id": "test_preset_2",
+      "preset_id": "fire_bat",
       "is_boss": false,
       "tier": 1,
       "is_special": false
     },
     {
-      "preset_id": "test_preset_3",
+      "preset_id": "water_bat",
       "is_boss": false,
       "tier": 1,
       "is_special": false
     },
     {
-      "preset_id": "test_preset_4",
+      "preset_id": "goblin",
+      "is_boss": false,
+      "tier": 1,
+      "is_special": false
+    },
+    {
+      "preset_id": "troll",
       "is_boss": true,
-      "tier": 1,
+      "tier": 3,
       "is_special": false
     },
     {
       "preset_id": "three_bats",
       "is_boss": false,
-      "tier": 4,
+      "tier": 5,
       "is_special": false
     },
     {
       "preset_id": "troll_bat",
       "is_boss": false,
-      "tier": 4,
+      "tier": 5,
       "is_special": false
     },
     {
       "preset_id": "zombie",
       "is_boss": true,
       "tier": 5,
+      "is_special": false
+    },
+    {
+      "preset_id": "frog",
+      "is_boss": true,
+      "tier": 3,
+      "is_special": false
+    },
+    {
+      "preset_id": "frog_randombat",
+      "is_boss": false,
+      "tier": 5,
+      "is_special": false
+    },
+    {
+      "preset_id": "wolf",
+      "is_boss": true,
+      "tier": 5,
+      "is_special": false
+    },
+    {
+      "preset_id": "goblin_randombat",
+      "is_boss": false,
+      "tier": 3,
+      "is_special": false
+    },
+    {
+      "preset_id": "slime",
+      "is_boss": false,
+      "tier": 1,
+      "is_special": false
+    },
+    {
+      "preset_id": "skeleton",
+      "is_boss": false,
+      "tier": 1,
+      "is_special": false
+    },
+    {
+      "preset_id": "giant",
+      "is_boss": false,
+      "tier": 5,
+      "is_special": false
+    },
+    {
+      "preset_id": "small_gnome",
+      "is_boss": false,
+      "tier": 2,
+      "is_special": false
+    },
+    {
+      "preset_id": "skeleton_zombie",
+      "is_boss": false,
+      "tier": 7,
+      "is_special": false
+    },
+    {
+      "preset_id": "slime_bat",
+      "is_boss": false,
+      "tier": 3,
+      "is_special": false
+    },
+    {
+      "preset_id": "small_gnome_goblin",
+      "is_boss": false,
+      "tier": 4,
+      "is_special": false
+    },
+    {
+      "preset_id": "ghost",
+      "is_boss": false,
+      "tier": 2,
+      "is_special": false
+    },
+    {
+      "preset_id": "ghost_goblin",
+      "is_boss": false,
+      "tier": 4,
       "is_special": false
     }
   ],
@@ -419,7 +607,11 @@
   ],
   "event_list": [
     {
-      "event_id": "test_event_1",
+      "event_id": "empty_event",
+      "is_special": false
+    },
+    {
+      "event_id": "heal_event",
       "is_special": false
     }
   ]

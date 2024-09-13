@@ -1,7 +1,5 @@
-﻿using DialogueManagerRuntime;
-using Godot;
+﻿using Godot;
 using KemoCard.Scripts;
-using KemoCard.Scripts.Buffs;
 using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
@@ -52,38 +50,26 @@ namespace StaticClass
         public static string GetSaveDirPath() => ProjectSettings.LocalizePath("user://Saves/");
         public static string GetInternalImagePath => ProjectSettings.LocalizePath("res://Resources/Image/");
 
-        public static void StartDialogue(string url)
+        public static DialogueScene StartDialogue(string url)
         {
-            StaticInstance.windowMgr.ChangeScene(ResourceLoader.Load<PackedScene>("res://Pages/DialogueScene.tscn").Instantiate(), new((scene) =>
-            {
-                StaticInstance.MainRoot.canPause = true;
-                DialogueManager.ShowDialogueBalloon(ResourceLoader.Load(url), "Begin", new() { scene });
-            }));
+            PackedScene res = ResourceLoader.Load("res://Pages/DialogueScene.tscn") as PackedScene;
+            if (res == null) return null;
+            DialogueScene ds = res.Instantiate<DialogueScene>();
+            StaticInstance.windowMgr.AddScene(ds);
+            ds.RunDialogue(url);
             StaticInstance.MainRoot.HideRichHint();
+            return ds;
         }
 
-        public static void CreateBuffAndAddToRole(string id, BaseRole role)
+        public static void CreateBuffAndAddToRole(string id, BaseRole role, object Creator)
         {
             if (Datas.Ins.BuffPool.TryGetValue(id, out Datas.BuffStruct modInfo))
             {
-                FileAccess script = FileAccess.Open($"res://Mods/{modInfo.mod_id}/Scripts/Buffs/B{modInfo.buff_id}.cs", FileAccess.ModeFlags.Read);
-                if (script != null)
+                BuffImplBase data = new(id)
                 {
-                    BuffImplBase data = new();
-                    var res = ResourceLoader.Load<CSharpScript>($"res://Mods/{modInfo.mod_id}/Scripts/Buffs/B{modInfo.buff_id}.cs");
-                    if (res != null)
-                    {
-                        BaseBuffScript @base = res.New().As<BaseBuffScript>();
-                        @base.OnBuffInit(data);
-                    }
-                    role.AddBuff(data);
-                }
-                else
-                {
-                    string hint = $"读取id为{id}的Buff时出错。";
-                    GD.PrintErr(hint);
-                    StaticInstance.MainRoot.ShowBanner(hint);
-                }
+                    Creator = Creator
+                };
+                role.AddBuff(data);
             }
             else
             {
@@ -117,7 +103,7 @@ namespace StaticClass
         {
             if (original == null)
             {
-                return default(T);
+                return default;
             }
 
             Type type = original.GetType();

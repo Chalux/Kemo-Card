@@ -3,7 +3,6 @@ using KemoCard.Pages;
 using KemoCard.Scripts;
 using KemoCard.Scripts.Cards;
 using StaticClass;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -59,10 +58,10 @@ public partial class RoleDeckView : BaseScene
                 cards = role.Deck.Concat(role.TempDeck).ToList();
                 break;
             case 1:
-                cards = role.Deck.Where(c => c.EquipIdx == 0 && c.EquipId == "").ToList();
+                cards = role.Deck.Where(c => c.EquipId == "").ToList();
                 break;
             case 2:
-                cards = role.Deck.Where(c => c.EquipIdx != 0 || c.EquipId != "").ToList();
+                cards = role.Deck.Where(c => c.EquipId != "").ToList();
                 break;
             case 3:
                 cards = role.TempDeck;

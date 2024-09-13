@@ -58,6 +58,7 @@ namespace KemoCard.Scripts.Map
         public string Id { get; set; } = "";
         public uint HealTimes { get; set; } = 3;
         public Godot.Collections.Dictionary<string, Godot.Collections.Array<Variant>> Cond;
+        [JsonIgnore]
         /// <summary>
         /// 在地图生成后，会将生成完的地图传给这个委托。作者可以用自己的规则来给地图重新规定房间内容。
         /// </summary>
@@ -88,8 +89,9 @@ namespace KemoCard.Scripts.Map
 
         public MapData() { }
 
+        [JsonIgnore]
         public Action MapEndAction;
-
+        [JsonIgnore]
         public Action MapStartAction;
 
         public void ReloadPools()
@@ -98,7 +100,7 @@ namespace KemoCard.Scripts.Map
             {
                 foreach (var p in Datas.Ins.PresetPool.Values)
                 {
-                    if (p.tier >= MinTier && p.tier <= MaxTier && p.is_boss == false && p.is_special != false)
+                    if (p.tier >= MinTier && p.tier <= MaxTier && p.is_boss == false && p.is_special == false)
                     {
                         PresetPool.Add(p.preset_id);
                     }
@@ -106,14 +108,14 @@ namespace KemoCard.Scripts.Map
             }
             if (PresetPool.Count == 0)
             {
-                PresetPool.Add("test_preset_1");
+                PresetPool.Add("bat");
             }
             PresetPool.Sort((a, b) => (int)(Datas.Ins.PresetPool[a].tier - Datas.Ins.PresetPool[b].tier));
             if (EventPool != null && EventPool.Count == 0)
             {
                 foreach (var e in Datas.Ins.EventPool.Values)
                 {
-                    if (e.is_special != false)
+                    if (e.is_special == false)
                     {
                         EventPool.Add(e.event_id);
                     }
@@ -121,13 +123,13 @@ namespace KemoCard.Scripts.Map
             }
             if (EventPool.Count == 0)
             {
-                EventPool.Add("test_event_1");
+                EventPool.Add("empty_event");
             }
             if (EquipPool != null && EquipPool.Count == 0)
             {
                 foreach (var eq in Datas.Ins.EquipPool.Values)
                 {
-                    if (eq.is_special != false)
+                    if (eq.is_special == false)
                     {
                         EquipPool.Add(eq.equip_id);
                     }

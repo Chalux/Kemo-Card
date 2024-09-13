@@ -13,4 +13,7 @@
   <ItemGroup>
     <Folder Include="Mods\MainPackage\Scripts\Roles\" />
   </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="MemoryPack" Version="1.21.1" />
+  </ItemGroup>
 </Project>

@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
+using System.Text.Json.Serialization;
 using static StaticClass.StaticEnums;
 
 namespace KemoCard.Scripts
@@ -35,6 +36,7 @@ namespace KemoCard.Scripts
             else
             {
                 var cfg = Datas.Ins.RolePool[id];
+                Id = cfg.role_id;
                 string path = $"res://Mods/{cfg.mod_id}/role/R{id}.cs";
                 var res = FileAccess.Open(path, FileAccess.ModeFlags.Read);
                 if (res == null)
@@ -51,6 +53,9 @@ namespace KemoCard.Scripts
             }
         }
 
+        public string Id { get; set; } = "";
+
+        [JsonIgnore]
         /// <summary>
         /// 在使用这个角色当预设角色开始游戏的时候才会调用这个函数
         /// </summary>
@@ -246,10 +251,32 @@ namespace KemoCard.Scripts
                     return;
                 }
             }
+            else if (equip.EquipType == EquipType.BOTH_WEAPON)
+            {
+                if (EquipDic.ContainsKey((uint)EquipType.WEAPON1))
+                {
+                    if (EquipDic.ContainsKey((uint)EquipType.WEAPON2))
+                    {
+                        EquipList[bagIndex] = null;
+                        PutOffEquip((uint)EquipType.WEAPON2);
+                        EquipDic[(uint)EquipType.WEAPON2] = equip;
+                    }
+                    else
+                    {
+                        EquipList[bagIndex] = null;
+                        EquipDic[(uint)EquipType.WEAPON2] = equip;
+                    }
+                }
+                else
+                {
+                    EquipList[bagIndex] = null;
+                    EquipDic[(uint)EquipType.WEAPON1] = equip;
+                }
+            }
             else
             {
                 EquipList[bagIndex] = null;
-                PutOffEquip(bagIndex);
+                PutOffEquip((uint)equip.EquipType);
                 EquipDic[(uint)equip.EquipType] = equip;
             }
             equip.owner = this;
@@ -342,6 +369,7 @@ namespace KemoCard.Scripts
             return value;
         }
 
+        [JsonIgnore]
         public Action OnBattleStart;
 
         private uint _unUsedPoints = 0;
@@ -429,15 +457,22 @@ namespace KemoCard.Scripts
         }
         public List<Card> TempDeck { get; set; } = new();
         #region 战斗中的数据，非战斗中时没有意义
+        [JsonIgnore]
         public List<Card> InFightDeck = new();
+        [JsonIgnore]
         public List<Card> InFightHands = new();
+        [JsonIgnore]
         public List<Card> InFightGrave = new();
+        [JsonIgnore]
         public List<BuffImplBase> InFightBuffs = new();
         public int HandLimit = 10;
+        [JsonIgnore]
         public bool isIFPInited = false;
+        [JsonIgnore]
         public bool isDead = false;
         public int InFightDeckCount => InFightDeck.Count;
         public int InFightGraveCount => InFightGrave.Count;
+        [JsonIgnore]
         public PlayerRoleObject roleObject;
 
         public int _turnActionPoint = 0;
@@ -549,7 +584,7 @@ namespace KemoCard.Scripts
             InFightDeck?.Clear();
             InFightHands?.Clear();
             InFightGrave?.Clear();
-            InFightBuffs?.ForEach((BuffImplBase buff) => { buff.RemoveThisFromBinder(); });
+            InFightBuffs?.ToList().ForEach((BuffImplBase buff) => { buff.RemoveThisFromBinder(); });
             isIFPInited = false;
             CurrPBlock = CurrMBlock = 0;
         }

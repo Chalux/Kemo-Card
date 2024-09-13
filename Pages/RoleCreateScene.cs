@@ -46,6 +46,7 @@ public partial class RoleCreateScene : BaseScene
     public override void _Ready()
     {
         UpdateView();
+        StaticUtils.StartDialogue("res://Resources/Dialogues/StarterTutorial.dialogue");
         SpeedPlus.Pressed += new(() => TryPlusProperty("SpeedPoint"));
         SpeedMinus.Pressed += new(() => TryMinusProperty("SpeedPoint"));
         StrengthPlus.Pressed += new(() => TryPlusProperty("StrengthPoint"));
@@ -104,26 +105,44 @@ public partial class RoleCreateScene : BaseScene
 
     void DoConfirm()
     {
+        PlayerRole role = null;
         if (PresetRoleInput.Text.Length > 0)
         {
-            PlayerRole role = new(PresetRoleInput.Text);
-            AlertView.PopupAlert($"检测到已填入预设角色id。角色的数据为：\r\n{role.GetRichDesc()}是否确定？", false, new(() => role.StartFunction?.Invoke()));
+            role = new(PresetRoleInput.Text);
         }
-        if (CurrentPoint > 0)
+        if (role != null && role.Id != "")
         {
-            StaticInstance.MainRoot.ShowBanner("还有点数未使用");
-            return;
-        }
-        else if (NameInput.Text == null || NameInput.Text == "")
-        {
-            AlertView.PopupAlert("未输入名字，是否以默认名字Able继续？", false, new(() =>
+            AlertView.PopupAlert($"检测到已填入预设角色id。角色的数据为：\r\n{role.GetRichDesc()}是否确定？", false, new(() =>
             {
-                StartGameAsync();
+                role.StartFunction?.Invoke();
+
+                StaticInstance.playerData.gsd.MajorRole = role;
+
+                MainScene node = (MainScene)ResourceLoader.Load<PackedScene>("res://Pages/MainScene.tscn").Instantiate();
+                StaticInstance.windowMgr.ChangeScene(node, new((scene) =>
+                {
+                    StaticInstance.MainRoot.canPause = true;
+                }));
             }));
         }
         else
         {
-            StartGameAsync();
+            if (CurrentPoint > 0)
+            {
+                StaticInstance.MainRoot.ShowBanner("还有点数未使用");
+                return;
+            }
+            else if (NameInput.Text == null || NameInput.Text == "")
+            {
+                AlertView.PopupAlert("未输入名字，是否以默认名字Able继续？", false, new(() =>
+                {
+                    StartGameAsync();
+                }));
+            }
+            else
+            {
+                StartGameAsync();
+            }
         }
     }
 
@@ -134,10 +153,13 @@ public partial class RoleCreateScene : BaseScene
             name = NameInput.Text == "" ? "Able" : NameInput.Text,
         };
 
-        var majorrole = new PlayerRole(player.OriginSpeed, player.OriginStrength, player.OriginEffeciency, player.OriginMantra, player.OriginCraftEquip, player.OriginCraftBook, player.OriginCritical, player.OriginDodge, player.name);
-        majorrole.AddCardIntoDeck(new("fire_ball"));
-        majorrole.AddCardIntoDeck(new("water_slash"));
-        StaticUtils.CreateBuffAndAddToRole("get_lucky", majorrole);
+        var majorrole = new PlayerRole(player.OriginSpeed, player.OriginStrength, player.OriginEffeciency, player.OriginMantra, player.OriginCraftEquip, player.OriginCraftBook, player.OriginCritical, player.OriginDodge, player.name)
+        {
+            Id = "major"
+        };
+        majorrole.AddCardIntoDeck(new("infinite"));
+        majorrole.AddCardIntoDeck(new("infinite"));
+        StaticUtils.CreateBuffAndAddToRole("get_lucky", majorrole, majorrole);
         StaticUtils.CreateEquipAndPutOn("base_attack", majorrole);
         StaticUtils.CreateEquipAndPutOn("base_attack", majorrole);
         StaticUtils.CreateEquipAndPutOn("base_defense", majorrole);
@@ -145,8 +167,6 @@ public partial class RoleCreateScene : BaseScene
         majorrole.ActionPoint = 3;
 
         StaticInstance.playerData.gsd.MajorRole = majorrole;
-
-        //StaticInstance.playerData.gsd.MapGenerator.GenerateMap();
 
         MainScene node = (MainScene)ResourceLoader.Load<PackedScene>("res://Pages/MainScene.tscn").Instantiate();
         StaticInstance.windowMgr.ChangeScene(node, new((scene) =>

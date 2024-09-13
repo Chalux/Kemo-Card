@@ -10,7 +10,7 @@ namespace KemoCard.Scripts
     public partial class EquipImplBase : RefCounted, IEvent
     {
         public Equip Binder;
-        public string Name { get; set; }
+        public string Name { get; set; } = "";
         public Dictionary<string, uint> CardDic { get; set; } = new();
 
         public string TextureUrl { get; set; } = "";
@@ -28,13 +28,15 @@ namespace KemoCard.Scripts
                 int Count = 0;
                 foreach (var keyValuePair in CardDic)
                 {
-                    Card card = new(keyValuePair.Key)
+                    for (uint i = 1; i <= keyValuePair.Value; i++)
                     {
-                        EquipId = Binder.Uuid,
-                        EquipIdx = keyValuePair.Value,
-                    };
-                    pr.AddCardIntoDeck(card);
-                    Count++;
+                        Card card = new(keyValuePair.Key)
+                        {
+                            EquipId = Binder.Uuid,
+                        };
+                        pr.AddCardIntoDeck(card);
+                        Count++;
+                    }
                 }
                 GD.Print("角色" + pr.GetName() + "装备了id为" + Binder.Id + ",Uuid为" + Binder.Uuid + "的装备。新增卡牌" + Count + "张至卡组中。装备后角色的卡组数量为" + pr.Deck.Count);
             }
@@ -52,7 +54,7 @@ namespace KemoCard.Scripts
                 var tempDeck = pr.Deck.ToList();
                 foreach (var card in tempDeck)
                 {
-                    if (card.EquipId == Binder.Uuid && CardDic.ContainsKey(card.Id) && card.EquipIdx == CardDic.GetValueOrDefault(card.Id))
+                    if (card.EquipId == Binder.Uuid && CardDic.ContainsKey(card.Id))
                     {
                         pr.RemoveCardFromDeck(card.Id, card.Idx);
                         Count++;

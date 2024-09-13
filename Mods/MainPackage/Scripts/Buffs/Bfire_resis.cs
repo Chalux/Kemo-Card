@@ -9,22 +9,17 @@ namespace KemoCard.Mods.MainPackage.Scripts.Buffs
     {
         public override void OnBuffInit(BuffImplBase b)
         {
-            b.BuffId = "fire_resis";
-            b.BuffShowname = "火属性抵抗";
-            b.IsInfinite = true;
-            b.Desc = "受到的火属性伤害降低至0.75倍";
-            b.IconPath = "res://Mods/MainPackage/Resources/Icons/Skillicon14_14.png";
             b.AddEvent("BeforeDealDamageSingle", new(datas =>
             {
                 if (datas != null)
                 {
                     if (datas is Damage d)
                     {
-                        if (d.targets[0] == b.Binder && d.atrribute == AttributeEnum.FIRE)
+                        if (d.targets != null && d.targets[0] == b.Binder && d.atrribute == AttributeEnum.FIRE)
                         {
-                            GD.Print("Buff 10002通过条件检测,修改前的值：" + d.value);
+                            GD.Print("Buff fire_resis通过条件检测,修改前的值：" + d.value);
                             d.value *= 0.75;
-                            GD.Print("Buff 10002通过条件检测,修改后的值：" + d.value);
+                            GD.Print("Buff fire_resis通过条件检测,修改后的值：" + d.value);
                         }
                     }
                 }

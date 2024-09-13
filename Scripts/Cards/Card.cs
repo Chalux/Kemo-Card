@@ -15,7 +15,6 @@ namespace KemoCard.Scripts.Cards
         public string Id { get; set; }
         // 这里的装备id是为了记录是否是装备加到卡组里的，idx同。非装备的话可以不填。
         public string EquipId { get; set; } = "";
-        public uint EquipIdx { get; set; } = 0;
         public uint Rare { get; set; } = 0;
 
         /// <summary>

@@ -2,7 +2,7 @@
 
 namespace KemoCard.Mods.MainPackage.Scripts.Presets
 {
-    internal partial class Ptest_preset_1 : BasePresetScript
+    internal partial class Pbat : BasePresetScript
     {
         public override void Init(Preset preset)
         {

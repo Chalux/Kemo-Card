@@ -4,7 +4,7 @@ using System;
 
 namespace KemoCard.Mods.MainPackage.Scripts.Events
 {
-    internal partial class Etest_event_1 : BaseEventScript
+    internal partial class Eheal_event : BaseEventScript
     {
         public override void Init(Event e)
         {

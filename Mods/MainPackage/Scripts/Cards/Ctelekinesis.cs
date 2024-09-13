@@ -1,11 +1,5 @@
-﻿using KemoCard.Scripts;
-using KemoCard.Scripts.Cards;
+﻿using KemoCard.Scripts.Cards;
 using StaticClass;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace KemoCard.Mods.MainPackage.Scripts.Cards
 {
@@ -13,7 +7,11 @@ namespace KemoCard.Mods.MainPackage.Scripts.Cards
     {
         public override void OnCardScriptInit(Card c)
         {
-            StaticUtils.CreateBuffAndAddToRole("telekinesis", c.owner);
+            c.UseFilter = new((user, targets, datas) =>
+            {
+                StaticUtils.CreateBuffAndAddToRole("telekinesis", c.owner, c.owner);
+                return true;
+            });
         }
     }
 }

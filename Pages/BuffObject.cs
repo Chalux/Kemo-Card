@@ -1,6 +1,5 @@
 ﻿using Godot;
 using KemoCard.Scripts;
-using KemoCard.Scripts.Buffs;
 using StaticClass;
 using System.Collections.Generic;
 
@@ -10,19 +9,18 @@ public partial class BuffObject : Control, IEvent
     [Export] public TextureRect texture;
     [Export] public ColorRect color;
     public BuffImplBase data;
-    public void Init(string id)
+    public void Init(string id, object Creator)
     {
         var modInfo = Datas.Ins.BuffPool.GetValueOrDefault(id, new() { buff_id = null, mod_id = "MainPackage" });
         if (modInfo.buff_id != null)
         {
-            string spath = $"res://Mods/{modInfo.mod_id}/Scripts/Buffs/B{modInfo.buff_id}.cs";
-            FileAccess script = FileAccess.Open(spath, FileAccess.ModeFlags.Read);
-            data = new();
-            if (script != null)
-            {
-                var s = ResourceLoader.Load<CSharpScript>(spath).New().As<BaseBuffScript>();
-                s.OnBuffInit(data);
-            }
+            data = new(id);
+            data.Creator = Creator;
+            //if (script != null)
+            //{
+            //    var s = ResourceLoader.Load<CSharpScript>(spath).New().As<BaseBuffScript>();
+            //    s.OnBuffInit(data);
+            //}
             string path = ProjectSettings.GlobalizePath(data.IconPath);
             Image res;
             if (FileAccess.FileExists(path))
@@ -39,7 +37,8 @@ public partial class BuffObject : Control, IEvent
         }
         else
         {
-            data = new();
+            data = new(id);
+            data.Creator = Creator;
             string path = ProjectSettings.GlobalizePath("res://Resources/Images/SkillFrame.png");
             Image res = Image.LoadFromFile(path);
             texture.Texture = ImageTexture.CreateFromImage(res);
@@ -79,7 +78,7 @@ public partial class BuffObject : Control, IEvent
 
     public void ReceiveEvent(string @event, params object[] datas)
     {
-        data.ReceiveEvent(@event, datas);
+        data?.ReceiveEvent(@event, datas);
     }
 
     private void InitObj()

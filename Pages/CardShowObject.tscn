@@ -27,6 +27,7 @@ shader_parameter/burn_color = Color(0.922391, 0.121125, 0, 1)
 shader_parameter/dissolve_texture = SubResource("NoiseTexture2D_hp427")
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_lmy76"]
+resource_local_to_scene = true
 shader = ExtResource("3_psduj")
 shader_parameter/color = Color(1, 0, 0, 1)
 shader_parameter/width = 0.015

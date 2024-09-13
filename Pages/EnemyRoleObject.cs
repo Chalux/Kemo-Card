@@ -112,7 +112,7 @@ public partial class EnemyRoleObject : Control, IEvent
         PBLabel.Text = StaticUtils.MakeBBCodeString(data.CurrPBlock.ToString());
         MBLabel.Text = StaticUtils.MakeBBCodeString(data.CurrMBlock.ToString());
         hpLabel.Text = StaticUtils.MakeBBCodeString(data.CurrHealth + "/" + data.CurrHpLimit);
-        mpLabel.Text = StaticUtils.MakeBBCodeString(data.CurrMagic + "/" + data.CurrHpLimit);
+        mpLabel.Text = StaticUtils.MakeBBCodeString(data.CurrMagic + "/" + data.CurrMpLimit);
     }
 
     public void ReceiveEvent(string @event, params object[] datas)
@@ -142,22 +142,22 @@ public partial class EnemyRoleObject : Control, IEvent
             }
         }
         data?.ReceiveEvent(@event, datas);
-        foreach (BuffObject buffObject in buffContainer.GetChildren().Cast<BuffObject>())
+        foreach (BuffObject buffObject in buffContainer?.GetChildren().Cast<BuffObject>())
         {
             buffObject.ReceiveEvent(@event, datas);
         }
     }
 
-    public void AddBuff(string id)
+    public void AddBuff(string id, object Creator)
     {
         BuffObject bobj = (BuffObject)ResourceLoader.Load<PackedScene>("res://Pages/BuffObject.tscn").Instantiate();
-        bobj.Init(id);
+        bobj.Init(id, Creator);
         if (bobj.data != null)
         {
             bobj.data.Binder = data;
             bobj.data.BuffObj = bobj;
             bobj.data.OnBuffAdded?.Invoke(bobj.data);
-            buffContainer.AddChild(bobj);
+            buffContainer?.AddChild(bobj);
         }
     }
 
@@ -170,7 +170,7 @@ public partial class EnemyRoleObject : Control, IEvent
             bobj.data.Binder = data;
             bobj.data.BuffObj = bobj;
             bobj.data.OnBuffAdded?.Invoke(bobj.data);
-            buffContainer.AddChild(bobj);
+            buffContainer?.AddChild(bobj);
         }
     }
 }

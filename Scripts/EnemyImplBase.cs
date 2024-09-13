@@ -12,12 +12,12 @@ namespace KemoCard.Scripts
         public string AnimationResourcePath { get; set; } = "";
         public int Speed { get; set; } = 1;
         public int Strength { get; set; } = 1;
-        public int Effeciency { get; set; } = 1;
-        public int Mantra { get; set; } = 1;
-        public int CraftBook { get; set; } = 1;
-        public int CraftEquip { get; set; } = 1;
-        public int Critical { get; set; } = 1;
-        public int Dodge { get; set; } = 1;
+        public int Effeciency { get; set; } = 0;
+        public int Mantra { get; set; } = 0;
+        public int CraftBook { get; set; } = 0;
+        public int CraftEquip { get; set; } = 0;
+        public int Critical { get; set; } = 0;
+        public int Dodge { get; set; } = 0;
         public string Name { get; set; } = "未命名";
         public string Intent { get; set; } = "";
         public Action<int, List<PlayerRole>, List<EnemyRole>, EnemyImplBase> ActionFunc;

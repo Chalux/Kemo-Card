@@ -83,7 +83,7 @@ public partial class PlayerRoleObject : Control, IEvent
         PBLabel.Text = StaticUtils.MakeBBCodeString(data.CurrPBlock.ToString());
         MBLabel.Text = StaticUtils.MakeBBCodeString(data.CurrMBlock.ToString());
         hpLabel.Text = StaticUtils.MakeBBCodeString(data.CurrHealth + "/" + data.CurrHpLimit);
-        mpLabel.Text = StaticUtils.MakeBBCodeString(data.CurrMagic + "/" + data.CurrHpLimit);
+        mpLabel.Text = StaticUtils.MakeBBCodeString(data.CurrMagic + "/" + data.CurrMpLimit);
         roleName.Text = StaticUtils.MakeBBCodeString(data.name);
     }
 
@@ -123,7 +123,7 @@ public partial class PlayerRoleObject : Control, IEvent
             }
         }
         //data?.ReceiveEvent(@event, datas);
-        foreach (BuffObject buffObject in buffContainer.GetChildren().Cast<BuffObject>())
+        foreach (BuffObject buffObject in buffContainer?.GetChildren().Cast<BuffObject>())
         {
             buffObject.ReceiveEvent(@event, datas);
         }
@@ -136,13 +136,13 @@ public partial class PlayerRoleObject : Control, IEvent
         }
     }
 
-    public void AddBuff(string id)
+    public void AddBuff(string id, object Creator)
     {
         BuffObject buffObject = (BuffObject)ResourceLoader.Load<PackedScene>("res://Pages/BuffObject.tscn").Instantiate();
-        buffObject.Init(id);
+        buffObject.Init(id, Creator);
         if (buffObject.data != null)
         {
-            buffContainer.AddChild(buffObject);
+            buffContainer?.AddChild(buffObject);
             buffObject.data.Binder = data;
         }
     }
@@ -153,7 +153,7 @@ public partial class PlayerRoleObject : Control, IEvent
         buffObject.Init(buff);
         if (buffObject.data != null)
         {
-            buffContainer.AddChild(buffObject);
+            buffContainer?.AddChild(buffObject);
             buffObject.data.Binder = data;
         }
     }

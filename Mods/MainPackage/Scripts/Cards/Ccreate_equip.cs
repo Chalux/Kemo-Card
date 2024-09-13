@@ -2,7 +2,6 @@
 using KemoCard.Scripts;
 using KemoCard.Scripts.Cards;
 using StaticClass;
-using System;
 using System.Collections.Generic;
 
 namespace KemoCard.Mods.MainPackage.Scripts.Cards

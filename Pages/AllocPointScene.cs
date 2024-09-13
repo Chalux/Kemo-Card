@@ -94,14 +94,14 @@ public partial class AllocPointScene : BaseScene
 
     private void UpdateView()
     {
-        SpeedTxt.Text = SpeedPoint.ToString("N2");
-        StrengthTxt.Text = StrengthPoint.ToString("N2");
-        EfficiencyTxt.Text = EfficiencyPoint.ToString("N2");
-        MantraTxt.Text = MantraPoint.ToString("N2");
-        EquipTxt.Text = CraftEquipPoint.ToString("N2");
-        BookTxt.Text = CraftBookPoint.ToString("N2");
-        CriticalTxt.Text = CriticalPoint.ToString("N2");
-        DodgeTxt.Text = DodgePoint.ToString("N2");
+        SpeedTxt.Text = SpeedPoint.ToString("N0");
+        StrengthTxt.Text = StrengthPoint.ToString("N0");
+        EfficiencyTxt.Text = EfficiencyPoint.ToString("N0");
+        MantraTxt.Text = MantraPoint.ToString("N0");
+        EquipTxt.Text = CraftEquipPoint.ToString("N0");
+        BookTxt.Text = CraftBookPoint.ToString("N0");
+        CriticalTxt.Text = CriticalPoint.ToString("N0");
+        DodgeTxt.Text = DodgePoint.ToString("N0");
         RemainPoint.Text = "剩余点数：" + CurrentPoint.ToString();
     }
 

@@ -199,6 +199,6 @@ public partial class CardObject : Control
 
     private void SetRare()
     {
-        (FrameRect.Material as ShaderMaterial).SetShaderParameter("color", StaticUtils.GetFrameColorByRare(card.Rare));
+        (FrameRect.Material as ShaderMaterial).SetShaderParameter("color", new Color(StaticUtils.GetFrameColorByRare(card.Rare)));
     }
 }

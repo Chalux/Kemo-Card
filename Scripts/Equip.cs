@@ -80,14 +80,16 @@ namespace KemoCard.Scripts
             string str = "";
             if (EquipScript != null)
             {
-                str += EquipScript.Name ?? "";
-                str += EquipScript.Desc ?? "";
+                str += EquipScript.Name != "" ? EquipScript.Name + "\n" : "";
+                str += EquipScript.Desc != "" ? EquipScript.Desc + "\n" : "";
                 foreach (var cardid in EquipScript.CardDic.Keys)
                 {
                     if (Ins.CardPool.TryGetValue(cardid, out var card_info))
                     {
-                        str += card_info.alias;
+                        str += StaticUtils.MakeColorString(card_info.alias, StaticUtils.GetFrameColorByRare(card_info.rare));
+                        str += "\n";
                         str += card_info.desc;
+                        str += "\n";
                     }
                 }
             }

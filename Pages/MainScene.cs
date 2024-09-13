@@ -4,7 +4,6 @@ using KemoCard.Scripts;
 using KemoCard.Scripts.Cards;
 using StaticClass;
 using System.Collections.Generic;
-using System.Linq;
 
 public partial class MainScene : BaseScene, IEvent
 {
@@ -32,6 +31,7 @@ public partial class MainScene : BaseScene, IEvent
     [Export] Godot.Button TestAddCardBtn;
     [Export] TextEdit AddCardInput;
     [Export] Godot.Button ReturnMenuBtn;
+    [Export] Godot.Button CheckMajorBtn;
 
     public override void _Ready()
     {
@@ -133,6 +133,11 @@ public partial class MainScene : BaseScene, IEvent
                 StaticInstance.windowMgr.ChangeScene(ResourceLoader.Load<PackedScene>("res://Pages/menu_scene.tscn").Instantiate());
             }));
         });
+        CheckMajorBtn.MouseEntered += new(() =>
+        {
+            StaticInstance.MainRoot.ShowRichHint(StaticInstance.playerData.gsd.MajorRole.GetRichDesc());
+        });
+        CheckMajorBtn.MouseExited += StaticInstance.MainRoot.HideRichHint;
         MapView?.CreateMap();
         UpdateView();
     }

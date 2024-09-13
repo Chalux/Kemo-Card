@@ -1,4 +1,6 @@
-﻿using StaticClass;
+﻿using Godot;
+using KemoCard.Scripts.Buffs;
+using StaticClass;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,6 +11,35 @@ namespace KemoCard.Scripts
 {
     public partial class BuffImplBase : IEvent
     {
+        public BuffImplBase()
+        {
+
+        }
+        public BuffImplBase(string id)
+        {
+            if (!Datas.Ins.BuffPool.ContainsKey(id))
+            {
+                string hint = $"读取id为{id}的Buff时出错。";
+                GD.PrintErr(hint);
+                StaticInstance.MainRoot.ShowBanner(hint);
+                return;
+            }
+            var modInfo = Datas.Ins.BuffPool[id];
+            var res = ResourceLoader.Load<CSharpScript>($"res://Mods/{modInfo.mod_id}/Scripts/Buffs/B{modInfo.buff_id}.cs");
+            if (res != null)
+            {
+                BaseBuffScript @base = res.New().As<BaseBuffScript>();
+                BuffId = id;
+                BuffShowname = modInfo.showname;
+                IsInfinite = modInfo.is_infinite;
+                Desc = modInfo.desc;
+                IconPath = modInfo.icon_path;
+                IsDebuff = modInfo.is_debuff;
+                BuffCount = modInfo.buff_count;
+                BuffValue = modInfo.buff_value;
+                @base.OnBuffInit(this);
+            }
+        }
         public string BuffId { get; set; }
         private int _buffCount = 1;
         public string IconPath { get; set; } = "";
@@ -29,8 +60,11 @@ namespace KemoCard.Scripts
             }
         }
         public bool CustomBuffCountCalculate { get; set; } = false;
-        private int _buffValue = 0;
-        public int BuffValue
+        private double _buffValue = 0;
+        [JsonIgnore]
+        public object Creator { get; set; } = null;
+        public string CreatorId { get; set; } = "";
+        public double BuffValue
         {
             get => _buffValue;
             set
@@ -41,8 +75,9 @@ namespace KemoCard.Scripts
         }
         public bool CanStack { get; set; } = false;
         public bool IsInfinite { get; set; } = false;
+        public bool IsDebuff { get; set; } = false;
         public HashSet<string> tags = new();
-        public EffectTriggerTiming CountTriTiming { get; set; } = StaticEnums.EffectTriggerTiming.ON_TURN_END;
+        public EffectTriggerTiming CountTriTiming { get; set; } = EffectTriggerTiming.ON_TURN_END;
         [JsonIgnore]
         public object Binder;
         [JsonIgnore]
@@ -97,7 +132,7 @@ namespace KemoCard.Scripts
                     ifp.InFightBuffs.Remove(this);
                     if (ifp.roleObject != null)
                     {
-                        foreach (BuffObject i in ifp.roleObject.buffContainer.GetChildren().Cast<BuffObject>())
+                        foreach (BuffObject i in ifp?.roleObject?.buffContainer?.GetChildren().Cast<BuffObject>())
                         {
                             if (i.data == this)
                             {
@@ -114,7 +149,7 @@ namespace KemoCard.Scripts
                     em.InFightBuffs.Remove(this);
                     if (em.roleObject != null)
                     {
-                        foreach (BuffObject i in em.roleObject.buffContainer.GetChildren().Cast<BuffObject>())
+                        foreach (BuffObject i in em?.roleObject?.buffContainer?.GetChildren().Cast<BuffObject>())
                         {
                             if (i.data == this)
                             {

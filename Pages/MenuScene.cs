@@ -1,6 +1,7 @@
 using Godot;
 using KemoCard.Pages;
 using StaticClass;
+using System;
 
 public partial class MenuScene : BaseScene
 {
@@ -47,7 +48,14 @@ public partial class MenuScene : BaseScene
         {
             DebugTempBtn.Pressed += new(() =>
             {
-                StaticInstance.windowMgr.ChangeScene(ResourceLoader.Load<PackedScene>("res://Pages/Map/Map.tscn").Instantiate(), new((scene) => { StaticInstance.MainRoot.canPause = true; }));
+                PackedScene res = ResourceLoader.Load<PackedScene>("res://Pages/FloatingNum.tscn");
+                if (res != null)
+                {
+                    FloatingNum floatingNum = res.Instantiate<FloatingNum>();
+                    Random r = new();
+                    floatingNum.Init($"+{r.Next(0, 1000000)}", Colors.Khaki, new(500, 500));
+                    AddChild(floatingNum);
+                }
             });
         }
     }

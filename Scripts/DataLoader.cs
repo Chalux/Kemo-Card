@@ -210,6 +210,13 @@ namespace KemoCard.Scripts
                                         BuffPool.Add(id, new BuffStruct
                                         {
                                             buff_id = id,
+                                            is_debuff = data["is_debuff"].AsBool(),
+                                            showname = data["showname"].AsString(),
+                                            desc = data["desc"].AsString(),
+                                            icon_path = data["icon_path"].AsString(),
+                                            is_infinite = data["is_infinite"].AsBool(),
+                                            buff_count = data["buff_count"].AsInt32(),
+                                            buff_value = data["buff_value"].AsDouble(),
                                             mod_id = currModId
                                         });
                                     }
@@ -381,6 +388,13 @@ namespace KemoCard.Scripts
         public struct BuffStruct
         {
             public string buff_id;
+            public bool is_debuff;
+            public string showname;
+            public string desc;
+            public string icon_path;
+            public bool is_infinite;
+            public int buff_count;
+            public double buff_value;
             public string mod_id;
         }
 

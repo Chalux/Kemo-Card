@@ -2,4 +2,4 @@
 .godot/
 
 #Visual Studio ignores
-.vs/
+.vs/*

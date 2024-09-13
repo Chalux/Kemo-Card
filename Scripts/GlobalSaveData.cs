@@ -1,8 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using MemoryPack;
+using System.Collections.Generic;
 
 namespace KemoCard.Scripts
 {
-    public class GlobalSaveData
+    [MemoryPackable(GenerateType.NoGenerate)]
+    public partial class GlobalSaveData
     {
         public Dictionary<string, double> DoubleData { get; set; } = new();
         public Dictionary<string, int> IntData { get; set; } = new();

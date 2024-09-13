@@ -6,6 +6,7 @@ using StaticClass;
 using System;
 using System.Text;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace KemoCard.Scripts
 {
@@ -30,7 +31,7 @@ namespace KemoCard.Scripts
                 return;
             }
             //gsd.MajorRole = gsd.MajorRole;
-            var json = JsonSerializer.Serialize(gsd);
+            var json = JsonSerializer.Serialize(gsd, new JsonSerializerOptions { ReferenceHandler = ReferenceHandler.Preserve, IncludeFields = true });
             //GD.Print(sav, json);
             sav.StoreString(json);
             string imgPath = StaticUtils.GetSaveImgPath(index);
@@ -57,14 +58,21 @@ namespace KemoCard.Scripts
                     return;
                 }
                 GlobalSaveData obj;
-                try
+                if (OS.IsDebugBuild())
                 {
-                    obj = JsonSerializer.Deserialize<GlobalSaveData>(jsonstring);
+                    obj = JsonSerializer.Deserialize<GlobalSaveData>(jsonstring, new JsonSerializerOptions { ReferenceHandler = ReferenceHandler.Preserve, IncludeFields = true });
                 }
-                catch
+                else
                 {
-                    StaticInstance.MainRoot.ShowBanner("存档损坏");
-                    return;
+                    try
+                    {
+                        obj = JsonSerializer.Deserialize<GlobalSaveData>(jsonstring, new JsonSerializerOptions { ReferenceHandler = ReferenceHandler.Preserve, IncludeFields = true });
+                    }
+                    catch
+                    {
+                        StaticInstance.MainRoot.ShowBanner("存档损坏");
+                        return;
+                    }
                 }
                 //obj = JsonSerializer.Deserialize<GlobalSaveData>(jsonstring);
                 gsd.MajorRole = obj.MajorRole;
@@ -87,6 +95,10 @@ namespace KemoCard.Scripts
                         }
                     }
                     buff.Binder = gsd.MajorRole;
+                    if (buff.CreatorId == gsd.MajorRole.Id)
+                    {
+                        buff.Creator = gsd.MajorRole;
+                    }
                 });
                 gsd.MajorRole.Deck.ForEach(LoadCardScript);
                 gsd.MajorRole.TempDeck.ForEach(LoadCardScript);

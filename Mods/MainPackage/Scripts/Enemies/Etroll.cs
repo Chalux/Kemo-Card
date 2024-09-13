@@ -10,12 +10,14 @@ namespace KemoCard.Mods.MainPackage.Scripts.Enemies
     {
         public override void OnEnemyInit(EnemyImplBase e)
         {
-            e.Strength = 6;
+            e.Strength = 9;
             e.CraftBook = 0;
             e.CraftEquip = 0;
             e.Dodge = 2;
             e.Critical = 25;
             e.Speed = 3;
+            e.Mantra = 0;
+            e.Effeciency = 0;
             e.Name = "巨魔";
             e.AnimationResourcePath = $"res://Mods/MainPackage/Resources/Animations/Bat.tres";
             e.ActionFunc = new((round, players, enemies, @base) =>
@@ -24,7 +26,7 @@ namespace KemoCard.Mods.MainPackage.Scripts.Enemies
                 {
                     if (tag == 1)
                     {
-                        StaticUtils.CreateBuffAndAddToRole("angry", e.Binder);
+                        StaticUtils.CreateBuffAndAddToRole("angry", e.Binder, e.Binder);
                     }
                     else if (tag == 2)
                     {
@@ -47,7 +49,7 @@ namespace KemoCard.Mods.MainPackage.Scripts.Enemies
                 }
                 string Intent =
                     $"[img=30x30]res://Mods/MainPackage/Resources/Icons/icons_079.png[/img]造成" +
-                    $"{e.Binder.CurrStrength + e.Binder.Body * 0.5 + StaticInstance.playerData.gsd.MajorRole.InFightHands.Count * 3:N2}点物理伤害(" +
+                    $"{e.Binder.CurrStrength + e.Binder.Body * 0.5 + StaticInstance.playerData.gsd.MajorRole.InFightHands.Count * 3:N2}点无属性物理伤害(" +
                     $"{StaticUtils.MakeColorString("力量", StaticInstance.BodyColor, 36)}+0.5*" +
                     $"{StaticUtils.MakeColorString("身体", StaticInstance.BodyColor, 36)}+3*{StaticUtils.MakeColorString("手牌", "#f70101", 36)})";
                 e.ChangeIntent(Intent);
@@ -75,8 +77,8 @@ namespace KemoCard.Mods.MainPackage.Scripts.Enemies
                     e.InGameDict.Add("action", 1);
                 }
             }));
-            StaticUtils.CreateBuffAndAddToRole("fire_injury", e.Binder);
-            StaticUtils.CreateBuffAndAddToRole("water_injury", e.Binder);
+            StaticUtils.CreateBuffAndAddToRole("fire_injury", e.Binder, e.Binder);
+            StaticUtils.CreateBuffAndAddToRole("water_injury", e.Binder, e.Binder);
         }
     }
 }

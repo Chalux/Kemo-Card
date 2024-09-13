@@ -46,7 +46,7 @@ public partial class main_root : Control
         {
             float PositionX = GetLocalMousePosition().X + 50;
             float PositionY = GetLocalMousePosition().Y;
-            colorRect.Position = new Vector2((PositionX + richHint.Size.X) > 1920 ? PositionX - 100 - richHint.Size.X : PositionX, (PositionY + richHint.Size.Y) > 1080 ? PositionY - richHint.Size.Y : PositionY);
+            colorRect.Position = new Vector2((PositionX + colorRect.Size.X) > 1920 ? PositionX - 100 - colorRect.Size.X : PositionX, (PositionY + colorRect.Size.Y) > 1080 ? PositionY - colorRect.Size.Y : PositionY);
         }
     }
 
@@ -56,6 +56,14 @@ public partial class main_root : Control
         richHintAction?.Invoke();
         richHintAction = new Action(() =>
         {
+            if (hint.Length > 100)
+            {
+                richHint.Size = new(900, 0);
+            }
+            else
+            {
+                richHint.Size = new(500, 0);
+            }
             richHint.Text = hint;
             colorRect.Visible = true;
         });
@@ -115,7 +123,7 @@ public partial class main_root : Control
     {
         if (colorRect.Visible)
         {
-            colorRect.Size = new Vector2(richHint.Size.X + 2 * Hpadding, richHint.Size.Y + Vpadding);
+            colorRect.SetSize(new(richHint.Size.X + 2 * Hpadding, richHint.Size.Y + 2 * Vpadding));
         }
     }
 }

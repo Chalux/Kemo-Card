@@ -1,5 +1,4 @@
-﻿using Godot;
-using KemoCard.Scripts;
+﻿using KemoCard.Scripts;
 using KemoCard.Scripts.Cards;
 
 namespace KemoCard.Mods.MainPackage.Scripts.Cards

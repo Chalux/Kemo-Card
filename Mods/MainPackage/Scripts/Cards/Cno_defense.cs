@@ -1,5 +1,4 @@
-﻿using Godot;
-using KemoCard.Scripts;
+﻿using KemoCard.Scripts;
 using KemoCard.Scripts.Cards;
 using StaticClass;
 using System.Collections.Generic;

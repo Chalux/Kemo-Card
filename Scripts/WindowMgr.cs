@@ -248,5 +248,13 @@ namespace KemoCard.Scripts
                 }
             }
         }
+
+        public void RemoveSceneByName(string sceneName)
+        {
+            if (_scenes.ContainsKey(sceneName))
+            {
+                RemoveScene(_scenes[sceneName]);
+            }
+        }
     }
 }

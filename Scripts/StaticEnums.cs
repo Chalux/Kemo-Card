@@ -18,6 +18,9 @@ namespace StaticClass
             WATER,
             FIRE,
             EARTH,
+            WIND,
+            LIGHT,
+            DARK,
         }
 
         public readonly static Dictionary<AttributeEnum, string> AttributeDic = new()
@@ -25,7 +28,10 @@ namespace StaticClass
             { AttributeEnum.None, "NONE"},
             { AttributeEnum.WATER, "WATER" },
             { AttributeEnum.FIRE, "FIRE" },
-            { AttributeEnum.EARTH, "EARTH" }
+            { AttributeEnum.EARTH, "EARTH" },
+            { AttributeEnum.WIND, "WIND" },
+            { AttributeEnum.LIGHT, "LIGHT" },
+            { AttributeEnum.DARK, "DARK" },
         };
 
         public enum TeamEnum
@@ -88,6 +94,7 @@ namespace StaticClass
             WEAPON2 = 7,
             OTHER = 8,
             DOUBLE_WEAPON = 9,
+            BOTH_WEAPON = 10,
         }
 
         public enum EffectTriggerTiming

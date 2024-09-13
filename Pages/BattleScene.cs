@@ -24,8 +24,8 @@ public struct ShopStruct
 
 public partial class BattleScene : BaseScene, IEvent
 {
-    [Export] HBoxContainer playerContainer;
-    [Export] HBoxContainer enemyContainer;
+    [Export] public HBoxContainer playerContainer;
+    [Export] public HBoxContainer enemyContainer;
     [Export] public Control HandControl;
     [Export] Label DeckCount;
     [Export] public Label GraveCount;
@@ -312,7 +312,7 @@ public partial class BattleScene : BaseScene, IEvent
             i.TurnActionPoint = i.CurrentActionPoint = i.ActionPoint;
             i.InitFighter();
             i.OnBattleStart?.Invoke();
-            playerContainer.AddChild(po);
+            playerContainer?.AddChild(po);
         }
         foreach (EnemyRole i in enemies)
         {
@@ -323,7 +323,7 @@ public partial class BattleScene : BaseScene, IEvent
             StaticInstance.eventMgr.RegistIEvent(eo);
             eo.Init(i);
             i.OnBattleStart?.Invoke(eo);
-            enemyContainer.AddChild(eo);
+            enemyContainer?.AddChild(eo);
         }
         turns = 1;
         TurnLabel.Text = "回合数：" + turns;
@@ -356,6 +356,7 @@ public partial class BattleScene : BaseScene, IEvent
         object[] objects = new object[] { currentPlayerRoles, currentEnemyRoles, turns };
         StaticInstance.eventMgr.Dispatch("StartBattle", objects);
         UpdateCounts();
+        StaticInstance.eventMgr.Dispatch("NewTurn", new dynamic[] { turns, currentPlayerRoles, currentEnemyRoles });
     }
 
     public void NextTurn()
@@ -418,6 +419,8 @@ public partial class BattleScene : BaseScene, IEvent
             if (currEnemy == null || !BattleStatic.isFighting) return;
             currEnemy.script.ActionFunc?.Invoke(turns, currentPlayerRoles, currentEnemyRoles, currEnemy.script);
         }
+        BattleStatic.TurnUsedCard.Clear();
+        BattleStatic.TurnTags.Clear();
         NextTurn();
     }
 
@@ -432,7 +435,7 @@ public partial class BattleScene : BaseScene, IEvent
     /// <param name="times">伤害次数</param>
     /// <param name="tempAddCri">临时增加的暴击率(固定值)</param>
     /// <param name="tempMulCri">临时增加的暴击率(百分比)</param>
-    public void DealDamage(double value, AttackType attackType, BaseRole from, List<BaseRole> targets, AttributeEnum atrribute = AttributeEnum.None, int times = 1, double tempAddCri = 0f, double tempMulCri = 0f)
+    public void DealDamage(double value, AttackType attackType, BaseRole from = null, List<BaseRole> targets = null, AttributeEnum atrribute = AttributeEnum.None, int times = 1, double tempAddCri = 0f, double tempMulCri = 0f, Action<Damage, BaseRole> dodgedAction = null, Action<Damage, BaseRole> criticalAction = null)
     {
         //if (!BattleStatic.isFighting) return AttackResult.Failed;
         Damage damage = new()
@@ -448,7 +451,7 @@ public partial class BattleScene : BaseScene, IEvent
         };
         StaticInstance.eventMgr.Dispatch("BeforeAttacked", damage);
         StaticInstance.eventMgr.Dispatch("BeforeDealDamage", damage);
-        if (damage.validTag)
+        if (damage.validTag && targets != null)
         {
             foreach (BaseRole target in targets)
             {
@@ -468,8 +471,10 @@ public partial class BattleScene : BaseScene, IEvent
                 if (tempDamage.validTag)
                 {
                     if (target.CurrHealth <= 0) continue;
-                    tempDamage.value = (int)Math.Round((tempDamage.value + target.GetSymbol(AttributeDic[atrribute] + "ResisProp", 0f) - from.GetSymbol(AttributeDic[atrribute] + "AtkProp", 0f)) *
-                            (1 + target.GetSymbol(AttributeDic[atrribute] + "ResisPerm", 0f)) * (1 + from.GetSymbol(AttributeDic[atrribute] + "AtkPerm", 0f)));
+                    tempDamage.value = (int)Math.Round((tempDamage.value + target.GetSymbol(AttributeDic[atrribute] + "ResisProp", 0f) -
+                        (from != null ? from.GetSymbol(AttributeDic[atrribute] + "AtkProp", 0f) : 1f)
+                        * (1 + target.GetSymbol(AttributeDic[atrribute] + "ResisPerm", 0f))
+                        * (1 + (from != null ? from.GetSymbol(AttributeDic[atrribute] + "AtkPerm", 0f) : 1f))));
                     StaticInstance.eventMgr.Dispatch("BeforeDealDamageSingle", tempDamage);
                     GD.Print("伤害结算后：" + tempDamage.value);
                     for (int i = 0; i < times; i++)
@@ -479,9 +484,10 @@ public partial class BattleScene : BaseScene, IEvent
                         GD.Print("闪避摇点：" + random + "，被击者触发闪避要求的点数不大于：" + needvalue);
                         if (random <= needvalue)
                         {
-                            string log = from.name + "对" + target.name + "的攻击被闪避了。闪避摇点：" + random + "，被击者触发闪避要求的点数不大于：" + needvalue;
+                            string log = from?.name + "对" + target.name + "的攻击被闪避了。闪避摇点：" + random + "，被击者触发闪避要求的点数不大于：" + needvalue;
                             GD.Print(log);
                             StaticInstance.MainRoot.ShowBanner(log);
+                            dodgedAction?.Invoke(damage, target);
                             continue;
                             //return AttackResult.Dodged;
                         }
@@ -490,12 +496,13 @@ public partial class BattleScene : BaseScene, IEvent
                         GD.Print($"暴击摇点：{random}，触发暴击要求的点数不大于：{needvalue}");
                         if (random <= needvalue)
                         {
-                            string log = from.name + "对" + target.name + "的攻击暴击了。暴击摇点：" + random + "，触发暴击要求的点数不大于：" + needvalue;
+                            string log = from?.name + "对" + target.name + "的攻击暴击了。暴击摇点：" + random + "，触发暴击要求的点数不大于：" + needvalue;
                             GD.Print(log);
                             StaticInstance.MainRoot.ShowBanner(log);
-                            tempDamage.value *= 2 + from.GetSymbol("CriticalDamageAdd") - target.GetSymbol("CriticalDamageResis");
+                            tempDamage.value *= 2 + (from != null ? (double)from?.GetSymbol("CriticalDamageAdd") : 0f) - target.GetSymbol("CriticalDamageResis");
                             tempDamage.criticaltimes += 1;
                             damage.criticaltimes += 1;
+                            criticalAction?.Invoke(damage, target);
                         }
                         int diff;
                         if (tempDamage.attackType == AttackType.Physics)
@@ -541,6 +548,8 @@ public partial class BattleScene : BaseScene, IEvent
                                 else (target as PlayerRole).CurrMBlock -= (int)tempDamage.value;
                             }
                         }
+                        GD.Print(from?.name + "对" + target.name + "造成了" + tempDamage.value + "点伤害");
+
                         if (target is EnemyRole ter)
                         {
                             FindEnemyObjectByRole(ter)?.hitFlashAnimationPlayer.Play("hit_flash");
@@ -563,7 +572,7 @@ public partial class BattleScene : BaseScene, IEvent
                 else
                 {
                     StaticInstance.eventMgr.Dispatch("AttackInvalided", tempDamage);
-                    GD.Print(from.name + "对" + target.name + "的攻击被无效了");
+                    GD.Print(from?.name + "对" + target.name + "的攻击被无效了");
                     //return AttackResult.Invalidated;
                 }
             }
@@ -576,6 +585,7 @@ public partial class BattleScene : BaseScene, IEvent
             GD.Print("攻击被无效了");
             //return AttackResult.Invalidated;
         }
+        StaticInstance.eventMgr.Dispatch("EndAttacked", damage);
     }
 
     public void DrawCard(int num, PlayerRole target)
@@ -623,7 +633,7 @@ public partial class BattleScene : BaseScene, IEvent
             if (currentPlayerRoles.Contains(role))
             {
                 currentPlayerRoles.Remove(role);
-                foreach (PlayerRoleObject roleObject in playerContainer.GetChildren().Cast<PlayerRoleObject>())
+                foreach (PlayerRoleObject roleObject in playerContainer?.GetChildren().Cast<PlayerRoleObject>())
                 {
                     if (roleObject.data == role)
                     {
@@ -649,7 +659,7 @@ public partial class BattleScene : BaseScene, IEvent
             if (currentEnemyRoles.Contains(role))
             {
                 currentEnemyRoles.Remove(role);
-                foreach (EnemyRoleObject roleObject in enemyContainer.GetChildren().Cast<EnemyRoleObject>())
+                foreach (EnemyRoleObject roleObject in enemyContainer?.GetChildren().Cast<EnemyRoleObject>())
                 {
                     if (roleObject.data == role)
                     {
@@ -688,35 +698,39 @@ public partial class BattleScene : BaseScene, IEvent
         {
             node.QueueFree();
         }
-        foreach (var i in playerContainer.GetChildren())
+        foreach (var i in playerContainer?.GetChildren())
         {
             i.QueueFree();
         }
         BattleStatic.Reset();
         StaticInstance.playerData.gsd.MajorRole.FightSymbol.Clear();
-        if (win && BattlePreset != null)
+        if (win && (BattlePreset != null || isDebugFight))
         {
-            RewardScene rewardScene = (RewardScene)ResourceLoader.Load<PackedScene>("res://Pages/RewardScene.tscn").Instantiate();
-            List<RewardStruct> datas = new();
-            RewardStruct @struct = new()
+            if (!isDebugFight)
             {
-                type = RewardType.Gold
-            };
-            Random r = new();
-            uint gold = (uint)r.Next(BattlePreset.MinGoldReward, BattlePreset.MaxGoldReward);
-            if (gold > 0)
-            {
-                @struct.rewards = new() { gold.ToString() };
-                datas.Add(@struct);
+                RewardScene rewardScene = (RewardScene)ResourceLoader.Load<PackedScene>("res://Pages/RewardScene.tscn").Instantiate();
+                List<RewardStruct> datas = new();
+                RewardStruct @struct = new()
+                {
+                    type = RewardType.Gold
+                };
+                Random r = new();
+                uint gold = (uint)r.Next(BattlePreset.MinGoldReward, BattlePreset.MaxGoldReward);
+                if (gold > 0)
+                {
+                    @struct.rewards = new() { gold.ToString() };
+                    datas.Add(@struct);
+                }
+                RewardStruct @struct2 = new()
+                {
+                    type = RewardType.Exp,
+                    rewards = new() { BattlePreset.GainExp.ToString() }
+                };
+                if (BattlePreset.GainExp > 0) datas.Add(@struct2);
+                StaticInstance.windowMgr.AddScene(rewardScene, datas);
             }
-            RewardStruct @struct2 = new()
-            {
-                type = RewardType.Exp,
-                rewards = new() { BattlePreset.GainExp.ToString() }
-            };
-            if (BattlePreset.GainExp > 0) datas.Add(@struct2);
-            StaticInstance.windowMgr.AddScene(rewardScene, datas);
-            var nextrooms = StaticInstance.playerData.gsd.MapGenerator.LastRoom.NextRooms;
+
+            var nextrooms = StaticInstance.playerData.gsd.MapGenerator?.LastRoom?.NextRooms;
             if (nextrooms == null || nextrooms.Count == 0)
             {
                 StaticInstance.playerData.gsd.MapGenerator.EndMap();
@@ -742,7 +756,7 @@ public partial class BattleScene : BaseScene, IEvent
 
     public EnemyRoleObject FindEnemyObjectByRole(EnemyRole role)
     {
-        foreach (var i in enemyContainer.GetChildren())
+        foreach (var i in enemyContainer?.GetChildren())
         {
             if (i is EnemyRoleObject ero && ero.data == role)
             {

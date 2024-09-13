@@ -10,11 +10,6 @@ namespace KemoCard.Mods.MainPackage.Scripts.Buffs
     {
         public override void OnBuffInit(BuffImplBase b)
         {
-            b.BuffId = "get_lucky";
-            b.BuffShowname = "幸运之人";
-            b.IsInfinite = true;
-            b.Desc = "每次战斗开始时，将2张幸运(0行动力,获得1点行动力,保留,耗尽)加入手牌。";
-            b.IconPath = "res://Mods/MainPackage/Resources/Icons/Skillicon14_25.png";
             b.AddEvent("StartBattle", new((datas) =>
             {
                 if (StaticInstance.currWindow is BattleScene bs)

@@ -23,7 +23,7 @@ public partial class ChoseCardScene : BaseScene, IEvent
             //var obj = new CardObject();
             var obj = cardobj.Instantiate<CardObject>();
             obj.InitData(c);
-            hBox.AddChild(obj);
+            hBox?.AddChild(obj);
         }
         min = (int)datas[1];
         max = (int)datas[2];
@@ -35,7 +35,7 @@ public partial class ChoseCardScene : BaseScene, IEvent
         if (@event == "SelectCard")
         {
             int nowCount = 0;
-            foreach (CardObject obj in hBox.GetChildren())
+            foreach (CardObject obj in hBox?.GetChildren())
             {
                 if (obj.csm.currentState.state == CardStateEnum.DISCARDING) nowCount++;
             }
@@ -46,7 +46,7 @@ public partial class ChoseCardScene : BaseScene, IEvent
     private void Confirm()
     {
         List<Card> cards = new();
-        foreach (CardObject obj in hBox.GetChildren().Cast<CardObject>())
+        foreach (CardObject obj in hBox?.GetChildren().Cast<CardObject>())
         {
             if (obj.csm.currentState.state == CardStateEnum.DISCARDING) cards.Add(obj.card);
         }

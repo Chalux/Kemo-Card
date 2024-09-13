@@ -36,8 +36,8 @@ public partial class SelectCardScene : BaseScene, IEvent
     public void Init(List<string> list)
     {
         data = list;
-        foreach (Node child in boxContainer.GetChildren())
-            boxContainer.RemoveChild(child);
+        foreach (Node child in boxContainer?.GetChildren())
+            boxContainer?.RemoveChild(child);
         for (int i = 0; i < list.Count; i++)
         {
             string id = list[i];
@@ -53,7 +53,7 @@ public partial class SelectCardScene : BaseScene, IEvent
                 {
                     OnItemGuiInput(@event, item);
                 };
-                boxContainer.AddChild(item);
+                boxContainer?.AddChild(item);
             }
         }
         UpdateView();
@@ -62,7 +62,7 @@ public partial class SelectCardScene : BaseScene, IEvent
         {
             if (CurrIdx > 0)
             {
-                StaticInstance.playerData.gsd.MajorRole.TempDeck.Add((boxContainer.GetChild(CurrIdx) as SelectCardItem).showObject.card);
+                StaticInstance.playerData.gsd.MajorRole.TempDeck.Add((boxContainer?.GetChild(CurrIdx) as SelectCardItem).showObject.card);
                 CurrIdx = -1;
                 MainScene ms = ResourceLoader.Load<PackedScene>("res://Pages/MainScene.tscn").Instantiate<MainScene>();
                 StaticInstance.windowMgr.ChangeScene(ms);
@@ -77,7 +77,7 @@ public partial class SelectCardScene : BaseScene, IEvent
 
     private void UpdateView()
     {
-        foreach (SelectCardItem item in boxContainer.GetChildren().Cast<SelectCardItem>())
+        foreach (SelectCardItem item in boxContainer?.GetChildren().Cast<SelectCardItem>())
         {
             item.shaderRect.Visible = CurrIdx == item.GetIndex();
         }

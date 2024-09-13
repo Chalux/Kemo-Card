@@ -1,7 +1,5 @@
-﻿using Godot;
-using KemoCard.Scripts;
+﻿using KemoCard.Scripts;
 using KemoCard.Scripts.Cards;
-using StaticClass;
 
 namespace KemoCard.Mods.MainPackage.Scripts.Cards
 {

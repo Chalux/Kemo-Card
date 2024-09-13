@@ -1,10 +1,5 @@
 ﻿using KemoCard.Scripts;
 using KemoCard.Scripts.Equips;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace KemoCard.Mods.MainPackage.Scripts.Equips
 {
@@ -14,7 +9,7 @@ namespace KemoCard.Mods.MainPackage.Scripts.Equips
         {
             eq.TextureUrl = $"res://Mods/MainPackage/Resources/Icons/icons_078.png";
             eq.Desc = "增加5点力量";
-            eq.Binder.Symbol.Add("StrengthAddProp", 5);
+            eq.Binder.Symbol.TryAdd("StrengthAddProp", 5);
             eq.Name = "木剑";
         }
     }

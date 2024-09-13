@@ -13,10 +13,14 @@ public partial class ShopScene : BaseScene, IEvent
     {
         foreach (ShopStruct @struct in StaticInstance.playerData.gsd.CurrShopStructs)
         {
-            var obj = new ShopCardItem();
-            obj.Init(@struct);
-            shopContainer.AddChild(obj);
-            obj.Update();
+            var res = ResourceLoader.Load<PackedScene>("res://Pages/ShopCardItem.tscn");
+            if (res != null)
+            {
+                var obj = res.Instantiate<ShopCardItem>();
+                obj.Init(@struct);
+                shopContainer.AddChild(obj);
+                obj.Update();
+            }
         }
         LeaveBtn.Pressed += Leave;
         GoldLabel.Text = StaticInstance.playerData.gsd.MajorRole.Gold.ToString();

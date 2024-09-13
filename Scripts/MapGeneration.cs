@@ -342,6 +342,7 @@ namespace KemoCard.Scripts
 
         public void EndMap()
         {
+            if (Data == null) return;
             string key = $"Map{Data.Id}Passed";
             if (StaticInstance.playerData.gsd.IntData.ContainsKey(key))
             {

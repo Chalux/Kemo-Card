@@ -1,0 +1,12 @@
+[gd_scene load_steps=3 format=3 uid="uid://bns1dqanm8fo7"]
+
+[ext_resource type="FontFile" uid="uid://c3dpocff1dp26" path="res://Mods/MainPackage/Resources/Fonts/Bitty.ttf" id="1_iotiu"]
+[ext_resource type="Script" path="res://Pages/FloatingNum.cs" id="2_ugckw"]
+
+[node name="FloatingNum" type="Label"]
+offset_right = 23.0
+offset_bottom = 29.0
+theme_override_fonts/font = ExtResource("1_iotiu")
+theme_override_font_sizes/font_size = 36
+text = "+1"
+script = ExtResource("2_ugckw")

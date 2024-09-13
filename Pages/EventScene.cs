@@ -14,6 +14,19 @@ public partial class EventScene : BaseScene, IEvent
     public override void OnAdd(params object[] datas)
     {
         eventData = datas[0] as Event;
+        UpdateView();
+    }
+
+    public void ReceiveEvent(string @event, params object[] datas)
+    {
+        if (@event == "close_eventscene")
+        {
+            StaticInstance.windowMgr.RemoveScene(this);
+        }
+    }
+
+    private void UpdateView()
+    {
         int maxLen = Math.Max(eventData.EventActions.Count, Math.Max(eventData.EventDesc.Count, eventData.EventIconPath.Count));
         foreach (var node in BtnContainer.GetChildren())
         {
@@ -33,13 +46,5 @@ public partial class EventScene : BaseScene, IEvent
         }
         if (eventData.EventImgPath?.Length > 0) EventImg.Texture = ResourceLoader.Load<CompressedTexture2D>(eventData.EventImgPath);
         EventTitle.Text = eventData.EventTitle;
-    }
-
-    public void ReceiveEvent(string @event, params object[] datas)
-    {
-        if (@event == "close_eventscene")
-        {
-            StaticInstance.windowMgr.RemoveScene(this);
-        }
     }
 }

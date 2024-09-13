@@ -7,11 +7,6 @@ namespace KemoCard.Mods.MainPackage.Scripts.Buffs
     {
         public override void OnBuffInit(BuffImplBase b)
         {
-            b.BuffId = "angry";
-            b.BuffShowname = "愤怒";
-            b.IsInfinite = true;
-            b.Desc = "回合开始时获得3点力量";
-            b.IconPath = "res://Mods/MainPackage/Resources/Icons/icons_031.png";
             b.AddEvent("NewTurn", new(datas =>
             {
                 if (datas != null)

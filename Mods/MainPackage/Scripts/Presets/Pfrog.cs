@@ -2,14 +2,14 @@
 
 namespace KemoCard.Mods.MainPackage.Scripts.Presets
 {
-    internal partial class Ptest_preset_4 : BasePresetScript
+    internal partial class Pfrog : BasePresetScript
     {
         public override void Init(Preset preset)
         {
-            preset.Enemies = new() { "troll" };
+            preset.Enemies = new() { "frog" };
             preset.MinGoldReward = 100;
             preset.MaxGoldReward = 150;
-            preset.GainExp = 50;
+            preset.GainExp = 30;
         }
     }
 }

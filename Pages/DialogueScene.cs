@@ -1,4 +1,5 @@
-﻿using Godot;
+﻿using DialogueManagerRuntime;
+using Godot;
 using KemoCard.Pages;
 using StaticClass;
 using System.Threading.Tasks;
@@ -15,7 +16,7 @@ public partial class DialogueScene : BaseScene
     {
         //ChangeBackground += ChangeBG;
     }
-    public Task ChangeBG(string url, float duration = 1.0f)
+    public async Task ChangeBG(string url, float duration = 1.0f)
     {
         if (FileAccess.FileExists(url))
         {
@@ -28,11 +29,31 @@ public partial class DialogueScene : BaseScene
             switchTween.TweenCallback(Callable.From(() => Background.Texture = toTexture));
             switchTween.TweenProperty(BlackMask, "modulate", Color.Color8(0, 0, 0, 0), duration / 2);
             switchTween.Play();
+            await ToSignal(switchTween, Tween.SignalName.Finished);
         }
         else
         {
             StaticInstance.MainRoot.ShowBanner($"未找到图片资源{url},请检查mod或资源路径");
         }
-        return Task.CompletedTask;
+        //return Task.CompletedTask;
+    }
+
+    public void RunDialogue(string dialog_url)
+    {
+        Resource dialogue = ResourceLoader.Load(dialog_url);
+        if (dialogue == null)
+        {
+            string error = $"对话文件不存在，路径为{dialog_url}";
+            GD.Print(error);
+            StaticInstance.MainRoot.ShowBanner(error);
+            return;
+        }
+        DialogueManager.DialogueEnded += DialogueEnded;
+        DialogueManager.ShowDialogueBalloon(dialogue, null, new() { this });
+    }
+
+    private void DialogueEnded(Resource dialogueResource)
+    {
+        StaticInstance.windowMgr.RemoveSceneByName("DialogueScene");
     }
 }
