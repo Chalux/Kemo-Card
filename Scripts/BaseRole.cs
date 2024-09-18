@@ -382,7 +382,7 @@ namespace KemoCard.Scripts
             return "";
         }
 
-        public string GetRichDesc()
+        public virtual string GetRichDesc()
         {
             string str =
              $"名字：{RichName()}\r\n" +

@@ -17,11 +17,16 @@ public partial class EventScene : BaseScene, IEvent
         UpdateView();
     }
 
+    public override void OnRemove()
+    {
+        StaticUtils.AutoSave();
+    }
+
     public void ReceiveEvent(string @event, params object[] datas)
     {
         if (@event == "close_eventscene")
         {
-            StaticInstance.windowMgr.RemoveScene(this);
+            StaticInstance.windowMgr.RemoveSceneByName("EventScene");
         }
     }
 
@@ -42,9 +47,16 @@ public partial class EventScene : BaseScene, IEvent
             if (compressedTexture2D != null) btn.Icon = compressedTexture2D;
             else btn.Icon = null;
             if (eventData.EventActions[i] != null) btn.Pressed += eventData.EventActions[i];
+            else btn.Pressed += GoAhead;
             BtnContainer.AddChild(btn);
         }
         if (eventData.EventImgPath?.Length > 0) EventImg.Texture = ResourceLoader.Load<CompressedTexture2D>(eventData.EventImgPath);
         EventTitle.Text = eventData.EventTitle;
+    }
+
+    private void GoAhead()
+    {
+        //StaticInstance.windowMgr.RemoveSceneByName("EventScene");
+        StaticUtils.CloseEvent();
     }
 }

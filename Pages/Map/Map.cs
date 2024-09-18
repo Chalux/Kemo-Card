@@ -189,6 +189,7 @@ public partial class Map : BaseScene, IEvent
     private void TryHeal()
     {
         if (!StaticInstance.playerData.gsd.MapGenerator.IsStillRunning) return;
+        ResetCamera();
         var major = StaticInstance.playerData.gsd.MajorRole;
         AlertView.PopupAlert($"确定要休息吗？将回复生命上限一半的血量。\n当前血量：{major.CurrHealth}/{major.CurrHpLimit}", false, new(() => StaticInstance.playerData.gsd.MapGenerator.Data?.TryHeal()));
     }
@@ -215,5 +216,10 @@ public partial class Map : BaseScene, IEvent
             StaticInstance.playerData.gsd.MapGenerator.EndMap();
             HideMap();
         });
+    }
+
+    private void ResetCamera()
+    {
+        Camera2D.Position = new(Camera2D.Position.X, -CameraEdgeY);
     }
 }

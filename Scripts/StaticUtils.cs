@@ -167,6 +167,8 @@ namespace StaticClass
         public static void CloseEvent()
         {
             StaticInstance.eventMgr.Dispatch("close_eventscene");
+            var ms = StaticInstance.windowMgr.GetSceneByName("MainScene") as MainScene;
+            ms?.MapView?.UnlockNextRooms();
         }
 
         public static string GetFrameColorByRare(uint rare)
