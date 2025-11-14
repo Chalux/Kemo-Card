@@ -1,5 +1,5 @@
 ﻿using Godot;
-using static StaticClass.StaticEnums;
+using static KemoCard.Scripts.StaticEnums;
 
 namespace KemoCard.Scripts.Cards
 {
@@ -23,10 +23,10 @@ namespace KemoCard.Scripts.Cards
             if (@event is InputEventMouseMotion)
             {
                 var type = cardObject.card.TargetType;
-                if (type == TargetType.ALL_SINGLE || type == TargetType.ENEMY_SINGLE || type == TargetType.TEAM_SINGLE)
-                    cardObject.csm.OnTransitionRequest(this, CardStateEnum.TARGET_DRAGGING);
+                if (type == TargetType.AllSingle || type == TargetType.EnemySingle || type == TargetType.TeamSingle)
+                    cardObject.csm.OnTransitionRequest(this, CardStateEnum.TargetDragging);
                 else
-                    cardObject.csm.OnTransitionRequest(this, CardStateEnum.ALL_OR_SELF_DRAGGING);
+                    cardObject.csm.OnTransitionRequest(this, CardStateEnum.AllOrSelfDragging);
             }
         }
     }

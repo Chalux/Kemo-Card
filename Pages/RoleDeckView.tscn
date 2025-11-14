@@ -1,8 +1,14 @@
 [gd_scene load_steps=2 format=3 uid="uid://dftcu548agdnv"]
 
-[ext_resource type="Script" path="res://Pages/RoleDeckView.cs" id="1_5dcx7"]
+[ext_resource type="Script" uid="uid://kvw61loi6o2k" path="res://Pages/RoleDeckView.cs" id="1_5dcx7"]
 
-[node name="RoleDeckView" type="Node2D" node_paths=PackedStringArray("FlowContainer", "ExitBtn", "Tab")]
+[node name="RoleDeckView" type="Control" node_paths=PackedStringArray("FlowContainer", "ExitBtn", "Tab")]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 script = ExtResource("1_5dcx7")
 FlowContainer = NodePath("FlowContainer")
 ExitBtn = NodePath("Button")
@@ -10,11 +16,16 @@ Tab = NodePath("Tab")
 
 [node name="ColorRect" type="ColorRect" parent="."]
 custom_minimum_size = Vector2(1920, 1080)
-offset_right = 40.0
-offset_bottom = 40.0
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 color = Color(0, 0, 0, 0.6)
 
 [node name="Button" type="Button" parent="."]
+layout_mode = 0
 offset_left = 64.0
 offset_top = 64.0
 offset_right = 192.0
@@ -23,19 +34,27 @@ theme_override_font_sizes/font_size = 36
 text = "返回"
 
 [node name="FlowContainer" type="FlowContainer" parent="."]
-offset_left = 64.0
-offset_top = 144.0
-offset_right = 1856.0
-offset_bottom = 1024.0
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.033
+anchor_top = 0.133
+anchor_right = 0.96700007
+anchor_bottom = 0.9480001
+offset_left = 0.6399994
+offset_top = 0.3600006
+offset_right = -0.6401367
+offset_bottom = 0.15991211
 theme_override_constants/h_separation = 50
 theme_override_constants/v_separation = 50
 
 [node name="Tab" type="TabBar" parent="."]
+layout_mode = 0
 offset_left = 256.0
 offset_top = 64.0
 offset_right = 960.0
 offset_bottom = 128.0
 theme_override_font_sizes/font_size = 36
+current_tab = 0
 tab_count = 4
 tab_0/title = "全部"
 tab_1/title = "角色牌组"

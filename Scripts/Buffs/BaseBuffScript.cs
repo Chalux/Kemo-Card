@@ -2,7 +2,7 @@
 
 namespace KemoCard.Scripts.Buffs
 {
-    internal partial class BaseBuffScript : RefCounted
+    public partial class BaseBuffScript : RefCounted
     {
         public virtual void OnBuffInit(BuffImplBase buff)
         {

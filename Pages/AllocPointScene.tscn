@@ -1,456 +1,464 @@
 [gd_scene load_steps=2 format=3 uid="uid://by8nlue0y1yb"]
 
-[ext_resource type="Script" path="res://Pages/AllocPointScene.cs" id="1_i723g"]
+[ext_resource type="Script" uid="uid://dlyvt3t8aj7f4" path="res://Pages/AllocPointScene.cs" id="1_i723g"]
 
-[node name="AllocPointScene" type="Node2D" node_paths=PackedStringArray("SpeedTxt", "StrengthTxt", "EfficiencyTxt", "MantraTxt", "EquipTxt", "BookTxt", "CriticalTxt", "DodgeTxt", "SpeedMinus", "StrengthMinus", "EfficiencyMinus", "MantraMinus", "EquipMinus", "BookMinus", "CriticalMinus", "DodgeMinus", "SpeedPlus", "StrengthPlus", "EfficiencyPlus", "MantraPlus", "EquipPlus", "BookPlus", "CriticalPlus", "DodgePlus", "ConfirmBtn", "CancelBtn", "CheckDeckBtn", "RemainPoint")]
+[node name="AllocPointScene" type="Control" node_paths=PackedStringArray("SpeedTxt", "StrengthTxt", "EfficiencyTxt", "MantraTxt", "EquipTxt", "BookTxt", "CriticalTxt", "DodgeTxt", "SpeedMinus", "StrengthMinus", "EfficiencyMinus", "MantraMinus", "EquipMinus", "BookMinus", "CriticalMinus", "DodgeMinus", "SpeedPlus", "StrengthPlus", "EfficiencyPlus", "MantraPlus", "EquipPlus", "BookPlus", "CriticalPlus", "DodgePlus", "ConfirmBtn", "CancelBtn", "CheckDeckBtn", "RemainPoint")]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 script = ExtResource("1_i723g")
-SpeedTxt = NodePath("Container/Control/SpeedTxt")
-StrengthTxt = NodePath("Container/Control2/StrengthTxt")
-EfficiencyTxt = NodePath("Container/Control3/EfficiencyTxt")
-MantraTxt = NodePath("Container/Control4/MantraTxt")
-EquipTxt = NodePath("Container/Control5/EquipTxt")
-BookTxt = NodePath("Container/Control6/BookTxt")
-CriticalTxt = NodePath("Container/Control7/CriticalTxt")
-DodgeTxt = NodePath("Container/Control8/DodgeTxt")
-SpeedMinus = NodePath("Container/Control/SpeedMinus")
-StrengthMinus = NodePath("Container/Control2/StrengthMinus")
-EfficiencyMinus = NodePath("Container/Control3/EfficiencyMinus")
-MantraMinus = NodePath("Container/Control4/MantraMinus")
-EquipMinus = NodePath("Container/Control5/EquipMinus")
-BookMinus = NodePath("Container/Control6/BookMinus")
-CriticalMinus = NodePath("Container/Control7/CriticalMinus")
-DodgeMinus = NodePath("Container/Control8/DodgeMinus")
-SpeedPlus = NodePath("Container/Control/SpeedPlus")
-StrengthPlus = NodePath("Container/Control2/StrengthPlus")
-EfficiencyPlus = NodePath("Container/Control3/EfficiencyPlus")
-MantraPlus = NodePath("Container/Control4/MantraPlus")
-EquipPlus = NodePath("Container/Control5/EquipPlus")
-BookPlus = NodePath("Container/Control6/BookPlus")
-CriticalPlus = NodePath("Container/Control7/CriticalPlus")
-DodgePlus = NodePath("Container/Control8/DodgePlus")
+SpeedTxt = NodePath("Container/VBoxContainer/Control/SpeedTxt")
+StrengthTxt = NodePath("Container/VBoxContainer/Control2/StrengthTxt")
+EfficiencyTxt = NodePath("Container/VBoxContainer/Control3/EfficiencyTxt")
+MantraTxt = NodePath("Container/VBoxContainer/Control4/MantraTxt")
+EquipTxt = NodePath("Container/VBoxContainer/Control5/EquipTxt")
+BookTxt = NodePath("Container/VBoxContainer/Control6/BookTxt")
+CriticalTxt = NodePath("Container/VBoxContainer/Control7/CriticalTxt")
+DodgeTxt = NodePath("Container/VBoxContainer/Control8/DodgeTxt")
+SpeedMinus = NodePath("Container/VBoxContainer/Control/SpeedMinus")
+StrengthMinus = NodePath("Container/VBoxContainer/Control2/StrengthMinus")
+EfficiencyMinus = NodePath("Container/VBoxContainer/Control3/EfficiencyMinus")
+MantraMinus = NodePath("Container/VBoxContainer/Control4/MantraMinus")
+EquipMinus = NodePath("Container/VBoxContainer/Control5/EquipMinus")
+BookMinus = NodePath("Container/VBoxContainer/Control6/BookMinus")
+CriticalMinus = NodePath("Container/VBoxContainer/Control7/CriticalMinus")
+DodgeMinus = NodePath("Container/VBoxContainer/Control8/DodgeMinus")
+SpeedPlus = NodePath("Container/VBoxContainer/Control/SpeedPlus")
+StrengthPlus = NodePath("Container/VBoxContainer/Control2/StrengthPlus")
+EfficiencyPlus = NodePath("Container/VBoxContainer/Control3/EfficiencyPlus")
+MantraPlus = NodePath("Container/VBoxContainer/Control4/MantraPlus")
+EquipPlus = NodePath("Container/VBoxContainer/Control5/EquipPlus")
+BookPlus = NodePath("Container/VBoxContainer/Control6/BookPlus")
+CriticalPlus = NodePath("Container/VBoxContainer/Control7/CriticalPlus")
+DodgePlus = NodePath("Container/VBoxContainer/Control8/DodgePlus")
 ConfirmBtn = NodePath("Container/ConfirmBtn")
 CancelBtn = NodePath("Container/CancelBtn")
 CheckDeckBtn = NodePath("Container/CheckDeckBtn")
 RemainPoint = NodePath("Container/RemainPoint")
 
 [node name="ColorRect" type="ColorRect" parent="."]
-offset_right = 1920.0
-offset_bottom = 1080.0
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 color = Color(0.329412, 0.541176, 0.74902, 1)
 
 [node name="Container" type="Control" parent="."]
-layout_mode = 3
-anchors_preset = 0
-offset_right = 1920.0
-offset_bottom = 1080.0
-
-[node name="Control" type="Control" parent="Container"]
-anchors_preset = 0
-offset_left = 576.0
-offset_top = 64.0
-offset_right = 616.0
-offset_bottom = 104.0
-
-[node name="Label" type="Label" parent="Container/Control"]
-layout_mode = 0
-offset_top = 6.0
-offset_right = 72.0
-offset_bottom = 56.0
-theme_override_font_sizes/font_size = 36
-text = "速度"
-
-[node name="SpeedMinus" type="Button" parent="Container/Control"]
-unique_name_in_owner = true
-layout_mode = 0
-offset_left = 100.0
-offset_top = 3.0
-offset_right = 160.0
-offset_bottom = 63.0
-theme_override_font_sizes/font_size = 36
-text = "－"
-
-[node name="SpeedTxt" type="Label" parent="Container/Control"]
-unique_name_in_owner = true
-layout_mode = 0
-offset_left = 188.0
-offset_top = 6.0
-offset_right = 260.0
-offset_bottom = 56.0
-theme_override_font_sizes/font_size = 36
-text = "速度"
-horizontal_alignment = 1
-
-[node name="SpeedPlus" type="Button" parent="Container/Control"]
-unique_name_in_owner = true
-layout_mode = 0
-offset_left = 296.0
-offset_top = 3.0
-offset_right = 356.0
-offset_bottom = 63.0
-theme_override_font_sizes/font_size = 36
-text = "＋"
-
-[node name="Control2" type="Control" parent="Container"]
-layout_mode = 3
-anchors_preset = 0
-offset_left = 576.0
-offset_top = 152.0
-offset_right = 616.0
-offset_bottom = 192.0
-
-[node name="Label" type="Label" parent="Container/Control2"]
-layout_mode = 0
-offset_top = 6.0
-offset_right = 72.0
-offset_bottom = 56.0
-theme_override_font_sizes/font_size = 36
-text = "身体"
-
-[node name="StrengthMinus" type="Button" parent="Container/Control2"]
-unique_name_in_owner = true
-layout_mode = 0
-offset_left = 100.0
-offset_top = 3.0
-offset_right = 160.0
-offset_bottom = 63.0
-theme_override_font_sizes/font_size = 36
-text = "－"
-
-[node name="StrengthTxt" type="Label" parent="Container/Control2"]
-unique_name_in_owner = true
-layout_mode = 0
-offset_left = 188.0
-offset_top = 6.0
-offset_right = 260.0
-offset_bottom = 56.0
-theme_override_font_sizes/font_size = 36
-text = "身体"
-horizontal_alignment = 1
-
-[node name="StrengthPlus" type="Button" parent="Container/Control2"]
-unique_name_in_owner = true
-layout_mode = 0
-offset_left = 296.0
-offset_top = 3.0
-offset_right = 356.0
-offset_bottom = 63.0
-theme_override_font_sizes/font_size = 36
-text = "＋"
-
-[node name="Control3" type="Control" parent="Container"]
-layout_mode = 3
-anchors_preset = 0
-offset_left = 576.0
-offset_top = 242.0
-offset_right = 616.0
-offset_bottom = 282.0
-
-[node name="Label" type="Label" parent="Container/Control3"]
-layout_mode = 0
-offset_top = 6.0
-offset_right = 72.0
-offset_bottom = 56.0
-theme_override_font_sizes/font_size = 36
-text = "效率"
-
-[node name="EfficiencyMinus" type="Button" parent="Container/Control3"]
-unique_name_in_owner = true
-layout_mode = 0
-offset_left = 100.0
-offset_top = 3.0
-offset_right = 160.0
-offset_bottom = 63.0
-theme_override_font_sizes/font_size = 36
-text = "－"
-
-[node name="EfficiencyTxt" type="Label" parent="Container/Control3"]
-unique_name_in_owner = true
-layout_mode = 0
-offset_left = 188.0
-offset_top = 6.0
-offset_right = 260.0
-offset_bottom = 56.0
-theme_override_font_sizes/font_size = 36
-text = "效率"
-horizontal_alignment = 1
-
-[node name="EfficiencyPlus" type="Button" parent="Container/Control3"]
-unique_name_in_owner = true
-layout_mode = 0
-offset_left = 296.0
-offset_top = 3.0
-offset_right = 356.0
-offset_bottom = 63.0
-theme_override_font_sizes/font_size = 36
-text = "＋"
-
-[node name="Control4" type="Control" parent="Container"]
-layout_mode = 3
-anchors_preset = 0
-offset_left = 576.0
-offset_top = 332.0
-offset_right = 616.0
-offset_bottom = 372.0
-
-[node name="Label" type="Label" parent="Container/Control4"]
-layout_mode = 0
-offset_top = 6.0
-offset_right = 72.0
-offset_bottom = 56.0
-theme_override_font_sizes/font_size = 36
-text = "咒言"
-
-[node name="MantraMinus" type="Button" parent="Container/Control4"]
-unique_name_in_owner = true
-layout_mode = 0
-offset_left = 100.0
-offset_top = 3.0
-offset_right = 160.0
-offset_bottom = 63.0
-theme_override_font_sizes/font_size = 36
-text = "－"
-
-[node name="MantraTxt" type="Label" parent="Container/Control4"]
-unique_name_in_owner = true
-layout_mode = 0
-offset_left = 188.0
-offset_top = 6.0
-offset_right = 260.0
-offset_bottom = 56.0
-theme_override_font_sizes/font_size = 36
-text = "咒言"
-horizontal_alignment = 1
-
-[node name="MantraPlus" type="Button" parent="Container/Control4"]
-unique_name_in_owner = true
-layout_mode = 0
-offset_left = 296.0
-offset_top = 3.0
-offset_right = 356.0
-offset_bottom = 63.0
-theme_override_font_sizes/font_size = 36
-text = "＋"
-
-[node name="Control5" type="Control" parent="Container"]
-layout_mode = 3
-anchors_preset = 0
-offset_left = 576.0
-offset_top = 422.0
-offset_right = 616.0
-offset_bottom = 462.0
-
-[node name="Label" type="Label" parent="Container/Control5"]
-layout_mode = 0
-offset_top = 6.0
-offset_right = 72.0
-offset_bottom = 56.0
-theme_override_font_sizes/font_size = 36
-text = "工艺"
-
-[node name="EquipMinus" type="Button" parent="Container/Control5"]
-unique_name_in_owner = true
-layout_mode = 0
-offset_left = 100.0
-offset_top = 3.0
-offset_right = 160.0
-offset_bottom = 63.0
-theme_override_font_sizes/font_size = 36
-text = "－"
-
-[node name="EquipTxt" type="Label" parent="Container/Control5"]
-unique_name_in_owner = true
-layout_mode = 0
-offset_left = 188.0
-offset_top = 6.0
-offset_right = 260.0
-offset_bottom = 56.0
-theme_override_font_sizes/font_size = 36
-text = "工艺"
-horizontal_alignment = 1
-
-[node name="EquipPlus" type="Button" parent="Container/Control5"]
-unique_name_in_owner = true
-layout_mode = 0
-offset_left = 296.0
-offset_top = 3.0
-offset_right = 356.0
-offset_bottom = 63.0
-theme_override_font_sizes/font_size = 36
-text = "＋"
-
-[node name="Control6" type="Control" parent="Container"]
-layout_mode = 3
-anchors_preset = 0
-offset_left = 576.0
-offset_top = 512.0
-offset_right = 616.0
-offset_bottom = 552.0
-
-[node name="Label" type="Label" parent="Container/Control6"]
-layout_mode = 0
-offset_top = 6.0
-offset_right = 72.0
-offset_bottom = 56.0
-theme_override_font_sizes/font_size = 36
-text = "书写"
-
-[node name="BookMinus" type="Button" parent="Container/Control6"]
-unique_name_in_owner = true
-layout_mode = 0
-offset_left = 100.0
-offset_top = 3.0
-offset_right = 160.0
-offset_bottom = 63.0
-theme_override_font_sizes/font_size = 36
-text = "－"
-
-[node name="BookTxt" type="Label" parent="Container/Control6"]
-unique_name_in_owner = true
-layout_mode = 0
-offset_left = 188.0
-offset_top = 6.0
-offset_right = 260.0
-offset_bottom = 56.0
-theme_override_font_sizes/font_size = 36
-text = "书写"
-horizontal_alignment = 1
-
-[node name="BookPlus" type="Button" parent="Container/Control6"]
-unique_name_in_owner = true
-layout_mode = 0
-offset_left = 296.0
-offset_top = 3.0
-offset_right = 356.0
-offset_bottom = 63.0
-theme_override_font_sizes/font_size = 36
-text = "＋"
-
-[node name="Control7" type="Control" parent="Container"]
-layout_mode = 3
-anchors_preset = 0
-offset_left = 576.0
-offset_top = 602.0
-offset_right = 616.0
-offset_bottom = 642.0
-
-[node name="Label" type="Label" parent="Container/Control7"]
-layout_mode = 0
-offset_top = 6.0
-offset_right = 72.0
-offset_bottom = 56.0
-theme_override_font_sizes/font_size = 36
-text = "会心"
-
-[node name="CriticalMinus" type="Button" parent="Container/Control7"]
-unique_name_in_owner = true
-layout_mode = 0
-offset_left = 100.0
-offset_top = 3.0
-offset_right = 160.0
-offset_bottom = 63.0
-theme_override_font_sizes/font_size = 36
-text = "－"
-
-[node name="CriticalTxt" type="Label" parent="Container/Control7"]
-unique_name_in_owner = true
-layout_mode = 0
-offset_left = 188.0
-offset_top = 6.0
-offset_right = 260.0
-offset_bottom = 56.0
-theme_override_font_sizes/font_size = 36
-text = "会心"
-horizontal_alignment = 1
-
-[node name="CriticalPlus" type="Button" parent="Container/Control7"]
-unique_name_in_owner = true
-layout_mode = 0
-offset_left = 296.0
-offset_top = 3.0
-offset_right = 356.0
-offset_bottom = 63.0
-theme_override_font_sizes/font_size = 36
-text = "＋"
-
-[node name="Control8" type="Control" parent="Container"]
-layout_mode = 3
-anchors_preset = 0
-offset_left = 576.0
-offset_top = 692.0
-offset_right = 616.0
-offset_bottom = 732.0
-
-[node name="Label" type="Label" parent="Container/Control8"]
-layout_mode = 0
-offset_top = 6.0
-offset_right = 72.0
-offset_bottom = 56.0
-theme_override_font_sizes/font_size = 36
-text = "敏捷"
-
-[node name="DodgeMinus" type="Button" parent="Container/Control8"]
-unique_name_in_owner = true
-layout_mode = 0
-offset_left = 100.0
-offset_top = 3.0
-offset_right = 160.0
-offset_bottom = 63.0
-theme_override_font_sizes/font_size = 36
-text = "－"
-
-[node name="DodgeTxt" type="Label" parent="Container/Control8"]
-unique_name_in_owner = true
-layout_mode = 0
-offset_left = 188.0
-offset_top = 6.0
-offset_right = 260.0
-offset_bottom = 56.0
-theme_override_font_sizes/font_size = 36
-text = "敏捷"
-horizontal_alignment = 1
-
-[node name="DodgePlus" type="Button" parent="Container/Control8"]
-unique_name_in_owner = true
-layout_mode = 0
-offset_left = 296.0
-offset_top = 3.0
-offset_right = 356.0
-offset_bottom = 63.0
-theme_override_font_sizes/font_size = 36
-text = "＋"
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 
 [node name="RemainPoint" type="Label" parent="Container"]
-layout_mode = 0
-offset_left = 64.0
-offset_top = 64.0
-offset_right = 244.0
-offset_bottom = 114.0
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.056
+anchor_top = 0.09900001
+anchor_right = 0.21200001
+anchor_bottom = 0.17600001
+offset_left = -0.51200104
+offset_top = -0.15200806
+offset_right = -0.22401428
+offset_bottom = -0.04801178
 theme_override_font_sizes/font_size = 36
 text = "剩余点数："
 
 [node name="ConfirmBtn" type="Button" parent="Container"]
-layout_mode = 0
-offset_left = 1536.0
-offset_top = 64.0
-offset_right = 1776.0
-offset_bottom = 184.0
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.73600006
+anchor_top = 0.09900001
+anchor_right = 0.94400007
+anchor_bottom = 0.28100002
+offset_left = 0.12792969
+offset_top = -0.15200806
+offset_right = 0.5119629
+offset_bottom = 1.9119873
+grow_horizontal = 0
 theme_override_font_sizes/font_size = 36
 text = "确定"
 
 [node name="CancelBtn" type="Button" parent="Container"]
-layout_mode = 0
-offset_left = 1536.0
-offset_top = 232.0
-offset_right = 1776.0
-offset_bottom = 352.0
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.73600006
+anchor_top = 0.333
+anchor_right = 0.94400007
+anchor_bottom = 0.517
+offset_left = 0.12792969
+offset_top = 0.21600342
+offset_right = 0.5119629
+offset_bottom = 0.9839783
+grow_horizontal = 0
 theme_override_font_sizes/font_size = 36
 text = "取消"
 
 [node name="CheckDeckBtn" type="Button" parent="Container"]
-layout_mode = 0
-offset_left = 64.0
-offset_top = 160.0
-offset_right = 232.0
-offset_bottom = 224.0
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.056
+anchor_top = 0.24700001
+anchor_right = 0.201
+anchor_bottom = 0.34600002
+offset_left = -0.51200104
+offset_top = -0.055999756
+offset_right = 0.44799805
+offset_bottom = -0.20800781
 theme_override_font_sizes/font_size = 36
 text = "查看卡组"
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Container"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.27800003
+anchor_top = 0.049000002
+anchor_right = 0.59000003
+anchor_bottom = 0.957
+offset_left = -0.25604248
+offset_top = 0.24799919
+offset_right = 0.3199463
+offset_bottom = -0.13598633
+theme_override_constants/separation = 75
+
+[node name="Control" type="Control" parent="Container/VBoxContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Container/VBoxContainer/Control"]
+layout_mode = 0
+offset_top = 6.0
+offset_right = 72.0
+offset_bottom = 56.0
+theme_override_font_sizes/font_size = 36
+text = "速度"
+
+[node name="SpeedMinus" type="Button" parent="Container/VBoxContainer/Control"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 100.0
+offset_top = 3.0
+offset_right = 160.0
+offset_bottom = 63.0
+theme_override_font_sizes/font_size = 36
+text = "－"
+
+[node name="SpeedTxt" type="Label" parent="Container/VBoxContainer/Control"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 188.0
+offset_top = 6.0
+offset_right = 260.0
+offset_bottom = 56.0
+theme_override_font_sizes/font_size = 36
+text = "速度"
+horizontal_alignment = 1
+
+[node name="SpeedPlus" type="Button" parent="Container/VBoxContainer/Control"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 296.0
+offset_top = 3.0
+offset_right = 356.0
+offset_bottom = 63.0
+theme_override_font_sizes/font_size = 36
+text = "＋"
+
+[node name="Control2" type="Control" parent="Container/VBoxContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Container/VBoxContainer/Control2"]
+layout_mode = 0
+offset_top = 6.0
+offset_right = 72.0
+offset_bottom = 56.0
+theme_override_font_sizes/font_size = 36
+text = "身体"
+
+[node name="StrengthMinus" type="Button" parent="Container/VBoxContainer/Control2"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 100.0
+offset_top = 3.0
+offset_right = 160.0
+offset_bottom = 63.0
+theme_override_font_sizes/font_size = 36
+text = "－"
+
+[node name="StrengthTxt" type="Label" parent="Container/VBoxContainer/Control2"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 188.0
+offset_top = 6.0
+offset_right = 260.0
+offset_bottom = 56.0
+theme_override_font_sizes/font_size = 36
+text = "身体"
+horizontal_alignment = 1
+
+[node name="StrengthPlus" type="Button" parent="Container/VBoxContainer/Control2"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 296.0
+offset_top = 3.0
+offset_right = 356.0
+offset_bottom = 63.0
+theme_override_font_sizes/font_size = 36
+text = "＋"
+
+[node name="Control3" type="Control" parent="Container/VBoxContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Container/VBoxContainer/Control3"]
+layout_mode = 0
+offset_top = 6.0
+offset_right = 72.0
+offset_bottom = 56.0
+theme_override_font_sizes/font_size = 36
+text = "效率"
+
+[node name="EfficiencyMinus" type="Button" parent="Container/VBoxContainer/Control3"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 100.0
+offset_top = 3.0
+offset_right = 160.0
+offset_bottom = 63.0
+theme_override_font_sizes/font_size = 36
+text = "－"
+
+[node name="EfficiencyTxt" type="Label" parent="Container/VBoxContainer/Control3"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 188.0
+offset_top = 6.0
+offset_right = 260.0
+offset_bottom = 56.0
+theme_override_font_sizes/font_size = 36
+text = "效率"
+horizontal_alignment = 1
+
+[node name="EfficiencyPlus" type="Button" parent="Container/VBoxContainer/Control3"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 296.0
+offset_top = 3.0
+offset_right = 356.0
+offset_bottom = 63.0
+theme_override_font_sizes/font_size = 36
+text = "＋"
+
+[node name="Control4" type="Control" parent="Container/VBoxContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Container/VBoxContainer/Control4"]
+layout_mode = 0
+offset_top = 6.0
+offset_right = 72.0
+offset_bottom = 56.0
+theme_override_font_sizes/font_size = 36
+text = "咒言"
+
+[node name="MantraMinus" type="Button" parent="Container/VBoxContainer/Control4"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 100.0
+offset_top = 3.0
+offset_right = 160.0
+offset_bottom = 63.0
+theme_override_font_sizes/font_size = 36
+text = "－"
+
+[node name="MantraTxt" type="Label" parent="Container/VBoxContainer/Control4"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 188.0
+offset_top = 6.0
+offset_right = 260.0
+offset_bottom = 56.0
+theme_override_font_sizes/font_size = 36
+text = "咒言"
+horizontal_alignment = 1
+
+[node name="MantraPlus" type="Button" parent="Container/VBoxContainer/Control4"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 296.0
+offset_top = 3.0
+offset_right = 356.0
+offset_bottom = 63.0
+theme_override_font_sizes/font_size = 36
+text = "＋"
+
+[node name="Control5" type="Control" parent="Container/VBoxContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Container/VBoxContainer/Control5"]
+layout_mode = 0
+offset_top = 6.0
+offset_right = 72.0
+offset_bottom = 56.0
+theme_override_font_sizes/font_size = 36
+text = "工艺"
+
+[node name="EquipMinus" type="Button" parent="Container/VBoxContainer/Control5"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 100.0
+offset_top = 3.0
+offset_right = 160.0
+offset_bottom = 63.0
+theme_override_font_sizes/font_size = 36
+text = "－"
+
+[node name="EquipTxt" type="Label" parent="Container/VBoxContainer/Control5"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 188.0
+offset_top = 6.0
+offset_right = 260.0
+offset_bottom = 56.0
+theme_override_font_sizes/font_size = 36
+text = "工艺"
+horizontal_alignment = 1
+
+[node name="EquipPlus" type="Button" parent="Container/VBoxContainer/Control5"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 296.0
+offset_top = 3.0
+offset_right = 356.0
+offset_bottom = 63.0
+theme_override_font_sizes/font_size = 36
+text = "＋"
+
+[node name="Control6" type="Control" parent="Container/VBoxContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Container/VBoxContainer/Control6"]
+layout_mode = 0
+offset_top = 6.0
+offset_right = 72.0
+offset_bottom = 56.0
+theme_override_font_sizes/font_size = 36
+text = "书写"
+
+[node name="BookMinus" type="Button" parent="Container/VBoxContainer/Control6"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 100.0
+offset_top = 3.0
+offset_right = 160.0
+offset_bottom = 63.0
+theme_override_font_sizes/font_size = 36
+text = "－"
+
+[node name="BookTxt" type="Label" parent="Container/VBoxContainer/Control6"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 188.0
+offset_top = 6.0
+offset_right = 260.0
+offset_bottom = 56.0
+theme_override_font_sizes/font_size = 36
+text = "书写"
+horizontal_alignment = 1
+
+[node name="BookPlus" type="Button" parent="Container/VBoxContainer/Control6"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 296.0
+offset_top = 3.0
+offset_right = 356.0
+offset_bottom = 63.0
+theme_override_font_sizes/font_size = 36
+text = "＋"
+
+[node name="Control7" type="Control" parent="Container/VBoxContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Container/VBoxContainer/Control7"]
+layout_mode = 0
+offset_top = 6.0
+offset_right = 72.0
+offset_bottom = 56.0
+theme_override_font_sizes/font_size = 36
+text = "会心"
+
+[node name="CriticalMinus" type="Button" parent="Container/VBoxContainer/Control7"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 100.0
+offset_top = 3.0
+offset_right = 160.0
+offset_bottom = 63.0
+theme_override_font_sizes/font_size = 36
+text = "－"
+
+[node name="CriticalTxt" type="Label" parent="Container/VBoxContainer/Control7"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 188.0
+offset_top = 6.0
+offset_right = 260.0
+offset_bottom = 56.0
+theme_override_font_sizes/font_size = 36
+text = "会心"
+horizontal_alignment = 1
+
+[node name="CriticalPlus" type="Button" parent="Container/VBoxContainer/Control7"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 296.0
+offset_top = 3.0
+offset_right = 356.0
+offset_bottom = 63.0
+theme_override_font_sizes/font_size = 36
+text = "＋"
+
+[node name="Control8" type="Control" parent="Container/VBoxContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Container/VBoxContainer/Control8"]
+layout_mode = 0
+offset_top = 6.0
+offset_right = 72.0
+offset_bottom = 56.0
+theme_override_font_sizes/font_size = 36
+text = "敏捷"
+
+[node name="DodgeMinus" type="Button" parent="Container/VBoxContainer/Control8"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 100.0
+offset_top = 3.0
+offset_right = 160.0
+offset_bottom = 63.0
+theme_override_font_sizes/font_size = 36
+text = "－"
+
+[node name="DodgeTxt" type="Label" parent="Container/VBoxContainer/Control8"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 188.0
+offset_top = 6.0
+offset_right = 260.0
+offset_bottom = 56.0
+theme_override_font_sizes/font_size = 36
+text = "敏捷"
+horizontal_alignment = 1
+
+[node name="DodgePlus" type="Button" parent="Container/VBoxContainer/Control8"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 296.0
+offset_top = 3.0
+offset_right = 356.0
+offset_bottom = 63.0
+theme_override_font_sizes/font_size = 36
+text = "＋"

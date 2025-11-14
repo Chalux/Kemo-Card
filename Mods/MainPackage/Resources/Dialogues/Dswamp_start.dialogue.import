@@ -1,6 +1,7 @@
 [remap]
 
-importer="dialogue_manager_compiler_12"
+importer="dialogue_manager"
+importer_version=15
 type="Resource"
 uid="uid://46gdwffe7l16"
 path="res://.godot/imported/Dswamp_start.dialogue-6e4d85550215728dc1a2c5b3164b0f3d.tres"

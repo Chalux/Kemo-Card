@@ -1,7 +1,8 @@
 using Godot;
-using KemoCard.Pages;
 using KemoCard.Scripts;
-using StaticClass;
+using KemoCard.Scripts.Cards;
+
+namespace KemoCard.Pages;
 
 public partial class RoleCreateScene : BaseScene
 {
@@ -43,27 +44,28 @@ public partial class RoleCreateScene : BaseScene
     [Export] private Godot.Button ConfirmBtn;
     [Export] private Label RemainPoint;
     [Export] private TextEdit PresetRoleInput;
+
     public override void _Ready()
     {
         UpdateView();
         StaticUtils.StartDialogue("res://Resources/Dialogues/StarterTutorial.dialogue");
-        SpeedPlus.Pressed += new(() => TryPlusProperty("SpeedPoint"));
-        SpeedMinus.Pressed += new(() => TryMinusProperty("SpeedPoint"));
-        StrengthPlus.Pressed += new(() => TryPlusProperty("StrengthPoint"));
-        StrengthMinus.Pressed += new(() => TryMinusProperty("StrengthPoint"));
-        EfficiencyPlus.Pressed += new(() => TryPlusProperty("EfficiencyPoint"));
-        EfficiencyMinus.Pressed += new(() => TryMinusProperty("EfficiencyPoint"));
-        MantraPlus.Pressed += new(() => TryPlusProperty("MantraPoint"));
-        MantraMinus.Pressed += new(() => TryMinusProperty("MantraPoint"));
-        EquipPlus.Pressed += new(() => TryPlusProperty("CraftEquipPoint"));
-        EquipMinus.Pressed += new(() => TryMinusProperty("CraftEquipPoint"));
-        BookPlus.Pressed += new(() => TryPlusProperty("CraftBookPoint"));
-        BookMinus.Pressed += new(() => TryMinusProperty("CraftBookPoint"));
-        CriticalPlus.Pressed += new(() => TryPlusProperty("CriticalPoint"));
-        CriticalMinus.Pressed += new(() => TryMinusProperty("CriticalPoint"));
-        DodgePlus.Pressed += new(() => TryPlusProperty("DodgePoint"));
-        DodgeMinus.Pressed += new(() => TryMinusProperty("DodgePoint"));
-        ConfirmBtn.Pressed += new(() => DoConfirm());
+        SpeedPlus.Pressed += () => TryPlusProperty("SpeedPoint");
+        SpeedMinus.Pressed += () => TryMinusProperty("SpeedPoint");
+        StrengthPlus.Pressed += () => TryPlusProperty("StrengthPoint");
+        StrengthMinus.Pressed += () => TryMinusProperty("StrengthPoint");
+        EfficiencyPlus.Pressed += () => TryPlusProperty("EfficiencyPoint");
+        EfficiencyMinus.Pressed += () => TryMinusProperty("EfficiencyPoint");
+        MantraPlus.Pressed += () => TryPlusProperty("MantraPoint");
+        MantraMinus.Pressed += () => TryMinusProperty("MantraPoint");
+        EquipPlus.Pressed += () => TryPlusProperty("CraftEquipPoint");
+        EquipMinus.Pressed += () => TryMinusProperty("CraftEquipPoint");
+        BookPlus.Pressed += () => TryPlusProperty("CraftBookPoint");
+        BookMinus.Pressed += () => TryMinusProperty("CraftBookPoint");
+        CriticalPlus.Pressed += () => TryPlusProperty("CriticalPoint");
+        CriticalMinus.Pressed += () => TryMinusProperty("CriticalPoint");
+        DodgePlus.Pressed += () => TryPlusProperty("DodgePoint");
+        DodgeMinus.Pressed += () => TryMinusProperty("DodgePoint");
+        ConfirmBtn.Pressed += DoConfirm;
     }
 
     private void UpdateView()
@@ -76,22 +78,24 @@ public partial class RoleCreateScene : BaseScene
         BookTxt.Text = CraftBookPoint.ToString();
         CriticalTxt.Text = CriticalPoint.ToString();
         DodgeTxt.Text = DodgePoint.ToString();
-        RemainPoint.Text = "剩余点数：" + CurrentPoint.ToString();
+        RemainPoint.Text = "剩余点数：" + CurrentPoint;
     }
 
     private void TryPlusProperty(string propertyName)
     {
-        if (Get(propertyName).Obj != null && CurrentPoint > 0)
+        var property = Get(propertyName);
+        if (property.Obj != null && CurrentPoint > 0)
         {
             CurrentPoint--;
-            Set(propertyName, (long)Get(propertyName).Obj + 1);
+            Set(propertyName, (long)property.Obj + 1);
         }
+
         UpdateView();
     }
 
     private void TryMinusProperty(string protertyName)
     {
-        Variant v = Get(protertyName);
+        var v = Get(protertyName);
         if (v.Obj != null)
         {
             if (((long)v) > 0)
@@ -100,44 +104,40 @@ public partial class RoleCreateScene : BaseScene
                 CurrentPoint++;
             }
         }
+
         UpdateView();
     }
 
-    void DoConfirm()
+    private void DoConfirm()
     {
         PlayerRole role = null;
         if (PresetRoleInput.Text.Length > 0)
         {
-            role = new(PresetRoleInput.Text);
+            role = new PlayerRole(PresetRoleInput.Text);
         }
+
         if (role != null && role.Id != "")
         {
-            AlertView.PopupAlert($"检测到已填入预设角色id。角色的数据为：\r\n{role.GetRichDesc()}是否确定？", false, new(() =>
+            AlertView.PopupAlert($"检测到已填入预设角色id。角色的数据为：\r\n{role.GetRichDesc()}是否确定？", false, () =>
             {
                 role.StartFunction?.Invoke();
 
-                StaticInstance.playerData.gsd.MajorRole = role;
+                StaticInstance.PlayerData.Gsd.MajorRole = role;
 
-                MainScene node = (MainScene)ResourceLoader.Load<PackedScene>("res://Pages/MainScene.tscn").Instantiate();
-                StaticInstance.windowMgr.ChangeScene(node, new((scene) =>
-                {
-                    StaticInstance.MainRoot.canPause = true;
-                }));
-            }));
+                var node =
+                    (MainScene)ResourceLoader.Load<PackedScene>("res://Pages/MainScene.tscn").Instantiate();
+                StaticInstance.WindowMgr.ChangeScene(node, scene => { StaticInstance.MainRoot.CanPause = true; });
+            });
         }
         else
         {
             if (CurrentPoint > 0)
             {
                 StaticInstance.MainRoot.ShowBanner("还有点数未使用");
-                return;
             }
-            else if (NameInput.Text == null || NameInput.Text == "")
+            else if (string.IsNullOrEmpty(NameInput.Text))
             {
-                AlertView.PopupAlert("未输入名字，是否以默认名字Able继续？", false, new(() =>
-                {
-                    StartGameAsync();
-                }));
+                AlertView.PopupAlert("未输入名字，是否以默认名字Able继续？", false, StartGameAsync);
             }
             else
             {
@@ -146,19 +146,22 @@ public partial class RoleCreateScene : BaseScene
         }
     }
 
-    void StartGameAsync()
+    private void StartGameAsync()
     {
-        BaseRole player = new(SpeedPoint, StrengthPoint, EfficiencyPoint, MantraPoint, CraftEquipPoint, CraftBookPoint, CriticalPoint, DodgePoint)
+        BaseRole player = new(SpeedPoint, StrengthPoint, EfficiencyPoint, MantraPoint, CraftEquipPoint, CraftBookPoint,
+            CriticalPoint, DodgePoint)
         {
-            name = NameInput.Text == "" ? "Able" : NameInput.Text,
+            Name = NameInput.Text == "" ? "Able" : NameInput.Text,
         };
 
-        var majorrole = new PlayerRole(player.OriginSpeed, player.OriginStrength, player.OriginEffeciency, player.OriginMantra, player.OriginCraftEquip, player.OriginCraftBook, player.OriginCritical, player.OriginDodge, player.name)
+        var majorrole = new PlayerRole(player.OriginSpeed, player.OriginStrength, player.OriginEffeciency,
+            player.OriginMantra, player.OriginCraftEquip, player.OriginCraftBook, player.OriginCritical,
+            player.OriginDodge, player.Name)
         {
             Id = "major"
         };
-        majorrole.AddCardIntoDeck(new("infinite"));
-        majorrole.AddCardIntoDeck(new("infinite"));
+        majorrole.AddCardIntoDeck(new Card("infinite"));
+        majorrole.AddCardIntoDeck(new Card("infinite"));
         StaticUtils.CreateBuffAndAddToRole("get_lucky", majorrole, majorrole);
         StaticUtils.CreateEquipAndPutOn("base_attack", majorrole);
         StaticUtils.CreateEquipAndPutOn("base_attack", majorrole);
@@ -166,13 +169,9 @@ public partial class RoleCreateScene : BaseScene
         StaticUtils.CreateEquipAndPutOn("base_defense", majorrole);
         majorrole.ActionPoint = 3;
 
-        StaticInstance.playerData.gsd.MajorRole = majorrole;
+        StaticInstance.PlayerData.Gsd.MajorRole = majorrole;
 
-        MainScene node = (MainScene)ResourceLoader.Load<PackedScene>("res://Pages/MainScene.tscn").Instantiate();
-        StaticInstance.windowMgr.ChangeScene(node, new((scene) =>
-        {
-            StaticInstance.MainRoot.canPause = true;
-        }));
+        var node = (MainScene)ResourceLoader.Load<PackedScene>("res://Pages/MainScene.tscn").Instantiate();
+        StaticInstance.WindowMgr.ChangeScene(node, scene => { StaticInstance.MainRoot.CanPause = true; });
     }
-
 }

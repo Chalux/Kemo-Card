@@ -1,6 +1,6 @@
 [gd_scene load_steps=4 format=3 uid="uid://ckqphu5q3ciru"]
 
-[ext_resource type="Script" path="res://Pages/EventScene.cs" id="1_qalbm"]
+[ext_resource type="Script" uid="uid://yyhi5q7106bl" path="res://Pages/EventScene.cs" id="1_qalbm"]
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_o4rr6"]
 frequency = 0.0002
@@ -10,7 +10,13 @@ width = 576
 height = 704
 noise = SubResource("FastNoiseLite_o4rr6")
 
-[node name="EventScene" type="Node2D" node_paths=PackedStringArray("BtnContainer", "EventImg", "EventTitle")]
+[node name="EventScene" type="Control" node_paths=PackedStringArray("BtnContainer", "EventImg", "EventTitle")]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 script = ExtResource("1_qalbm")
 BtnContainer = NodePath("Root/BtnContainer")
 EventImg = NodePath("Root/EventImg")
@@ -18,10 +24,12 @@ EventTitle = NodePath("Root/EventTitle")
 
 [node name="Root" type="Control" parent="."]
 custom_minimum_size = Vector2(1920, 1080)
-layout_mode = 3
-anchors_preset = 0
-offset_right = 40.0
-offset_bottom = 40.0
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 
 [node name="Bg" type="ColorRect" parent="Root"]
 layout_mode = 1
@@ -33,27 +41,42 @@ grow_vertical = 2
 color = Color(0.0321884, 0.390136, 0.358944, 1)
 
 [node name="EventImg" type="TextureRect" parent="Root"]
-layout_mode = 0
-offset_left = 128.0
-offset_top = 192.0
-offset_right = 704.0
-offset_bottom = 896.0
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.067
+anchor_top = 0.178
+anchor_right = 0.367
+anchor_bottom = 0.83000004
+offset_left = -0.6399994
+offset_top = -0.2400055
+offset_right = -0.64001465
+offset_bottom = -0.4000244
 texture = SubResource("NoiseTexture2D_4moqu")
 
 [node name="BtnContainer" type="VBoxContainer" parent="Root"]
-layout_mode = 0
-offset_left = 832.0
-offset_top = 192.0
-offset_right = 1728.0
-offset_bottom = 896.0
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.43300003
+anchor_top = 0.178
+anchor_right = 0.90000004
+anchor_bottom = 0.83000004
+offset_left = 0.6399536
+offset_top = -0.2400055
+offset_right = -0.00012207031
+offset_bottom = -0.4000244
 theme_override_constants/separation = 30
 alignment = 2
 
 [node name="EventTitle" type="Label" parent="Root"]
-layout_mode = 0
-offset_left = 832.0
-offset_top = 192.0
-offset_right = 1728.0
-offset_bottom = 576.0
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.43300003
+anchor_top = 0.178
+anchor_right = 0.90000004
+anchor_bottom = 0.53300005
+offset_left = 0.6399536
+offset_top = -0.2400055
+offset_right = -0.00012207031
+offset_bottom = 0.35992432
 theme_override_font_sizes/font_size = 36
 text = "事件描述"

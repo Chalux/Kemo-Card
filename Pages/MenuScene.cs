@@ -1,7 +1,8 @@
-using Godot;
-using KemoCard.Pages;
-using StaticClass;
 using System;
+using Godot;
+using KemoCard.Scripts;
+
+namespace KemoCard.Pages;
 
 public partial class MenuScene : BaseScene
 {
@@ -9,54 +10,45 @@ public partial class MenuScene : BaseScene
     [Export] Godot.Button start;
     [Export] Godot.Button load;
     [Export] Godot.Button DebugTempBtn;
+
     public override void _Ready()
     {
         base._Ready();
         DebugTempBtn.Visible = OS.IsDebugBuild();
-        exit.Pressed += new(() =>
+        exit.Pressed += () =>
         {
             GD.Print("MenuScene退出了游戏");
             GetTree().Quit();
-        });
-        exit.MouseEntered += new(() =>
+        };
+        exit.MouseEntered += () => { StaticInstance.MainRoot.ShowRichHint("退出游戏"); };
+        exit.MouseExited += () => { StaticInstance.MainRoot.HideRichHint(); };
+        start.MouseEntered += () => { StaticInstance.MainRoot.ShowRichHint("开始游戏"); };
+        start.MouseExited += () => { StaticInstance.MainRoot.HideRichHint(); };
+        start.Pressed += () =>
         {
-            StaticInstance.MainRoot.ShowRichHint("退出游戏");
-        });
-        exit.MouseExited += new(() =>
-        {
+            StaticInstance.WindowMgr.ChangeScene(
+                ResourceLoader.Load<PackedScene>("res://Pages/RoleCreateScene.tscn").Instantiate(),
+                _ => { StaticInstance.MainRoot.CanPause = true; });
             StaticInstance.MainRoot.HideRichHint();
-        });
-        start.MouseEntered += new(() =>
+        };
+        load.Pressed += () =>
         {
-            StaticInstance.MainRoot.ShowRichHint("开始游戏");
-        });
-        start.MouseExited += new(() =>
-        {
+            StaticInstance.WindowMgr.ChangeScene(
+                ResourceLoader.Load<PackedScene>("res://Pages/LoadSaveScene.tscn").Instantiate(),
+                _ => { StaticInstance.MainRoot.CanPause = true; });
             StaticInstance.MainRoot.HideRichHint();
-        });
-        start.Pressed += new(() =>
-        {
-            StaticInstance.windowMgr.ChangeScene(ResourceLoader.Load<PackedScene>("res://Pages/RoleCreateScene.tscn").Instantiate(), new((scene) => { StaticInstance.MainRoot.canPause = true; }));
-            StaticInstance.MainRoot.HideRichHint();
-        });
-        load.Pressed += new(() =>
-        {
-            StaticInstance.windowMgr.ChangeScene(ResourceLoader.Load<PackedScene>("res://Pages/LoadSaveScene.tscn").Instantiate(), new((scene) => { StaticInstance.MainRoot.canPause = true; }));
-            StaticInstance.MainRoot.HideRichHint();
-        });
+        };
         if (DebugTempBtn.Visible)
         {
-            DebugTempBtn.Pressed += new(() =>
+            DebugTempBtn.Pressed += () =>
             {
-                PackedScene res = ResourceLoader.Load<PackedScene>("res://Pages/FloatingNum.tscn");
-                if (res != null)
-                {
-                    FloatingNum floatingNum = res.Instantiate<FloatingNum>();
-                    Random r = new();
-                    floatingNum.Init($"+{r.Next(0, 1000000)}", Colors.Khaki, new(500, 500));
-                    AddChild(floatingNum);
-                }
-            });
+                var res = ResourceLoader.Load<PackedScene>("res://Pages/FloatingNum.tscn");
+                if (res == null) return;
+                var floatingNum = res.Instantiate<FloatingNum>();
+                Random r = new();
+                floatingNum.Init($"+{r.Next(0, 1000000)}", Colors.Khaki, new(500, 500));
+                AddChild(floatingNum);
+            };
         }
     }
 }

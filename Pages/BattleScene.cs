@@ -1,165 +1,174 @@
-using Godot;
-using KemoCard.Pages;
-using KemoCard.Scripts;
-using KemoCard.Scripts.Cards;
-using KemoCard.Scripts.Presets;
-using StaticClass;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using static StaticClass.StaticEnums;
+using Godot;
+using KemoCard.Scripts;
+using KemoCard.Scripts.Cards;
+using KemoCard.Scripts.Presets;
+
+namespace KemoCard.Pages;
 
 public struct RewardStruct
 {
-    public RewardType type;
-    public List<string> rewards;
+    public RewardType Type;
+    public List<string> Rewards;
 }
 
 public struct ShopStruct
 {
-    public Card card;
-    public int price;
-    public bool isBuyed;
+    public Card Card;
+    public int Price;
+    public bool IsBought;
 }
 
 public partial class BattleScene : BaseScene, IEvent
 {
-    [Export] public HBoxContainer playerContainer;
-    [Export] public HBoxContainer enemyContainer;
+    [Export] public HBoxContainer PlayerContainer;
+    [Export] public HBoxContainer EnemyContainer;
     [Export] public Control HandControl;
-    [Export] Label DeckCount;
+    [Export] private Label _deckCount;
     [Export] public Label GraveCount;
-    [Export] Label ActionPointLabel;
-    [Export] float TweenSpeed = 0.25f;
-    [Export] float TotalAngle = 0f;
-    [Export] float SpaceX = 200f;
-    [Export] float SpaceY = 7f;
-    [Export] Godot.Button TurnEndBtn;
-    [Export] public Control DragDwonArea;
-    [Export] Godot.Button DebugDrawBtn;
-    [Export] Label TurnLabel;
-    [Export] Godot.Button DeckBtn;
-    [Export] Godot.Button GraveBtn;
-    [Export] Godot.Button WholeDeckBtn;
-    [Export] Godot.Button DebugWinBtn;
-    [Export] Godot.Button ReturnBtn;
-    [Export] Control EndControl;
-    [Export] Godot.Button SelectConfirmBtn;
-    [Export] Control SelectControl;
+    [Export] private Label _actionPointLabel;
+    [Export] private float _tweenSpeed = 0.25f;
+    [Export] private float _totalAngle;
+    [Export] private float _spaceX = 200f;
+    [Export] private float _spaceY = 7f;
+    [Export] private Godot.Button _turnEndBtn;
+    [Export] public Control DragDownArea;
+    [Export] private Godot.Button _debugDrawBtn;
+    [Export] private Label _turnLabel;
+    [Export] private Godot.Button _deckBtn;
+    [Export] private Godot.Button _graveBtn;
+    [Export] private Godot.Button _wholeDeckBtn;
+    [Export] private Godot.Button _debugWinBtn;
+    [Export] private Godot.Button _returnBtn;
+    [Export] private Control _endControl;
+    [Export] private Godot.Button _selectConfirmBtn;
+    [Export] private Control _selectControl;
 
-    private bool isDebugFight = false;
+    private bool _isDebugFight;
 
-    private int HoveredIndex = -1;
-    private bool IsDragging = false;
-    private Preset BattlePreset = null;
-    private Action AfterBattleHandler;
+    private int _hoveredIndex = -1;
+    private bool _isDragging;
+    private Preset _battlePreset;
+    private Action _afterBattleHandler;
 
-    public PlayerRole nowPlayer;
-    public void NewBattle(PlayerRole playerRole, string[] enemyRoles, bool isDebugFight = false, Action afterBattleHandler = null)
+    public PlayerRole NowPlayer;
+
+    public void NewBattle(PlayerRole playerRole, string[] enemyRoles, bool isDebugFight = false,
+        Action afterBattleHandler = null)
     {
         //playerRole.Init();
-        List<PlayerRole> players = new()
-        {
-            playerRole
-        };
-        List<EnemyRole> enemies = new();
-        foreach (var role in enemyRoles)
-        {
-            enemies.Add(new EnemyRole(role));
-        }
+        List<PlayerRole> players = [playerRole];
+        List<EnemyRole> enemies = [];
+        enemies.AddRange(enemyRoles.Select(role => new EnemyRole(role)));
         BattleStatic.Reset();
-        this.isDebugFight = isDebugFight;
+        _isDebugFight = isDebugFight;
         NewBattleCore(players, enemies);
-        AfterBattleHandler = afterBattleHandler;
+        _afterBattleHandler = afterBattleHandler;
     }
 
     public void NewBattleByPreset(string presetId, bool isDebugFight = false, Action afterBattleHandler = null)
     {
         Preset preset = new();
-        if (Datas.Ins.PresetPool.ContainsKey(presetId))
-        {
-            var preset_info = Datas.Ins.PresetPool[presetId];
-            var res = ResourceLoader.Load<CSharpScript>($"res://Mods/{preset_info.mod_id}/Scripts/Presets/P{presetId}.cs");
-            var PresetScript = res.New().As<BasePresetScript>();
-            PresetScript.Init(preset);
-            BattlePreset = preset;
-            NewBattle(StaticInstance.playerData.gsd.MajorRole, preset.Enemies.ToArray(), isDebugFight, afterBattleHandler);
-        }
+        if (!Datas.Ins.PresetPool.ContainsKey(presetId)) return;
+        var presetScript = PresetFactory.CreatePreset(presetId);
+        presetScript.Init(preset);
+        _battlePreset = preset;
+        NewBattle(StaticInstance.PlayerData.Gsd.MajorRole, preset.Enemies.ToArray(), isDebugFight, afterBattleHandler);
     }
 
     public override void _Ready()
     {
-        DebugWinBtn.Visible = DebugDrawBtn.Visible = OS.IsDebugBuild();
-        DebugDrawBtn.Pressed += new(() =>
-        {
-            if (nowPlayer != null)
-            {
-                DrawCard(10, nowPlayer);
-            }
-        });
-        DebugWinBtn.Pressed += new(() =>
-        {
-            EndBattle(true);
-        });
-        TurnEndBtn.Pressed += new(() =>
-        {
-            EndTurn();
-        });
+        _debugWinBtn.Visible = _debugDrawBtn.Visible = OS.IsDebugBuild();
+        _debugDrawBtn.Pressed += OnDebugDrawBtnOnPressed;
+        _debugWinBtn.Pressed += OnDebugWinBtnOnPressed;
+        _turnEndBtn.Pressed += OnTurnEndBtnOnPressed;
         //GD.Print("battleScene Ready");
-        DeckBtn.Pressed += new(() =>
+        _deckBtn.Pressed += OnDeckBtnOnPressed;
+        _graveBtn.Pressed += OnGraveBtnOnPressed;
+        _wholeDeckBtn.Pressed += OnWholeDeckBtnOnPressed;
+        _returnBtn.Pressed += OnReturnBtnOnPressed;
+    }
+
+    private void OnReturnBtnOnPressed()
+    {
+        if (!BattleStatic.isFighting)
         {
-            var list = currentPlayerRoles[0].InFightDeck.ToList();
-            StaticUtils.ShuffleArray(list);
-            StaticInstance.windowMgr.AddScene((BaseScene)ResourceLoader.Load<PackedScene>("res://Pages/DeckView.tscn").Instantiate()
-                , new[] { list });
-        });
-        GraveBtn.Pressed += new(() =>
-        {
-            StaticInstance.windowMgr.AddScene((BaseScene)ResourceLoader.Load<PackedScene>("res://Pages/DeckView.tscn").Instantiate()
-                , new[] { currentPlayerRoles[0].InFightGrave.ToList() });
-        });
-        WholeDeckBtn.Pressed += new(() =>
-        {
-            StaticInstance.windowMgr.AddScene((BaseScene)ResourceLoader.Load<PackedScene>("res://Pages/DeckView.tscn").Instantiate()
-                , new[] { currentPlayerRoles[0].Deck.ToList() });
-        });
-        ReturnBtn.Pressed += new(() =>
-        {
-            if (!BattleStatic.isFighting)
+            if (_afterBattleHandler != null)
             {
-                if (AfterBattleHandler != null)
-                {
-                    AfterBattleHandler.Invoke();
-                    AfterBattleHandler = null;
-                }
-                else
-                {
-                    //StaticInstance.windowMgr.RemoveScene(this);
-                    PackedScene res = ResourceLoader.Load<PackedScene>("res://Pages/MainScene.tscn");
-                    if (res != null)
-                    {
-                        MainScene ms = res.Instantiate<MainScene>();
-                        StaticInstance.windowMgr.ChangeScene(ms);
-                        ms.MapView?.ShowMap();
-                    }
-                }
-                StaticUtils.AutoSave();
+                _afterBattleHandler.Invoke();
+                _afterBattleHandler = null;
             }
-        });
+            else
+            {
+                //StaticInstance.windowMgr.RemoveScene(this);
+                var res = ResourceLoader.Load<PackedScene>("res://Pages/MainScene.tscn");
+                if (res != null)
+                {
+                    var ms = res.Instantiate<MainScene>();
+                    StaticInstance.WindowMgr.ChangeScene(ms);
+                    ms.MapView?.ShowMap();
+                }
+            }
+
+            StaticUtils.AutoSave();
+        }
+    }
+
+    private void OnWholeDeckBtnOnPressed()
+    {
+        StaticInstance.WindowMgr.AddScene(
+            (BaseScene)ResourceLoader.Load<PackedScene>("res://Pages/DeckView.tscn").Instantiate(),
+            [CurrentPlayerRoles[0].Deck.ToList()]);
+    }
+
+    private void OnGraveBtnOnPressed()
+    {
+        StaticInstance.WindowMgr.AddScene(
+            (BaseScene)ResourceLoader.Load<PackedScene>("res://Pages/DeckView.tscn").Instantiate(),
+            [CurrentPlayerRoles[0].InFightGrave.ToList()]);
+    }
+
+    private void OnDeckBtnOnPressed()
+    {
+        var list = CurrentPlayerRoles[0].InFightDeck.ToList();
+        StaticUtils.ShuffleArray(list);
+        StaticInstance.WindowMgr.AddScene(
+            (BaseScene)ResourceLoader.Load<PackedScene>("res://Pages/DeckView.tscn").Instantiate(), [list]);
+    }
+
+    private void OnTurnEndBtnOnPressed()
+    {
+        EndTurn();
+    }
+
+    private void OnDebugWinBtnOnPressed()
+    {
+        EndBattle(true);
+    }
+
+    private void OnDebugDrawBtnOnPressed()
+    {
+        if (NowPlayer != null)
+        {
+            DrawCard(10, NowPlayer);
+        }
     }
 
     private void UpdateCardPosition()
     {
-        if (IsDragging) return;
+        if (_isDragging) return;
         if (HandControl == null) return;
-        foreach (CardObject i in HandControl.GetChildren().Cast<CardObject>())
+        foreach (var i in HandControl.GetChildren().Cast<CardObject>())
         {
-            i.StartReposition(CalculateCardPostion(i.GetIndex()), GetCardAngle(i.GetIndex()), TweenSpeed, GetCardScales(i.GetIndex()));
-            //GD.Print("序号：" + i.GetIndex() + ",角度：" + GetCardAngle(i.GetIndex()) + ",位置：" + CalculateCardPostion(i.GetIndex()) + ",Pivot：" + i.PivotOffset);
+            i.StartReposition(CalculateCardPosition(i.GetIndex()), GetCardAngle(i.GetIndex()), _tweenSpeed,
+                GetCardScales(i.GetIndex()));
+            //GD.Print("序号：" + i.GetIndex() + ",角度：" + GetCardAngle(i.GetIndex()) + ",位置：" + CalculateCardPosition(i.GetIndex()) + ",Pivot：" + i.PivotOffset);
         }
     }
 
-    private Vector2 CalculateCardPostion(int index)
+    private Vector2 CalculateCardPosition(int index)
     {
         Vector2 vector = new()
         {
@@ -169,22 +178,24 @@ public partial class BattleScene : BaseScene, IEvent
         return vector;
     }
 
-    private float GetCardAngle(int CardIndex)
+    private float GetCardAngle(int cardIndex)
     {
         //return 0;
         if (HandControl.GetChildCount() == 0) return 0;
-        else return (CardIndex - (HandControl.GetChildCount() - 1f) / 2f) * TotalAngle / HandControl.GetChildCount() / 360f;
+        else
+            return (cardIndex - (HandControl.GetChildCount() - 1f) / 2f) * _totalAngle / HandControl.GetChildCount() /
+                   360f;
     }
 
-    private float GetCardYPosition(int CardIndex)
+    private float GetCardYPosition(int cardIndex)
     {
         //return 0;
         float hoverShift;
-        if (HoveredIndex == -1)
+        if (_hoveredIndex == -1)
         {
             hoverShift = 0f;
         }
-        else if (CardIndex == HoveredIndex)
+        else if (cardIndex == _hoveredIndex)
         {
             hoverShift = -50f;
         }
@@ -193,232 +204,235 @@ public partial class BattleScene : BaseScene, IEvent
             hoverShift = 50f;
         }
 
-        return Math.Abs(CardIndex - (HandControl.GetChildCount() - 1f) / 2f) * SpaceY + hoverShift;
+        return Math.Abs(cardIndex - (HandControl.GetChildCount() - 1f) / 2f) * _spaceY + hoverShift;
     }
 
-    private float GetCardXPosition(int CardIndex)
+    private float GetCardXPosition(int cardIndex)
     {
-        float hoverShift = 0f;
-        if (HoveredIndex == -1)
+        var hoverShift = 0f;
+        if (_hoveredIndex == -1)
         {
             hoverShift = 0f;
         }
-        else if (CardIndex < HoveredIndex)
+        else if (cardIndex < _hoveredIndex)
         {
             hoverShift = -100f;
         }
-        else if (CardIndex == HoveredIndex)
+        else if (cardIndex == _hoveredIndex)
         {
             hoverShift = 0f;
         }
-        else if (CardIndex > HoveredIndex)
+        else if (cardIndex > _hoveredIndex)
         {
             hoverShift = 100f;
         }
-        return (CardIndex - (HandControl.GetChildCount() - 1f) / 2f) * SpaceX + HandControl.Size.X / 2f - 128 + hoverShift;
+
+        return (cardIndex - (HandControl.GetChildCount() - 1f) / 2f) * _spaceX + HandControl.Size.X / 2f - 128 +
+               hoverShift;
     }
 
-    private Vector2 GetCardScales(int CardIndex)
+    private Vector2 GetCardScales(int cardIndex)
     {
-        if (HoveredIndex == CardIndex) return new Vector2(1.2f, 1.2f);
-        else return Vector2.One;
+        return _hoveredIndex == cardIndex ? new Vector2(1.2f, 1.2f) : Vector2.One;
     }
 
     public void ReceiveEvent(string @event, params object[] datas)
     {
-        if (@event == "RepositionHand")
+        switch (@event)
         {
-            if (datas != null && datas.Length > 0)
+            case "RepositionHand":
             {
-                HoveredIndex = (int)datas[0];
-            }
-            else
-            {
-                HoveredIndex = -1;
-            }
-            UpdateCardPosition();
-        }
-        else if (@event == "DraggingCard")
-        {
-            if (datas != null && datas.Length > 0)
-            {
-                IsDragging = (bool)datas[0];
-            }
-            else
-            {
-                IsDragging = false;
-            }
-            UpdateCardPosition();
-        }
-        else if (@event == "Attack")
-        {
-            DealDamage((int)datas[0], (AttackType)datas[1], (BaseRole)datas[2], (List<BaseRole>)datas[3]);
-        }
-        else if (@event == "PropertiesChanged")
-        {
-            if (datas != null)
-            {
-                if (datas[0] is PlayerRole ifp && ifp == nowPlayer)
+                if (datas is { Length: > 0 })
                 {
-                    if (ifp == nowPlayer)
+                    _hoveredIndex = (int)datas[0];
+                }
+                else
+                {
+                    _hoveredIndex = -1;
+                }
+
+                UpdateCardPosition();
+                break;
+            }
+            case "DraggingCard":
+            {
+                if (datas is { Length: > 0 })
+                {
+                    _isDragging = (bool)datas[0];
+                }
+                else
+                {
+                    _isDragging = false;
+                }
+
+                UpdateCardPosition();
+                break;
+            }
+            case "Attack":
+                DealDamage((int)datas[0], (StaticEnums.AttackType)datas[1], (BaseRole)datas[2],
+                    (List<BaseRole>)datas[3]);
+                break;
+            case "PropertiesChanged":
+            {
+                if (datas?[0] is PlayerRole ifp && ifp == NowPlayer)
+                {
+                    if (ifp == NowPlayer)
                     {
                         UpdateCounts();
                     }
                 }
+
+                break;
             }
-        }
-        else if (@event == "StartSelectTarget")
-        {
-            DragDwonArea.Visible = false;
-        }
-        else if (@event == "EndSelectTarget")
-        {
-            DragDwonArea.Visible = true;
-        }
-        else if (@event == "SelectCard")
-        {
-            UpdateSelectBtn();
+            case "StartSelectTarget":
+                DragDownArea.Visible = false;
+                break;
+            case "EndSelectTarget":
+                DragDownArea.Visible = true;
+                break;
+            case "SelectCard":
+                UpdateSelectBtn();
+                break;
         }
     }
 
-    public List<PlayerRole> playerRoles = new();
-    public List<PlayerRole> currentPlayerRoles = new();
-    public List<PlayerRole> startPlayerRoles = new();
-    public List<EnemyRole> enemyRoles = new();
-    public List<EnemyRole> currentEnemyRoles = new();
-    public List<EnemyRole> startEnemyRoles = new();
-    public int turns = 0;
+    public List<PlayerRole> PlayerRoles = [];
+    public List<PlayerRole> CurrentPlayerRoles = [];
+    public List<PlayerRole> StartPlayerRoles = [];
+    public List<EnemyRole> EnemyRoles = [];
+    public List<EnemyRole> CurrentEnemyRoles = [];
+    public List<EnemyRole> StartEnemyRoles = [];
+    public int Turns;
 
-    public TeamEnum currentController;
+    public StaticEnums.TeamEnum CurrentController;
 
     public void NewBattleCore(List<PlayerRole> players, List<EnemyRole> enemies)
     {
         BattleStatic.isFighting = true;
-        EndControl.Visible = false;
-        foreach (PlayerRole i in players)
+        _endControl.Visible = false;
+        foreach (var i in players)
         {
-            i.Deck.ForEach(card =>
-            {
-                var c = new Card(card.Id)
-                {
-                    owner = i
-                };
-            });
-            playerRoles.Add(i);
-            currentPlayerRoles.Add(i);
-            startPlayerRoles.Add(i);
-            PlayerRoleObject po = ResourceLoader.Load<PackedScene>("res://Pages/PlayerRoleObject.tscn").Instantiate<PlayerRoleObject>();
+            // i.Deck.ForEach(card =>
+            // {
+            //     var c = new Card(card.Id)
+            //     {
+            //         Owner = i
+            //     };
+            //     i.InFightDeck.Add(c);
+            // });
+            PlayerRoles.Add(i);
+            CurrentPlayerRoles.Add(i);
+            StartPlayerRoles.Add(i);
+            var po = ResourceLoader.Load<PackedScene>("res://Pages/PlayerRoleObject.tscn")
+                .Instantiate<PlayerRoleObject>();
             po.InitByPlayerRole(i);
             i.TurnActionPoint = i.CurrentActionPoint = i.ActionPoint;
             i.InitFighter();
             i.OnBattleStart?.Invoke();
-            playerContainer?.AddChild(po);
+            PlayerContainer?.AddChild(po);
         }
-        foreach (EnemyRole i in enemies)
+
+        foreach (var i in enemies)
         {
-            enemyRoles.Add(i);
-            currentEnemyRoles.Add(i);
-            startEnemyRoles.Add(i);
-            EnemyRoleObject eo = ResourceLoader.Load<PackedScene>("res://Pages/EnemyRoleObject.tscn").Instantiate<EnemyRoleObject>();
-            StaticInstance.eventMgr.RegistIEvent(eo);
+            EnemyRoles.Add(i);
+            CurrentEnemyRoles.Add(i);
+            StartEnemyRoles.Add(i);
+            var eo = ResourceLoader.Load<PackedScene>("res://Pages/EnemyRoleObject.tscn")
+                .Instantiate<EnemyRoleObject>();
+            StaticInstance.EventMgr.RegisterIEvent(eo);
             eo.Init(i);
             i.OnBattleStart?.Invoke(eo);
-            enemyContainer?.AddChild(eo);
+            EnemyContainer?.AddChild(eo);
         }
-        turns = 1;
-        TurnLabel.Text = "回合数：" + turns;
-        currentController = TeamEnum.Player;
-        nowPlayer = currentPlayerRoles[0];
+
+        Turns = 1;
+        _turnLabel.Text = "回合数：" + Turns;
+        CurrentController = StaticEnums.TeamEnum.Player;
+        NowPlayer = CurrentPlayerRoles[0];
         StartBattle();
     }
 
-    void StartBattle()
+    private void StartBattle()
     {
-        foreach (PlayerRole i in currentPlayerRoles)
+        foreach (var i in CurrentPlayerRoles)
         {
             StaticUtils.ShuffleArray(i.InFightDeck);
         }
-        foreach (var player in playerRoles)
+
+        foreach (var player in PlayerRoles)
         {
             player.CurrMBlock = (int)Math.Floor(player.OriginMBlock);
             player.CurrPBlock = (int)Math.Floor(player.OriginPBlock);
         }
-        foreach (var enemy in enemyRoles)
+
+        foreach (var enemy in EnemyRoles)
         {
             enemy.CurrMBlock = (int)Math.Floor(enemy.OriginMBlock);
             enemy.CurrPBlock = (int)Math.Floor(enemy.OriginPBlock);
         }
-        nowPlayer = currentPlayerRoles[0];
-        foreach (PlayerRole i in currentPlayerRoles)
+
+        NowPlayer = CurrentPlayerRoles[0];
+        foreach (var i in CurrentPlayerRoles)
         {
             DrawCard(5, i);
         }
-        object[] objects = new object[] { currentPlayerRoles, currentEnemyRoles, turns };
-        StaticInstance.eventMgr.Dispatch("StartBattle", objects);
+
+        var objects = new object[] { CurrentPlayerRoles, CurrentEnemyRoles, Turns };
+        StaticInstance.EventMgr.Dispatch("StartBattle", objects);
         UpdateCounts();
-        StaticInstance.eventMgr.Dispatch("NewTurn", new dynamic[] { turns, currentPlayerRoles, currentEnemyRoles });
+        StaticInstance.EventMgr.Dispatch("NewTurn", new dynamic[] { Turns, CurrentPlayerRoles, CurrentEnemyRoles });
     }
 
     public void NextTurn()
     {
         if (!BattleStatic.isFighting) return;
-        turns++;
-        TurnLabel.Text = "回合数：" + turns;
-        foreach (var player in currentPlayerRoles)
+        Turns++;
+        _turnLabel.Text = "回合数：" + Turns;
+        foreach (var player in CurrentPlayerRoles)
         {
             player.RecoverMagic();
             player.CurrentActionPoint = player.TurnActionPoint;
         }
-        foreach (var enemy in currentEnemyRoles)
+
+        foreach (var enemy in CurrentEnemyRoles)
         {
             enemy.RecoverMagic();
         }
-        if (currentController == TeamEnum.Player)
+
+        if (CurrentController == StaticEnums.TeamEnum.Player)
         {
-            nowPlayer = currentPlayerRoles[0];
-            foreach (PlayerRole i in currentPlayerRoles)
+            NowPlayer = CurrentPlayerRoles[0];
+            foreach (var i in CurrentPlayerRoles)
             {
                 DrawCard(5, i);
             }
         }
-        StaticInstance.eventMgr.Dispatch("NewTurn", new dynamic[] { turns, currentPlayerRoles, currentEnemyRoles });
+
+        StaticInstance.EventMgr.Dispatch("NewTurn", new dynamic[] { Turns, CurrentPlayerRoles, CurrentEnemyRoles });
         UpdateCounts();
     }
 
     public void EndTurn()
     {
-        foreach (var player in currentPlayerRoles)
+        foreach (var player in CurrentPlayerRoles)
         {
-            //player.InFightHands.ForEach(c => player.InFightGrave.Add(c));
-            //player.InFightHands.Clear();
             var list = player.InFightHands.ToList();
-            var discardlist = list.Where((Card c) => !c.CheckHasSymbol("KeepInHand")).ToList();
-            DisCard(discardlist, player, DisCardReason.END_TURN, nowPlayer);
-            //for (int i = 0; i < list.Count; i++)
-            //{
-            //    var c = list[i];
-            //    if (c.InGameDict.ContainsKey("KeepInHand") || c.GlobalDict.ContainsKey("KeepInHand"))
-            //    {
-            //        continue;
-            //    }
-            //    else
-            //    {
-            //        player.InFightGrave.Add(c);
-            //        player.InFightHands.Remove(c);
-            //    }
-            //}
+            var discardList = list.Where(c => !c.CheckHasSymbol("KeepInHand")).ToList();
+            DisCard(discardList, player, DisCardReason.EndTurn, NowPlayer);
         }
-        foreach (CardObject i in HandControl.GetChildren().Cast<CardObject>())
+
+        foreach (var i in HandControl.GetChildren().Cast<CardObject>())
         {
             if (i.card.CheckHasSymbol("KeepInHand")) continue;
-            else i.QueueFree();
+            i.QueueFree();
         }
-        for (int i = 0; i < currentEnemyRoles.Count; i++)
+
+        foreach (var currEnemy in CurrentEnemyRoles)
         {
-            var currEnemy = currentEnemyRoles[i];
             if (currEnemy == null || !BattleStatic.isFighting) return;
-            currEnemy.script.ActionFunc?.Invoke(turns, currentPlayerRoles, currentEnemyRoles, currEnemy.script);
+            currEnemy.Script.ActionFunc?.Invoke(Turns, CurrentPlayerRoles, CurrentEnemyRoles, currEnemy.Script);
         }
+
         BattleStatic.TurnUsedCard.Clear();
         BattleStatic.TurnTags.Clear();
         NextTurn();
@@ -431,11 +445,16 @@ public partial class BattleScene : BaseScene, IEvent
     /// <param name="attackType">攻击类型</param>
     /// <param name="from">伤害来源</param>
     /// <param name="targets">目标列表</param>
-    /// <param name="atrribute">伤害的属性</param>
+    /// <param name="attribute">伤害的属性</param>
     /// <param name="times">伤害次数</param>
     /// <param name="tempAddCri">临时增加的暴击率(固定值)</param>
     /// <param name="tempMulCri">临时增加的暴击率(百分比)</param>
-    public void DealDamage(double value, AttackType attackType, BaseRole from = null, List<BaseRole> targets = null, AttributeEnum atrribute = AttributeEnum.None, int times = 1, double tempAddCri = 0f, double tempMulCri = 0f, Action<Damage, BaseRole> dodgedAction = null, Action<Damage, BaseRole> criticalAction = null)
+    /// <param name="dodgedAction">闪避时触发</param>
+    /// <param name="criticalAction">暴击时触发</param>
+    public void DealDamage(double value, StaticEnums.AttackType attackType, BaseRole from = null,
+        List<BaseRole> targets = null, StaticEnums.AttributeEnum attribute = StaticEnums.AttributeEnum.None,
+        int times = 1, double tempAddCri = 0f, double tempMulCri = 0f, Action<Damage, BaseRole> dodgedAction = null,
+        Action<Damage, BaseRole> criticalAction = null)
     {
         //if (!BattleStatic.isFighting) return AttackResult.Failed;
         Damage damage = new()
@@ -444,68 +463,79 @@ public partial class BattleScene : BaseScene, IEvent
             value = value,
             from = from,
             targets = targets,
-            atrribute = atrribute,
+            atrribute = attribute,
             attackType = attackType,
             times = times,
             criticaltimes = 0
         };
-        StaticInstance.eventMgr.Dispatch("BeforeAttacked", damage);
-        StaticInstance.eventMgr.Dispatch("BeforeDealDamage", damage);
+        StaticInstance.EventMgr.Dispatch("BeforeAttacked", damage);
+        StaticInstance.EventMgr.Dispatch("BeforeDealDamage", damage);
         if (damage.validTag && targets != null)
         {
-            foreach (BaseRole target in targets)
+            foreach (var target in targets)
             {
                 Damage tempDamage = new()
                 {
                     validTag = damage.validTag,
                     value = damage.value,
                     from = damage.from,
-                    targets = new() { target },
+                    targets = [target],
                     atrribute = damage.atrribute,
                     attackType = damage.attackType,
                     times = damage.times,
                     criticaltimes = 0
                 };
                 GD.Print("伤害结算前：" + tempDamage.value);
-                StaticInstance.eventMgr.Dispatch("BeforeAttackedSingle", tempDamage);
+                StaticInstance.EventMgr.Dispatch("BeforeAttackedSingle", tempDamage);
                 if (tempDamage.validTag)
                 {
                     if (target.CurrHealth <= 0) continue;
-                    tempDamage.value = (int)Math.Round((tempDamage.value + target.GetSymbol(AttributeDic[atrribute] + "ResisProp", 0f) -
-                        (from != null ? from.GetSymbol(AttributeDic[atrribute] + "AtkProp", 0f) : 1f)
-                        * (1 + target.GetSymbol(AttributeDic[atrribute] + "ResisPerm", 0f))
-                        * (1 + (from != null ? from.GetSymbol(AttributeDic[atrribute] + "AtkPerm", 0f) : 1f))));
-                    StaticInstance.eventMgr.Dispatch("BeforeDealDamageSingle", tempDamage);
+                    tempDamage.value = (int)Math.Round((tempDamage.value +
+                                                        target.GetSymbol(
+                                                            StaticEnums.AttributeDic[attribute] + "ResisProp") -
+                                                        (from?.GetSymbol(
+                                                            StaticEnums.AttributeDic[attribute] + "AtkProp") ?? 1f)
+                                                        * (1 + target.GetSymbol(
+                                                            StaticEnums.AttributeDic[attribute] + "ResisPerm"))
+                                                        * (1 + (from?.GetSymbol(
+                                                                    StaticEnums.AttributeDic[attribute] + "AtkPerm") ??
+                                                                1f))));
+                    StaticInstance.EventMgr.Dispatch("BeforeDealDamageSingle", tempDamage);
                     GD.Print("伤害结算后：" + tempDamage.value);
-                    for (int i = 0; i < times; i++)
+                    for (var i = 0; i < times; i++)
                     {
-                        int random = new Random().Next(0, 100);
-                        int needvalue = target.CurrDodge;
-                        GD.Print("闪避摇点：" + random + "，被击者触发闪避要求的点数不大于：" + needvalue);
-                        if (random <= needvalue)
+                        var random = new Random().Next(0, 100);
+                        var needValue = target.CurrDodge;
+                        GD.Print("闪避摇点：" + random + "，被击者触发闪避要求的点数不大于：" + needValue);
+                        if (random <= needValue)
                         {
-                            string log = from?.name + "对" + target.name + "的攻击被闪避了。闪避摇点：" + random + "，被击者触发闪避要求的点数不大于：" + needvalue;
+                            var log = from?.Name + "对" + target.Name + "的攻击被闪避了。闪避摇点：" + random + "，被击者触发闪避要求的点数不大于：" +
+                                      needValue;
                             GD.Print(log);
                             StaticInstance.MainRoot.ShowBanner(log);
                             dodgedAction?.Invoke(damage, target);
                             continue;
                             //return AttackResult.Dodged;
                         }
+
                         random = new Random().Next(0, 100);
-                        needvalue = (int)Math.Floor(target.CurrCritical * tempMulCri + tempAddCri);
-                        GD.Print($"暴击摇点：{random}，触发暴击要求的点数不大于：{needvalue}");
-                        if (random <= needvalue)
+                        needValue = (int)Math.Floor(target.CurrCritical * tempMulCri + tempAddCri);
+                        GD.Print($"暴击摇点：{random}，触发暴击要求的点数不大于：{needValue}");
+                        if (random <= needValue)
                         {
-                            string log = from?.name + "对" + target.name + "的攻击暴击了。暴击摇点：" + random + "，触发暴击要求的点数不大于：" + needvalue;
+                            var log = from?.Name + "对" + target.Name + "的攻击暴击了。暴击摇点：" + random + "，触发暴击要求的点数不大于：" +
+                                      needValue;
                             GD.Print(log);
                             StaticInstance.MainRoot.ShowBanner(log);
-                            tempDamage.value *= 2 + (from != null ? (double)from?.GetSymbol("CriticalDamageAdd") : 0f) - target.GetSymbol("CriticalDamageResis");
+                            tempDamage.value *= 2 + (from != null ? (double)from?.GetSymbol("CriticalDamageAdd") : 0f) -
+                                                target.GetSymbol("CriticalDamageResis");
                             tempDamage.criticaltimes += 1;
                             damage.criticaltimes += 1;
                             criticalAction?.Invoke(damage, target);
                         }
+
                         int diff;
-                        if (tempDamage.attackType == AttackType.Physics)
+                        if (tempDamage.attackType == StaticEnums.AttackType.Physics)
                         {
                             if (target is EnemyRole er)
                                 diff = (int)(tempDamage.value - er.CurrPBlock);
@@ -517,9 +547,10 @@ public partial class BattleScene : BaseScene, IEvent
                                 diff = (int)(tempDamage.value - er.CurrMBlock);
                             else diff = (int)(tempDamage.value - (target as PlayerRole).CurrMBlock);
                         }
+
                         if (diff > 0)
                         {
-                            if (tempDamage.attackType == AttackType.Physics)
+                            if (tempDamage.attackType == StaticEnums.AttackType.Physics)
                             {
                                 if (target is EnemyRole er)
                                     er.CurrPBlock = 0;
@@ -533,11 +564,12 @@ public partial class BattleScene : BaseScene, IEvent
                                 else
                                     (target as PlayerRole).CurrMBlock = 0;
                             }
+
                             target.CurrHealth -= diff;
                         }
                         else
                         {
-                            if (tempDamage.attackType == AttackType.Physics)
+                            if (tempDamage.attackType == StaticEnums.AttackType.Physics)
                             {
                                 if (target is EnemyRole er) er.CurrPBlock -= (int)tempDamage.value;
                                 else (target as PlayerRole).CurrPBlock -= (int)tempDamage.value;
@@ -548,55 +580,63 @@ public partial class BattleScene : BaseScene, IEvent
                                 else (target as PlayerRole).CurrMBlock -= (int)tempDamage.value;
                             }
                         }
-                        GD.Print(from?.name + "对" + target.name + "造成了" + tempDamage.value + "点伤害");
+
+                        GD.Print(from?.Name + "对" + target.Name + "造成了" + tempDamage.value + "点伤害");
 
                         if (target is EnemyRole ter)
                         {
                             FindEnemyObjectByRole(ter)?.hitFlashAnimationPlayer.Play("hit_flash");
                         }
 
-                        if (target.CurrHealth <= 0)
+                        if (target.CurrHealth > 0) continue;
                         {
                             GD.Print(target.GetName() + "死了");
-                            StaticInstance.eventMgr.Dispatch("BeforeDie", target);
+                            StaticInstance.EventMgr.Dispatch("BeforeDie", target);
                             if (target.CurrHealth > 0) continue;
-                            else
+                            switch (target)
                             {
-                                if (target is PlayerRole ifp) PlayerRoleDie(ifp);
-                                else if (target is EnemyRole er) EnemyRoleDie(er);
-                                //return AttackResult.Success;
+                                case PlayerRole ifp:
+                                    PlayerRoleDie(ifp);
+                                    break;
+                                case EnemyRole er:
+                                    EnemyRoleDie(er);
+                                    break;
                             }
+                            //return AttackResult.Success;
                         }
                     }
                 }
                 else
                 {
-                    StaticInstance.eventMgr.Dispatch("AttackInvalided", tempDamage);
-                    GD.Print(from?.name + "对" + target.name + "的攻击被无效了");
+                    StaticInstance.EventMgr.Dispatch("AttackInvalided", tempDamage);
+                    GD.Print(from?.Name + "对" + target.Name + "的攻击被无效了");
                     //return AttackResult.Invalidated;
                 }
             }
-            StaticInstance.eventMgr.Dispatch("AfterAttacked", damage);
+
+            StaticInstance.EventMgr.Dispatch("AfterAttacked", damage);
             //return AttackResult.Success;
         }
         else
         {
-            StaticInstance.eventMgr.Dispatch("AttackInvalided", damage);
+            StaticInstance.EventMgr.Dispatch("AttackInvalided", damage);
             GD.Print("攻击被无效了");
             //return AttackResult.Invalidated;
         }
-        StaticInstance.eventMgr.Dispatch("EndAttacked", damage);
+
+        StaticInstance.EventMgr.Dispatch("EndAttacked", damage);
     }
 
     public void DrawCard(int num, PlayerRole target)
     {
-        for (int i = 0; i < num; i++)
+        for (var i = 0; i < num; i++)
         {
             if (target.InFightHands.Count >= target.HandLimit)
             {
                 GD.Print("手牌达到上限");
                 return;
             }
+
             if (target.InFightDeck.Count == 0)
             {
                 if (target.InFightGraveCount > 0)
@@ -607,162 +647,173 @@ public partial class BattleScene : BaseScene, IEvent
                     target.InFightGrave.Clear();
                 }
             }
+
             if (target.InFightDeck.Count == 0)
             {
                 GD.Print("洗牌后卡组数量为0");
                 return;
             }
-            Card c = target.InFightDeck.First();
+
+            var c = target.InFightDeck.First();
             target.InFightDeck.RemoveAt(0);
             target.InFightHands.Add(c);
-            if (target == nowPlayer)
-            {
-                CardObject cardObject = ResourceLoader.Load<PackedScene>("res://Pages/CardObject.tscn").Instantiate<CardObject>();
-                cardObject.InitData(c);
-                HandControl.AddChild(cardObject);
-            }
+            if (target != NowPlayer) continue;
+            var cardObject = ResourceLoader.Load<PackedScene>("res://Pages/CardObject.tscn")
+                .Instantiate<CardObject>();
+            cardObject.InitData(c);
+            HandControl.AddChild(cardObject);
         }
-        GetTree().CreateTimer(0.1f).Timeout += new(() => UpdateCardPosition());
+
+        GetTree().CreateTimer(0.1f).Timeout += UpdateCardPosition;
         UpdateCounts();
     }
 
     public void PlayerRoleDie(PlayerRole role)
     {
-        if (role.isFriendly)
+        if (role.IsFriendly)
         {
-            if (currentPlayerRoles.Contains(role))
+            if (CurrentPlayerRoles != null && CurrentPlayerRoles.Contains(role))
             {
-                currentPlayerRoles.Remove(role);
-                foreach (PlayerRoleObject roleObject in playerContainer?.GetChildren().Cast<PlayerRoleObject>())
+                CurrentPlayerRoles.Remove(role);
+                foreach (var roleObject in PlayerContainer?.GetChildren().Cast<PlayerRoleObject>() ?? [])
                 {
-                    if (roleObject.data == role)
-                    {
-                        roleObject.data = null;
-                        roleObject.QueueFree();
-                    }
+                    if (roleObject.data != role) continue;
+                    roleObject.data = null;
+                    roleObject.QueueFree();
                 }
-                GD.Print("友方角色：" + role.name + "已战败，从当前数组中移除。当前剩余" + currentPlayerRoles.Count + "个队友");
+
+                GD.Print("友方角色：" + role.Name + "已战败，从当前数组中移除。当前剩余" + CurrentPlayerRoles.Count + "个队友");
             }
         }
-        if (currentPlayerRoles.Count == 0)
-        {
-            StaticInstance.MainRoot.ShowBanner("友方角色已全部战败，游戏结束");
-            GD.Print("友方角色已全部战败，游戏结束");
-            EndBattle(false);
-        }
+
+        if (CurrentPlayerRoles != null && CurrentPlayerRoles.Count != 0) return;
+        StaticInstance.MainRoot.ShowBanner("友方角色已全部战败，游戏结束");
+        GD.Print("友方角色已全部战败，游戏结束");
+        EndBattle(false);
     }
 
     public void EnemyRoleDie(EnemyRole role)
     {
-        if (!role.isFriendly)
+        if (!role.IsFriendly)
         {
-            if (currentEnemyRoles.Contains(role))
+            if (CurrentEnemyRoles != null && CurrentEnemyRoles.Contains(role))
             {
-                currentEnemyRoles.Remove(role);
-                foreach (EnemyRoleObject roleObject in enemyContainer?.GetChildren().Cast<EnemyRoleObject>())
+                CurrentEnemyRoles.Remove(role);
+                foreach (var roleObject in EnemyContainer?.GetChildren().Cast<EnemyRoleObject>() ?? [])
                 {
-                    if (roleObject.data == role)
-                    {
-                        roleObject.data = null;
-                        roleObject.QueueFree();
-                    }
+                    if (roleObject.data != role) continue;
+                    roleObject.data = null;
+                    roleObject.QueueFree();
                 }
-                GD.Print("敌方角色：" + role.name + "已战败，从当前数组中移除。当前剩余" + currentEnemyRoles.Count + "个敌人");
+
+                GD.Print("敌方角色：" + role.Name + "已战败，从当前数组中移除。当前剩余" + CurrentEnemyRoles.Count + "个敌人");
             }
         }
-        if (currentEnemyRoles.Count == 0)
-        {
-            StaticInstance.MainRoot.ShowBanner("敌方角色已全部战败，游戏结束");
-            GD.Print("敌方角色已全部战败，游戏结束");
-            EndBattle(true);
-        }
+
+        if (CurrentEnemyRoles != null && CurrentEnemyRoles.Count != 0) return;
+        StaticInstance.MainRoot.ShowBanner("敌方角色已全部战败，游戏结束");
+        GD.Print("敌方角色已全部战败，游戏结束");
+        EndBattle(true);
     }
 
     public void EndBattle(bool win)
     {
-        StaticInstance.eventMgr.UnregistIEvent(this);
-        StaticInstance.playerData.gsd.MajorRole.RecoverMagic();
-        startPlayerRoles.ForEach(obj =>
+        StaticInstance.EventMgr.UnregisterIEvent(this);
+        StaticInstance.PlayerData.Gsd.MajorRole.RecoverMagic();
+        StartPlayerRoles.ForEach(obj =>
         {
             obj.EndFight();
-            StaticInstance.eventMgr.UnregistIEvent(obj);
+            StaticInstance.EventMgr.UnregisterIEvent(obj);
         });
-        startEnemyRoles.ForEach(obj => StaticInstance.eventMgr.UnregistIEvent(obj));
-        playerRoles.Clear();
-        currentEnemyRoles.Clear();
-        currentPlayerRoles.Clear();
-        enemyRoles.Clear();
-        startEnemyRoles.Clear();
-        startPlayerRoles.Clear();
-        foreach (Node node in HandControl.GetChildren())
+        StartEnemyRoles.ForEach(obj => StaticInstance.EventMgr.UnregisterIEvent(obj));
+        PlayerRoles.Clear();
+        CurrentEnemyRoles.Clear();
+        CurrentPlayerRoles.Clear();
+        EnemyRoles.Clear();
+        StartEnemyRoles.Clear();
+        StartPlayerRoles.Clear();
+        foreach (var node in HandControl.GetChildren())
         {
             node.QueueFree();
         }
-        foreach (var i in playerContainer?.GetChildren())
+
+        foreach (var i in PlayerContainer?.GetChildren() ?? [])
         {
             i.QueueFree();
         }
+
         BattleStatic.Reset();
-        StaticInstance.playerData.gsd.MajorRole.FightSymbol.Clear();
-        if (win && (BattlePreset != null || isDebugFight))
+        StaticInstance.PlayerData.Gsd.MajorRole.FightSymbol.Clear();
+        if (win && (_battlePreset != null || _isDebugFight))
         {
-            if (!isDebugFight)
+            if (!_isDebugFight)
             {
-                RewardScene rewardScene = (RewardScene)ResourceLoader.Load<PackedScene>("res://Pages/RewardScene.tscn").Instantiate();
-                List<RewardStruct> datas = new();
+                var rewardScene =
+                    (RewardScene)ResourceLoader.Load<PackedScene>("res://Pages/RewardScene.tscn").Instantiate();
+                List<RewardStruct> datas = [];
                 RewardStruct @struct = new()
                 {
-                    type = RewardType.Gold
+                    Type = RewardType.Gold
                 };
                 Random r = new();
-                uint gold = (uint)r.Next(BattlePreset.MinGoldReward, BattlePreset.MaxGoldReward);
-                if (gold > 0)
+                if (_battlePreset != null)
                 {
-                    @struct.rewards = new() { gold.ToString() };
-                    datas.Add(@struct);
-                }
-                RewardStruct @struct2 = new()
-                {
-                    type = RewardType.Exp,
-                    rewards = new() { BattlePreset.GainExp.ToString() }
-                };
-                if (BattlePreset.GainExp > 0) datas.Add(@struct2);
-                StaticInstance.windowMgr.AddScene(rewardScene, datas);
+                    var gold = (uint)r.Next(_battlePreset.MinGoldReward, _battlePreset.MaxGoldReward);
+                    if (gold > 0)
+                    {
+                        @struct.Rewards = [gold.ToString()];
+                        datas.Add(@struct);
+                    }
 
-                var nextrooms = StaticInstance.playerData.gsd.MapGenerator?.LastRoom?.NextRooms;
-                if (nextrooms == null || nextrooms.Count == 0)
+                    RewardStruct @struct2 = new()
+                    {
+                        Type = RewardType.Exp,
+                        Rewards = [_battlePreset.GainExp.ToString()]
+                    };
+                    if (_battlePreset.GainExp > 0) datas.Add(@struct2);
+                }
+
+
+                StaticInstance.WindowMgr.AddScene(rewardScene, datas);
+
+                var nextRooms = StaticInstance.PlayerData.Gsd.MapGenerator?.LastRoom?.NextRooms;
+                if (nextRooms == null || nextRooms.Count == 0)
                 {
-                    StaticInstance.playerData.gsd.MapGenerator.EndMap();
+                    StaticInstance.PlayerData.Gsd.MapGenerator?.EndMap();
                 }
             }
-            BattlePreset = null;
+
+            _battlePreset = null;
         }
         else
         {
             BattleStatic.Reset();
-            StaticInstance.playerData.gsd = new();
-            StaticInstance.windowMgr.RemoveAllScene();
-            StaticInstance.windowMgr.ChangeScene(ResourceLoader.Load<PackedScene>("res://Pages/menu_scene.tscn").Instantiate());
+            StaticInstance.PlayerData.Gsd = new GlobalSaveData();
+            StaticInstance.WindowMgr.RemoveAllScene();
+            StaticInstance.WindowMgr.ChangeScene(ResourceLoader.Load<PackedScene>("res://Pages/menu_scene.tscn")
+                .Instantiate());
         }
-        EndControl.Visible = true;
+
+        _endControl.Visible = true;
     }
 
     public void UpdateCounts()
     {
-        DeckCount.Text = "卡组数量：" + nowPlayer.InFightDeckCount;
-        GraveCount.Text = "墓地数量：" + nowPlayer.InFightGraveCount;
-        ActionPointLabel.Text = "行动点：" + nowPlayer.CurrentActionPoint + "/" + nowPlayer.TurnActionPoint;
+        _deckCount.Text = "卡组数量：" + NowPlayer.InFightDeckCount;
+        GraveCount.Text = "墓地数量：" + NowPlayer.InFightGraveCount;
+        _actionPointLabel.Text = "行动点：" + NowPlayer.CurrentActionPoint + "/" + NowPlayer.TurnActionPoint;
     }
 
     public EnemyRoleObject FindEnemyObjectByRole(EnemyRole role)
     {
-        foreach (var i in enemyContainer?.GetChildren())
+        foreach (var i in EnemyContainer?.GetChildren() ?? [])
         {
             if (i is EnemyRoleObject ero && ero.data == role)
             {
-                return i as EnemyRoleObject;
+                return ero;
             }
         }
+
         return null;
     }
 
@@ -772,36 +823,36 @@ public partial class BattleScene : BaseScene, IEvent
     /// <param name="max">最大数量</param>
     /// <param name="min">最小数量</param>
     /// <param name="filter">过滤条件</param>
-    /// <param name="ConfirmAction">确定按钮的回调函数</param>
-    /// <param name="mustlist">必须选择的位置，以列表的形式传递</param>
-    public void SelectCard(int max, int min, Func<Card, bool> filter, Action<List<Card>> ConfirmAction, List<int> mustlist = null)
+    /// <param name="confirmAction">确定按钮的回调函数</param>
+    /// <param name="mustList">必须选择的位置，以列表的形式传递</param>
+    public void SelectCard(int max, int min, Func<Card, bool> filter, Action<List<Card>> confirmAction,
+        List<int> mustList = null)
     {
         BattleStatic.MaxSelectCount = max;
         BattleStatic.MinSelectCount = min;
         BattleStatic.isDiscarding = true;
-        if (mustlist != null) BattleStatic.MustList = mustlist.ToList();
-        SelectConfirmBtn.Visible = true;
-        SelectControl.Visible = true;
-        BattleStatic.ConfirmAction = ConfirmAction;
+        if (mustList != null) BattleStatic.MustList = mustList.ToList();
+        _selectConfirmBtn.Visible = true;
+        _selectControl.Visible = true;
+        BattleStatic.ConfirmAction = confirmAction;
         BattleStatic.SelectFilterFunc = filter;
-        SelectConfirmBtn.Pressed += SelectConfirmAction;
+        _selectConfirmBtn.Pressed += SelectConfirmAction;
         UpdateSelectBtn();
     }
 
     private void SelectConfirmAction()
     {
-        if (BattleStatic.discard_list.Count >= BattleStatic.MinSelectCount && BattleStatic.discard_list.Count <= BattleStatic.MaxSelectCount)
-        {
-            BattleStatic.ConfirmAction?.Invoke(SelectConfirm());
-            BattleStatic.EndSelect();
-            DispatchEvent("SelectConfirm");
-        }
+        if (BattleStatic.discard_list.Count < BattleStatic.MinSelectCount ||
+            BattleStatic.discard_list.Count > BattleStatic.MaxSelectCount) return;
+        BattleStatic.ConfirmAction?.Invoke(SelectConfirm());
+        BattleStatic.EndSelect();
+        DispatchEvent("SelectConfirm");
     }
 
     public List<Card> SelectConfirm()
     {
-        SelectConfirmBtn.Visible = false;
-        SelectControl.Visible = false;
+        _selectConfirmBtn.Visible = false;
+        _selectControl.Visible = false;
         var res = BattleStatic.discard_list.ToList();
         BattleStatic.SelectFilterFunc = null;
         BattleStatic.ConfirmAction = null;
@@ -812,9 +863,10 @@ public partial class BattleScene : BaseScene, IEvent
 
     public enum DisCardReason
     {
-        END_TURN,
-        EFFECT,
+        EndTurn,
+        Effect,
     }
+
     public void DisCard(List<Card> cards, PlayerRole owner, DisCardReason reason, BaseRole from)
     {
         foreach (var card in cards)
@@ -822,21 +874,18 @@ public partial class BattleScene : BaseScene, IEvent
             owner.InFightHands.Remove(card);
             owner.InFightGrave.Add(card);
             card.DiscardAction?.Invoke(owner, reason, from);
-            if (owner == nowPlayer)
+            if (owner != NowPlayer) continue;
+            foreach (var cObj in HandControl.GetChildren().Cast<CardObject>())
             {
-                foreach (CardObject cobj in HandControl.GetChildren().Cast<CardObject>())
-                {
-                    if (cobj.card == card)
-                    {
-                        cobj.QueueFree();
-                        break;
-                    }
-                }
+                if (cObj.card != card) continue;
+                cObj.QueueFree();
+                break;
             }
         }
+
         GetTree().CreateTimer(0.5f).Timeout += () =>
         {
-            HoveredIndex = -1;
+            _hoveredIndex = -1;
             UpdateCardPosition();
         };
         DispatchEvent("DISCARD", cards, owner, reason);
@@ -844,13 +893,14 @@ public partial class BattleScene : BaseScene, IEvent
 
     private void UpdateSelectBtn()
     {
-        if (BattleStatic.discard_list.Count < BattleStatic.MinSelectCount || BattleStatic.discard_list.Count > BattleStatic.MaxSelectCount)
+        if (BattleStatic.discard_list.Count < BattleStatic.MinSelectCount ||
+            BattleStatic.discard_list.Count > BattleStatic.MaxSelectCount)
         {
-            SelectConfirmBtn.Disabled = true;
+            _selectConfirmBtn.Disabled = true;
         }
         else
         {
-            SelectConfirmBtn.Disabled = false;
+            _selectConfirmBtn.Disabled = false;
         }
     }
 }

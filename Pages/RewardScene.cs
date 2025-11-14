@@ -1,35 +1,39 @@
-using Godot;
-using KemoCard.Pages;
-using StaticClass;
 using System.Collections.Generic;
+using Godot;
+using KemoCard.Scripts;
+
+namespace KemoCard.Pages;
 
 public partial class RewardScene : BaseScene
 {
     [Export] VBoxContainer vBox;
     [Export] Godot.Button ReturnBtn;
+
     public override void OnAdd(params object[] datas)
     {
-        if (StaticInstance.windowMgr.GetSceneByName("MainScene") is MainScene ms)
+        if (StaticInstance.WindowMgr.GetSceneByName("MainScene") is MainScene ms)
         {
             ms.MapView.HideMap();
         }
-        List<RewardStruct> d = (List<RewardStruct>)datas[0];
+
+        var d = (List<RewardStruct>)datas[0];
         d.ForEach(data =>
         {
-            RewardItem item = (RewardItem)ResourceLoader.Load<PackedScene>("res://Pages/RewardItem.tscn").Instantiate();
-            item.SetReward(data.type, data.rewards);
+            var item = (RewardItem)ResourceLoader.Load<PackedScene>("res://Pages/RewardItem.tscn").Instantiate();
+            item.SetReward(data.Type, data.Rewards);
             vBox.AddChild(item);
         });
-        ReturnBtn.Pressed += new(() =>
+        ReturnBtn.Pressed += () =>
         {
-            StaticInstance.windowMgr.RemoveScene(this);
-            if (StaticInstance.windowMgr.GetSceneByName("MainScene") is MainScene ms)
+            StaticInstance.WindowMgr.RemoveScene(this);
+            if (StaticInstance.WindowMgr.GetSceneByName("MainScene") is MainScene mainScene)
             {
-                ms.MapView.ShowMap();
+                mainScene.MapView.ShowMap();
                 //ms.MapView.UnlockFloor(StaticInstance.playerData.gsd.MapGenerator.FloorsClimbed);
-                ms.MapView.UnlockNextRooms();
+                mainScene.MapView.UnlockNextRooms();
             }
+
             StaticUtils.AutoSave();
-        });
+        };
     }
 }

@@ -1,6 +1,5 @@
 ﻿using Godot;
 using KemoCard.Scripts;
-using StaticClass;
 using System.Collections.Generic;
 
 public partial class BuffObject : Control, IEvent

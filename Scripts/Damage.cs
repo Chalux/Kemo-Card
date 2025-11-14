@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using static StaticClass.StaticEnums;
+using static KemoCard.Scripts.StaticEnums;
 
 namespace KemoCard.Scripts
 {

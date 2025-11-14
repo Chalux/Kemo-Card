@@ -1,10 +1,11 @@
 using Godot;
+using KemoCard.Pages;
+using KemoCard.Scripts;
 using KemoCard.Scripts.Interfaces;
-using StaticClass;
 
 public partial class ShopCardItem : Control, IUpdateAble
 {
-    [Export] CardShowObject ShowObject;
+    [Export] KemoCard.Pages.CardShowObject ShowObject;
     [Export] Godot.Button BuyButton;
     private ShopStruct _struct;
     public void Init(ShopStruct @struct)
@@ -13,11 +14,11 @@ public partial class ShopCardItem : Control, IUpdateAble
         Update();
         BuyButton.Pressed += () =>
         {
-            if (StaticInstance.playerData.gsd.MajorRole.Gold >= _struct.price)
+            if (StaticInstance.PlayerData.Gsd.MajorRole.Gold >= _struct.Price)
             {
-                StaticInstance.playerData.gsd.MajorRole.Gold -= _struct.price;
-                StaticInstance.playerData.gsd.MajorRole.TempDeck.Add(_struct.card);
-                _struct.isBuyed = true;
+                StaticInstance.PlayerData.Gsd.MajorRole.Gold -= _struct.Price;
+                StaticInstance.PlayerData.Gsd.MajorRole.TempDeck.Add(_struct.Card);
+                _struct.IsBought = true;
                 //StaticUtils.AutoSave();
                 Update();
             }
@@ -25,10 +26,10 @@ public partial class ShopCardItem : Control, IUpdateAble
     }
     public void Update()
     {
-        ShowObject.InitDataByCard(_struct.card);
-        BuyButton.Text = _struct.price.ToString();
-        BuyButton.AddThemeColorOverride("font_color", StaticInstance.playerData.gsd.MajorRole.Gold >= _struct.price ? Colors.White : Colors.Red);
-        if (_struct.isBuyed == true)
+        ShowObject.InitDataByCard(_struct.Card);
+        BuyButton.Text = _struct.Price.ToString();
+        BuyButton.AddThemeColorOverride("font_color", StaticInstance.PlayerData.Gsd.MajorRole.Gold >= _struct.Price ? Colors.White : Colors.Red);
+        if (_struct.IsBought == true)
         {
             ShowObject.Visible = false;
             BuyButton.Visible = false;

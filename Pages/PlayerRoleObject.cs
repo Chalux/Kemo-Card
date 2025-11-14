@@ -1,6 +1,5 @@
 using Godot;
 using KemoCard.Scripts;
-using StaticClass;
 using System.Linq;
 
 public partial class PlayerRoleObject : Control, IEvent
@@ -24,7 +23,7 @@ public partial class PlayerRoleObject : Control, IEvent
     public override void _Ready()
     {
         base._Ready();
-        StaticInstance.eventMgr.RegistIEvent(this);
+        StaticInstance.EventMgr.RegisterIEvent(this);
         mainControl.MouseEntered += new(() =>
         {
             if (SelectingTarget)
@@ -55,7 +54,7 @@ public partial class PlayerRoleObject : Control, IEvent
 
     public override void _ExitTree()
     {
-        StaticInstance.eventMgr.UnregistIEvent(this);
+        StaticInstance.EventMgr.UnregisterIEvent(this);
         base._ExitTree();
     }
 
@@ -65,7 +64,7 @@ public partial class PlayerRoleObject : Control, IEvent
         hpProgress.MaxValue = data.CurrHpLimit;
         mpProgress.MaxValue = data.CurrMpLimit;
         PBProgress.MaxValue = MBProgress.MaxValue = data.CurrHpLimit;
-        role.roleObject = this;
+        role.RoleObject = this;
         UpdateObject();
     }
 
@@ -84,7 +83,7 @@ public partial class PlayerRoleObject : Control, IEvent
         MBLabel.Text = StaticUtils.MakeBBCodeString(data.CurrMBlock.ToString());
         hpLabel.Text = StaticUtils.MakeBBCodeString(data.CurrHealth + "/" + data.CurrHpLimit);
         mpLabel.Text = StaticUtils.MakeBBCodeString(data.CurrMagic + "/" + data.CurrMpLimit);
-        roleName.Text = StaticUtils.MakeBBCodeString(data.name);
+        roleName.Text = StaticUtils.MakeBBCodeString(data.Name);
     }
 
     public void ReceiveEvent(string @event, params object[] datas)
@@ -96,7 +95,7 @@ public partial class PlayerRoleObject : Control, IEvent
         else if (@event == "StartSelectTarget")
         {
             var type = (StaticEnums.TargetType)datas[0];
-            if (type == StaticEnums.TargetType.ALL_SINGLE || type == StaticEnums.TargetType.TEAM_SINGLE)
+            if (type == StaticEnums.TargetType.AllSingle || type == StaticEnums.TargetType.TeamSingle)
                 SelectingTarget = true;
         }
         else if (@event == "SelectTargetOwner")
@@ -116,7 +115,7 @@ public partial class PlayerRoleObject : Control, IEvent
         else if (@event == "SelectTargetAll")
         {
             var type = (StaticEnums.TargetType)datas[0];
-            if (type == StaticEnums.TargetType.ALL || type == StaticEnums.TargetType.TEAM_ALL)
+            if (type == StaticEnums.TargetType.All || type == StaticEnums.TargetType.TeamAll)
             {
                 SelectingTarget = false;
                 SelectRect.Visible = true;

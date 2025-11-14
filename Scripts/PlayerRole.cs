@@ -1,20 +1,22 @@
 ﻿using Godot;
 using KemoCard.Scripts.Cards;
 using KemoCard.Scripts.Roles;
-using StaticClass;
 using System;
 using System.Collections.Generic;
-using System.Collections.Immutable;
 using System.Linq;
 using System.Text.Json.Serialization;
-using static StaticClass.StaticEnums;
+using static KemoCard.Scripts.StaticEnums;
 
 namespace KemoCard.Scripts
 {
     [Serializable]
-    public partial class PlayerRole : BaseRole
+    public class PlayerRole : BaseRole
     {
-        public PlayerRole(double OriginSpeed, double OriginStrength, double OriginEffeciency, double OriginMantra, double OriginCraftEquip, double OriginCraftBook, double OriginCritical, double OriginDodge, string name = "", int CurrHealth = 0, int CurrMagic = 0, int OriginHpLimit = 0, int OriginMpLimit = 0, int ActionPoint = 0) : base(OriginSpeed, OriginStrength, OriginEffeciency, OriginMantra, OriginCraftEquip, OriginCraftBook, OriginCritical, OriginDodge, CurrHealth, CurrMagic, OriginHpLimit, OriginMpLimit)
+        public PlayerRole(double OriginSpeed, double OriginStrength, double OriginEffeciency, double OriginMantra,
+            double OriginCraftEquip, double OriginCraftBook, double OriginCritical, double OriginDodge,
+            string name = "", int CurrHealth = 0, int CurrMagic = 0, int OriginHpLimit = 0, int OriginMpLimit = 0,
+            int ActionPoint = 0) : base(OriginSpeed, OriginStrength, OriginEffeciency, OriginMantra, OriginCraftEquip,
+            OriginCraftBook, OriginCritical, OriginDodge, CurrHealth, CurrMagic, OriginHpLimit, OriginMpLimit)
         {
             SetName(name);
             this.ActionPoint = ActionPoint;
@@ -22,105 +24,85 @@ namespace KemoCard.Scripts
 
         public PlayerRole()
         {
-
         }
 
         public PlayerRole(string id)
         {
-            if (!Datas.Ins.RolePool.ContainsKey(id))
+            if (!Datas.Ins.RolePool.TryGetValue(id, out var value))
             {
-                string errorLog = "未在脚本库中找到角色对应id，请检查Mod配置。id:" + id;
+                var errorLog = "未在脚本库中找到角色对应id，请检查Mod配置。id:" + id;
                 StaticInstance.MainRoot.ShowBanner(errorLog);
                 GD.PrintErr(errorLog);
             }
             else
             {
-                var cfg = Datas.Ins.RolePool[id];
-                Id = cfg.role_id;
-                string path = $"res://Mods/{cfg.mod_id}/role/R{id}.cs";
-                var res = FileAccess.Open(path, FileAccess.ModeFlags.Read);
-                if (res == null)
-                {
-                    string errorLog = "未找到角色脚本资源,id:" + id;
-                    StaticInstance.MainRoot.ShowBanner(errorLog);
-                    GD.PrintErr(errorLog);
-                }
-                else
-                {
-                    var s = ResourceLoader.Load<CSharpScript>(path).New().As<BaseRoleScript>();
-                    s.OnRoleInit(this);
-                }
+                Id = value.RoleId;
+                var script = RoleFactory.CreateRole(id);
+                script?.OnRoleInit(this);
             }
         }
 
         public string Id { get; set; } = "";
 
-        [JsonIgnore]
         /// <summary>
         /// 在使用这个角色当预设角色开始游戏的时候才会调用这个函数
         /// </summary>
-        public Action StartFunction;
+        [JsonIgnore] public Action StartFunction;
 
-        public List<Card> Deck { get; set; } = new();
+        public List<Card> Deck { get; set; } = [];
 
-        public Dictionary<string, Dictionary<uint, Card>> deck_idx_dic = new();
+        public Dictionary<string, Dictionary<uint, Card>> DeckIdxDic = new();
 
-        private int _Gold = 0;
+        private int _gold;
+
         public int Gold
         {
-            get => _Gold; set
+            get => _gold;
+            set
             {
-                _Gold = Math.Max(0, value);
-                StaticInstance.eventMgr.Dispatch("GoldChanged");
+                _gold = Math.Max(0, value);
+                StaticInstance.EventMgr.Dispatch("GoldChanged");
             }
         }
 
         public void AddCardIntoDeck(Card card)
         {
-            if (deck_idx_dic.ContainsKey(card.Id))
+            if (DeckIdxDic.TryGetValue(card.Id, out var value))
             {
-                var dic = deck_idx_dic[card.Id];
-                if (dic != null)
+                if (value != null)
                 {
-                    foreach (var idx in dic.Keys)
+                    foreach (var idx in value.Keys.Where(idx => !value.ContainsKey(idx + 1)))
                     {
-                        if (!dic.ContainsKey(idx + 1))
-                        {
-                            dic[idx + 1] = card;
-                            card.Idx = idx + 1;
-                            break;
-                        }
+                        value[idx + 1] = card;
+                        card.Idx = idx + 1;
+                        break;
                     }
                 }
                 else
                 {
-                    _ = deck_idx_dic[card.Id] = new();
+                    _ = DeckIdxDic[card.Id] = new Dictionary<uint, Card>();
                 }
-                card.owner = this;
+
+                card.Owner = this;
                 Deck.Add(card);
             }
             else
             {
-                var dic = deck_idx_dic[card.Id] = new();
+                var dic = DeckIdxDic[card.Id] = new Dictionary<uint, Card>();
                 dic[0] = card;
                 card.Idx = 0;
-                card.owner = this;
+                card.Owner = this;
                 Deck.Add(card);
             }
         }
 
         public void RemoveCardFromDeck(string cardid, uint idx)
         {
-            if (deck_idx_dic.ContainsKey(cardid))
-            {
-                var dic = deck_idx_dic[cardid];
-                if (dic.ContainsKey(idx))
-                {
-                    Deck.Remove(dic[idx]);
-                    dic[idx].owner = null;
-                    dic.Remove(idx);
-                }
-            }
+            if (!DeckIdxDic.TryGetValue(cardid, out var dic)) return;
+            if (!dic.TryGetValue(idx, out var value)) return;
+            Deck.Remove(value);
+            value.Owner = null;
+            dic.Remove(idx);
         }
 
         /// <summary>
@@ -130,33 +112,30 @@ namespace KemoCard.Scripts
         {
             foreach (var card in Deck)
             {
-                if (deck_idx_dic.ContainsKey(card.Id))
+                if (DeckIdxDic.TryGetValue(card.Id, out var value))
                 {
-                    var dic = deck_idx_dic[card.Id];
-                    if (dic != null)
+                    if (value != null)
                     {
-                        foreach (var idx in dic.Keys)
+                        foreach (var idx in value.Keys.Where(idx => !value.ContainsKey(idx + 1)))
                         {
-                            if (!dic.ContainsKey(idx + 1))
-                            {
-                                dic[idx + 1] = card;
-                                card.Idx = idx + 1;
-                                break;
-                            }
+                            value[idx + 1] = card;
+                            card.Idx = idx + 1;
+                            break;
                         }
                     }
                     else
                     {
-                        _ = deck_idx_dic[card.Id] = new();
+                        _ = DeckIdxDic[card.Id] = new Dictionary<uint, Card>();
                     }
-                    card.owner = this;
+
+                    card.Owner = this;
                 }
                 else
                 {
-                    var dic = deck_idx_dic[card.Id] = new();
+                    var dic = DeckIdxDic[card.Id] = new Dictionary<uint, Card>();
                     dic[0] = card;
                     card.Idx = 0;
-                    card.owner = this;
+                    card.Owner = this;
                 }
             }
         }
@@ -181,7 +160,8 @@ namespace KemoCard.Scripts
         //    }
         //}
 
-        private int _actionPoint = 0;
+        private int _actionPoint;
+
         public int ActionPoint
         {
             get => _actionPoint;
@@ -200,117 +180,125 @@ namespace KemoCard.Scripts
 
         public Dictionary<uint, Equip> EquipDic { get; set; } = new Dictionary<uint, Equip>();
         public Equip[] EquipList { get; set; } = new Equip[BagCount];
+
         public void PutOnEquip(uint bagIndex)
         {
-            Equip equip = EquipList[bagIndex];
+            var equip = EquipList[bagIndex];
             if (equip == null) return;
-            if (equip.EquipType == EquipType.DOUBLE_WEAPON)
+            switch (equip.EquipType)
             {
-                uint amt = GetEquipBagEmptyAmt();
-                if (EquipDic[(uint)EquipType.WEAPON1] != null && EquipDic[(uint)EquipType.WEAPON2] != null && EquipDic[(uint)EquipType.WEAPON1].EquipType != EquipType.DOUBLE_WEAPON)
+                case EquipType.DoubleWeapon:
                 {
-                    if (amt < 1)
+                    var amt = GetEquipBagEmptyAmt();
+                    if (EquipDic[(uint)EquipType.Weapon1] != null && EquipDic[(uint)EquipType.Weapon2] != null &&
+                        EquipDic[(uint)EquipType.Weapon1].EquipType != EquipType.DoubleWeapon)
                     {
-                        StaticInstance.MainRoot.ShowBanner("背包已满");
-                        return;
+                        if (amt < 1)
+                        {
+                            StaticInstance.MainRoot.ShowBanner("背包已满");
+                            return;
+                        }
+                        else
+                        {
+                            EquipList[bagIndex] = null;
+                            PutOffEquip((uint)EquipType.Weapon1);
+                            PutOffEquip((uint)EquipType.Weapon2);
+                            EquipDic[(uint)EquipType.Weapon1] = EquipDic[(uint)EquipType.Weapon2] = equip;
+                        }
                     }
                     else
                     {
                         EquipList[bagIndex] = null;
-                        PutOffEquip((uint)EquipType.WEAPON1);
-                        PutOffEquip((uint)EquipType.WEAPON2);
-                        EquipDic[(uint)EquipType.WEAPON1] = EquipDic[(uint)EquipType.WEAPON2] = equip;
+                        PutOffEquip((uint)EquipType.Weapon1);
+                        PutOffEquip((uint)EquipType.Weapon2);
+                        EquipDic[(uint)EquipType.Weapon1] = EquipDic[(uint)EquipType.Weapon2] = equip;
                     }
+
+                    break;
                 }
-                else
+                case EquipType.Other:
                 {
-                    EquipList[bagIndex] = null;
-                    PutOffEquip((uint)EquipType.WEAPON1);
-                    PutOffEquip((uint)EquipType.WEAPON2);
-                    EquipDic[(uint)EquipType.WEAPON1] = EquipDic[(uint)EquipType.WEAPON2] = equip;
-                }
-            }
-            else if (equip.EquipType == EquipType.OTHER)
-            {
-                bool tempbool = true;
-                for (uint i = (uint)EquipType.OTHER; i < (uint)EquipType.OTHER + 5; i++)
-                {
-                    if (!EquipDic.ContainsKey(i) || EquipDic[i] == null)
+                    var tempBool = true;
+                    for (var i = (uint)EquipType.Other; i < (uint)EquipType.Other + 5; i++)
                     {
+                        if (EquipDic.TryGetValue(i, out var value) && value != null) continue;
                         EquipList[bagIndex] = null;
                         PutOffEquip(bagIndex);
-                        if (!EquipDic.ContainsKey(i)) EquipDic.Add(i, equip);
+                        if (EquipDic.TryAdd(i, equip))
+                        {
+                        }
                         else if (EquipDic[i] == null) EquipDic[i] = equip;
-                        tempbool = false;
+
+                        tempBool = false;
                         break;
                     }
+
+                    if (tempBool)
+                    {
+                        StaticInstance.MainRoot.ShowBanner("无空闲饰品栏");
+                        return;
+                    }
+
+                    break;
                 }
-                if (tempbool)
+                case EquipType.BothWeapon when EquipDic.ContainsKey((uint)EquipType.Weapon1):
                 {
-                    StaticInstance.MainRoot.ShowBanner("无空闲饰品栏");
-                    return;
-                }
-            }
-            else if (equip.EquipType == EquipType.BOTH_WEAPON)
-            {
-                if (EquipDic.ContainsKey((uint)EquipType.WEAPON1))
-                {
-                    if (EquipDic.ContainsKey((uint)EquipType.WEAPON2))
+                    if (EquipDic.ContainsKey((uint)EquipType.Weapon2))
                     {
                         EquipList[bagIndex] = null;
-                        PutOffEquip((uint)EquipType.WEAPON2);
-                        EquipDic[(uint)EquipType.WEAPON2] = equip;
+                        PutOffEquip((uint)EquipType.Weapon2);
                     }
                     else
                     {
                         EquipList[bagIndex] = null;
-                        EquipDic[(uint)EquipType.WEAPON2] = equip;
                     }
+
+                    EquipDic[(uint)EquipType.Weapon2] = equip;
+
+                    break;
                 }
-                else
-                {
+                case EquipType.BothWeapon:
                     EquipList[bagIndex] = null;
-                    EquipDic[(uint)EquipType.WEAPON1] = equip;
-                }
+                    EquipDic[(uint)EquipType.Weapon1] = equip;
+                    break;
+                default:
+                    EquipList[bagIndex] = null;
+                    PutOffEquip((uint)equip.EquipType);
+                    EquipDic[(uint)equip.EquipType] = equip;
+                    break;
             }
-            else
-            {
-                EquipList[bagIndex] = null;
-                PutOffEquip((uint)equip.EquipType);
-                EquipDic[(uint)equip.EquipType] = equip;
-            }
-            equip.owner = this;
+
+            equip.Owner = this;
             equip.EquipScript.OnPutOn();
-            StaticInstance.eventMgr.Dispatch("PlayerEquipUpdated");
+            StaticInstance.EventMgr.Dispatch("PlayerEquipUpdated");
         }
 
         public void PutOffEquip(uint slot)
         {
-            if (EquipDic.ContainsKey(slot) && EquipDic[slot] != null)
-            {
-                uint amt = GetEquipBagEmptyAmt();
+            if (!EquipDic.TryGetValue(slot, out var value) || value == null) return;
+            var amt = GetEquipBagEmptyAmt();
 
-                if (amt > 0)
+            if (amt > 0)
+            {
+                if (value.EquipType == EquipType.DoubleWeapon &&
+                    slot is (uint)EquipType.Weapon1 or (uint)EquipType.Weapon2)
                 {
-                    Equip equip = EquipDic[slot];
-                    if (equip.EquipType == EquipType.DOUBLE_WEAPON && (slot == (uint)EquipType.WEAPON1 || slot == (uint)EquipType.WEAPON2))
-                    {
-                        AddEquipToBag(equip);
-                        EquipDic[(uint)EquipType.WEAPON2] = null;
-                        EquipDic[(uint)EquipType.WEAPON1] = null;
-                    }
-                    else
-                    {
-                        AddEquipToBag(equip);
-                        EquipDic.Remove(slot);
-                    }
-                    equip.EquipScript.OnPutOff();
-                    StaticInstance.eventMgr.Dispatch("PlayerEquipUpdated");
+                    AddEquipToBag(value);
+                    EquipDic[(uint)EquipType.Weapon2] = null;
+                    EquipDic[(uint)EquipType.Weapon1] = null;
                 }
                 else
                 {
-                    StaticInstance.MainRoot.ShowBanner("背包已满");
+                    AddEquipToBag(value);
+                    EquipDic.Remove(slot);
                 }
+
+                value.EquipScript.OnPutOff();
+                StaticInstance.EventMgr.Dispatch("PlayerEquipUpdated");
+            }
+            else
+            {
+                StaticInstance.MainRoot.ShowBanner("背包已满");
             }
         }
 
@@ -320,7 +308,7 @@ namespace KemoCard.Scripts
             if (idx > -1)
             {
                 EquipList[idx] = equip;
-                StaticInstance.eventMgr.Dispatch("PlayerEquipUpdated");
+                StaticInstance.EventMgr.Dispatch("PlayerEquipUpdated");
                 return true;
             }
             else
@@ -332,49 +320,52 @@ namespace KemoCard.Scripts
 
         public int GetFirstEmptyBagIndex()
         {
-            for (int i = 0; i < EquipList.Length; i++)
+            for (var i = 0; i < EquipList.Length; i++)
             {
                 if (EquipList[i] == null)
                 {
                     return i;
                 }
             }
+
             return -1;
         }
 
         public uint GetEquipBagEmptyAmt()
         {
             uint res = 0;
-            for (int i = 0; i < EquipList.Length; i++)
+            foreach (var t in EquipList)
             {
-                if (EquipList[i] == null)
+                if (t == null)
                 {
                     res++;
                 }
             }
+
             return res;
         }
 
         public override float GetSymbol(string key, float defaultValue = 0f)
         {
             var value = Symbol.GetValueOrDefault(key, defaultValue);
-            Buffs.ForEach(buff =>
-            {
-                value += buff.Symbol.GetValueOrDefault(key, 0);
-            });
-            foreach (var equip in EquipDic.Values)
-            {
-                value += equip.Symbol.GetValueOrDefault(key, 0);
-            }
+            Buffs.ForEach(buff => { value += buff.Symbol.GetValueOrDefault(key, 0); });
+            value += EquipDic.Values.Sum(equip => equip.Symbol.GetValueOrDefault(key, 0));
+
             return value;
         }
 
-        [JsonIgnore]
-        public Action OnBattleStart;
+        [JsonIgnore] public Action OnBattleStart;
 
-        private uint _unUsedPoints = 0;
-        public uint UnUsedPoints { get => _unUsedPoints; set => _unUsedPoints = Math.Max(0, value); }
-        private uint _exp = 0;
+        private uint _unUsedPoints;
+
+        public uint UnUsedPoints
+        {
+            get => _unUsedPoints;
+            set => _unUsedPoints = Math.Max(0, value);
+        }
+
+        private uint _exp;
+
         public uint Exp
         {
             get => _exp;
@@ -385,9 +376,10 @@ namespace KemoCard.Scripts
                     _exp = 0;
                     return;
                 }
+
                 _exp += value;
-                var NeedExp = ExpCfg.CalUpgradeNeedExp(Level);
-                if (_exp < NeedExp)
+                var needExp = ExpCfg.CalUpgradeNeedExp(Level);
+                if (_exp < needExp)
                     _exp = Math.Max(0, _exp);
                 else
                 {
@@ -399,14 +391,13 @@ namespace KemoCard.Scripts
                 }
             }
         }
+
         private uint _level = 1;
+
         public uint Level
         {
             get => _level;
-            set
-            {
-                _level = Math.Clamp(value, _level, ExpCfg.MaxLevel);
-            }
+            set => _level = Math.Clamp(value, _level, ExpCfg.MaxLevel);
         }
 
         public void UpgradeLevel()
@@ -415,67 +406,52 @@ namespace KemoCard.Scripts
             UnUsedPoints += ExpCfg.GainPointPerUpgrade;
         }
 
-        private int _CurrPBlock = 0;
-        private int _CurrMBlock = 0;
+        private int _currPBlock;
+        private int _currMBlock;
 
         public int CurrPBlock
         {
-            get => _CurrPBlock;
+            get => _currPBlock;
             set
             {
-                var oldValue = _CurrPBlock;
-                if (value < 0)
-                {
-                    _CurrPBlock = 0;
-                }
-                else
-                {
-                    _CurrPBlock = value;
-                }
-                object[] param = new object[] { this, "CurrPBlock", oldValue, _CurrPBlock };
-                StaticInstance.eventMgr.Dispatch("PropertiesChanged", param);
+                var oldValue = _currPBlock;
+                _currPBlock = value < 0 ? 0 : value;
+
+                var param = new object[] { this, "CurrPBlock", oldValue, _currPBlock };
+                StaticInstance.EventMgr.Dispatch("PropertiesChanged", param);
             }
         }
 
         public int CurrMBlock
         {
-            get => _CurrMBlock;
+            get => _currMBlock;
             set
             {
-                var oldValue = _CurrMBlock;
-                if (value < 0)
-                {
-                    _CurrMBlock = 0;
-                }
-                else
-                {
-                    _CurrMBlock = value;
-                }
-                object[] param = new object[] { this, "CurrMBlock", oldValue, _CurrPBlock };
-                StaticInstance.eventMgr.Dispatch("PropertiesChanged", param);
+                var oldValue = _currMBlock;
+                _currMBlock = value < 0 ? 0 : value;
+
+                var param = new object[] { this, "CurrMBlock", oldValue, _currPBlock };
+                StaticInstance.EventMgr.Dispatch("PropertiesChanged", param);
             }
         }
-        public List<Card> TempDeck { get; set; } = new();
+
+        public List<Card> TempDeck { get; set; } = [];
+
         #region 战斗中的数据，非战斗中时没有意义
-        [JsonIgnore]
-        public List<Card> InFightDeck = new();
-        [JsonIgnore]
-        public List<Card> InFightHands = new();
-        [JsonIgnore]
-        public List<Card> InFightGrave = new();
-        [JsonIgnore]
-        public List<BuffImplBase> InFightBuffs = new();
+
+        [JsonIgnore] public List<Card> InFightDeck = [];
+        [JsonIgnore] public List<Card> InFightHands = [];
+        [JsonIgnore] public List<Card> InFightGrave = [];
+        [JsonIgnore] public List<BuffImplBase> InFightBuffs = [];
         public int HandLimit = 10;
-        [JsonIgnore]
-        public bool isIFPInited = false;
-        [JsonIgnore]
-        public bool isDead = false;
+        [JsonIgnore] public bool IsIfpInit;
+        [JsonIgnore] public bool IsDead = false;
         public int InFightDeckCount => InFightDeck.Count;
         public int InFightGraveCount => InFightGrave.Count;
-        [JsonIgnore]
-        public PlayerRoleObject roleObject;
+        [JsonIgnore] public PlayerRoleObject RoleObject;
 
-        public int _turnActionPoint = 0;
+        private int _turnActionPoint;
+
         public int TurnActionPoint
         {
             get => _turnActionPoint;
@@ -487,27 +463,26 @@ namespace KemoCard.Scripts
             }
         }
 
-        public int _currActionPoint = 0;
+        public int CurrActionPoint;
+
         public int CurrentActionPoint
         {
-            get => _currActionPoint;
+            get => CurrActionPoint;
             set
             {
-                var oldValue = _currActionPoint;
-                _currActionPoint = value;
-                OnPropertyChanged(nameof(CurrentActionPoint), oldValue, _currActionPoint);
+                var oldValue = CurrActionPoint;
+                CurrActionPoint = value;
+                OnPropertyChanged(nameof(CurrentActionPoint), oldValue, CurrActionPoint);
             }
         }
 
         public void AddCardToDeck(Card card)
         {
             InFightDeck.Add(card);
-            if (StaticInstance.currWindow is BattleScene bs)
+            if (StaticInstance.CurrWindow is not Pages.BattleScene bs) return;
+            if (bs.NowPlayer == this)
             {
-                if (bs.nowPlayer == this)
-                {
-                    bs.UpdateCounts();
-                }
+                bs.UpdateCounts();
             }
         }
 
@@ -519,36 +494,30 @@ namespace KemoCard.Scripts
         public void RemoveCardInDeck(Card card)
         {
             InFightDeck.Remove(card);
-            if (StaticInstance.currWindow is BattleScene bs)
+            if (StaticInstance.CurrWindow is not Pages.BattleScene bs) return;
+            if (bs.NowPlayer == this)
             {
-                if (bs.nowPlayer == this)
-                {
-                    bs.UpdateCounts();
-                }
+                bs.UpdateCounts();
             }
         }
 
         public void AddCardToGrave(Card card)
         {
             InFightGrave.Add(card);
-            if (StaticInstance.currWindow is BattleScene bs)
+            if (StaticInstance.CurrWindow is not Pages.BattleScene bs) return;
+            if (bs.NowPlayer == this)
             {
-                if (bs.nowPlayer == this)
-                {
-                    bs.UpdateCounts();
-                }
+                bs.UpdateCounts();
             }
         }
 
         public void RemoveCardInGrave(Card card)
         {
             InFightGrave.Remove(card);
-            if (StaticInstance.currWindow is BattleScene bs)
+            if (StaticInstance.CurrWindow is not Pages.BattleScene bs) return;
+            if (bs.NowPlayer == this)
             {
-                if (bs.nowPlayer == this)
-                {
-                    bs.UpdateCounts();
-                }
+                bs.UpdateCounts();
             }
         }
 
@@ -571,11 +540,11 @@ namespace KemoCard.Scripts
             InFightDeck.ForEach(card =>
             {
                 card.InGameDict.Clear();
-                card.owner = this;
+                card.Owner = this;
             });
             StaticUtils.ShuffleArray(InFightDeck);
-            InFightGrave = new();
-            isIFPInited = true;
+            InFightGrave = [];
+            IsIfpInit = true;
             InitBuff();
         }
 
@@ -586,23 +555,24 @@ namespace KemoCard.Scripts
             InFightGrave?.Clear();
             //InFightBuffs?.ToList().ForEach((BuffImplBase buff) => { buff.RemoveThisFromBinder(); });
             InFightBuffs?.Clear();
-            isIFPInited = false;
+            IsIfpInit = false;
             CurrPBlock = CurrMBlock = 0;
         }
 
         public override void AddBuff(BuffImplBase buff)
         {
-            if (roleObject != null)
+            if (RoleObject != null)
             {
                 buff.Binder = this;
-                roleObject.AddBuff(buff);
+                RoleObject.AddBuff(buff);
             }
+
             base.AddBuff(buff);
         }
 
         public void InitBuff()
         {
-            InFightBuffs = new();
+            InFightBuffs = [];
             Buffs.ForEach(buff =>
             {
                 //var obj = StaticUtils.TransExp<BuffImplBase, BuffImplBase>.Trans(buff);
@@ -610,22 +580,18 @@ namespace KemoCard.Scripts
             });
             InFightBuffs.ForEach(buff =>
             {
-                if (roleObject != null)
-                {
-                    buff.Binder = this;
-                    roleObject.AddBuff(buff);
-                }
+                if (RoleObject == null) return;
+                buff.Binder = this;
+                RoleObject.AddBuff(buff);
             });
         }
 
         public void AddInfightBuff(BuffImplBase buff)
         {
             InFightBuffs.Add(buff);
-            if (roleObject != null)
-            {
-                buff.Binder = this;
-                roleObject.AddBuff(buff);
-            }
+            if (RoleObject == null) return;
+            buff.Binder = this;
+            RoleObject.AddBuff(buff);
         }
 
         /// <summary>
@@ -634,20 +600,19 @@ namespace KemoCard.Scripts
         /// <param name="card">添加到手牌的card数据</param>
         public void AddCardIntoInfightHand(Card card)
         {
-            if (StaticInstance.windowMgr.GetSceneByName("BattleScene") is not BattleScene bs) return;
-            card.owner = this;
+            if (StaticInstance.WindowMgr.GetSceneByName("BattleScene") is not Pages.BattleScene bs) return;
+            card.Owner = this;
             InFightHands.Add(card);
-            PackedScene res = ResourceLoader.Load<PackedScene>("res://Pages/CardObject.tscn");
-            if (res != null)
+            var res = ResourceLoader.Load<PackedScene>("res://Pages/CardObject.tscn");
+            if (res == null) return;
+            var obj = res.Instantiate<CardObject>();
+            obj.InitData(card);
+            if (bs.NowPlayer == this)
             {
-                var obj = res.Instantiate<CardObject>();
-                obj.InitData(card);
-                if (bs.nowPlayer == this)
-                {
-                    bs.HandControl.AddChild(obj);
-                }
+                bs.HandControl.AddChild(obj);
             }
         }
+
         #endregion
 
         public List<Card> GetDeck()
@@ -657,12 +622,12 @@ namespace KemoCard.Scripts
 
         public override string GetRichDesc()
         {
-            string str =
-             $"名字：{RichName()} 等级：{Level}\r\n" +
-             $"身体：{RichBody()}(速度：{RichSpeed()}力量：{RichStrength()})\r\n" +
-             $"魔法：{RichMagic()}(效率：{RichEfficiency()}咒言：{RichMantra()})\r\n" +
-             $"知识：{RichKnowledge()}(工艺：{RichCraftEquip()}书写：{RichCraftBook()})\r\n" +
-             $"技术：{RichTechnique()}(会心：{RichCritical()}敏捷：{RichDodge()})\r\n";
+            var str =
+                $"名字：{RichName()} 等级：{Level}\r\n" +
+                $"身体：{RichBody()}(速度：{RichSpeed()}力量：{RichStrength()})\r\n" +
+                $"魔法：{RichMagic()}(效率：{RichEfficiency()}咒言：{RichMantra()})\r\n" +
+                $"知识：{RichKnowledge()}(工艺：{RichCraftEquip()}书写：{RichCraftBook()})\r\n" +
+                $"技术：{RichTechnique()}(会心：{RichCritical()}敏捷：{RichDodge()})\r\n";
             return str;
         }
     }

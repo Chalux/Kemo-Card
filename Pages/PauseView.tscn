@@ -1,19 +1,19 @@
 [gd_scene load_steps=2 format=3 uid="uid://ce60tc00uyv2k"]
 
-[ext_resource type="Script" path="res://Pages/PauseView.cs" id="1_uccy1"]
+[ext_resource type="Script" uid="uid://csdscgrncpdup" path="res://Pages/PauseView.cs" id="1_uccy1"]
 
-[node name="PauseView" type="Node2D" node_paths=PackedStringArray("Quit", "Back")]
-script = ExtResource("1_uccy1")
-Quit = NodePath("Control/Quit")
-Back = NodePath("Control/Back")
-
-[node name="Control" type="Control" parent="."]
+[node name="PauseView" type="Control" node_paths=PackedStringArray("Quit", "Back")]
 layout_mode = 3
-anchors_preset = 0
-offset_right = 1920.0
-offset_bottom = 1080.0
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_uccy1")
+Quit = NodePath("Quit")
+Back = NodePath("Back")
 
-[node name="ColorRect" type="ColorRect" parent="Control"]
+[node name="ColorRect" type="ColorRect" parent="."]
 modulate = Color(0, 0, 0, 0.196078)
 layout_mode = 1
 anchors_preset = 15
@@ -22,20 +22,28 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="Quit" type="Button" parent="Control"]
-layout_mode = 0
+[node name="Quit" type="Button" parent="."]
+layout_mode = 1
+anchors_preset = 4
+anchor_top = 0.5
+anchor_bottom = 0.5
 offset_left = 128.0
-offset_top = 448.0
+offset_top = -92.0
 offset_right = 280.0
-offset_bottom = 506.0
+offset_bottom = -34.0
+grow_vertical = 2
 theme_override_font_sizes/font_size = 36
 text = "退出游戏"
 
-[node name="Back" type="Button" parent="Control"]
-layout_mode = 0
+[node name="Back" type="Button" parent="."]
+layout_mode = 1
+anchors_preset = 4
+anchor_top = 0.5
+anchor_bottom = 0.5
 offset_left = 128.0
-offset_top = 576.0
+offset_top = 36.0
 offset_right = 280.0
-offset_bottom = 634.0
+offset_bottom = 94.0
+grow_vertical = 2
 theme_override_font_sizes/font_size = 36
 text = "返回"

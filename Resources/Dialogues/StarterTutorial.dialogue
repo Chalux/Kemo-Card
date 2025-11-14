@@ -1,6 +1,6 @@
 ~ Tutorial
 
-do ChangeBG("res://Resources/Images/city_aerial_view.png")
+do ChangeBg("res://Resources/Images/city_aerial_view.png")
 旁白: 你好，欢迎游玩此游戏。
 ~ Start_Tutorial
 旁白: 在这个游戏中你将创建(或使用)一个角色，构建一套卡牌来通过关卡。

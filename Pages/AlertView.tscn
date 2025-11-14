@@ -1,20 +1,21 @@
 [gd_scene load_steps=2 format=3 uid="uid://cgi7pkciik4ur"]
 
-[ext_resource type="Script" path="res://Pages/AlertView.cs" id="1_7qlgh"]
+[ext_resource type="Script" uid="uid://br04qcbdjn4sy" path="res://Pages/AlertView.cs" id="1_7qlgh"]
 
-[node name="AlertScene" type="Node2D" node_paths=PackedStringArray("msg", "ConfirmBtn", "CancelBtn")]
-script = ExtResource("1_7qlgh")
-msg = NodePath("Alert_Control/ColorRect/RichTextLabel")
-ConfirmBtn = NodePath("Alert_Control/ColorRect/Control/Confirm")
-CancelBtn = NodePath("Alert_Control/ColorRect/Control/Cancel")
-
-[node name="Alert_Control" type="Control" parent="."]
+[node name="AlertScene" type="Control" node_paths=PackedStringArray("_msg", "_confirmBtn", "_cancelBtn")]
 layout_mode = 3
-anchors_preset = 0
-offset_right = 1920.0
-offset_bottom = 1080.0
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_7qlgh")
+_msg = NodePath("ColorRect/RichTextLabel")
+_confirmBtn = NodePath("ColorRect/Control/Confirm")
+_cancelBtn = NodePath("ColorRect/Control/Cancel")
+EnableMouseStopFilter = 0
 
-[node name="ClickMask" type="Panel" parent="Alert_Control"]
+[node name="ClickMask" type="Panel" parent="."]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -22,7 +23,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="ColorRect" type="ColorRect" parent="Alert_Control"]
+[node name="ColorRect" type="ColorRect" parent="."]
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -37,7 +38,7 @@ grow_horizontal = 2
 grow_vertical = 2
 color = Color(0, 0, 0, 0.709804)
 
-[node name="Label" type="Label" parent="Alert_Control/ColorRect"]
+[node name="Label" type="Label" parent="ColorRect"]
 layout_mode = 1
 anchors_preset = 5
 anchor_left = 0.5
@@ -49,7 +50,7 @@ grow_horizontal = 2
 theme_override_font_sizes/font_size = 50
 text = "提 示"
 
-[node name="RichTextLabel" type="RichTextLabel" parent="Alert_Control/ColorRect"]
+[node name="RichTextLabel" type="RichTextLabel" parent="ColorRect"]
 layout_mode = 1
 anchors_preset = 14
 anchor_top = 0.5
@@ -65,7 +66,7 @@ text = "这是一则提示
 这是一则提示"
 fit_content = true
 
-[node name="Control" type="Control" parent="Alert_Control/ColorRect"]
+[node name="Control" type="Control" parent="ColorRect"]
 layout_mode = 1
 anchors_preset = 2
 anchor_top = 1.0
@@ -75,7 +76,7 @@ offset_right = 800.0
 grow_vertical = 0
 metadata/_edit_use_anchors_ = true
 
-[node name="Confirm" type="Button" parent="Alert_Control/ColorRect/Control"]
+[node name="Confirm" type="Button" parent="ColorRect/Control"]
 layout_mode = 1
 anchors_preset = -1
 anchor_top = 1.0
@@ -86,7 +87,7 @@ grow_vertical = 0
 theme_override_font_sizes/font_size = 36
 text = "确 认"
 
-[node name="Cancel" type="Button" parent="Alert_Control/ColorRect/Control"]
+[node name="Cancel" type="Button" parent="ColorRect/Control"]
 layout_mode = 1
 anchors_preset = 6
 anchor_left = 1.0

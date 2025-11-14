@@ -1,110 +1,85 @@
 [gd_scene load_steps=4 format=3 uid="uid://bemn2qkcjybbi"]
 
-[ext_resource type="Script" path="res://Pages/MainScene.cs" id="1_ejl3x"]
+[ext_resource type="Script" uid="uid://bw21fcns4p6k7" path="res://Pages/MainScene.cs" id="1_ejl3x"]
 [ext_resource type="PackedScene" uid="uid://bxu5oaf5w8o2p" path="res://Pages/Map/Map.tscn" id="2_ask6y"]
 [ext_resource type="Texture2D" uid="uid://dyygagjf1l0r6" path="res://Mods/MainPackage/Resources/Icons/icons_204.png" id="3_rnj1p"]
 
-[node name="MainScene" type="Node2D" node_paths=PackedStringArray("SaveButton", "EditDeckButton", "TestBattleButton", "EditEquipBtn", "TestPresetBtn", "ShowMapBtn", "AllocBtn", "AllocLabel", "LevelLabel", "ExpLabel", "GoldLabel", "ExpProg", "EnemiesInput", "PresetInput", "DebugNode", "MapView", "HpLabel", "HpProg", "MpLabel", "MpProg", "TestAddCardBtn", "AddCardInput", "ReturnMenuBtn", "CheckMajorBtn")]
+[node name="MainScene" type="Control" node_paths=PackedStringArray("MapView")]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 script = ExtResource("1_ejl3x")
-SaveButton = NodePath("SaveBtn")
-EditDeckButton = NodePath("EditDeckBtn")
-TestBattleButton = NodePath("DebugNode/TestBattleBtn")
-EditEquipBtn = NodePath("EditEquipBtn")
-TestPresetBtn = NodePath("DebugNode/TestPresetBtn")
-ShowMapBtn = NodePath("ShowMapBtn")
-AllocBtn = NodePath("AllocBtn")
-AllocLabel = NodePath("AllocLabel")
-LevelLabel = NodePath("LevelLabel")
-ExpLabel = NodePath("ExpLabel")
-GoldLabel = NodePath("GoldLabel")
-ExpProg = NodePath("ExpProg")
-EnemiesInput = NodePath("DebugNode/EnemiesInput")
-PresetInput = NodePath("DebugNode/PresetInput")
-DebugNode = NodePath("DebugNode")
 MapView = NodePath("Map")
-HpLabel = NodePath("HpLabel")
-HpProg = NodePath("HpProg")
-MpLabel = NodePath("MpLabel")
-MpProg = NodePath("MpProg")
-TestAddCardBtn = NodePath("DebugNode/TestAddCardBtn")
-AddCardInput = NodePath("DebugNode/AddCardInput")
-ReturnMenuBtn = NodePath("ReturnMenuBtn")
-CheckMajorBtn = NodePath("CheckMajor")
 
 [node name="ColorRect" type="ColorRect" parent="."]
+layout_mode = 0
 offset_right = 1920.0
 offset_bottom = 1080.0
 color = Color(0.329412, 0.541176, 0.74902, 1)
 
-[node name="SaveBtn" type="Button" parent="."]
-offset_left = 64.0
-offset_top = 152.0
-offset_right = 256.0
-offset_bottom = 216.0
-scale = Vector2(1, 1.018)
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.033
+anchor_top = 0.133
+anchor_right = 0.133
+anchor_bottom = 0.59300005
+offset_left = 0.6399994
+offset_top = 0.3600006
+offset_right = 0.6399994
+offset_bottom = -0.44006348
+theme_override_constants/separation = 24
+
+[node name="SaveBtn" type="Button" parent="VBoxContainer"]
+layout_mode = 2
 theme_override_font_sizes/font_size = 36
 text = "保存"
 
-[node name="EditDeckBtn" type="Button" parent="."]
-offset_left = 64.0
-offset_top = 240.0
-offset_right = 256.0
-offset_bottom = 304.0
+[node name="EditDeckBtn" type="Button" parent="VBoxContainer"]
+layout_mode = 2
 theme_override_font_sizes/font_size = 36
 text = "查看卡组"
 
-[node name="EditEquipBtn" type="Button" parent="."]
-offset_left = 64.0
-offset_top = 328.0
-offset_right = 256.0
-offset_bottom = 392.0
+[node name="EditEquipBtn" type="Button" parent="VBoxContainer"]
+layout_mode = 2
 theme_override_font_sizes/font_size = 36
 text = "编辑装备"
 
-[node name="ShowMapBtn" type="Button" parent="."]
-offset_left = 64.0
-offset_top = 416.0
-offset_right = 256.0
-offset_bottom = 480.0
+[node name="ShowMapBtn" type="Button" parent="VBoxContainer"]
+layout_mode = 2
 theme_override_font_sizes/font_size = 36
 text = "查看地图"
 
-[node name="AllocBtn" type="Button" parent="."]
-offset_left = 64.0
-offset_top = 504.0
-offset_right = 256.0
-offset_bottom = 568.0
+[node name="AllocBtn" type="Button" parent="VBoxContainer"]
+layout_mode = 2
 theme_override_font_sizes/font_size = 36
 text = "加点
 "
 
-[node name="ReturnMenuBtn" type="Button" parent="."]
-offset_left = 64.0
-offset_top = 592.0
-offset_right = 256.0
-offset_bottom = 656.0
+[node name="ReturnMenuBtn" type="Button" parent="VBoxContainer"]
+layout_mode = 2
 theme_override_font_sizes/font_size = 36
 text = "返回主菜单"
 
-[node name="CheckMajor" type="Button" parent="."]
-offset_left = 1664.0
-offset_top = 376.0
-offset_right = 1856.0
-offset_bottom = 440.0
-theme_override_font_sizes/font_size = 36
-text = "检查主角"
-
 [node name="AllocLabel" type="Label" parent="."]
-offset_left = 280.0
-offset_top = 504.0
-offset_right = 520.0
-offset_bottom = 568.0
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.14600001
+anchor_top = 0.437
+anchor_right = 0.27100003
+anchor_bottom = 0.49600002
+offset_left = -0.32003784
+offset_top = 0.039978027
+offset_right = -0.32006836
+offset_bottom = 0.3199463
 theme_override_font_sizes/font_size = 36
 text = "可用点数：0"
 vertical_alignment = 1
 
 [node name="DebugNode" type="Control" parent="."]
-layout_mode = 3
 anchors_preset = 0
 
 [node name="TestBattleBtn" type="Button" parent="DebugNode"]
@@ -161,87 +136,114 @@ offset_bottom = 128.0
 theme_override_font_sizes/font_size = 36
 placeholder_text = "卡牌id"
 
-[node name="GoldIcon" type="TextureRect" parent="."]
-offset_left = 1664.0
+[node name="Control" type="Control" parent="."]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -40.0
+offset_bottom = 40.0
+grow_horizontal = 0
+
+[node name="CheckMajor" type="Button" parent="Control"]
+layout_mode = 0
+offset_left = -216.0
+offset_top = 376.0
+offset_right = -24.0
+offset_bottom = 440.0
+theme_override_font_sizes/font_size = 36
+text = "检查主角"
+
+[node name="GoldIcon" type="TextureRect" parent="Control"]
+layout_mode = 0
+offset_left = -216.0
 offset_top = 76.0
-offset_right = 1704.0
+offset_right = -176.0
 offset_bottom = 116.0
 texture = ExtResource("3_rnj1p")
 
-[node name="GoldLabel" type="Label" parent="."]
-offset_left = 1648.0
+[node name="GoldLabel" type="Label" parent="Control"]
+layout_mode = 0
+offset_left = -232.0
 offset_top = 64.0
-offset_right = 1856.0
+offset_right = -24.0
 offset_bottom = 128.0
 theme_override_font_sizes/font_size = 36
 text = "0"
 horizontal_alignment = 2
 vertical_alignment = 1
 
-[node name="LevelLabel" type="Label" parent="."]
-offset_left = 1520.0
+[node name="LevelLabel" type="Label" parent="Control"]
+layout_mode = 0
+offset_left = -360.0
 offset_top = 128.0
-offset_right = 1641.0
+offset_right = -239.0
 offset_bottom = 192.0
 theme_override_font_sizes/font_size = 36
 text = "0级"
 horizontal_alignment = 2
 vertical_alignment = 1
 
-[node name="ExpProg" type="ProgressBar" parent="."]
+[node name="ExpProg" type="ProgressBar" parent="Control"]
 modulate = Color(0.412054, 0.836995, 0, 1)
-offset_left = 1664.0
+layout_mode = 0
+offset_left = -216.0
 offset_top = 134.0
-offset_right = 1856.0
+offset_right = -24.0
 offset_bottom = 188.0
 theme_override_font_sizes/font_size = 36
 value = 50.0
 show_percentage = false
 
-[node name="ExpLabel" type="Label" parent="."]
-offset_left = 1664.0
+[node name="ExpLabel" type="Label" parent="Control"]
+layout_mode = 0
+offset_left = -216.0
 offset_top = 134.0
-offset_right = 1856.0
+offset_right = -24.0
 offset_bottom = 190.0
 theme_override_font_sizes/font_size = 36
 text = "0/0"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="HpProg" type="ProgressBar" parent="."]
+[node name="HpProg" type="ProgressBar" parent="Control"]
 self_modulate = Color(1, 0, 0, 1)
-offset_left = 1664.0
+layout_mode = 0
+offset_left = -216.0
 offset_top = 216.0
-offset_right = 1856.0
+offset_right = -24.0
 offset_bottom = 270.0
 theme_override_font_sizes/font_size = 36
 value = 50.0
 show_percentage = false
 
-[node name="HpLabel" type="Label" parent="."]
-offset_left = 1664.0
+[node name="HpLabel" type="Label" parent="Control"]
+layout_mode = 0
+offset_left = -216.0
 offset_top = 216.0
-offset_right = 1856.0
+offset_right = -24.0
 offset_bottom = 272.0
 theme_override_font_sizes/font_size = 36
 text = "0/0"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="MpProg" type="ProgressBar" parent="."]
+[node name="MpProg" type="ProgressBar" parent="Control"]
 self_modulate = Color(0, 0.415686, 1, 1)
-offset_left = 1664.0
+layout_mode = 0
+offset_left = -216.0
 offset_top = 296.0
-offset_right = 1856.0
+offset_right = -24.0
 offset_bottom = 350.0
 theme_override_font_sizes/font_size = 36
 value = 50.0
 show_percentage = false
 
-[node name="MpLabel" type="Label" parent="."]
-offset_left = 1664.0
+[node name="MpLabel" type="Label" parent="Control"]
+layout_mode = 0
+offset_left = -216.0
 offset_top = 296.0
-offset_right = 1856.0
+offset_right = -24.0
 offset_bottom = 352.0
 theme_override_font_sizes/font_size = 36
 text = "0/0"
@@ -249,4 +251,3 @@ horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="Map" parent="." instance=ExtResource("2_ask6y")]
-visible = false

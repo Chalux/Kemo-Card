@@ -1,10 +1,9 @@
-﻿using StaticClass;
-using System;
+﻿using System;
 using System.Collections.Generic;
 
 namespace KemoCard.Scripts
 {
-    public partial class EnemyImplBase : IEvent
+    public class EnemyImplBase : IEvent
     {
         public EnemyRole Binder;
         public Dictionary<string, float> GlobalDict { get; set; } = new();
@@ -12,40 +11,34 @@ namespace KemoCard.Scripts
         public string AnimationResourcePath { get; set; } = "";
         public int Speed { get; set; } = 1;
         public int Strength { get; set; } = 1;
-        public int Effeciency { get; set; } = 0;
-        public int Mantra { get; set; } = 0;
-        public int CraftBook { get; set; } = 0;
-        public int CraftEquip { get; set; } = 0;
-        public int Critical { get; set; } = 0;
-        public int Dodge { get; set; } = 0;
+        public int Effeciency { get; set; }
+        public int Mantra { get; set; }
+        public int CraftBook { get; set; }
+        public int CraftEquip { get; set; }
+        public int Critical { get; set; }
+        public int Dodge { get; set; }
         public string Name { get; set; } = "未命名";
         public string Intent { get; set; } = "";
         public Action<int, List<PlayerRole>, List<EnemyRole>, EnemyImplBase> ActionFunc;
-        public Dictionary<string, List<Action<dynamic>>> EventDic { get; set; } = new();
+        public Dictionary<string, List<Action<EnemyImplBase, dynamic>>> EventDic { get; set; } = new();
 
         public virtual void ReceiveEvent(string @event, params object[] datas)
         {
-            if (EventDic.ContainsKey(@event))
+            if (EventDic.TryGetValue(@event, out var value))
             {
-                EventDic[@event].ForEach(function =>
-                {
-                    function.Invoke(datas);
-                });
+                value.ForEach(function => { function.Invoke(this, datas); });
             }
         }
 
-        public void AddEvent(string @event, Action<dynamic> func)
+        public void AddEvent(string @event, Action<EnemyImplBase, dynamic> func)
         {
-            if (EventDic.ContainsKey(@event))
+            if (EventDic.TryGetValue(@event, out var value))
             {
-                EventDic[@event].Add(func);
+                value.Add(func);
             }
             else
             {
-                EventDic[@event] = new()
-                {
-                    func
-                };
+                EventDic[@event] = [func];
             }
         }
 
@@ -59,14 +52,16 @@ namespace KemoCard.Scripts
             {
                 list.Clear();
             }
+
             EventDic = null;
             Binder = null;
         }
 
-        public void ChangeIntent(string Intent)
+        public void ChangeIntent(string intent)
         {
-            if (Binder != null && Binder.roleObject != null) Binder.roleObject.IntentRichLabel.Text = StaticUtils.MakeBBCodeString(Intent);
-            this.Intent = Intent;
+            if (Binder is { RoleObject: not null })
+                Binder.RoleObject.IntentRichLabel.Text = StaticUtils.MakeBBCodeString(intent);
+            this.Intent = intent;
         }
     }
 }

@@ -1,11 +1,11 @@
 ﻿using Godot;
-using static StaticClass.StaticEnums;
+using static KemoCard.Scripts.StaticEnums;
 
 namespace KemoCard.Scripts.Cards
 {
     public partial class CardState : Control
     {
-        [Export] public CardStateEnum state = CardStateEnum.BASE;
+        [Export] public CardStateEnum state = CardStateEnum.Base;
 
         //[Signal] public delegate void TransitionRequestEventHandler(CardState from, State to);
 

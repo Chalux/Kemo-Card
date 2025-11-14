@@ -2,8 +2,8 @@
 using KemoCard.Scripts.Buffs;
 using KemoCard.Scripts.Cards;
 using KemoCard.Scripts.Equips;
-using StaticClass;
 using System;
+using System.Linq;
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -12,17 +12,21 @@ namespace KemoCard.Scripts
 {
     public class PlayerData
     {
-        public Image screen_snapshot;
+        public Image ScreenSnapshot;
 
-        public GlobalSaveData gsd = new();
+        public GlobalSaveData Gsd = new();
 
-        public void Save(uint index, bool isquick = false)
+        private readonly JsonSerializerOptions _options = new()
+            { ReferenceHandler = ReferenceHandler.Preserve, IncludeFields = true };
+
+        public void Save(uint index, bool isQuick = false)
         {
-            if (index == 1 && !isquick)
+            if (index == 1 && !isQuick)
             {
-                AlertView.PopupAlert("选择的是自动存档位，是否继续？", false, null, new(() => { return; }));
+                Pages.AlertView.PopupAlert("选择的是自动存档位，是否继续？");
             }
-            string path = StaticUtils.GetSavePath(index);
+
+            var path = StaticUtils.GetSavePath(index);
             DirAccess.MakeDirRecursiveAbsolute(StaticUtils.GetSaveDirPath());
             using var sav = FileAccess.OpenEncryptedWithPass(path, FileAccess.ModeFlags.Write, "UNDERSTROKE");
             if (sav == null)
@@ -30,148 +34,119 @@ namespace KemoCard.Scripts
                 FileAccess.GetOpenError();
                 return;
             }
+
             //gsd.MajorRole = gsd.MajorRole;
-            var json = JsonSerializer.Serialize(gsd, new JsonSerializerOptions { ReferenceHandler = ReferenceHandler.Preserve, IncludeFields = true });
+            var json = JsonSerializer.Serialize(Gsd, _options);
             //GD.Print(sav, json);
             sav.StoreString(json);
-            string imgPath = StaticUtils.GetSaveImgPath(index);
-            if (screen_snapshot == null)
+            var imgPath = StaticUtils.GetSaveImgPath(index);
+            if (ScreenSnapshot == null)
             {
                 var img = StaticInstance.MainRoot.GetViewport().GetTexture().GetImage();
                 img.Resize(256, 135);
-                screen_snapshot = img;
+                ScreenSnapshot = img;
             }
-            screen_snapshot.SaveJpg(imgPath);
+
+            ScreenSnapshot.SaveJpg(imgPath);
         }
 
         public void Load(uint index)
         {
-            string path = StaticUtils.GetSavePath(index);
+            var path = StaticUtils.GetSavePath(index);
             DirAccess.MakeDirRecursiveAbsolute(StaticUtils.GetSaveDirPath());
-            if (FileAccess.FileExists(path))
+            if (!FileAccess.FileExists(path)) return;
+            using var save = FileAccess.OpenEncryptedWithPass(path, FileAccess.ModeFlags.Read, "UNDERSTROKE");
+            var jsonString = Encoding.UTF8.GetString(save.GetBuffer((long)save.GetLength()));
+            if (jsonString.Equals(""))
             {
-                using var save = FileAccess.OpenEncryptedWithPass(path, FileAccess.ModeFlags.Read, "UNDERSTROKE");
-                var jsonstring = Encoding.UTF8.GetString(save.GetBuffer((long)save.GetLength()));
-                if (jsonstring.Equals(""))
+                StaticInstance.MainRoot.ShowBanner("存档损坏");
+                return;
+            }
+
+            GlobalSaveData obj;
+            if (OS.IsDebugBuild())
+            {
+                obj = JsonSerializer.Deserialize<GlobalSaveData>(jsonString, _options);
+            }
+            else
+            {
+                try
+                {
+                    obj = JsonSerializer.Deserialize<GlobalSaveData>(jsonString, _options);
+                }
+                catch
                 {
                     StaticInstance.MainRoot.ShowBanner("存档损坏");
                     return;
                 }
-                GlobalSaveData obj;
-                if (OS.IsDebugBuild())
-                {
-                    obj = JsonSerializer.Deserialize<GlobalSaveData>(jsonstring, new JsonSerializerOptions { ReferenceHandler = ReferenceHandler.Preserve, IncludeFields = true });
-                }
-                else
-                {
-                    try
-                    {
-                        obj = JsonSerializer.Deserialize<GlobalSaveData>(jsonstring, new JsonSerializerOptions { ReferenceHandler = ReferenceHandler.Preserve, IncludeFields = true });
-                    }
-                    catch
-                    {
-                        StaticInstance.MainRoot.ShowBanner("存档损坏");
-                        return;
-                    }
-                }
-                //obj = JsonSerializer.Deserialize<GlobalSaveData>(jsonstring);
-                gsd.MajorRole = obj.MajorRole;
-                gsd.MapGenerator = obj.MapGenerator;
-                gsd.DoubleData = obj.DoubleData;
-                gsd.IntData = obj.IntData;
-                gsd.BoolData = obj.BoolData;
-                gsd.CurrShopStructs = obj.CurrShopStructs;
-                gsd.MapGenerator.Data.ReloadPools();
-                gsd.MajorRole.Buffs.ForEach(buff =>
-                {
-                    if (Datas.Ins.BuffPool.ContainsKey(buff.BuffId))
-                    {
-                        var modinfo = Datas.Ins.BuffPool[buff.BuffId];
-                        var res = ResourceLoader.Load<CSharpScript>($"res://Mods/{modinfo.mod_id}/Scripts/Buffs/B{buff.BuffId}.cs");
-                        if (res != null)
-                        {
-                            BaseBuffScript script = res.New().As<BaseBuffScript>();
-                            script.OnBuffInit(buff);
-                        }
-                    }
-                    buff.Binder = gsd.MajorRole;
-                    if (buff.CreatorId == gsd.MajorRole.Id)
-                    {
-                        buff.Creator = gsd.MajorRole;
-                    }
-                });
-                gsd.MajorRole.Deck.ForEach(LoadCardScript);
-                gsd.MajorRole.TempDeck.ForEach(LoadCardScript);
-                foreach (var equip in gsd.MajorRole.EquipList)
-                {
-                    if (equip != null)
-                    {
-                        equip.owner = gsd.MajorRole;
-                        equip.EquipScript.Binder = equip;
-                        if (Datas.Ins.BuffPool.ContainsKey(equip.Id))
-                        {
-                            var modinfo = Datas.Ins.BuffPool[equip.Id];
-                            CSharpScript res = ResourceLoader.Load<CSharpScript>($"res://Mods/{modinfo.mod_id}/Scripts/Equips/B{equip.Id}.cs");
-                            BaseEquipScript bes = res.New().As<BaseEquipScript>();
-                            bes.UpdateAction(equip.EquipScript);
-                        }
-                    }
-                }
-                foreach (var equip in gsd.MajorRole.EquipDic.Values)
-                {
-                    if (equip != null)
-                    {
-                        equip.owner = gsd.MajorRole;
-                        equip.EquipScript.Binder = equip;
-                        if (Datas.Ins.BuffPool.ContainsKey(equip.Id))
-                        {
-                            var modinfo = Datas.Ins.BuffPool[equip.Id];
-                            CSharpScript res = ResourceLoader.Load<CSharpScript>($"res://Mods/{modinfo.mod_id}/Scripts/Equips/B{equip.Id}.cs");
-                            BaseEquipScript bes = res.New().As<BaseEquipScript>();
-                            bes.UpdateAction(equip.EquipScript);
-                        }
-                    }
-                }
-                //GD.Print(MajorRole);
-                if (gsd.MajorRole != null)
-                {
-                    gsd.MajorRole.BuildDeckIdxDic();
-                    MainScene node = (MainScene)ResourceLoader.Load<PackedScene>("res://Pages/MainScene.tscn").Instantiate();
-                    StaticInstance.windowMgr.ChangeScene(node);
-                    if (StaticInstance.playerData.gsd.MapGenerator.IsStillRunning)
-                    {
-                        if (StaticInstance.playerData.gsd.MapGenerator.FloorsClimbed == 0)
-                            node?.MapView?.UnlockFloor(0);
-                        else
-                            node?.MapView?.UnlockNextRooms();
-                    }
-                }
             }
+
+            Gsd.MajorRole = obj.MajorRole;
+            Gsd.MapGenerator = obj.MapGenerator;
+            Gsd.DoubleData = obj.DoubleData;
+            Gsd.IntData = obj.IntData;
+            Gsd.BoolData = obj.BoolData;
+            Gsd.CurrShopStructs = obj.CurrShopStructs;
+            Gsd.MapGenerator.Data.ReloadPools();
+            Gsd.MajorRole.Buffs.ForEach(buff =>
+            {
+                if (Datas.Ins.BuffPool.ContainsKey(buff.BuffId))
+                {
+                    var buffScript = BuffFactory.CreateBuff(buff.BuffId);
+                    buffScript?.OnBuffInit(buff);
+                }
+
+                buff.Binder = Gsd.MajorRole;
+                if (buff.CreatorId == Gsd.MajorRole.Id)
+                {
+                    buff.Creator = Gsd.MajorRole;
+                }
+            });
+            Gsd.MajorRole.Deck.ForEach(LoadCardScript);
+            Gsd.MajorRole.TempDeck.ForEach(LoadCardScript);
+            foreach (var equip in Gsd.MajorRole.EquipList)
+            {
+                if (equip == null) continue;
+                equip.Owner = Gsd.MajorRole;
+                equip.EquipScript.Binder = equip;
+                if (!Datas.Ins.EquipPool.ContainsKey(equip.Id)) continue;
+                var bes = EquipFactory.CreateEquip(equip.Id);
+                bes?.UpdateAction(equip.EquipScript);
+            }
+
+            foreach (var equip in Gsd.MajorRole.EquipDic.Values.Where(equip => equip != null))
+            {
+                equip.Owner = Gsd.MajorRole;
+                equip.EquipScript.Binder = equip;
+                if (!Datas.Ins.EquipPool.ContainsKey(equip.Id)) continue;
+                var bes = EquipFactory.CreateEquip(equip.Id);
+                bes?.UpdateAction(equip.EquipScript);
+            }
+
+            //GD.Print(MajorRole);
+            if (Gsd.MajorRole == null) return;
+            Gsd.MajorRole.BuildDeckIdxDic();
+            var node = (Pages.MainScene)ResourceLoader.Load<PackedScene>("res://Pages/MainScene.tscn").Instantiate();
+            StaticInstance.WindowMgr.ChangeScene(node);
+            if (!StaticInstance.PlayerData.Gsd.MapGenerator.IsStillRunning) return;
+            if (StaticInstance.PlayerData.Gsd.MapGenerator.FloorsClimbed == 0)
+                node?.MapView?.UnlockFloor(0);
+            else
+                node?.MapView?.UnlockNextRooms();
         }
 
         private void LoadCardScript(Card card)
         {
-            card.owner = gsd.MajorRole;
-            if (!Datas.Ins.CardPool.ContainsKey(card.Id))
+            card.Owner = Gsd.MajorRole;
+            if (!Datas.Ins.CardPool.TryGetValue(card.Id, out var value))
             {
-                string errorLog = "未在脚本库中找到卡牌对应id，请检查Mod配置。id:" + card.Id;
+                var errorLog = "未在脚本库中找到卡牌对应id，请检查Mod配置。id:" + card.Id;
                 StaticInstance.MainRoot.ShowBanner(errorLog);
                 throw new Exception(errorLog);
             }
-            var cfg = Datas.Ins.CardPool[card.Id];
-            string path = $"res://Mods/{cfg.mod_id}/Scripts/Cards/C{card.Id}.cs";
-            var res = FileAccess.Open(path, FileAccess.ModeFlags.Read);
-            if (res == null)
-            {
-                string errorLog = "未找到卡牌脚本资源,id:" + card.Id;
-                StaticInstance.MainRoot.ShowBanner(errorLog);
-                throw new Exception(errorLog);
-            }
-            else
-            {
-                var s = ResourceLoader.Load<CSharpScript>(path).New().As<BaseCardScript>();
-                s.OnCardScriptInit(card);
-            }
+
+            var script = CardFactory.CreateCard(card.Id);
+            script?.OnCardScriptInit(card);
         }
     }
 }

@@ -1,19 +1,20 @@
-﻿using Godot;
-using KemoCard.Pages;
+﻿using System;
+using Godot;
 using KemoCard.Scripts;
 using KemoCard.Scripts.Events;
-using StaticClass;
-using System;
+
+namespace KemoCard.Pages;
 
 public partial class EventScene : BaseScene, IEvent
 {
     [Export] VBoxContainer BtnContainer;
     [Export] TextureRect EventImg;
     [Export] Label EventTitle;
-    private Event eventData;
+    private EventScript _eventScriptData;
+
     public override void OnAdd(params object[] datas)
     {
-        eventData = datas[0] as Event;
+        _eventScriptData = datas[0] as EventScript;
         UpdateView();
     }
 
@@ -26,35 +27,37 @@ public partial class EventScene : BaseScene, IEvent
     {
         if (@event == "close_eventscene")
         {
-            StaticInstance.windowMgr.RemoveSceneByName("EventScene");
+            StaticInstance.WindowMgr.RemoveSceneByName("EventScene");
         }
     }
 
     private void UpdateView()
     {
-        int maxLen = Math.Max(eventData.EventActions.Count, Math.Max(eventData.EventDesc.Count, eventData.EventIconPath.Count));
+        var maxLen = Math.Max(_eventScriptData.EventActions.Count,
+            Math.Max(_eventScriptData.EventDesc.Count, _eventScriptData.EventIconPath.Count));
         foreach (var node in BtnContainer.GetChildren())
         {
             node.QueueFree();
         }
-        for (int i = 0; i < maxLen; i++)
+
+        for (var i = 0; i < maxLen; i++)
         {
             Godot.Button btn = new();
             btn.AddThemeFontSizeOverride("EventSceneFontSize", 36);
-            if (eventData.EventDesc[i] != null) btn.Text = eventData.EventDesc[i];
-            else btn.Text = "无描述";
-            CompressedTexture2D compressedTexture2D = ResourceLoader.Load<CompressedTexture2D>(eventData.EventIconPath[i]);
-            if (compressedTexture2D != null) btn.Icon = compressedTexture2D;
-            else btn.Icon = null;
-            if (eventData.EventActions[i] != null) btn.Pressed += eventData.EventActions[i];
+            btn.Text = _eventScriptData.EventDesc[i] ?? "无描述";
+            var compressedTexture2D = ResourceLoader.Load<CompressedTexture2D>(_eventScriptData.EventIconPath[i]);
+            btn.Icon = compressedTexture2D;
+            if (_eventScriptData.EventActions[i] != null) btn.Pressed += _eventScriptData.EventActions[i];
             else btn.Pressed += GoAhead;
             BtnContainer.AddChild(btn);
         }
-        if (eventData.EventImgPath?.Length > 0) EventImg.Texture = ResourceLoader.Load<CompressedTexture2D>(eventData.EventImgPath);
-        EventTitle.Text = eventData.EventTitle;
+
+        if (_eventScriptData.EventImgPath?.Length > 0)
+            EventImg.Texture = ResourceLoader.Load<CompressedTexture2D>(_eventScriptData.EventImgPath);
+        EventTitle.Text = _eventScriptData.EventTitle;
     }
 
-    private void GoAhead()
+    private static void GoAhead()
     {
         //StaticInstance.windowMgr.RemoveSceneByName("EventScene");
         StaticUtils.CloseEvent();

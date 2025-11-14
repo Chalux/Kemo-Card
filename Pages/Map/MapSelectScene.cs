@@ -1,28 +1,29 @@
 using Godot;
-using KemoCard.Pages;
 using KemoCard.Scripts;
 using KemoCard.Scripts.Map;
-using StaticClass;
+
+namespace KemoCard.Pages.Map;
 
 public partial class MapSelectScene : BaseScene
 {
-    [Export] Godot.Button ExitButton;
-    [Export] FlowContainer FlowContainer;
+    [Export] private Godot.Button _exitButton;
+    [Export] private FlowContainer _flowContainer;
+
     public override void _Ready()
     {
-        ExitButton.Pressed += new(() =>
-        {
-            StaticInstance.windowMgr.RemoveScene(this);
-        });
+        _exitButton.Pressed += OnExitButtonOnPressed;
         foreach (var map in Datas.Ins.MapPool)
         {
             MapData m = new(map.Key);
-            if (CondMgr.Ins.CheckCond(m.Cond))
-            {
-                MapBtn btn = (MapBtn)ResourceLoader.Load<PackedScene>("res://Pages/Map/MapBtn.tscn").Instantiate();
-                btn.MapData = m;
-                FlowContainer.AddChild(btn);
-            }
+            if (!CondMgr.Ins.CheckCond(m.Cond)) continue;
+            var btn = (MapBtn)ResourceLoader.Load<PackedScene>("res://Pages/Map/MapBtn.tscn").Instantiate();
+            btn.MapData = m;
+            _flowContainer.AddChild(btn);
         }
+    }
+
+    private void OnExitButtonOnPressed()
+    {
+        StaticInstance.WindowMgr.RemoveScene(this);
     }
 }

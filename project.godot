@@ -13,7 +13,7 @@ config_version=5
 config/name="Kemo Card"
 config/version="0.1"
 run/main_scene="res://Pages/main_root.tscn"
-config/features=PackedStringArray("4.2", "C#", "Mobile")
+config/features=PackedStringArray("4.5", "C#", "Mobile")
 run/max_fps=240
 config/icon="res://icon.svg"
 
@@ -30,12 +30,10 @@ shader_language/warnings/treat_warnings_as_errors=true
 
 [dialogue_manager]
 
-general/uses_dotnet=true
+runtime/advanced/uses_dotnet=true
 
 [display]
 
-window/size/viewport_width=1920
-window/size/viewport_height=1080
 window/stretch/mode="canvas_items"
 window/stretch/aspect="keep_width"
 

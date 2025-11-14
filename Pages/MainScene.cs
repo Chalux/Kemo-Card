@@ -1,184 +1,190 @@
-﻿using Godot;
-using KemoCard.Pages;
+﻿using System.Collections.Generic;
+using System.Linq;
+using Godot;
+using KemoCard.Pages.Map;
 using KemoCard.Scripts;
 using KemoCard.Scripts.Cards;
-using StaticClass;
-using System.Collections.Generic;
+
+namespace KemoCard.Pages;
 
 public partial class MainScene : BaseScene, IEvent
 {
-    [Export] Godot.Button SaveButton;
-    [Export] Godot.Button EditDeckButton;
-    [Export] Godot.Button TestBattleButton;
-    [Export] Godot.Button EditEquipBtn;
-    [Export] Godot.Button TestPresetBtn;
-    [Export] Godot.Button ShowMapBtn;
-    [Export] Godot.Button AllocBtn;
-    [Export] Label AllocLabel;
-    [Export] Label LevelLabel;
-    [Export] Label ExpLabel;
-    [Export] Label GoldLabel;
-    [Export] ProgressBar ExpProg;
-    [Export] TextEdit EnemiesInput;
-    [Export] TextEdit PresetInput;
-    [Export] Control DebugNode;
-    [Export] public Map MapView;
-    [Export] Label HpLabel;
-    [Export] ProgressBar HpProg;
-    [Export] Label MpLabel;
-    [Export] ProgressBar MpProg;
-    [Export] Godot.Button TestAddCardBtn;
-    [Export] TextEdit AddCardInput;
-    [Export] Godot.Button ReturnMenuBtn;
-    [Export] Godot.Button CheckMajorBtn;
+    [Export] private Godot.Button _saveButton;
+    [Export] private Godot.Button _editDeckButton;
+    [Export] private Godot.Button _testBattleButton;
+    [Export] private Godot.Button _editEquipBtn;
+    [Export] private Godot.Button _testPresetBtn;
+    [Export] private Godot.Button _showMapBtn;
+    [Export] private Godot.Button _allocBtn;
+    [Export] private Label _allocLabel;
+    [Export] private Label _levelLabel;
+    [Export] private Label _expLabel;
+    [Export] private Label _goldLabel;
+    [Export] private ProgressBar _expProg;
+    [Export] private TextEdit _enemiesInput;
+    [Export] private TextEdit _presetInput;
+    [Export] private Control _debugNode;
+    [Export] public MapView MapView;
+    [Export] private Label _hpLabel;
+    [Export] private ProgressBar _hpProg;
+    [Export] private Label _mpLabel;
+    [Export] private ProgressBar _mpProg;
+    [Export] private Godot.Button _testAddCardBtn;
+    [Export] private TextEdit _addCardInput;
+    [Export] private Godot.Button _returnMenuBtn;
+    [Export] private Godot.Button _checkMajorBtn;
 
     public override void _Ready()
     {
-        var major = StaticInstance.playerData.gsd.MajorRole;
-        SaveButton.Pressed += new(() =>
+        var major = StaticInstance.PlayerData.Gsd.MajorRole;
+        _saveButton.Pressed += OnSaveButtonOnPressed;
+        _editDeckButton.Pressed += () =>
         {
-            var img = GetViewport().GetTexture().GetImage();
-            img.Resize(256, 135);
-            StaticInstance.playerData.screen_snapshot = img;
-            StaticInstance.windowMgr.AddScene((BaseScene)ResourceLoader.Load<PackedScene>("res://Pages/SaveScene.tscn").Instantiate());
-        });
-        EditDeckButton.Pressed += new(() =>
-        {
-            //StaticInstance.windowMgr.AddScene((BaseScene)ResourceLoader.Load<PackedScene>("res://Pages/DeckView.tscn").Instantiate()
-            //    , new[] { major.Deck.ToList().Concat(major.TempDeck.ToList()).ToList() });
-            StaticInstance.windowMgr.AddScene((BaseScene)ResourceLoader.Load<PackedScene>("res://Pages/RoleDeckView.tscn").Instantiate()
-                , new[] { major });
+            StaticInstance.WindowMgr.AddScene(
+                (BaseScene)ResourceLoader.Load<PackedScene>("res://Pages/RoleDeckView.tscn").Instantiate()
+                , [major]);
             StaticInstance.MainRoot.HideRichHint();
-        });
-        TestBattleButton.Pressed += new(() =>
+        };
+        _testBattleButton.Pressed += () =>
         {
-            string[] strings = EnemiesInput.Text.Split(",");
-            List<string> array = new();
+            var strings = _enemiesInput.Text.Split(",");
+            List<string> array = [];
             try
             {
-                foreach (var s in strings)
-                {
-                    if (s != "") array.Add(s);
-                }
+                array.AddRange(strings.Where(string.IsNullOrEmpty));
             }
             catch
             {
                 StaticInstance.MainRoot.ShowBanner("输入的格式不对");
                 return;
             }
+
             if (array.Count == 0)
             {
                 StaticInstance.MainRoot.ShowBanner("未取得任何数据");
                 return;
             }
-            BattleScene node = (BattleScene)ResourceLoader.Load<PackedScene>("res://Pages/BattleScene.tscn").Instantiate();
-            StaticInstance.windowMgr.AddScene(node);
+
+            var node = (BattleScene)ResourceLoader.Load<PackedScene>("res://Pages/BattleScene.tscn")
+                .Instantiate();
+            StaticInstance.WindowMgr.AddScene(node);
             node.NewBattle(major, array.ToArray(), true);
-        });
-        TestPresetBtn.Pressed += new(() =>
+        };
+        _testPresetBtn.Pressed += () =>
         {
-            string preset = PresetInput.Text;
+            var preset = _presetInput.Text;
             if (Datas.Ins.PresetPool.ContainsKey(preset))
             {
-                BattleScene node = (BattleScene)ResourceLoader.Load<PackedScene>("res://Pages/BattleScene.tscn").Instantiate();
-                StaticInstance.windowMgr.AddScene(node);
+                var node = (BattleScene)ResourceLoader.Load<PackedScene>("res://Pages/BattleScene.tscn")
+                    .Instantiate();
+                StaticInstance.WindowMgr.AddScene(node);
                 node.NewBattleByPreset(preset, true);
             }
             else
             {
                 StaticInstance.MainRoot.ShowBanner("无此预设");
             }
-        });
-        EditEquipBtn.Pressed += new(() =>
+        };
+        _editEquipBtn.Pressed += () =>
         {
-            StaticInstance.windowMgr.AddScene((BaseScene)ResourceLoader.Load<PackedScene>("res://Pages/BagScene.tscn").Instantiate(), new[] { major });
+            StaticInstance.WindowMgr.AddScene(
+                (BaseScene)ResourceLoader.Load<PackedScene>("res://Pages/BagScene.tscn").Instantiate(),
+                [major]);
             StaticInstance.MainRoot.HideRichHint();
-        });
-        DebugNode.Visible = OS.IsDebugBuild();
-        ShowMapBtn.Pressed += new(() =>
+        };
+        _debugNode.Visible = OS.IsDebugBuild();
+        _showMapBtn.Pressed += () =>
         {
-            if (StaticInstance.playerData.gsd.MapGenerator.IsStillRunning)
+            if (StaticInstance.PlayerData.Gsd.MapGenerator.IsStillRunning)
             {
                 MapView?.ShowMap();
             }
             else
             {
-                StaticInstance.windowMgr.AddScene((BaseScene)ResourceLoader.Load<PackedScene>("res://Pages/Map/MapSelectScene.tscn").Instantiate());
+                StaticInstance.WindowMgr.AddScene((BaseScene)ResourceLoader
+                    .Load<PackedScene>("res://Pages/Map/MapSelectScene.tscn").Instantiate());
                 StaticInstance.MainRoot.HideRichHint();
             }
-        });
-        AllocBtn.Pressed += new(() =>
+        };
+        _allocBtn.Pressed += () =>
         {
-            StaticInstance.windowMgr.AddScene((BaseScene)ResourceLoader.Load<PackedScene>("res://Pages/AllocPointScene.tscn").Instantiate(), new[] { major });
+            StaticInstance.WindowMgr.AddScene(
+                (BaseScene)ResourceLoader.Load<PackedScene>("res://Pages/AllocPointScene.tscn").Instantiate(),
+                [major]);
             StaticInstance.MainRoot.HideRichHint();
-        });
-        TestAddCardBtn.Pressed += new(() =>
+        };
+        _testAddCardBtn.Pressed += () =>
         {
-            Card c = new(AddCardInput.Text);
-            if (c != null && c.Id != "")
+            Card c = new(_addCardInput.Text);
+            if (!string.IsNullOrEmpty(c.Id))
             {
-                StaticInstance.playerData.gsd.MajorRole.AddCardToTempDeck(c);
+                StaticInstance.PlayerData.Gsd.MajorRole.AddCardToTempDeck(c);
                 StaticInstance.MainRoot.ShowBanner($"已添加卡牌{c.Id}至牌库");
             }
             else
             {
                 StaticInstance.MainRoot.ShowBanner($"卡牌{c.Id}不存在或者错误");
             }
-        });
-        ReturnMenuBtn.Pressed += new(() =>
+        };
+        _returnMenuBtn.Pressed += () =>
         {
-            AlertView.PopupAlert("确定要返回主菜单吗？未保存的进度将丢失。", false, new(() =>
+            AlertView.PopupAlert("确定要返回主菜单吗？未保存的进度将丢失。", false, () =>
             {
                 BattleStatic.Reset();
-                StaticInstance.playerData.gsd = new();
-                StaticInstance.windowMgr.RemoveAllScene();
-                StaticInstance.windowMgr.ChangeScene(ResourceLoader.Load<PackedScene>("res://Pages/menu_scene.tscn").Instantiate());
-            }));
-        });
-        CheckMajorBtn.MouseEntered += new(() =>
+                StaticInstance.PlayerData.Gsd = new GlobalSaveData();
+                StaticInstance.WindowMgr.RemoveAllScene();
+                StaticInstance.WindowMgr.ChangeScene(ResourceLoader.Load<PackedScene>("res://Pages/menu_scene.tscn")
+                    .Instantiate());
+            });
+        };
+        _checkMajorBtn.MouseEntered += () =>
         {
-            StaticInstance.MainRoot.ShowRichHint(StaticInstance.playerData.gsd.MajorRole.GetRichDesc());
-        });
-        CheckMajorBtn.MouseExited += StaticInstance.MainRoot.HideRichHint;
+            StaticInstance.MainRoot.ShowRichHint(StaticInstance.PlayerData.Gsd.MajorRole.GetRichDesc());
+        };
+        _checkMajorBtn.MouseExited += StaticInstance.MainRoot.HideRichHint;
         MapView?.CreateMap();
         UpdateView();
     }
 
+    private void OnSaveButtonOnPressed()
+    {
+        var img = GetViewport().GetTexture().GetImage();
+        img.Resize(256, 135);
+        StaticInstance.PlayerData.ScreenSnapshot = img;
+        StaticInstance.WindowMgr.AddScene((BaseScene)ResourceLoader.Load<PackedScene>("res://Pages/SaveScene.tscn")
+            .Instantiate());
+    }
+
     public void UpdateView()
     {
-        var major = StaticInstance.playerData.gsd.MajorRole;
+        var major = StaticInstance.PlayerData.Gsd.MajorRole;
         var maxExp = ExpCfg.CalUpgradeNeedExp(major.Level);
-        AllocLabel.Text = $"剩余点数：{major.UnUsedPoints}";
-        GoldLabel.Text = $"{major.Gold}";
-        ExpLabel.Text = $"{major.Exp}/{maxExp}";
-        ExpProg.MinValue = 0;
-        ExpProg.MaxValue = maxExp;
-        ExpProg.Value = major.Exp;
-        LevelLabel.Text = $"{major.Level}级";
-        HpLabel.Text = $"{major.CurrHealth}/{major.CurrHpLimit}";
-        HpProg.MinValue = 0;
-        HpProg.MaxValue = major.CurrHpLimit;
-        HpProg.Value = major.CurrHealth;
-        MpLabel.Text = $"{major.CurrMagic}/{major.CurrMpLimit}";
-        MpProg.MinValue = 0;
-        MpProg.MaxValue = major.CurrMpLimit;
-        MpProg.Value = major.CurrMagic;
+        _allocLabel.Text = $"剩余点数：{major.UnUsedPoints}";
+        _goldLabel.Text = $"{major.Gold}";
+        _expLabel.Text = $"{major.Exp}/{maxExp}";
+        _expProg.MinValue = 0;
+        _expProg.MaxValue = maxExp;
+        _expProg.Value = major.Exp;
+        _levelLabel.Text = $"{major.Level}级";
+        _hpLabel.Text = $"{major.CurrHealth}/{major.CurrHpLimit}";
+        _hpProg.MinValue = 0;
+        _hpProg.MaxValue = major.CurrHpLimit;
+        _hpProg.Value = major.CurrHealth;
+        _mpLabel.Text = $"{major.CurrMagic}/{major.CurrMpLimit}";
+        _mpProg.MinValue = 0;
+        _mpProg.MaxValue = major.CurrMpLimit;
+        _mpProg.Value = major.CurrMagic;
         //SelectMapBtn.Disabled = StaticInstance.playerData.gsd.MapGenerator.IsStillRunning;
-        if (StaticInstance.playerData.gsd.MapGenerator.IsStillRunning)
-        {
-            ShowMapBtn.Text = "查看地图";
-        }
-        else
-        {
-            ShowMapBtn.Text = "选择地图";
-        }
-        if (StaticInstance.playerData.gsd.MapGenerator.FloorsClimbed == 0) MapView?.UnlockFloor(StaticInstance.playerData.gsd.MapGenerator.FloorsClimbed);
+        _showMapBtn.Text = StaticInstance.PlayerData.Gsd.MapGenerator.IsStillRunning ? "查看地图" : "选择地图";
+
+        if (StaticInstance.PlayerData.Gsd.MapGenerator.FloorsClimbed == 0)
+            MapView?.UnlockFloor(StaticInstance.PlayerData.Gsd.MapGenerator.FloorsClimbed);
         else MapView?.UnlockNextRooms();
     }
 
     public void ReceiveEvent(string @event, params object[] datas)
     {
-        if (@event == "PropertiesChanged" || @event == "MapStateChange")
+        if (@event is "PropertiesChanged" or "MapStateChange")
         {
             UpdateView();
         }

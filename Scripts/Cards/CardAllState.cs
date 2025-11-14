@@ -1,6 +1,5 @@
 ﻿using Godot;
-using StaticClass;
-using static StaticClass.StaticEnums;
+using static KemoCard.Scripts.StaticEnums;
 
 namespace KemoCard.Scripts.Cards
 {
@@ -15,7 +14,7 @@ namespace KemoCard.Scripts.Cards
 
         void OnEnter()
         {
-            StaticInstance.eventMgr.Dispatch("DraggingCard", true);
+            StaticInstance.EventMgr.Dispatch("DraggingCard", true);
             cardObject.AnimTween.Stop();
             cardObject.GlobalPosition = cardObject.GetGlobalMousePosition() - cardObject.PivotOffset;
             cardObject.BindRoot(cardObject.GetParent());
@@ -30,35 +29,35 @@ namespace KemoCard.Scripts.Cards
             RecordTimeStamp = Time.GetTicksMsec();
             switch (cardObject.card.TargetType)
             {
-                case TargetType.SELF:
-                    BattleStatic.Targets.Add(cardObject.card.owner);
-                    StaticInstance.eventMgr.Dispatch("SelectTargetOwner", cardObject.card.owner);
+                case TargetType.Self:
+                    BattleStatic.Targets.Add(cardObject.card.Owner);
+                    StaticInstance.EventMgr.Dispatch("SelectTargetOwner", cardObject.card.Owner);
                     break;
-                case TargetType.ENEMY_ALL:
-                    if (StaticInstance.currWindow is BattleScene bs)
+                case TargetType.EnemyAll:
+                    if (StaticInstance.CurrWindow is Pages.BattleScene bs)
                     {
-                        bs.currentEnemyRoles.ForEach(t => BattleStatic.Targets.Add(t));
+                        bs.CurrentEnemyRoles.ForEach(t => BattleStatic.Targets.Add(t));
                     }
-                    StaticInstance.eventMgr.Dispatch("SelectTargetAll", cardObject.card.TargetType);
+                    StaticInstance.EventMgr.Dispatch("SelectTargetAll", cardObject.card.TargetType);
                     break;
-                case TargetType.ALL:
-                    if (StaticInstance.currWindow is BattleScene bs2)
+                case TargetType.All:
+                    if (StaticInstance.CurrWindow is Pages.BattleScene bs2)
                     {
-                        bs2.currentEnemyRoles.ForEach(t => BattleStatic.Targets.Add(t));
-                        bs2.currentPlayerRoles.ForEach(t => BattleStatic.Targets.Add(t));
+                        bs2.CurrentEnemyRoles.ForEach(t => BattleStatic.Targets.Add(t));
+                        bs2.CurrentPlayerRoles.ForEach(t => BattleStatic.Targets.Add(t));
                     }
-                    StaticInstance.eventMgr.Dispatch("SelectTargetAll", cardObject.card.TargetType);
+                    StaticInstance.EventMgr.Dispatch("SelectTargetAll", cardObject.card.TargetType);
                     break;
-                case TargetType.TEAM_ALL:
-                    if (StaticInstance.currWindow is BattleScene bs3)
+                case TargetType.TeamAll:
+                    if (StaticInstance.CurrWindow is Pages.BattleScene bs3)
                     {
-                        bs3.currentPlayerRoles.ForEach(t => BattleStatic.Targets.Add(t));
+                        bs3.CurrentPlayerRoles.ForEach(t => BattleStatic.Targets.Add(t));
                     }
-                    StaticInstance.eventMgr.Dispatch("SelectTargetAll", cardObject.card.TargetType);
+                    StaticInstance.EventMgr.Dispatch("SelectTargetAll", cardObject.card.TargetType);
                     break;
                 default:
-                    StaticInstance.eventMgr.Dispatch("EndSelectTarget");
-                    cardObject.csm.OnTransitionRequest(this, CardStateEnum.BASE);
+                    StaticInstance.EventMgr.Dispatch("EndSelectTarget");
+                    cardObject.csm.OnTransitionRequest(this, CardStateEnum.Base);
                     BattleStatic.currCard = null;
                     break;
             }
@@ -69,10 +68,10 @@ namespace KemoCard.Scripts.Cards
             bool mouseMotion = @event is InputEventMouseMotion;
             bool cancel = @event.IsActionPressed("right_mouse") || RecordTimeStamp + 200 > Time.GetTicksMsec();
             bool confirm = (@event.IsActionPressed("left_mouse") || @event.IsActionReleased("left_mouse"));
-            if (confirm && StaticInstance.currWindow is BattleScene bs)
+            if (confirm && StaticInstance.CurrWindow is Pages.BattleScene bs)
             {
                 var rectA = cardObject.GetGlobalRect();
-                var rectB = bs.DragDwonArea.GetGlobalRect();
+                var rectB = bs.DragDownArea.GetGlobalRect();
                 confirm = rectA.Intersection(rectB).Area > 0f;
             }
 
@@ -84,15 +83,15 @@ namespace KemoCard.Scripts.Cards
             {
                 //GD.Print(RecordTimeStamp + 10000 + ":" + Time.GetTicksMsec());
                 GetViewport().SetInputAsHandled();
-                StaticInstance.eventMgr.Dispatch("EndSelectTarget");
-                cardObject.csm.OnTransitionRequest(this, CardStateEnum.RELEASED);
+                StaticInstance.EventMgr.Dispatch("EndSelectTarget");
+                cardObject.csm.OnTransitionRequest(this, CardStateEnum.Released);
             }
             else if (cancel || !confirm)
             {
                 GetViewport().SetInputAsHandled();
                 BattleStatic.Targets.Clear();
-                StaticInstance.eventMgr.Dispatch("EndSelectTarget");
-                cardObject.csm.OnTransitionRequest(this, CardStateEnum.BASE);
+                StaticInstance.EventMgr.Dispatch("EndSelectTarget");
+                cardObject.csm.OnTransitionRequest(this, CardStateEnum.Base);
                 BattleStatic.currCard = null;
             }
         }

@@ -4,12 +4,7 @@ namespace KemoCard.Scripts
 {
     public class EventMgr
     {
-        private HashSet<IEvent> events;
-
-        public EventMgr()
-        {
-            events = new HashSet<IEvent>();
-        }
+        private readonly HashSet<IEvent> _events = [];
 
         ~EventMgr()
         {
@@ -18,30 +13,30 @@ namespace KemoCard.Scripts
 
         public void Dispatch(string @event, params object[] datas)
         {
-            foreach (var i in events)
+            foreach (var i in _events)
             {
                 i.ReceiveEvent(@event, datas);
             }
         }
 
-        public void RegistIEvent(IEvent obj)
+        public void RegisterIEvent(IEvent obj)
         {
-            events.Add(obj);
+            _events.Add(obj);
         }
 
-        public void Reset()
+        private void Reset()
         {
-            events.Clear();
+            _events.Clear();
         }
 
-        public void UnregistIEvent(IEvent obj)
+        public void UnregisterIEvent(IEvent obj)
         {
-            events.Remove(obj);
+            _events.Remove(obj);
         }
     }
 
     public interface IEvent
     {
-        public abstract void ReceiveEvent(string @event, params object[] datas);
+        public void ReceiveEvent(string @event, params object[] datas);
     }
 }

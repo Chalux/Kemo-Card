@@ -1,6 +1,5 @@
 ﻿using Godot;
 using Godot.Collections;
-using StaticClass;
 using System;
 
 namespace KemoCard.Scripts
@@ -49,7 +48,7 @@ namespace KemoCard.Scripts
                 foreach (var id in variants)
                 {
                     string key = $"Map{variants[0].AsString()}Passed";
-                    if (StaticInstance.playerData.gsd.IntData.ContainsKey(key) && StaticInstance.playerData.gsd.IntData[key] > 0)
+                    if (StaticInstance.PlayerData.Gsd.IntData.ContainsKey(key) && StaticInstance.PlayerData.Gsd.IntData[key] > 0)
                     {
                         res = true;
                         break;
@@ -59,7 +58,7 @@ namespace KemoCard.Scripts
             });
             CondActions.Add("Level", (Array<Variant> variants) =>
             {
-                return StaticInstance.playerData.gsd.MajorRole.Level >= variants[0].AsInt32();
+                return StaticInstance.PlayerData.Gsd.MajorRole.Level >= variants[0].AsInt32();
             });
         }
 

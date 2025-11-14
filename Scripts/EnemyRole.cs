@@ -1,82 +1,64 @@
 ﻿using Godot;
 using KemoCard.Scripts.Enemies;
-using StaticClass;
 using System;
 using System.Collections.Generic;
 
 namespace KemoCard.Scripts
 {
-    public partial class EnemyRole : BaseRole, IEvent
+    public class EnemyRole : BaseRole
     {
-        public EnemyImplBase script;
-        public List<BuffImplBase> InFightBuffs = new();
-        public EnemyRoleObject roleObject;
-        public bool isEnemyInited = false;
+        public EnemyImplBase Script;
+        public List<BuffImplBase> InFightBuffs = [];
+        public EnemyRoleObject RoleObject;
+        public bool IsEnemyInit;
 
-        private int _CurrPBlock = 0;
-        private int _CurrMBlock = 0;
+        private int _currPBlock;
+        private int _currMBlock;
+
         public int CurrPBlock
         {
-            get => _CurrPBlock;
+            get => _currPBlock;
             set
             {
-                if (value < 0)
-                {
-                    _CurrPBlock = 0;
-                }
-                else
-                {
-                    _CurrPBlock = value;
-                }
-                StaticInstance.eventMgr.Dispatch("PropertiesChanged", null);
+                _currPBlock = value < 0 ? 0 : value;
+
+                StaticInstance.EventMgr.Dispatch("PropertiesChanged", null);
             }
         }
 
         public int CurrMBlock
         {
-            get => _CurrMBlock;
+            get => _currMBlock;
             set
             {
-                if (value < 0)
-                {
-                    _CurrMBlock = 0;
-                }
-                else
-                {
-                    _CurrMBlock = value;
-                }
-                StaticInstance.eventMgr.Dispatch("PropertiesChanged", null);
+                _currMBlock = value < 0 ? 0 : value;
+
+                StaticInstance.EventMgr.Dispatch("PropertiesChanged", null);
             }
         }
+
         public EnemyRole(string id)
         {
             if (Datas.Ins.EnemyPool.ContainsKey(id))
             {
-                var data = Datas.Ins.EnemyPool[id];
-                isFriendly = false;
-                var res = ResourceLoader.Load<CSharpScript>($"res://Mods/{data.mod_id}/Scripts/Enemies/E" + id + ".cs");
-                script = new();
-                script.Binder = this;
-                if (res != null)
+                IsFriendly = false;
+                Script = new EnemyImplBase
                 {
-                    var s = res.New().As<BaseEnemyScript>();
-                    s.OnEnemyInit(script);
-                }
-                else
-                {
-                    StaticInstance.MainRoot.ShowBanner("未找到敌人脚本文件。id:" + id);
-                }
+                    Binder = this
+                };
+                var baseEnemyScript = EnemyFactory.CreateEnemy(id);
+                baseEnemyScript?.OnEnemyInit(Script);
 
-                if (script != null)
+                if (Script != null)
                 {
-                    OriginSpeed = script.Speed;
-                    OriginStrength = script.Strength;
-                    OriginEffeciency = script.Effeciency;
-                    OriginMantra = script.Mantra;
-                    OriginCraftBook = script.CraftBook;
-                    OriginCraftEquip = script.CraftEquip;
-                    OriginCritical = script.Critical;
-                    OriginDodge = script.Dodge;
+                    OriginSpeed = Script.Speed;
+                    OriginStrength = Script.Strength;
+                    OriginEffeciency = Script.Effeciency;
+                    OriginMantra = Script.Mantra;
+                    OriginCraftBook = Script.CraftBook;
+                    OriginCraftEquip = Script.CraftEquip;
+                    OriginCritical = Script.Critical;
+                    OriginDodge = Script.Dodge;
                 }
                 else
                 {
@@ -97,7 +79,7 @@ namespace KemoCard.Scripts
             }
             else
             {
-                isFriendly = false;
+                IsFriendly = false;
                 OriginSpeed = 1;
                 OriginStrength = 1;
                 OriginEffeciency = 1;
@@ -112,27 +94,28 @@ namespace KemoCard.Scripts
                 OriginMpLimit = (int)(MagicAbility * 3 + OriginMantra * 3);
                 CurrMagic = CurrMpLimit;
 
-                script = new();
+                Script = new EnemyImplBase();
 
-                string errorLog = "未找到敌人。id:" + id;
+                var errorLog = $"未找到敌人。id:{id}";
                 StaticInstance.MainRoot.ShowBanner(errorLog);
                 GD.PrintErr(errorLog);
             }
-            name = script.Name;
-            script.Binder = this;
-            isEnemyInited = true;
+
+            Name = Script.Name;
+            Script.Binder = this;
+            IsEnemyInit = true;
         }
 
         public override void ReceiveEvent(string @event, params object[] datas)
         {
-            script?.ReceiveEvent(@event, datas);
+            Script?.ReceiveEvent(@event, datas);
         }
 
         ~EnemyRole()
         {
-            if (script != null) script.Binder = null;
-            script = null;
-            roleObject = null;
+            if (Script != null) Script.Binder = null;
+            Script = null;
+            RoleObject = null;
         }
 
         public Action<EnemyRoleObject> OnBattleStart;
@@ -140,7 +123,7 @@ namespace KemoCard.Scripts
         public override void AddBuff(BuffImplBase buff)
         {
             InFightBuffs.Add(buff);
-            roleObject?.AddBuff(buff);
+            RoleObject?.AddBuff(buff);
             base.AddBuff(buff);
         }
     }

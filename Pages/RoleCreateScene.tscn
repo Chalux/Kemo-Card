@@ -1,45 +1,64 @@
 [gd_scene load_steps=2 format=3 uid="uid://crc6esbpv776l"]
 
-[ext_resource type="Script" path="res://Pages/RoleCreateScene.cs" id="1_rd4da"]
+[ext_resource type="Script" uid="uid://0e71qenanfw6" path="res://Pages/RoleCreateScene.cs" id="1_rd4da"]
 
-[node name="RoleCreateScene" type="Node2D" node_paths=PackedStringArray("NameInput", "SpeedTxt", "StrengthTxt", "EfficiencyTxt", "MantraTxt", "EquipTxt", "BookTxt", "CriticalTxt", "DodgeTxt", "SpeedMinus", "StrengthMinus", "EfficiencyMinus", "MantraMinus", "EquipMinus", "BookMinus", "CriticalMinus", "DodgeMinus", "SpeedPlus", "StrengthPlus", "EfficiencyPlus", "MantraPlus", "EquipPlus", "BookPlus", "CriticalPlus", "DodgePlus", "ConfirmBtn", "RemainPoint", "PresetRoleInput")]
-script = ExtResource("1_rd4da")
-NameInput = NodePath("Container/NameInput")
-SpeedTxt = NodePath("Container/Control/SpeedTxt")
-StrengthTxt = NodePath("Container/Control2/StrengthTxt")
-EfficiencyTxt = NodePath("Container/Control3/EfficiencyTxt")
-MantraTxt = NodePath("Container/Control4/MantraTxt")
-EquipTxt = NodePath("Container/Control5/EquipTxt")
-BookTxt = NodePath("Container/Control6/BookTxt")
-CriticalTxt = NodePath("Container/Control7/CriticalTxt")
-DodgeTxt = NodePath("Container/Control8/DodgeTxt")
-SpeedMinus = NodePath("Container/Control/SpeedMinus")
-StrengthMinus = NodePath("Container/Control2/StrengthMinus")
-EfficiencyMinus = NodePath("Container/Control3/EfficiencyMinus")
-MantraMinus = NodePath("Container/Control4/MantraMinus")
-EquipMinus = NodePath("Container/Control5/EquipMinus")
-BookMinus = NodePath("Container/Control6/BookMinus")
-CriticalMinus = NodePath("Container/Control7/CriticalMinus")
-DodgeMinus = NodePath("Container/Control8/DodgeMinus")
-SpeedPlus = NodePath("Container/Control/SpeedPlus")
-StrengthPlus = NodePath("Container/Control2/StrengthPlus")
-EfficiencyPlus = NodePath("Container/Control3/EfficiencyPlus")
-MantraPlus = NodePath("Container/Control4/MantraPlus")
-EquipPlus = NodePath("Container/Control5/EquipPlus")
-BookPlus = NodePath("Container/Control6/BookPlus")
-CriticalPlus = NodePath("Container/Control7/CriticalPlus")
-DodgePlus = NodePath("Container/Control8/DodgePlus")
-ConfirmBtn = NodePath("Container/Button")
-RemainPoint = NodePath("Container/RemainPoint")
-PresetRoleInput = NodePath("Container/NameInput2")
-
-[node name="Container" type="Control" parent="."]
+[node name="RoleCreateScene" type="Control" node_paths=PackedStringArray("NameInput", "SpeedTxt", "StrengthTxt", "EfficiencyTxt", "MantraTxt", "EquipTxt", "BookTxt", "CriticalTxt", "DodgeTxt", "SpeedMinus", "StrengthMinus", "EfficiencyMinus", "MantraMinus", "EquipMinus", "BookMinus", "CriticalMinus", "DodgeMinus", "SpeedPlus", "StrengthPlus", "EfficiencyPlus", "MantraPlus", "EquipPlus", "BookPlus", "CriticalPlus", "DodgePlus", "ConfirmBtn", "RemainPoint", "PresetRoleInput")]
 layout_mode = 3
-anchors_preset = 0
-offset_right = 1920.0
-offset_bottom = 1080.0
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_rd4da")
+NameInput = NodePath("Control9/NameInput")
+SpeedTxt = NodePath("Control9/Control/SpeedTxt")
+StrengthTxt = NodePath("Control9/Control2/StrengthTxt")
+EfficiencyTxt = NodePath("Control9/Control3/EfficiencyTxt")
+MantraTxt = NodePath("Control9/Control4/MantraTxt")
+EquipTxt = NodePath("Control9/Control5/EquipTxt")
+BookTxt = NodePath("Control9/Control6/BookTxt")
+CriticalTxt = NodePath("Control9/Control7/CriticalTxt")
+DodgeTxt = NodePath("Control9/Control8/DodgeTxt")
+SpeedMinus = NodePath("Control9/Control/SpeedMinus")
+StrengthMinus = NodePath("Control9/Control2/StrengthMinus")
+EfficiencyMinus = NodePath("Control9/Control3/EfficiencyMinus")
+MantraMinus = NodePath("Control9/Control4/MantraMinus")
+EquipMinus = NodePath("Control9/Control5/EquipMinus")
+BookMinus = NodePath("Control9/Control6/BookMinus")
+CriticalMinus = NodePath("Control9/Control7/CriticalMinus")
+DodgeMinus = NodePath("Control9/Control8/DodgeMinus")
+SpeedPlus = NodePath("Control9/Control/SpeedPlus")
+StrengthPlus = NodePath("Control9/Control2/StrengthPlus")
+EfficiencyPlus = NodePath("Control9/Control3/EfficiencyPlus")
+MantraPlus = NodePath("Control9/Control4/MantraPlus")
+EquipPlus = NodePath("Control9/Control5/EquipPlus")
+BookPlus = NodePath("Control9/Control6/BookPlus")
+CriticalPlus = NodePath("Control9/Control7/CriticalPlus")
+DodgePlus = NodePath("Control9/Control8/DodgePlus")
+ConfirmBtn = NodePath("Button")
+RemainPoint = NodePath("Control9/RemainPoint")
+PresetRoleInput = NodePath("Control9/NameInput2")
 
-[node name="NameInput" type="TextEdit" parent="Container"]
+[node name="Button" type="Button" parent="."]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -368.0
+offset_top = 67.0
+offset_right = -128.0
+offset_bottom = 187.0
+grow_horizontal = 0
+theme_override_font_sizes/font_size = 36
+text = "确定"
+
+[node name="Control9" type="Control" parent="."]
+layout_mode = 1
+anchor_right = 0.5
+anchor_bottom = 0.711
+offset_bottom = 0.11999512
+
+[node name="NameInput" type="TextEdit" parent="Control9"]
 layout_mode = 0
 offset_left = 64.0
 offset_top = 64.0
@@ -50,14 +69,14 @@ placeholder_text = "名字"
 autowrap_mode = 1
 scroll_fit_content_height = true
 
-[node name="Control" type="Control" parent="Container"]
+[node name="Control" type="Control" parent="Control9"]
 anchors_preset = 0
 offset_left = 576.0
 offset_top = 64.0
 offset_right = 616.0
 offset_bottom = 104.0
 
-[node name="Label" type="Label" parent="Container/Control"]
+[node name="Label" type="Label" parent="Control9/Control"]
 layout_mode = 0
 offset_top = 6.0
 offset_right = 72.0
@@ -65,7 +84,7 @@ offset_bottom = 56.0
 theme_override_font_sizes/font_size = 36
 text = "速度"
 
-[node name="SpeedMinus" type="Button" parent="Container/Control"]
+[node name="SpeedMinus" type="Button" parent="Control9/Control"]
 unique_name_in_owner = true
 layout_mode = 0
 offset_left = 100.0
@@ -75,7 +94,7 @@ offset_bottom = 63.0
 theme_override_font_sizes/font_size = 36
 text = "－"
 
-[node name="SpeedTxt" type="Label" parent="Container/Control"]
+[node name="SpeedTxt" type="Label" parent="Control9/Control"]
 unique_name_in_owner = true
 layout_mode = 0
 offset_left = 188.0
@@ -86,7 +105,7 @@ theme_override_font_sizes/font_size = 36
 text = "速度"
 horizontal_alignment = 1
 
-[node name="SpeedPlus" type="Button" parent="Container/Control"]
+[node name="SpeedPlus" type="Button" parent="Control9/Control"]
 unique_name_in_owner = true
 layout_mode = 0
 offset_left = 296.0
@@ -96,15 +115,14 @@ offset_bottom = 63.0
 theme_override_font_sizes/font_size = 36
 text = "＋"
 
-[node name="Control2" type="Control" parent="Container"]
-layout_mode = 3
+[node name="Control2" type="Control" parent="Control9"]
 anchors_preset = 0
 offset_left = 576.0
 offset_top = 152.0
 offset_right = 616.0
 offset_bottom = 192.0
 
-[node name="Label" type="Label" parent="Container/Control2"]
+[node name="Label" type="Label" parent="Control9/Control2"]
 layout_mode = 0
 offset_top = 6.0
 offset_right = 72.0
@@ -112,7 +130,7 @@ offset_bottom = 56.0
 theme_override_font_sizes/font_size = 36
 text = "身体"
 
-[node name="StrengthMinus" type="Button" parent="Container/Control2"]
+[node name="StrengthMinus" type="Button" parent="Control9/Control2"]
 unique_name_in_owner = true
 layout_mode = 0
 offset_left = 100.0
@@ -122,7 +140,7 @@ offset_bottom = 63.0
 theme_override_font_sizes/font_size = 36
 text = "－"
 
-[node name="StrengthTxt" type="Label" parent="Container/Control2"]
+[node name="StrengthTxt" type="Label" parent="Control9/Control2"]
 unique_name_in_owner = true
 layout_mode = 0
 offset_left = 188.0
@@ -133,7 +151,7 @@ theme_override_font_sizes/font_size = 36
 text = "身体"
 horizontal_alignment = 1
 
-[node name="StrengthPlus" type="Button" parent="Container/Control2"]
+[node name="StrengthPlus" type="Button" parent="Control9/Control2"]
 unique_name_in_owner = true
 layout_mode = 0
 offset_left = 296.0
@@ -143,15 +161,14 @@ offset_bottom = 63.0
 theme_override_font_sizes/font_size = 36
 text = "＋"
 
-[node name="Control3" type="Control" parent="Container"]
-layout_mode = 3
+[node name="Control3" type="Control" parent="Control9"]
 anchors_preset = 0
 offset_left = 576.0
 offset_top = 242.0
 offset_right = 616.0
 offset_bottom = 282.0
 
-[node name="Label" type="Label" parent="Container/Control3"]
+[node name="Label" type="Label" parent="Control9/Control3"]
 layout_mode = 0
 offset_top = 6.0
 offset_right = 72.0
@@ -159,7 +176,7 @@ offset_bottom = 56.0
 theme_override_font_sizes/font_size = 36
 text = "效率"
 
-[node name="EfficiencyMinus" type="Button" parent="Container/Control3"]
+[node name="EfficiencyMinus" type="Button" parent="Control9/Control3"]
 unique_name_in_owner = true
 layout_mode = 0
 offset_left = 100.0
@@ -169,7 +186,7 @@ offset_bottom = 63.0
 theme_override_font_sizes/font_size = 36
 text = "－"
 
-[node name="EfficiencyTxt" type="Label" parent="Container/Control3"]
+[node name="EfficiencyTxt" type="Label" parent="Control9/Control3"]
 unique_name_in_owner = true
 layout_mode = 0
 offset_left = 188.0
@@ -180,7 +197,7 @@ theme_override_font_sizes/font_size = 36
 text = "效率"
 horizontal_alignment = 1
 
-[node name="EfficiencyPlus" type="Button" parent="Container/Control3"]
+[node name="EfficiencyPlus" type="Button" parent="Control9/Control3"]
 unique_name_in_owner = true
 layout_mode = 0
 offset_left = 296.0
@@ -190,15 +207,14 @@ offset_bottom = 63.0
 theme_override_font_sizes/font_size = 36
 text = "＋"
 
-[node name="Control4" type="Control" parent="Container"]
-layout_mode = 3
+[node name="Control4" type="Control" parent="Control9"]
 anchors_preset = 0
 offset_left = 576.0
 offset_top = 332.0
 offset_right = 616.0
 offset_bottom = 372.0
 
-[node name="Label" type="Label" parent="Container/Control4"]
+[node name="Label" type="Label" parent="Control9/Control4"]
 layout_mode = 0
 offset_top = 6.0
 offset_right = 72.0
@@ -206,7 +222,7 @@ offset_bottom = 56.0
 theme_override_font_sizes/font_size = 36
 text = "咒言"
 
-[node name="MantraMinus" type="Button" parent="Container/Control4"]
+[node name="MantraMinus" type="Button" parent="Control9/Control4"]
 unique_name_in_owner = true
 layout_mode = 0
 offset_left = 100.0
@@ -216,7 +232,7 @@ offset_bottom = 63.0
 theme_override_font_sizes/font_size = 36
 text = "－"
 
-[node name="MantraTxt" type="Label" parent="Container/Control4"]
+[node name="MantraTxt" type="Label" parent="Control9/Control4"]
 unique_name_in_owner = true
 layout_mode = 0
 offset_left = 188.0
@@ -227,7 +243,7 @@ theme_override_font_sizes/font_size = 36
 text = "咒言"
 horizontal_alignment = 1
 
-[node name="MantraPlus" type="Button" parent="Container/Control4"]
+[node name="MantraPlus" type="Button" parent="Control9/Control4"]
 unique_name_in_owner = true
 layout_mode = 0
 offset_left = 296.0
@@ -237,15 +253,14 @@ offset_bottom = 63.0
 theme_override_font_sizes/font_size = 36
 text = "＋"
 
-[node name="Control5" type="Control" parent="Container"]
-layout_mode = 3
+[node name="Control5" type="Control" parent="Control9"]
 anchors_preset = 0
 offset_left = 576.0
 offset_top = 422.0
 offset_right = 616.0
 offset_bottom = 462.0
 
-[node name="Label" type="Label" parent="Container/Control5"]
+[node name="Label" type="Label" parent="Control9/Control5"]
 layout_mode = 0
 offset_top = 6.0
 offset_right = 72.0
@@ -253,7 +268,7 @@ offset_bottom = 56.0
 theme_override_font_sizes/font_size = 36
 text = "工艺"
 
-[node name="EquipMinus" type="Button" parent="Container/Control5"]
+[node name="EquipMinus" type="Button" parent="Control9/Control5"]
 unique_name_in_owner = true
 layout_mode = 0
 offset_left = 100.0
@@ -263,7 +278,7 @@ offset_bottom = 63.0
 theme_override_font_sizes/font_size = 36
 text = "－"
 
-[node name="EquipTxt" type="Label" parent="Container/Control5"]
+[node name="EquipTxt" type="Label" parent="Control9/Control5"]
 unique_name_in_owner = true
 layout_mode = 0
 offset_left = 188.0
@@ -274,7 +289,7 @@ theme_override_font_sizes/font_size = 36
 text = "工艺"
 horizontal_alignment = 1
 
-[node name="EquipPlus" type="Button" parent="Container/Control5"]
+[node name="EquipPlus" type="Button" parent="Control9/Control5"]
 unique_name_in_owner = true
 layout_mode = 0
 offset_left = 296.0
@@ -284,15 +299,14 @@ offset_bottom = 63.0
 theme_override_font_sizes/font_size = 36
 text = "＋"
 
-[node name="Control6" type="Control" parent="Container"]
-layout_mode = 3
+[node name="Control6" type="Control" parent="Control9"]
 anchors_preset = 0
 offset_left = 576.0
 offset_top = 512.0
 offset_right = 616.0
 offset_bottom = 552.0
 
-[node name="Label" type="Label" parent="Container/Control6"]
+[node name="Label" type="Label" parent="Control9/Control6"]
 layout_mode = 0
 offset_top = 6.0
 offset_right = 72.0
@@ -300,7 +314,7 @@ offset_bottom = 56.0
 theme_override_font_sizes/font_size = 36
 text = "书写"
 
-[node name="BookMinus" type="Button" parent="Container/Control6"]
+[node name="BookMinus" type="Button" parent="Control9/Control6"]
 unique_name_in_owner = true
 layout_mode = 0
 offset_left = 100.0
@@ -310,7 +324,7 @@ offset_bottom = 63.0
 theme_override_font_sizes/font_size = 36
 text = "－"
 
-[node name="BookTxt" type="Label" parent="Container/Control6"]
+[node name="BookTxt" type="Label" parent="Control9/Control6"]
 unique_name_in_owner = true
 layout_mode = 0
 offset_left = 188.0
@@ -321,7 +335,7 @@ theme_override_font_sizes/font_size = 36
 text = "书写"
 horizontal_alignment = 1
 
-[node name="BookPlus" type="Button" parent="Container/Control6"]
+[node name="BookPlus" type="Button" parent="Control9/Control6"]
 unique_name_in_owner = true
 layout_mode = 0
 offset_left = 296.0
@@ -331,15 +345,14 @@ offset_bottom = 63.0
 theme_override_font_sizes/font_size = 36
 text = "＋"
 
-[node name="Control7" type="Control" parent="Container"]
-layout_mode = 3
+[node name="Control7" type="Control" parent="Control9"]
 anchors_preset = 0
 offset_left = 576.0
 offset_top = 602.0
 offset_right = 616.0
 offset_bottom = 642.0
 
-[node name="Label" type="Label" parent="Container/Control7"]
+[node name="Label" type="Label" parent="Control9/Control7"]
 layout_mode = 0
 offset_top = 6.0
 offset_right = 72.0
@@ -347,7 +360,7 @@ offset_bottom = 56.0
 theme_override_font_sizes/font_size = 36
 text = "会心"
 
-[node name="CriticalMinus" type="Button" parent="Container/Control7"]
+[node name="CriticalMinus" type="Button" parent="Control9/Control7"]
 unique_name_in_owner = true
 layout_mode = 0
 offset_left = 100.0
@@ -357,7 +370,7 @@ offset_bottom = 63.0
 theme_override_font_sizes/font_size = 36
 text = "－"
 
-[node name="CriticalTxt" type="Label" parent="Container/Control7"]
+[node name="CriticalTxt" type="Label" parent="Control9/Control7"]
 unique_name_in_owner = true
 layout_mode = 0
 offset_left = 188.0
@@ -368,7 +381,7 @@ theme_override_font_sizes/font_size = 36
 text = "会心"
 horizontal_alignment = 1
 
-[node name="CriticalPlus" type="Button" parent="Container/Control7"]
+[node name="CriticalPlus" type="Button" parent="Control9/Control7"]
 unique_name_in_owner = true
 layout_mode = 0
 offset_left = 296.0
@@ -378,15 +391,14 @@ offset_bottom = 63.0
 theme_override_font_sizes/font_size = 36
 text = "＋"
 
-[node name="Control8" type="Control" parent="Container"]
-layout_mode = 3
+[node name="Control8" type="Control" parent="Control9"]
 anchors_preset = 0
 offset_left = 576.0
 offset_top = 692.0
 offset_right = 616.0
 offset_bottom = 732.0
 
-[node name="Label" type="Label" parent="Container/Control8"]
+[node name="Label" type="Label" parent="Control9/Control8"]
 layout_mode = 0
 offset_top = 6.0
 offset_right = 72.0
@@ -394,7 +406,7 @@ offset_bottom = 56.0
 theme_override_font_sizes/font_size = 36
 text = "敏捷"
 
-[node name="DodgeMinus" type="Button" parent="Container/Control8"]
+[node name="DodgeMinus" type="Button" parent="Control9/Control8"]
 unique_name_in_owner = true
 layout_mode = 0
 offset_left = 100.0
@@ -404,7 +416,7 @@ offset_bottom = 63.0
 theme_override_font_sizes/font_size = 36
 text = "－"
 
-[node name="DodgeTxt" type="Label" parent="Container/Control8"]
+[node name="DodgeTxt" type="Label" parent="Control9/Control8"]
 unique_name_in_owner = true
 layout_mode = 0
 offset_left = 188.0
@@ -415,7 +427,7 @@ theme_override_font_sizes/font_size = 36
 text = "敏捷"
 horizontal_alignment = 1
 
-[node name="DodgePlus" type="Button" parent="Container/Control8"]
+[node name="DodgePlus" type="Button" parent="Control9/Control8"]
 unique_name_in_owner = true
 layout_mode = 0
 offset_left = 296.0
@@ -425,7 +437,7 @@ offset_bottom = 63.0
 theme_override_font_sizes/font_size = 36
 text = "＋"
 
-[node name="RemainPoint" type="Label" parent="Container"]
+[node name="RemainPoint" type="Label" parent="Control9"]
 layout_mode = 0
 offset_left = 64.0
 offset_top = 192.0
@@ -434,16 +446,7 @@ offset_bottom = 242.0
 theme_override_font_sizes/font_size = 36
 text = "剩余点数："
 
-[node name="Button" type="Button" parent="Container"]
-layout_mode = 0
-offset_left = 1536.0
-offset_top = 64.0
-offset_right = 1776.0
-offset_bottom = 184.0
-theme_override_font_sizes/font_size = 36
-text = "确定"
-
-[node name="NameInput2" type="TextEdit" parent="Container"]
+[node name="NameInput2" type="TextEdit" parent="Control9"]
 layout_mode = 0
 offset_left = 64.0
 offset_top = 320.0

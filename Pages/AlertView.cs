@@ -1,41 +1,50 @@
-using Godot;
-using KemoCard.Pages;
-using StaticClass;
 using System;
+using Godot;
+using KemoCard.Scripts;
+
+namespace KemoCard.Pages;
 
 public partial class AlertView : BaseScene
 {
-    [Export] RichTextLabel msg;
-    [Export] Godot.Button ConfirmBtn;
-    [Export] Godot.Button CancelBtn;
-    private Action _ConfirmAction;
-    private Action _CancelAction;
-    public static void PopupAlert(string msg, bool useCustomStyle = false, Action ConfirmAction = null, Action CancelAction = null)
+    [Export] private RichTextLabel _msg;
+    [Export] private Godot.Button _confirmBtn;
+    [Export] private Godot.Button _cancelBtn;
+    private Action _confirmAction;
+    private Action _cancelAction;
+
+    public static void PopupAlert(string msg, bool useCustomStyle = false, Action confirmAction = null,
+        Action cancelAction = null)
     {
-        if (StaticInstance.windowMgr.IsPopupScene("AlertView"))
+        if (StaticInstance.WindowMgr.IsPopupScene("AlertView"))
         {
             StaticInstance.MainRoot.ShowBanner("已有一个提示弹窗");
             return;
         }
-        AlertView alertView = (AlertView)ResourceLoader.Load<PackedScene>("res://Pages/AlertView.tscn").Instantiate();
-        alertView._ConfirmAction = ConfirmAction;
-        alertView._CancelAction = CancelAction;
-        if (useCustomStyle) alertView.msg.Text = msg;
-        else alertView.msg.Text = "[font_size=50]" + msg + "[/font_size]";
-        StaticInstance.windowMgr.PopScene(alertView);
+
+        var alertView = (AlertView)ResourceLoader.Load<PackedScene>("res://Pages/AlertView.tscn").Instantiate();
+        alertView._confirmAction = confirmAction;
+        alertView._cancelAction = cancelAction;
+        if (useCustomStyle) alertView._msg.Text = msg;
+        else alertView._msg.Text = "[font_size=50]" + msg + "[/font_size]";
+        StaticInstance.WindowMgr.PopScene(alertView);
     }
+
     // Called when the node enters the scene tree for the first time.
     public override void _Ready()
     {
-        ConfirmBtn.Pressed += new(() =>
-        {
-            _ConfirmAction?.Invoke();
-            StaticInstance.windowMgr.RemoveScene(this);
-        });
-        CancelBtn.Pressed += new(() =>
-        {
-            _CancelAction?.Invoke();
-            StaticInstance.windowMgr.RemoveScene(this);
-        });
+        _confirmBtn.Pressed += OnConfirmBtnOnPressed;
+        _cancelBtn.Pressed += OnCancelBtnOnPressed;
+    }
+
+    private void OnCancelBtnOnPressed()
+    {
+        _cancelAction?.Invoke();
+        StaticInstance.WindowMgr.RemoveScene(this);
+    }
+
+    private void OnConfirmBtnOnPressed()
+    {
+        _confirmAction?.Invoke();
+        StaticInstance.WindowMgr.RemoveScene(this);
     }
 }

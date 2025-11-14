@@ -1,7 +1,8 @@
-﻿using Godot;
-using KemoCard.Pages;
-using StaticClass;
-using System.Linq;
+﻿using System.Linq;
+using Godot;
+using KemoCard.Scripts;
+
+namespace KemoCard.Pages;
 
 public partial class DeckEditScene : BaseScene
 {
@@ -9,7 +10,7 @@ public partial class DeckEditScene : BaseScene
     [Export] TextEdit IDFilter;
     [Export] TextEdit NameFilter;
     [Export] Godot.Button clearBtn;
-    private int flags;
+    private int _flags;
 
     // Called when the node enters the scene tree for the first time.
     public override void _Ready()
@@ -19,35 +20,35 @@ public partial class DeckEditScene : BaseScene
         {
             popup.AddCheckItem(flag);
         }
-        popup.IndexPressed += new((index) =>
+
+        popup.IndexPressed += (index) =>
         {
-            var text = popup.GetItemText((int)index);
-            int value = StaticEnums.CardFlagDic.ElementAt((int)index).Key;
-            if ((flags & value) > 0)
+            // var text = popup.GetItemText((int)index);
+            var value = StaticEnums.CardFlagDic.ElementAt((int)index).Key;
+            if ((_flags & value) > 0)
             {
-                flags &= ~value;
+                _flags &= ~value;
             }
             else
             {
-                flags |= value;
+                _flags |= value;
             }
+
             ReDrawMenu();
-        });
-        clearBtn.Pressed += new(() =>
+        };
+        clearBtn.Pressed += () =>
         {
-            flags = 0;
+            _flags = 0;
             ReDrawMenu();
-        });
+        };
     }
 
-    void ReDrawMenu()
+    private void ReDrawMenu()
     {
-        if (flagFilter != null)
+        if (flagFilter == null) return;
+        for (var i = 0; i < flagFilter.GetPopup().ItemCount; i++)
         {
-            for (int i = 0; i < flagFilter.GetPopup().ItemCount; i++)
-            {
-                flagFilter.GetPopup().SetItemChecked(i, (flags & StaticEnums.CardFlagDic.ElementAt(i).Key) > 0);
-            }
+            flagFilter.GetPopup().SetItemChecked(i, (_flags & StaticEnums.CardFlagDic.ElementAt(i).Key) > 0);
         }
     }
 }

@@ -1,8 +1,7 @@
 ﻿using Godot;
-using StaticClass;
 using System.Collections.Generic;
 using System.Linq;
-using static StaticClass.StaticEnums;
+using static KemoCard.Scripts.StaticEnums;
 
 namespace KemoCard.Scripts.Cards
 {
@@ -17,10 +16,10 @@ namespace KemoCard.Scripts.Cards
             {
                 switch (cardObject.card.CostType)
                 {
-                    case CostType.HEALTH:
-                        if (cardObject.card.owner.CurrHealth > cardObject.card.Cost)
+                    case CostType.Health:
+                        if (cardObject.card.Owner.CurrHealth > cardObject.card.Cost)
                         {
-                            cardObject.card.owner.CurrHealth -= cardObject.card.Cost;
+                            cardObject.card.Owner.CurrHealth -= cardObject.card.Cost;
                         }
                         else
                         {
@@ -28,10 +27,10 @@ namespace KemoCard.Scripts.Cards
                             isCosted = false;
                         }
                         break;
-                    case CostType.MAGIC:
-                        if (cardObject.card.owner.CurrMagic > cardObject.card.Cost)
+                    case CostType.Magic:
+                        if (cardObject.card.Owner.CurrMagic > cardObject.card.Cost)
                         {
-                            cardObject.card.owner.CurrMagic -= cardObject.card.Cost;
+                            cardObject.card.Owner.CurrMagic -= cardObject.card.Cost;
                         }
                         else
                         {
@@ -39,8 +38,8 @@ namespace KemoCard.Scripts.Cards
                             isCosted = false;
                         }
                         break;
-                    case CostType.ACTIONPOINT:
-                        var owner = cardObject.card.owner as PlayerRole;
+                    case CostType.ActionPoint:
+                        var owner = cardObject.card.Owner as PlayerRole;
                         if (owner != null && owner.CurrentActionPoint >= cardObject.card.Cost)
                         {
                             owner.CurrentActionPoint -= cardObject.card.Cost;
@@ -54,15 +53,15 @@ namespace KemoCard.Scripts.Cards
                 }
             }
             bool flag = true;
-            if (cardObject.card.UseFilter != null) flag = cardObject.card.UseFilter.Invoke(cardObject.card?.owner, roles, null);
+            if (cardObject.card.UseFilter != null) flag = cardObject.card.UseFilter.Invoke(cardObject.card?.Owner, roles, null);
             if (isCosted && BattleStatic.Targets.Count > 0 && flag)
             {
-                cardObject.card.FunctionUse?.Invoke(cardObject.card.owner, roles, new[] { cardObject.card });
+                cardObject.card.FunctionUse?.Invoke(cardObject.card.Owner, roles, new[] { cardObject.card });
                 BattleStatic.AddUsedCard(cardObject.card);
                 GD.Print($"卡牌C{cardObject.card.Id}已使用");
                 BattleStatic.currCard = null;
                 BattleStatic.Targets.Clear();
-                if (cardObject.card.owner is PlayerRole ifp)
+                if (cardObject.card.Owner is PlayerRole ifp)
                 {
                     if (!cardObject.card.CheckHasSymbol("Exhaust"))
                     {
@@ -100,16 +99,16 @@ namespace KemoCard.Scripts.Cards
                 }
                 cardObject.GetTree().CreateTimer(0.1f).Timeout += new(() =>
                 {
-                    StaticInstance.eventMgr.Dispatch("RepositionHand");
-                    StaticInstance.eventMgr.Dispatch("DraggingCard");
+                    StaticInstance.EventMgr.Dispatch("RepositionHand");
+                    StaticInstance.EventMgr.Dispatch("DraggingCard");
                 });
             }
             else
             {
                 GetViewport().SetInputAsHandled();
                 BattleStatic.Targets.Clear();
-                StaticInstance.eventMgr.Dispatch("EndSelectTarget");
-                cardObject.csm.OnTransitionRequest(this, CardStateEnum.BASE);
+                StaticInstance.EventMgr.Dispatch("EndSelectTarget");
+                cardObject.csm.OnTransitionRequest(this, CardStateEnum.Base);
                 BattleStatic.currCard = null;
             }
             BattleStatic.Targets.Clear();

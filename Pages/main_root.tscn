@@ -1,6 +1,6 @@
 [gd_scene load_steps=3 format=3 uid="uid://ueed1ivee7eb"]
 
-[ext_resource type="Script" path="res://Pages/main_root.cs" id="1_0riev"]
+[ext_resource type="Script" uid="uid://7bdlrfaaycaw" path="res://Pages/MainRoot.cs" id="1_522gf"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_b8ugc"]
 content_margin_left = 10.0
@@ -9,7 +9,7 @@ content_margin_right = 10.0
 content_margin_bottom = 10.0
 bg_color = Color(0, 0, 0, 0.584314)
 
-[node name="MainRoot" type="Control" node_paths=PackedStringArray("colorRect", "banner", "richHint", "BlackMask")]
+[node name="MainRoot" type="Control" node_paths=PackedStringArray("_colorRect", "_banner", "_richHint", "BlackMask")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -17,10 +17,10 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
-script = ExtResource("1_0riev")
-colorRect = NodePath("ColorRect")
-banner = NodePath("Banner")
-richHint = NodePath("ColorRect/richHint")
+script = ExtResource("1_522gf")
+_colorRect = NodePath("ColorRect")
+_banner = NodePath("Banner")
+_richHint = NodePath("ColorRect/richHint")
 BlackMask = NodePath("BlackMask")
 
 [node name="LoadTimer" type="Timer" parent="."]
@@ -36,11 +36,25 @@ grow_vertical = 2
 mouse_filter = 2
 color = Color(0.266667, 0.4, 0.6, 1)
 
-[node name="DialogRoot" type="Node2D" parent="."]
+[node name="DialogRoot" type="Control" parent="."]
 unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
 
-[node name="PopUpRoot" type="Node2D" parent="."]
+[node name="PopUpRoot" type="Control" parent="."]
 unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
 
 [node name="ColorRect" type="ColorRect" parent="."]
 layout_mode = 1

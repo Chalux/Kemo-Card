@@ -1,17 +1,18 @@
 ﻿using Godot;
-using KemoCard.Scripts;
 
-namespace StaticClass
+namespace KemoCard.Scripts
 {
     public static class StaticInstance
     {
         // 全局唯一变量
-        [Export] public static main_root MainRoot;
-        public static WindowMgr windowMgr;
+        [Export] public static KemoCard.Pages.MainRoot MainRoot;
+
+        public static WindowMgr WindowMgr;
+
         //public static BattleCore battleCore;
-        public static EventMgr eventMgr;
-        [Export] public static PlayerData playerData;
-        [Export] public static Node currWindow;
+        public static EventMgr EventMgr;
+        [Export] public static PlayerData PlayerData;
+        [Export] public static Node CurrWindow;
 
         // 一些颜色的配置什么的
         public static readonly string NameColor = "#" + Colors.LightYellow.ToHtml();

@@ -6,7 +6,6 @@ namespace KemoCard.Scripts.Map
     {
         public virtual void Init(MapData data)
         {
-
         }
     }
 }

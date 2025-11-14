@@ -1,7 +1,7 @@
 using Godot;
-using StaticClass;
 using System.Collections.Generic;
 using System.Linq;
+using KemoCard.Scripts;
 
 public partial class EndBattleRewardItem : Control
 {
@@ -45,22 +45,22 @@ public partial class EndBattleRewardItem : Control
                             PackedScene res = ResourceLoader.Load<PackedScene>("res://Pages/SelectCardScene.tscn");
                             if (res != null)
                             {
-                                SelectCardScene scs = res.Instantiate<SelectCardScene>();
+                                KemoCard.Pages.SelectCardScene scs = res.Instantiate<KemoCard.Pages.SelectCardScene>();
                                 scs.Init(data.ToList());
-                                StaticInstance.windowMgr.AddScene(scs);
+                                StaticInstance.WindowMgr.AddScene(scs);
                             }
                         }
                         break;
                     case RewardType.Equip:
                         if (data.Length > 0)
                         {
-                            StaticInstance.playerData.gsd.MajorRole.AddEquipToBag(new(data[0]));
+                            StaticInstance.PlayerData.Gsd.MajorRole.AddEquipToBag(new(data[0]));
                         }
                         break;
                     case RewardType.Exp:
                         if (data.Length > 0)
                         {
-                            StaticInstance.playerData.gsd.MajorRole.Exp += (uint)data[0].ToInt();
+                            StaticInstance.PlayerData.Gsd.MajorRole.Exp += (uint)data[0].ToInt();
                         }
                         break;
                 }

@@ -1,7 +1,7 @@
 ﻿using Godot;
 using Godot.Collections;
-using StaticClass;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using System.Text.Json;
 
@@ -11,6 +11,7 @@ namespace KemoCard.Scripts
     public class Datas
     {
         private static Datas _ins;
+
         public static Datas Ins
         {
             get
@@ -20,298 +21,328 @@ namespace KemoCard.Scripts
             }
         }
 
-        public HashSet<string> ModCache;
-        public HashSet<string> errorModsSet = new();
-        public System.Collections.Generic.Dictionary<string, ModInfoStruct> ModPool = new();
-        public System.Collections.Generic.Dictionary<string, CardStruct> CardPool = new();
-        public System.Collections.Generic.Dictionary<string, EnemyStruct> EnemyPool = new();
-        public System.Collections.Generic.Dictionary<string, EquipStruct> EquipPool = new();
-        public System.Collections.Generic.Dictionary<string, BuffStruct> BuffPool = new();
-        public System.Collections.Generic.Dictionary<string, RoleStruct> RolePool = new();
-        public System.Collections.Generic.Dictionary<string, PresetStruct> PresetPool = new();
-        public System.Collections.Generic.Dictionary<string, MapStruct> MapPool = new();
-        public System.Collections.Generic.Dictionary<string, EventStruct> EventPool = new();
+        private HashSet<string> _modCache;
+        private readonly HashSet<string> _errorModsSet = [];
+        private readonly System.Collections.Generic.Dictionary<string, ModInfoStruct> _modPool = new();
+        public readonly System.Collections.Generic.Dictionary<string, CardStruct> CardPool = new();
+        public readonly System.Collections.Generic.Dictionary<string, EnemyStruct> EnemyPool = new();
+        public readonly System.Collections.Generic.Dictionary<string, EquipStruct> EquipPool = new();
+        public readonly System.Collections.Generic.Dictionary<string, BuffStruct> BuffPool = new();
+        public readonly System.Collections.Generic.Dictionary<string, RoleStruct> RolePool = new();
+        public readonly System.Collections.Generic.Dictionary<string, PresetStruct> PresetPool = new();
+        public readonly System.Collections.Generic.Dictionary<string, MapStruct> MapPool = new();
+        public readonly System.Collections.Generic.Dictionary<string, EventStruct> EventPool = new();
 
-        private static readonly string MOD_CACHE_PATH = "user://Saves/modCache.json";
+        private const string ModCachePath = "user://Saves/modCache.json";
 
         public void Init()
         {
-            bool cache = FileAccess.FileExists(MOD_CACHE_PATH);
-            ModCache = new();
+            var cache = FileAccess.FileExists(ModCachePath);
+            _modCache = [];
             if (cache)
             {
-                using var cachefile = FileAccess.Open(MOD_CACHE_PATH, FileAccess.ModeFlags.ReadWrite);
+                using var cacheFile = FileAccess.Open(ModCachePath, FileAccess.ModeFlags.ReadWrite);
                 try
                 {
-                    string content = cachefile.GetAsText();
-                    var ModCacheArray = JsonSerializer.Deserialize<string[]>(content);
-                    if (ModCacheArray != null)
+                    var content = cacheFile.GetAsText();
+                    var modCacheArray = JsonSerializer.Deserialize<string[]>(content);
+                    if (modCacheArray != null)
                     {
-                        foreach (string str in ModCacheArray)
+                        foreach (var str in modCacheArray)
                         {
-                            ModCache.Add(str);
+                            _modCache.Add(str);
                         }
                     }
                 }
                 catch
                 {
-                    ModCache.Clear();
-                    ModCache.Add("MainPackage");
-                    cachefile.StoreString("[\"MainPackage\"]");
+                    _modCache.Clear();
+                    _modCache.Add("MainPackage");
+                    cacheFile.StoreString("[\"MainPackage\"]");
                     StaticInstance.MainRoot.ShowBanner("模组配置缓存文件不存在或格式错误，已重置文件内容");
                 }
             }
             else
             {
                 DirAccess.MakeDirRecursiveAbsolute("user://Saves/");
-                var cachefile = FileAccess.Open(MOD_CACHE_PATH, FileAccess.ModeFlags.Write);
+                using var cachefile = FileAccess.Open(ModCachePath, FileAccess.ModeFlags.Write);
                 if (cachefile == null)
                 {
                     GD.Print(FileAccess.GetOpenError());
                     return;
                 }
-                string json = "[\"MainPackage\"]";
+
+                const string json = "[\"MainPackage\"]";
                 cachefile.StoreString(json);
-                var ModCacheArray = Json.ParseString(json);
-                if ((ModCacheArray as object) != null)
+                var modCacheArray = Json.ParseString(json);
+                foreach (var str in modCacheArray.As<string[]>())
                 {
-                    foreach (string str in ModCacheArray.As<string[]>())
-                    {
-                        ModCache.Add(str);
-                    }
+                    _modCache.Add(str);
                 }
-                cachefile.Dispose();
             }
+
             LoadModsData();
         }
 
-        public void LoadModsData()
+        private void LoadModsData()
         {
-            ModPool.Clear();
+            _modPool.Clear();
             CardPool.Clear();
-            errorModsSet.Clear();
-            foreach (var name in ModCache)
+            _errorModsSet.Clear();
+            foreach (var name in _modCache)
             {
                 var isLoaded = ProjectSettings.LoadResourcePack($"user://Mods/{name}.pck");
                 if (isLoaded || name == "MainPackage")
                 {
                     var res = ResourceLoader.Load<CSharpScript>($"res://Mods/{name}/Scripts/ModBoost.cs");
-                    BaseModBoost modBoost = res.New().As<BaseModBoost>();
+                    if (res == null) continue;
+                    var modBoost = res.New().As<BaseModBoost>();
                     modBoost.OnInit();
-                    string path = $"res://Mods/{name}/mod_info.json";
+                    var path = $"res://Mods/{name}/mod_info.json";
                     if (FileAccess.FileExists(path))
                     {
                         using var f = FileAccess.Open(path, FileAccess.ModeFlags.Read);
-                        var mod_info = Json.ParseString(f.GetAsText());
-                        if ((mod_info as object) != null)
+                        var modInfo = Json.ParseString(f.GetAsText());
+                        if ((modInfo as object) != null)
                         {
-                            var JsonData = new Godot.Collections.Dictionary<string, Variant>((Dictionary)mod_info);
-                            if (JsonData.ContainsKey("mod_id"))
+                            var jsonData = new Godot.Collections.Dictionary<string, Variant>((Dictionary)modInfo);
+                            if (jsonData.TryGetValue("mod_id", out var modId))
                             {
-                                string currModId = JsonData["mod_id"].AsString();
-                                if (ModPool.ContainsKey(currModId))
+                                var currModId = modId.AsString();
+                                if (_modPool.TryGetValue(currModId, out var modInfoStruct))
                                 {
-                                    string errorLog = "Mod间存在冲突。Mod的id重复。冲突的两个Mod的id分别为：" + currModId + "," + ModPool[currModId].mod_id;
-                                    errorModsSet.Add(currModId);
-                                    errorModsSet.Add(ModPool[currModId].mod_id);
+                                    var errorLog = "Mod间存在冲突。Mod的id重复。冲突的两个Mod的id分别为：" + currModId + "," +
+                                                   modInfoStruct.ModId;
+                                    _errorModsSet.Add(currModId);
+                                    _errorModsSet.Add(modInfoStruct.ModId);
                                     StaticInstance.MainRoot.ShowBanner(errorLog);
                                     continue;
                                 }
-                                ModPool.Add(currModId, new ModInfoStruct
+
+                                _modPool.Add(currModId, new ModInfoStruct
                                 {
-                                    name = JsonData["name"].AsString(),
-                                    mod_id = currModId,
-                                    mod_version = JsonData["mod_version"].AsString(),
-                                    description = JsonData["description"].AsString(),
-                                    author_list = JsonData["author_list"].AsStringArray(),
+                                    Name = jsonData["name"].AsString(),
+                                    ModId = currModId,
+                                    ModVersion = jsonData["mod_version"].AsString(),
+                                    Description = jsonData["description"].AsString(),
+                                    AuthorList = jsonData["author_list"].AsStringArray(),
                                 });
-                                if (JsonData.ContainsKey("card_list"))
+                                if (jsonData.TryGetValue("card_list", out var cardList))
                                 {
-                                    foreach (var data in JsonData["card_list"].AsGodotArray<Dictionary>())
+                                    foreach (var data in cardList.AsGodotArray<Dictionary>())
                                     {
                                         var id = data["card_id"].AsString();
-                                        if (CardPool.ContainsKey(id))
+                                        if (CardPool.TryGetValue(id, out var cardStruct))
                                         {
                                             StaticInstance.MainRoot.ShowBanner("Mod间存在冲突。卡牌id冲突：" + id
-                                                + ",冲突的两个Mod的id分别为：" + currModId + "," + CardPool[id].mod_id);
-                                            errorModsSet.Add(currModId);
-                                            errorModsSet.Add(CardPool[id].mod_id);
+                                                + ",冲突的两个Mod的id分别为：" + currModId + "," + cardStruct.ModId);
+                                            _errorModsSet.Add(currModId);
+                                            _errorModsSet.Add(cardStruct.ModId);
                                             continue;
                                         }
+
                                         CardPool.Add(id, new CardStruct
                                         {
-                                            card_id = id,
-                                            filter_flag = data["filter_flag"].AsUInt64(),
-                                            rare = data["rare"].AsUInt16(),
-                                            is_special = data["is_special"].AsBool(),
-                                            alias = data["alias"].AsString(),
-                                            desc = data["desc"].AsString(),
-                                            cost = data["cost"].AsUInt32(),
-                                            cost_type = data["cost_type"].AsUInt32(),
-                                            target_type = data["target_type"].AsUInt32(),
-                                            mod_id = currModId
+                                            CardId = id,
+                                            FilterFlag = data["filter_flag"].AsUInt64(),
+                                            Rare = data["rare"].AsUInt16(),
+                                            IsSpecial = data["is_special"].AsBool(),
+                                            Alias = data["alias"].AsString(),
+                                            Desc = data["desc"].AsString(),
+                                            Cost = data["cost"].AsUInt32(),
+                                            CostType = data["cost_type"].AsUInt32(),
+                                            TargetType = data["target_type"].AsUInt32(),
+                                            ModId = currModId
                                         });
                                     }
                                 }
-                                if (JsonData.ContainsKey("enemy_list"))
+
+                                if (jsonData.TryGetValue("enemy_list", out var variant))
                                 {
-                                    foreach (var data in JsonData["enemy_list"].AsGodotArray<Dictionary>())
+                                    foreach (var data in variant.AsGodotArray<Dictionary>())
                                     {
                                         var id = data["enemy_id"].AsString();
-                                        if (EnemyPool.ContainsKey(id))
+                                        if (EnemyPool.TryGetValue(id, out var enemyStruct))
                                         {
                                             StaticInstance.MainRoot.ShowBanner("Mod间存在冲突。敌人id冲突：" + id
-                                                + ",冲突的两个Mod的id分别为：" + currModId + "," + EnemyPool[id].mod_id);
-                                            errorModsSet.Add(currModId);
-                                            errorModsSet.Add(EnemyPool[id].mod_id);
+                                                + ",冲突的两个Mod的id分别为：" + currModId + "," + enemyStruct.ModId);
+                                            _errorModsSet.Add(currModId);
+                                            _errorModsSet.Add(enemyStruct.ModId);
                                             continue;
                                         }
+
                                         EnemyPool.Add(id, new EnemyStruct
                                         {
-                                            enemy_id = id,
-                                            mod_id = currModId
+                                            EnemyId = id,
+                                            ModId = currModId
                                         });
                                     }
                                 }
-                                if (JsonData.ContainsKey("equip_list"))
+
+                                if (jsonData.TryGetValue("equip_list", out var elValue))
                                 {
-                                    foreach (var data in JsonData["equip_list"].AsGodotArray<Dictionary>())
+                                    foreach (var data in elValue.AsGodotArray<Dictionary>())
                                     {
                                         var id = data["equip_id"].AsString();
-                                        if (EquipPool.ContainsKey(id))
+                                        if (EquipPool.TryGetValue(id, out var value))
                                         {
                                             StaticInstance.MainRoot.ShowBanner("Mod间存在冲突。装备id冲突：" + id
-                                                + ",冲突的两个Mod的id分别为：" + currModId + "," + EquipPool[id].mod_id);
-                                            errorModsSet.Add(currModId);
-                                            errorModsSet.Add(EquipPool[id].mod_id);
+                                                + ",冲突的两个Mod的id分别为：" + currModId + "," + value.ModId);
+                                            _errorModsSet.Add(currModId);
+                                            _errorModsSet.Add(value.ModId);
                                             continue;
                                         }
+
                                         EquipPool.Add(id, new EquipStruct
                                         {
-                                            equip_id = id,
-                                            equip_type = data["equip_type"].AsUInt16(),
-                                            is_special = data["is_special"].AsBool(),
-                                            mod_id = currModId
+                                            EquipId = id,
+                                            EquipType = data["equip_type"].AsUInt16(),
+                                            IsSpecial = data["is_special"].AsBool(),
+                                            ModId = currModId
                                         });
                                     }
                                 }
-                                if (JsonData.ContainsKey("buff_list"))
+
+                                if (jsonData.TryGetValue("buff_list", out var buffValue))
                                 {
-                                    foreach (var data in JsonData["buff_list"].AsGodotArray<Dictionary>())
+                                    foreach (var data in buffValue.AsGodotArray<Dictionary>())
                                     {
                                         var id = data["buff_id"].AsString();
-                                        if (BuffPool.ContainsKey(id))
+                                        if (BuffPool.TryGetValue(id, out var value))
                                         {
-                                            StaticInstance.MainRoot.ShowBanner("Mod间存在冲突。buffid冲突：" + id + "，冲突的两个Mod的id分别为：" + currModId + "，" + BuffPool[id].mod_id);
-                                            errorModsSet.Add(currModId);
-                                            errorModsSet.Add(BuffPool[id].mod_id);
+                                            StaticInstance.MainRoot.ShowBanner("Mod间存在冲突。buffId冲突：" + id +
+                                                                               "，冲突的两个Mod的id分别为：" + currModId + "，" +
+                                                                               value.ModId);
+                                            _errorModsSet.Add(currModId);
+                                            _errorModsSet.Add(value.ModId);
                                             continue;
                                         }
+
                                         BuffPool.Add(id, new BuffStruct
                                         {
-                                            buff_id = id,
-                                            is_debuff = data["is_debuff"].AsBool(),
-                                            showname = data["showname"].AsString(),
-                                            desc = data["desc"].AsString(),
-                                            icon_path = data["icon_path"].AsString(),
-                                            is_infinite = data["is_infinite"].AsBool(),
-                                            buff_count = data["buff_count"].AsInt32(),
-                                            buff_value = data["buff_value"].AsDouble(),
-                                            mod_id = currModId
+                                            BuffId = id,
+                                            IsDebuff = data["is_debuff"].AsBool(),
+                                            // ReSharper disable once StringLiteralTypo
+                                            ShowName = data["showname"].AsString(),
+                                            Desc = data["desc"].AsString(),
+                                            IconPath = data["icon_path"].AsString(),
+                                            IsInfinite = data["is_infinite"].AsBool(),
+                                            BuffCount = data["buff_count"].AsInt32(),
+                                            BuffValue = data["buff_value"].AsDouble(),
+                                            ModId = currModId
                                         });
                                     }
                                 }
-                                if (JsonData.ContainsKey("role_list"))
+
+                                if (jsonData.TryGetValue("role_list", out var roleValue))
                                 {
-                                    foreach (var data in JsonData["role_list"].AsGodotArray<Dictionary>())
+                                    foreach (var data in roleValue.AsGodotArray<Dictionary>())
                                     {
                                         var id = data["role_id"].AsString();
-                                        if (RolePool.ContainsKey(id))
+                                        if (RolePool.TryGetValue(id, out var value))
                                         {
-                                            StaticInstance.MainRoot.ShowBanner("Mod间存在冲突。roleid冲突：" + id + "，冲突的两个Mod的id分别为：" + currModId + "，" + RolePool[id].mod_id);
-                                            errorModsSet.Add(currModId);
-                                            errorModsSet.Add(RolePool[id].mod_id);
+                                            StaticInstance.MainRoot.ShowBanner("Mod间存在冲突。roleId冲突：" + id +
+                                                                               "，冲突的两个Mod的id分别为：" + currModId + "，" +
+                                                                               value.ModId);
+                                            _errorModsSet.Add(currModId);
+                                            _errorModsSet.Add(value.ModId);
                                             continue;
                                         }
+
                                         RolePool.Add(id, new RoleStruct
                                         {
-                                            role_id = id,
-                                            mod_id = currModId
+                                            RoleId = id,
+                                            ModId = currModId
                                         });
                                     }
                                 }
-                                if (JsonData.ContainsKey("preset_list"))
+
+                                if (jsonData.TryGetValue("preset_list", out var presetValue))
                                 {
-                                    foreach (var data in JsonData["preset_list"].AsGodotArray<Dictionary>())
+                                    foreach (var data in presetValue.AsGodotArray<Dictionary>())
                                     {
                                         var id = data["preset_id"].AsString();
-                                        if (PresetPool.ContainsKey(id))
+                                        if (PresetPool.TryGetValue(id, out var value))
                                         {
-                                            StaticInstance.MainRoot.ShowBanner("Mod间存在冲突。presetid冲突：" + id + "，冲突的两个Mod的id分别为：" + currModId + "，" + PresetPool[id].mod_id);
-                                            errorModsSet.Add(currModId);
-                                            errorModsSet.Add(PresetPool[id].mod_id);
+                                            StaticInstance.MainRoot.ShowBanner("Mod间存在冲突。presetId冲突：" + id +
+                                                                               "，冲突的两个Mod的id分别为：" + currModId + "，" +
+                                                                               value.ModId);
+                                            _errorModsSet.Add(currModId);
+                                            _errorModsSet.Add(value.ModId);
                                             continue;
                                         }
+
                                         PresetPool.Add(id, new PresetStruct
                                         {
-                                            preset_id = id,
-                                            tier = data["tier"].AsUInt32(),
-                                            is_boss = data["is_boss"].AsBool(),
-                                            is_special = data["is_special"].AsBool(),
-                                            mod_id = currModId
+                                            PresetId = id,
+                                            Tier = data["tier"].AsUInt32(),
+                                            IsBoss = data["is_boss"].AsBool(),
+                                            IsSpecial = data["is_special"].AsBool(),
+                                            ModId = currModId
                                         });
                                     }
                                 }
-                                if (JsonData.ContainsKey("map_list"))
+
+                                if (jsonData.TryGetValue("map_list", out var mapValue))
                                 {
-                                    foreach (var data in JsonData["map_list"].AsGodotArray<Dictionary>())
+                                    foreach (var data in mapValue.AsGodotArray<Dictionary>())
                                     {
                                         var id = data["map_id"].AsString();
-                                        if (MapPool.ContainsKey(id))
+                                        if (MapPool.TryGetValue(id, out var value))
                                         {
-                                            StaticInstance.MainRoot.ShowBanner("Mod间存在冲突。mapid冲突：" + id + "，冲突的两个Mod的id分别为：" + currModId + "，" + MapPool[id].mod_id);
-                                            errorModsSet.Add(currModId);
-                                            errorModsSet.Add(MapPool[id].mod_id);
+                                            StaticInstance.MainRoot.ShowBanner("Mod间存在冲突。mapId冲突：" + id +
+                                                                               "，冲突的两个Mod的id分别为：" + currModId + "，" +
+                                                                               value.ModId);
+                                            _errorModsSet.Add(currModId);
+                                            _errorModsSet.Add(value.ModId);
                                             continue;
                                         }
+
                                         MapPool.Add(id, new MapStruct
                                         {
-                                            map_id = id,
-                                            min_tier = data["min_tier"].AsUInt32(),
-                                            max_tier = data["max_tier"].AsUInt32(),
-                                            floor = data["floor"].AsUInt32(),
-                                            map_width = data["map_width"].AsUInt32(),
-                                            paths = data["paths"].AsUInt32(),
-                                            show_cond = data.ContainsKey("show_cond") ? data["show_cond"].AsGodotDictionary<string, Array<Variant>>() : new(),
-                                            heal_times = data["heal_times"].AsUInt32(),
-                                            can_abort = data["can_abort"].AsBool(),
-                                            mod_id = currModId
+                                            MapId = id,
+                                            MinTier = data["min_tier"].AsUInt32(),
+                                            MaxTier = data["max_tier"].AsUInt32(),
+                                            Floor = data["floor"].AsUInt32(),
+                                            MapWidth = data["map_width"].AsUInt32(),
+                                            Paths = data["paths"].AsUInt32(),
+                                            ShowCond = data.ContainsKey("show_cond")
+                                                ? data["show_cond"].AsGodotDictionary<string, Array<Variant>>()
+                                                : new Godot.Collections.Dictionary<string, Array<Variant>>(),
+                                            HealTimes = data["heal_times"].AsUInt32(),
+                                            CanAbort = data["can_abort"].AsBool(),
+                                            ModId = currModId
                                         });
                                     }
                                 }
-                                if (JsonData.ContainsKey("event_list"))
+
+                                if (jsonData.TryGetValue("event_list", out var eventValue))
                                 {
-                                    foreach (var data in JsonData["event_list"].AsGodotArray<Dictionary>())
+                                    foreach (var data in eventValue.AsGodotArray<Dictionary>())
                                     {
                                         var id = data["event_id"].AsString();
                                         if (EventPool.ContainsKey(id))
                                         {
-                                            StaticInstance.MainRoot.ShowBanner("Mod间存在冲突。eventid冲突：" + id + "，冲突的两个Mod的id分别为：" + currModId + "，" + MapPool[id].mod_id);
-                                            errorModsSet.Add(currModId);
-                                            errorModsSet.Add(MapPool[id].mod_id);
+                                            StaticInstance.MainRoot.ShowBanner("Mod间存在冲突。eventId冲突：" + id +
+                                                                               "，冲突的两个Mod的id分别为：" + currModId + "，" +
+                                                                               MapPool[id].ModId);
+                                            _errorModsSet.Add(currModId);
+                                            _errorModsSet.Add(MapPool[id].ModId);
                                             continue;
                                         }
+
                                         EventPool.Add(id, new EventStruct
                                         {
-                                            event_id = id,
-                                            is_special = data["is_special"].AsBool(),
-                                            mod_id = currModId
+                                            EventId = id,
+                                            IsSpecial = data["is_special"].AsBool(),
+                                            ModId = currModId
                                         });
                                     }
                                 }
                             }
                         }
                     }
+
                     modBoost.OnInitEnd();
                 }
                 else
@@ -319,7 +350,8 @@ namespace KemoCard.Scripts
                     StaticInstance.MainRoot.ShowBanner($"Mod加载出错，Mod名为：{name}");
                 }
             }
-            foreach (var i in ModPool)
+
+            foreach (var i in _modPool)
             {
                 GD.Print(i.ToString());
             }
@@ -347,115 +379,118 @@ namespace KemoCard.Scripts
             //{
             //    GD.Print(i.ToString());
             //}
+
+            if (_errorModsSet.Count > 0) GD.PrintErr($"发现Mod冲突，冲突的ModId列表为{_errorModsSet}");
         }
 
         public struct CardStruct
         {
-            public string card_id;
-            public ulong filter_flag;
-            public uint rare;
-            public bool is_special;
-            public string alias;
-            public string desc;
-            public uint cost;
-            public uint target_type;
-            public uint cost_type;
-            public string mod_id;
+            public string CardId;
+            public ulong FilterFlag;
+            public uint Rare;
+            public bool IsSpecial;
+            public string Alias;
+            public string Desc;
+            public uint Cost;
+            public uint TargetType;
+            public uint CostType;
+            public string ModId;
         }
 
         public struct ModInfoStruct
         {
-            public string name;
-            public string mod_id;
-            public string mod_version;
-            public string description;
-            public string[] author_list;
+            public string Name;
+            public string ModId;
+            public string ModVersion;
+            public string Description;
+            public string[] AuthorList;
         }
 
         public struct EnemyStruct
         {
-            public string enemy_id;
-            public string mod_id;
+            public string EnemyId;
+            public string ModId;
         }
 
         public struct EquipStruct
         {
-            public string equip_id;
-            public uint equip_type;
-            public bool is_special;
-            public string mod_id;
+            public string EquipId;
+            public uint EquipType;
+            public bool IsSpecial;
+            public string ModId;
         }
 
         public struct BuffStruct
         {
-            public string buff_id;
-            public bool is_debuff;
-            public string showname;
-            public string desc;
-            public string icon_path;
-            public bool is_infinite;
-            public int buff_count;
-            public double buff_value;
-            public string mod_id;
+            public string BuffId;
+            public bool IsDebuff;
+            public string ShowName;
+            public string Desc;
+            public string IconPath;
+            public bool IsInfinite;
+            public int BuffCount;
+            public double BuffValue;
+            public string ModId;
         }
 
         public struct RoleStruct
         {
-            public string role_id;
-            public string mod_id;
+            public string RoleId;
+            public string ModId;
         }
 
         public struct PresetStruct
         {
-            public string preset_id;
-            public uint tier;
-            public bool is_boss;
+            public string PresetId;
+            public uint Tier;
+            public bool IsBoss;
+
             /// <summary>
             /// 特殊的预设不会进到随机池子里
             /// </summary>
-            public bool is_special;
-            public string mod_id;
+            public bool IsSpecial;
+
+            public string ModId;
         }
 
         public struct MapStruct
         {
-            public string map_id;
-            public uint min_tier;
-            public uint max_tier;
-            public uint floor;
-            public uint map_width;
-            public uint paths;
-            public Godot.Collections.Dictionary<string, Array<Variant>> show_cond;
-            public uint heal_times;
-            public bool can_abort;
-            public string mod_id;
+            public string MapId;
+            public uint MinTier;
+            public uint MaxTier;
+            public uint Floor;
+            public uint MapWidth;
+            public uint Paths;
+            public Godot.Collections.Dictionary<string, Array<Variant>> ShowCond;
+            public uint HealTimes;
+            public bool CanAbort;
+            public string ModId;
         }
 
         public struct EventStruct
         {
-            public string event_id;
+            public string EventId;
+
             /// <summary>
             /// 特殊的预设不会进到随机池子里
             /// </summary>
-            public bool is_special;
-            public string mod_id;
+            public bool IsSpecial;
+
+            public string ModId;
         }
 
-        public static List<T> CreateTarInterface<T>(string dllpath)
+        public static List<T> CreateTarInterface<T>(string dllPath)
         {
-            List<T> rs = new();
-            var dlllll = Assembly.LoadFrom(dllpath);
-            foreach (var item in dlllll.GetTypes())
-            {
-                object objType = dlllll.CreateInstance(item.Namespace + "." + item.Name);
-                if (typeof(T).IsAssignableFrom(objType.GetType()))
-                    rs.Add((T)objType);
-            }
+            List<T> rs = [];
+            var dll = Assembly.LoadFrom(dllPath);
+            rs.AddRange(dll.GetTypes().Select(item => dll.CreateInstance(item.Namespace + "." + item.Name))
+                .Where(objType => objType != null && typeof(T).IsAssignableFrom(objType.GetType())).Cast<T>());
+
             return rs;
         }
     }
 
-    public abstract partial class ModBoostImpl
+    public abstract class ModBoostImpl
     {
         public virtual void OnModLoaded()
         {

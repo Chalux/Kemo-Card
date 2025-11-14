@@ -1,98 +1,91 @@
 ﻿using Godot;
 using KemoCard.Scripts.Equips;
-using StaticClass;
 using System;
 using System.Collections.Generic;
 using System.Text.Json.Serialization;
 using static KemoCard.Scripts.Datas;
-using static StaticClass.StaticEnums;
+using static KemoCard.Scripts.StaticEnums;
 
 namespace KemoCard.Scripts
 {
     public class Equip
     {
-        private string _id;
+        private readonly string _id;
+
         // 临时的属性修改都放在这里面，只有永久修改的才写代码改属性值
         public Dictionary<string, float> Symbol { get; set; } = new();
+
         public string Id
         {
             get => _id;
-            set
+            private init
             {
                 _id = value;
                 InitScript();
             }
         }
-        public string Uuid { get; set; }
-        [JsonIgnore]
-        public BaseRole owner;
-        public EquipType EquipType { get; set; } = EquipType.OTHER;
+
+        public string Uuid { get; private set; }
+        [JsonIgnore] public BaseRole Owner;
+        public EquipType EquipType { get; private set; } = EquipType.Other;
+
         public Equip(string id, BaseRole owner = null)
         {
-            this.owner = owner;
+            this.Owner = owner;
             Id = id;
         }
+
         public Equip()
         {
         }
-        [JsonIgnore]
-        public EquipImplBase EquipScript { get; set; } = new();
-        public EquipStruct @struct;
+
+        [JsonIgnore] public EquipImplBase EquipScript { get; private set; } = new();
+
+        private EquipStruct _struct;
+
         private void InitScript()
         {
-            EquipScript = new();
+            EquipScript = new EquipImplBase();
             EquipScript.Binder = this;
-            if (Ins.EquipPool.ContainsKey(Id))
+            if (Ins.EquipPool.TryGetValue(Id, out var value))
             {
-                @struct = Ins.EquipPool[Id];
-                string path = $"res://Mods/{@struct.mod_id}/Scripts/Equips/EQ{Id}.cs";
-                var res = FileAccess.Open(path, FileAccess.ModeFlags.Read);
-                if (res == null)
-                {
-                    string errorLog = "未找到装备脚本资源,id:" + Id;
-                    StaticInstance.MainRoot.ShowBanner(errorLog);
-                    GD.PrintErr(errorLog);
-                }
-                else
-                {
-                    var s = ResourceLoader.Load<CSharpScript>(path).New().As<BaseEquipScript>();
-                    s.OnEquipInit(EquipScript);
-                }
-                EquipType = (EquipType)@struct.equip_type;
+                _struct = value;
+                var script = EquipFactory.CreateEquip(Id);
+                script?.OnEquipInit(EquipScript);
+
+                EquipType = (EquipType)_struct.EquipType;
             }
             else
             {
-                string errorLog = "未在脚本库中找到对应装备id，请检查Mod配置。id:" + Id;
+                var errorLog = "未在脚本库中找到对应装备id，请检查Mod配置。id:" + Id;
                 StaticInstance.MainRoot.ShowBanner(errorLog);
                 GD.PrintErr(errorLog);
             }
+
             EquipScript.OnCreated?.Invoke();
             Uuid = Guid.NewGuid().ToString();
         }
 
         ~Equip()
         {
-            owner = null;
+            Owner = null;
         }
 
         public override string ToString()
         {
-            string str = "";
-            if (EquipScript != null)
+            var str = "";
+            if (EquipScript == null) return str;
+            str += EquipScript.Name != "" ? EquipScript.Name + "\n" : "";
+            str += EquipScript.Desc != "" ? EquipScript.Desc + "\n" : "";
+            foreach (var cardId in EquipScript.CardDic.Keys)
             {
-                str += EquipScript.Name != "" ? EquipScript.Name + "\n" : "";
-                str += EquipScript.Desc != "" ? EquipScript.Desc + "\n" : "";
-                foreach (var cardid in EquipScript.CardDic.Keys)
-                {
-                    if (Ins.CardPool.TryGetValue(cardid, out var card_info))
-                    {
-                        str += StaticUtils.MakeColorString(card_info.alias, StaticUtils.GetFrameColorByRare(card_info.rare));
-                        str += "\n";
-                        str += card_info.desc;
-                        str += "\n";
-                    }
-                }
+                if (!Ins.CardPool.TryGetValue(cardId, out var cardInfo)) continue;
+                str += StaticUtils.MakeColorString(cardInfo.Alias, StaticUtils.GetFrameColorByRare(cardInfo.Rare));
+                str += "\n";
+                str += cardInfo.Desc;
+                str += "\n";
             }
+
             return str;
         }
     }

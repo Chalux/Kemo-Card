@@ -1,26 +1,24 @@
-﻿using Godot;
-using KemoCard.Pages;
+﻿using System.Collections.Generic;
+using System.Linq;
+using Godot;
 using KemoCard.Scripts;
 using KemoCard.Scripts.Cards;
-using StaticClass;
-using System.Collections.Generic;
-using System.Linq;
+
+namespace KemoCard.Pages;
 
 public partial class RoleDeckView : BaseScene
 {
     [Export] FlowContainer FlowContainer;
     [Export] Godot.Button ExitBtn;
     [Export] TabBar Tab;
-    private PlayerRole role;
+    private PlayerRole _role;
+
     public override void OnAdd(params object[] datas)
     {
-        ExitBtn.Pressed += new(() =>
-        {
-            StaticInstance.windowMgr.RemoveScene(this);
-        });
+        ExitBtn.Pressed += () => { StaticInstance.WindowMgr.RemoveScene(this); };
         if (datas[0] is PlayerRole pr)
         {
-            role = pr;
+            _role = pr;
         }
 
         Tab.TabChanged += UpdateView;
@@ -29,7 +27,7 @@ public partial class RoleDeckView : BaseScene
         UpdateView(0);
     }
 
-    private void ShowHint(long tab)
+    private static void ShowHint(long tab)
     {
         switch (tab)
         {
@@ -50,26 +48,27 @@ public partial class RoleDeckView : BaseScene
 
     private void UpdateView(long tab)
     {
-        if (role == null) return;
-        List<Card> cards = new();
+        if (_role == null) return;
+        List<Card> cards = [];
         switch (tab)
         {
             case 0:
-                cards = role.Deck.Concat(role.TempDeck).ToList();
+                cards = _role.Deck.Concat(_role.TempDeck).ToList();
                 break;
             case 1:
-                cards = role.Deck.Where(c => c.EquipId == "").ToList();
+                cards = _role.Deck.Where(c => c.EquipId == "").ToList();
                 break;
             case 2:
-                cards = role.Deck.Where(c => c.EquipId != "").ToList();
+                cards = _role.Deck.Where(c => c.EquipId != "").ToList();
                 break;
             case 3:
-                cards = role.TempDeck;
+                cards = _role.TempDeck;
                 break;
         }
+
         if (cards.Count > FlowContainer.GetChildCount())
         {
-            for (int i = 0; i < cards.Count; i++)
+            for (var i = 0; i < cards.Count; i++)
             {
                 var card = cards[i];
                 if (i < FlowContainer.GetChildCount())
@@ -79,7 +78,8 @@ public partial class RoleDeckView : BaseScene
                 }
                 else
                 {
-                    var cardobject = ResourceLoader.Load<PackedScene>($"res://Pages/CardShowObject.tscn").Instantiate<CardShowObject>();
+                    var cardobject = ResourceLoader.Load<PackedScene>("res://Pages/CardShowObject.tscn")
+                        .Instantiate<CardShowObject>();
                     cardobject.InitDataByCard(card);
                     FlowContainer.AddChild(cardobject);
                 }
@@ -87,7 +87,7 @@ public partial class RoleDeckView : BaseScene
         }
         else
         {
-            for (int i = 0; i < FlowContainer.GetChildCount(); i++)
+            for (var i = 0; i < FlowContainer.GetChildCount(); i++)
             {
                 var cardobject = (CardShowObject)FlowContainer.GetChild(i);
                 if (i < cards.Count)

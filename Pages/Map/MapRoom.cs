@@ -1,9 +1,9 @@
 ﻿using Godot;
 using KemoCard.Scripts;
 using KemoCard.Scripts.Events;
-using StaticClass;
 using System;
 using System.Collections.Generic;
+using KemoCard.Pages;
 
 public partial class MapRoom : Control
 {
@@ -55,9 +55,9 @@ public partial class MapRoom : Control
     {
         SelectEventHandler.Invoke(Room);
         if (onlyRunHandlerWhenSelected) return;
-        MainScene ms = StaticInstance.windowMgr.GetSceneByName("MainScene") as MainScene;
+        KemoCard.Pages.MainScene ms = StaticInstance.WindowMgr.GetSceneByName("MainScene") as KemoCard.Pages.MainScene;
         ms?.MapView.HideMap();
-        var Data = StaticInstance.playerData.gsd.MapGenerator.Data;
+        var Data = StaticInstance.PlayerData.Gsd.MapGenerator.Data;
         if (Room.Type == RoomType.Monster || Room.Type == RoomType.Boss)
         {
             if (Room.RoomPresetId == null)
@@ -75,9 +75,9 @@ public partial class MapRoom : Control
             PackedScene res = ResourceLoader.Load<PackedScene>("res://Pages/EventScene.tscn");
             if (res != null)
             {
-                EventScene eventScene = res.Instantiate<EventScene>();
-                Event e = new(Room.RoomEventId);
-                StaticInstance.windowMgr.AddScene(eventScene, e);
+                KemoCard.Pages.EventScene eventScene = res.Instantiate<KemoCard.Pages.EventScene>();
+                EventScript e = new(Room.RoomEventId);
+                StaticInstance.WindowMgr.AddScene(eventScene, e);
             }
         }
         else if (Room.Type == RoomType.Treasure)
@@ -91,17 +91,17 @@ public partial class MapRoom : Control
             {
                 RewardStruct r1 = new()
                 {
-                    type = RewardType.Equip,
-                    rewards = new() { Room.RoomEquipId }
+                    Type = RewardType.Equip,
+                    Rewards = new() { Room.RoomEquipId }
                 };
                 RewardStruct r2 = new()
                 {
-                    type = RewardType.Card,
-                    rewards = StaticUtils.GetRandomCardIdFromPool()
+                    Type = RewardType.Card,
+                    Rewards = StaticUtils.GetRandomCardIdFromPool()
                 };
                 List<RewardStruct> datas = new() { r1 };
-                RewardScene rs = res.Instantiate<RewardScene>();
-                StaticInstance.windowMgr.AddScene(rs, datas);
+                KemoCard.Pages.RewardScene rs = res.Instantiate<KemoCard.Pages.RewardScene>();
+                StaticInstance.WindowMgr.AddScene(rs, datas);
             }
         }
         else if (Room.Type == RoomType.Shop)
@@ -113,7 +113,7 @@ public partial class MapRoom : Control
                 List<string> cardIds = new();
                 List<ShopStruct> shopStructs = new();
                 int ErrorCount = 0;
-                var pool = StaticInstance.playerData.gsd.MapGenerator.Data.CardPool;
+                var pool = StaticInstance.PlayerData.Gsd.MapGenerator.Data.CardPool;
                 for (int i = 0; i < 10; i++)
                 {
                     string cid = "";
@@ -126,16 +126,16 @@ public partial class MapRoom : Control
                     {
                         ShopStruct shopStruct = new()
                         {
-                            card = new(cid),
-                            isBuyed = false,
+                            Card = new(cid),
+                            IsBought = false,
                         };
-                        shopStruct.price = rand.Next(50, 100) * (int)shopStruct.card.Rare;
+                        shopStruct.Price = rand.Next(50, 100) * (int)shopStruct.Card.Rare;
                         shopStructs.Add(shopStruct);
                     }
                 }
-                StaticInstance.playerData.gsd.CurrShopStructs = shopStructs;
-                ShopScene ss = res.Instantiate<ShopScene>();
-                StaticInstance.windowMgr.AddScene(ss);
+                StaticInstance.PlayerData.Gsd.CurrShopStructs = shopStructs;
+                KemoCard.Pages.ShopScene ss = res.Instantiate<KemoCard.Pages.ShopScene>();
+                StaticInstance.WindowMgr.AddScene(ss);
             }
         }
     }

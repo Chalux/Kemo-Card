@@ -1,35 +1,39 @@
-﻿using DialogueManagerRuntime;
+﻿using System.Threading.Tasks;
+using DialogueManagerRuntime;
 using Godot;
-using KemoCard.Pages;
-using StaticClass;
-using System.Threading.Tasks;
+using KemoCard.Scripts;
+
+namespace KemoCard.Pages;
 
 public partial class DialogueScene : BaseScene
 {
     [Export] TextureRect Background;
     [Export] ColorRect BlackMask;
-    private Tween switchTween;
-    private int id = 0;
+    private Tween _switchTween;
+    private int _id;
+
     [Signal]
     public delegate void ChangeBackgroundEventHandler(string url, float duration = 1.0f);
+
     public override void _Ready()
     {
         //ChangeBackground += ChangeBG;
     }
-    public async Task ChangeBG(string url, float duration = 1.0f)
+
+    public async Task ChangeBg(string url, float duration = 1.0f)
     {
-        CompressedTexture2D image = ResourceLoader.Load<CompressedTexture2D>(url);
+        var image = ResourceLoader.Load<CompressedTexture2D>(url);
         if (image != null)
         {
             var toTexture = image;
-            switchTween?.Kill();
-            switchTween = GetTree().CreateTween();
-            switchTween.SetParallel(false);
-            switchTween.TweenProperty(BlackMask, "modulate", Colors.Black, duration / 2);
-            switchTween.TweenCallback(Callable.From(() => Background.Texture = toTexture));
-            switchTween.TweenProperty(BlackMask, "modulate", Color.Color8(0, 0, 0, 0), duration / 2);
-            switchTween.Play();
-            await ToSignal(switchTween, Tween.SignalName.Finished);
+            _switchTween?.Kill();
+            _switchTween = GetTree().CreateTween();
+            _switchTween.SetParallel(false);
+            _switchTween.TweenProperty(BlackMask, "modulate", Colors.Black, duration / 2);
+            _switchTween.TweenCallback(Callable.From(() => Background.Texture = toTexture));
+            _switchTween.TweenProperty(BlackMask, "modulate", Color.Color8(0, 0, 0, 0), duration / 2);
+            _switchTween.Play();
+            await ToSignal(_switchTween, Tween.SignalName.Finished);
         }
         else
         {
@@ -38,22 +42,23 @@ public partial class DialogueScene : BaseScene
         //return Task.CompletedTask;
     }
 
-    public void RunDialogue(string dialog_url)
+    public void RunDialogue(string dialogUrl)
     {
-        Resource dialogue = ResourceLoader.Load(dialog_url);
+        var dialogue = ResourceLoader.Load(dialogUrl);
         if (dialogue == null)
         {
-            string error = $"对话文件不存在，路径为{dialog_url}";
+            var error = $"对话文件不存在，路径为{dialogUrl}";
             GD.Print(error);
             StaticInstance.MainRoot.ShowBanner(error);
             return;
         }
+
         DialogueManager.DialogueEnded += DialogueEnded;
-        DialogueManager.ShowDialogueBalloon(dialogue, null, new() { this });
+        DialogueManager.ShowDialogueBalloon(dialogue, "", [this]);
     }
 
-    private void DialogueEnded(Resource dialogueResource)
+    private static void DialogueEnded(Resource dialogueResource)
     {
-        StaticInstance.windowMgr.RemoveSceneByName("DialogueScene");
+        StaticInstance.WindowMgr.RemoveSceneByName("DialogueScene");
     }
 }

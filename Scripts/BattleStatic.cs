@@ -1,5 +1,4 @@
 ﻿using KemoCard.Scripts.Cards;
-using StaticClass;
 using System;
 using System.Collections.Generic;
 
@@ -55,7 +54,7 @@ namespace KemoCard.Scripts
                 discard_list.Add(obj.card);
                 obj.EFRect.Visible = true;
             }
-            StaticInstance.eventMgr.Dispatch("SelectCard");
+            StaticInstance.EventMgr.Dispatch("SelectCard");
         }
 
         public static void EndSelect()

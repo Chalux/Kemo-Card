@@ -1,18 +1,26 @@
 [gd_scene load_steps=2 format=3 uid="uid://quntyt1e00nf"]
 
-[ext_resource type="Script" path="res://Pages/ChoseCardScene.cs" id="1_qiuks"]
+[ext_resource type="Script" uid="uid://c62bvj2nmqsdj" path="res://Pages/ChoseCardScene.cs" id="1_qiuks"]
 
-[node name="ChoseCardScene" type="Node2D" node_paths=PackedStringArray("hBox", "confirmBtn")]
+[node name="ChoseCardScene" type="Control" node_paths=PackedStringArray("hBox", "confirmBtn")]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 script = ExtResource("1_qiuks")
 hBox = NodePath("Root/HBoxContainer")
 confirmBtn = NodePath("Root/Button")
 
 [node name="Root" type="Control" parent="."]
 custom_minimum_size = Vector2(1920, 1080)
-layout_mode = 3
-anchors_preset = 0
-offset_right = 40.0
-offset_bottom = 40.0
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 
 [node name="ColorRect" type="ColorRect" parent="Root"]
 layout_mode = 1
@@ -24,19 +32,31 @@ grow_vertical = 2
 color = Color(0, 0, 0, 0.537255)
 
 [node name="HBoxContainer" type="HBoxContainer" parent="Root"]
-layout_mode = 0
-offset_left = 320.0
-offset_top = 256.0
-offset_right = 1600.0
-offset_bottom = 576.0
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.16700001
+anchor_top = 0.23700002
+anchor_right = 0.83300006
+anchor_bottom = 0.53300005
+offset_left = -0.64001465
+offset_top = 0.039978027
+offset_right = 0.6398926
+offset_bottom = 0.35992432
 theme_override_constants/separation = 36
 alignment = 1
 
 [node name="Button" type="Button" parent="Root"]
-layout_mode = 0
-offset_left = 896.0
-offset_top = 800.0
-offset_right = 1024.0
-offset_bottom = 864.0
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -64.0
+offset_top = -312.0
+offset_right = 64.0
+offset_bottom = -248.0
+grow_horizontal = 2
+grow_vertical = 0
 theme_override_font_sizes/font_size = 36
 text = "确 定"

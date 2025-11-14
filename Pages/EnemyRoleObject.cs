@@ -1,8 +1,7 @@
 using Godot;
 using KemoCard.Scripts;
-using StaticClass;
 using System.Linq;
-using static StaticClass.StaticEnums;
+using static KemoCard.Scripts.StaticEnums;
 
 public partial class EnemyRoleObject : Control, IEvent
 {
@@ -28,7 +27,7 @@ public partial class EnemyRoleObject : Control, IEvent
     public override void _Ready()
     {
         base._Ready();
-        StaticInstance.eventMgr.RegistIEvent(this);
+        StaticInstance.EventMgr.RegisterIEvent(this);
         mainControl.MouseEntered += new(() =>
         {
             if (SelectingTarget)
@@ -38,7 +37,7 @@ public partial class EnemyRoleObject : Control, IEvent
             }
             else
             {
-                StaticInstance.MainRoot.ShowRichHint(data.GetRichDesc() + data.script.Intent);
+                StaticInstance.MainRoot.ShowRichHint(data.GetRichDesc() + data.Script.Intent);
             }
         });
         mainControl.MouseExited += new(() =>
@@ -58,19 +57,19 @@ public partial class EnemyRoleObject : Control, IEvent
 
     public override void _ExitTree()
     {
-        StaticInstance.eventMgr.UnregistIEvent(this);
+        StaticInstance.EventMgr.UnregisterIEvent(this);
         base._ExitTree();
     }
 
     public void Init(string id)
     {
         data = new(id);
-        monsterName.Text = StaticUtils.MakeBBCodeString(data.name);
+        monsterName.Text = StaticUtils.MakeBBCodeString(data.Name);
         hpProgress.MaxValue = data.CurrHpLimit;
         mpProgress.MaxValue = data.CurrMpLimit;
         PBProgress.MaxValue = MBProgress.MaxValue = data.CurrHpLimit;
-        data.roleObject = this;
-        var res = ResourceLoader.Load<SpriteFrames>(data.script.AnimationResourcePath);
+        data.RoleObject = this;
+        var res = ResourceLoader.Load<SpriteFrames>(data.Script.AnimationResourcePath);
         if (res != null)
         {
             animation.SpriteFrames = res;
@@ -81,12 +80,12 @@ public partial class EnemyRoleObject : Control, IEvent
     public void Init(EnemyRole enemyRole)
     {
         data = enemyRole;
-        monsterName.Text = StaticUtils.MakeBBCodeString(data.name);
+        monsterName.Text = StaticUtils.MakeBBCodeString(data.Name);
         hpProgress.MaxValue = data.CurrHpLimit;
         mpProgress.MaxValue = data.CurrMpLimit;
         PBProgress.MaxValue = MBProgress.MaxValue = data.CurrHpLimit;
-        enemyRole.roleObject = this;
-        var res = ResourceLoader.Load<SpriteFrames>(data.script.AnimationResourcePath);
+        enemyRole.RoleObject = this;
+        var res = ResourceLoader.Load<SpriteFrames>(data.Script.AnimationResourcePath);
         if (res != null)
         {
             animation.SpriteFrames = res;
@@ -124,7 +123,7 @@ public partial class EnemyRoleObject : Control, IEvent
         else if (@event == "StartSelectTarget")
         {
             var type = (TargetType)datas[0];
-            if (type == TargetType.ALL_SINGLE || type == TargetType.ENEMY_SINGLE)
+            if (type == TargetType.AllSingle || type == TargetType.EnemySingle)
                 SelectingTarget = true;
         }
         else if (@event == "EndSelectTarget")
@@ -135,7 +134,7 @@ public partial class EnemyRoleObject : Control, IEvent
         else if (@event == "SelectTargetAll")
         {
             var type = (TargetType)datas[0];
-            if (type == TargetType.ENEMY_ALL || type == TargetType.ALL)
+            if (type == TargetType.EnemyAll || type == TargetType.All)
             {
                 SelectingTarget = false;
                 SelectRect.Visible = true;

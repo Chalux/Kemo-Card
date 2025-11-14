@@ -1,6 +1,5 @@
 ﻿using Godot;
-using StaticClass;
-using static StaticClass.StaticEnums;
+using static KemoCard.Scripts.StaticEnums;
 
 namespace KemoCard.Scripts.Cards
 {
@@ -25,8 +24,8 @@ namespace KemoCard.Scripts.Cards
         {
             cardObject.ReparentToSourceRoot();
             object[] param = { -1 };
-            StaticInstance.eventMgr.Dispatch("RepositionHand", param);
-            StaticInstance.eventMgr.Dispatch("DraggingCard");
+            StaticInstance.EventMgr.Dispatch("RepositionHand", param);
+            StaticInstance.EventMgr.Dispatch("DraggingCard");
             //cardObject.BgRect.Color = new("0000006e");
             //cardObject.PivotOffset = Vector2.Zero;
             cardObject.PivotOffset = new(cardObject.Size.X / 2, cardObject.Size.Y);
@@ -47,13 +46,13 @@ namespace KemoCard.Scripts.Cards
                 {
                     if (BattleStatic.SelectFilterFunc == null || BattleStatic.SelectFilterFunc.Invoke(cardObject.card))
                     {
-                        cardObject.csm.OnTransitionRequest(this, CardStateEnum.DISCARDING);
+                        cardObject.csm.OnTransitionRequest(this, CardStateEnum.Discarding);
                     }
                 }
                 else
                 {
                     cardObject.PivotOffset = cardObject.GetGlobalMousePosition() - cardObject.GlobalPosition;
-                    cardObject.csm.OnTransitionRequest(this, CardStateEnum.CLICKED);
+                    cardObject.csm.OnTransitionRequest(this, CardStateEnum.Clicked);
                 }
             }
         }

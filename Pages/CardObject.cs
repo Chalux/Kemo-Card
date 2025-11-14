@@ -1,7 +1,6 @@
 using Godot;
 using KemoCard.Scripts;
 using KemoCard.Scripts.Cards;
-using StaticClass;
 
 public partial class CardObject : Control
 {
@@ -131,7 +130,7 @@ public partial class CardObject : Control
     {
         object[] objects = new object[] { GetIndex() };
         csm.OnMouseEnter();
-        StaticInstance.eventMgr.Dispatch("RepositionHand", objects);
+        StaticInstance.EventMgr.Dispatch("RepositionHand", objects);
         string desc = card.GetDesc;
         if (desc != "" && ShowHint)
         {
@@ -144,7 +143,7 @@ public partial class CardObject : Control
     {
         object[] objects2 = new object[] { -1 };
         csm.OnMouseExit();
-        StaticInstance.eventMgr.Dispatch("RepositionHand", objects2);
+        StaticInstance.EventMgr.Dispatch("RepositionHand", objects2);
         StaticInstance.MainRoot.HideRichHint();
         //if (ExitTween != null && ExitTween.IsRunning()) ExitTween.Kill();
         //ExitTween = CreateTween().SetEase(Tween.EaseType.Out).SetTrans(Tween.TransitionType.Back).SetParallel(true);

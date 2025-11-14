@@ -14,21 +14,15 @@ namespace KemoCard.Scripts.Presets
 
         public Preset(string id)
         {
-            if (Datas.Ins.PresetPool.ContainsKey(id))
-            {
-                var modinfo = Datas.Ins.PresetPool[id];
-                Tier = modinfo.tier;
-                IsBoss = modinfo.is_boss;
-                var path = $"res://Mods/{modinfo.mod_id}/Scripts/Presets/P{modinfo.preset_id}.cs";
-                var res = ResourceLoader.Load<CSharpScript>(path);
-                if (res != null)
-                {
-                    var PresetScript = res.New().As<BasePresetScript>();
-                    PresetScript.Init(this);
-                }
-            }
+            if (!Datas.Ins.PresetPool.TryGetValue(id, out var value)) return;
+            Tier = value.Tier;
+            IsBoss = value.IsBoss;
+            var presetScript = PresetFactory.CreatePreset(id);
+            presetScript?.Init(this);
         }
 
-        public Preset() { }
+        public Preset()
+        {
+        }
     }
 }

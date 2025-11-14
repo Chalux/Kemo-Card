@@ -1,84 +1,88 @@
 ﻿using Godot;
-using KemoCard.Pages;
 using KemoCard.Scripts;
-using StaticClass;
+
+namespace KemoCard.Pages;
 
 public partial class EquipObject : Control
 {
-    [Export] TextureRect textureRect;
+    [Export] private TextureRect _textureRect;
     public Equip Data { get; set; }
-    private int delegateTag = 0;
+    private int _delegateTag;
 
     public void Init(Equip equip)
     {
         Data = equip;
-        OnInited();
+        OnInit();
     }
 
     public void Clear()
     {
-        textureRect.Texture = null;
+        _textureRect.Texture = null;
         Data = null;
     }
 
-    private void OnInited()
+    private void OnInit()
     {
         if (Data is null)
         {
-            textureRect.Texture = null;
+            _textureRect.Texture = null;
         }
         else
         {
             var res = ResourceLoader.Load<CompressedTexture2D>(Data.EquipScript.TextureUrl);
             //if (res != null) textureRect.Texture = ImageTexture.CreateFromImage(res);
-            if (res != null) textureRect.Texture = res;
+            if (res != null) _textureRect.Texture = res;
         }
     }
 
     public void AddBagDelegate(int type = 1)
     {
-        delegateTag = type;
+        _delegateTag = type;
     }
 
     public override void _GuiInput(InputEvent @event)
     {
-        if (@event is InputEventMouseButton mb)
+        if (@event is not InputEventMouseButton mb) return;
+        switch (_delegateTag)
         {
-            switch (delegateTag)
-            {
-                case 1:
-                    if (mb.Pressed && Data != null)
+            case 1:
+                if (mb.Pressed && Data != null)
+                {
+                    if (StaticInstance.CurrWindow is BagScene bs)
                     {
-                        if (StaticInstance.currWindow is BagScene bs)
-                        {
-                            bs.popup.SetItemText(0, "装备");
-                            bs.ShowPopMenu(Data, (uint)GetIndex(), GetGlobalMousePosition(), BagOpType.PUT_ON);
-                        }
+                        bs.Popup.SetItemText(0, "装备");
+                        bs.ShowPopMenu(Data, (uint)GetIndex(), GetGlobalMousePosition(), BagOpType.PutOn);
                     }
-                    break;
-                case 2:
-                    if (mb.Pressed && Data != null)
+                }
+
+                break;
+            case 2:
+                if (mb.Pressed && Data != null)
+                {
+                    if (StaticInstance.CurrWindow is BagScene bs)
                     {
-                        if (StaticInstance.currWindow is BagScene bs)
-                        {
-                            bs.popup.SetItemText(0, "脱下");
-                            bs.ShowPopMenu(Data, (uint)GetIndex(), GetGlobalMousePosition(), BagOpType.PUT_OFF);
-                        }
+                        bs.Popup.SetItemText(0, "脱下");
+                        bs.ShowPopMenu(Data, (uint)GetIndex(), GetGlobalMousePosition(), BagOpType.PutOff);
                     }
-                    break;
-            }
+                }
+
+                break;
         }
     }
 
     public override void _Ready()
     {
-        MouseEntered += new(() =>
-        {
-            if (Data != null) StaticInstance.MainRoot.ShowRichHint(Data.ToString());
-        });
-        MouseExited += new(() =>
-        {
-            StaticInstance.MainRoot.HideRichHint();
-        });
+        MouseEntered += OnMouseEntered;
+        MouseExited += OnMouseExited;
+    }
+
+    private static void OnMouseExited()
+    {
+        StaticInstance.MainRoot.HideRichHint();
+    }
+
+    private void OnMouseEntered()
+    {
+        if (Data != null) StaticInstance.MainRoot.ShowRichHint(Data.ToString());
     }
 }

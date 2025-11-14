@@ -1,22 +1,21 @@
 [gd_scene load_steps=3 format=3 uid="uid://da1qlb5u3jr72"]
 
-[ext_resource type="Script" path="res://Pages/ShopScene.cs" id="1_2lsj4"]
+[ext_resource type="Script" uid="uid://bk0hnmrk6rp37" path="res://Pages/ShopScene.cs" id="1_2lsj4"]
 [ext_resource type="Texture2D" uid="uid://dyygagjf1l0r6" path="res://Mods/MainPackage/Resources/Icons/icons_204.png" id="2_3obe0"]
 
-[node name="ShopScene" type="Node2D" node_paths=PackedStringArray("shopContainer", "LeaveBtn", "GoldLabel")]
-script = ExtResource("1_2lsj4")
-shopContainer = NodePath("Root/FlowContainer")
-LeaveBtn = NodePath("Root/LeaveBtn")
-GoldLabel = NodePath("Root/GoldLabel")
-
-[node name="Root" type="Control" parent="."]
-custom_minimum_size = Vector2(1920, 1080)
+[node name="ShopScene" type="Control" node_paths=PackedStringArray("shopContainer", "LeaveBtn", "GoldLabel")]
 layout_mode = 3
-anchors_preset = 0
-offset_right = 40.0
-offset_bottom = 40.0
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_2lsj4")
+shopContainer = NodePath("FlowContainer")
+LeaveBtn = NodePath("LeaveBtn")
+GoldLabel = NodePath("GoldLabel")
 
-[node name="ColorRect" type="ColorRect" parent="Root"]
+[node name="ColorRect" type="ColorRect" parent="."]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -25,24 +24,24 @@ grow_horizontal = 2
 grow_vertical = 2
 color = Color(0, 0, 0, 0.537255)
 
-[node name="FlowContainer" type="FlowContainer" parent="Root"]
+[node name="FlowContainer" type="FlowContainer" parent="."]
 custom_minimum_size = Vector2(1200, 830)
 layout_mode = 1
-anchors_preset = 7
-anchor_left = 0.5
-anchor_top = 1.0
-anchor_right = 0.5
+anchors_preset = -1
+anchor_left = 0.033
+anchor_top = 0.231
+anchor_right = 0.96700007
 anchor_bottom = 1.0
-offset_left = -896.0
-offset_top = -830.0
-offset_right = 896.0
+offset_left = 0.6399994
+offset_top = 0.519989
+offset_right = -0.6401367
 grow_horizontal = 2
 grow_vertical = 0
 theme_override_constants/h_separation = 60
 theme_override_constants/v_separation = 20
 alignment = 1
 
-[node name="Label" type="Label" parent="Root"]
+[node name="Label" type="Label" parent="."]
 layout_mode = 1
 anchors_preset = 5
 anchor_left = 0.5
@@ -56,7 +55,7 @@ theme_override_font_sizes/font_size = 100
 text = "商店"
 horizontal_alignment = 1
 
-[node name="LeaveBtn" type="Button" parent="Root"]
+[node name="LeaveBtn" type="Button" parent="."]
 layout_mode = 0
 offset_left = 128.0
 offset_top = 96.0
@@ -65,20 +64,28 @@ offset_bottom = 160.0
 theme_override_font_sizes/font_size = 36
 text = "离开"
 
-[node name="GoldIcon" type="TextureRect" parent="Root"]
-layout_mode = 0
-offset_left = 1640.0
-offset_top = 108.0
-offset_right = 1680.0
-offset_bottom = 148.0
+[node name="GoldIcon" type="TextureRect" parent="."]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -328.0
+offset_top = 112.0
+offset_right = -288.0
+offset_bottom = 152.0
+grow_horizontal = 0
 texture = ExtResource("2_3obe0")
 
-[node name="GoldLabel" type="Label" parent="Root"]
-layout_mode = 0
-offset_left = 1624.0
+[node name="GoldLabel" type="Label" parent="."]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -336.0
 offset_top = 96.0
-offset_right = 1832.0
+offset_right = -128.0
 offset_bottom = 160.0
+grow_horizontal = 0
 theme_override_font_sizes/font_size = 36
 text = "0"
 horizontal_alignment = 2

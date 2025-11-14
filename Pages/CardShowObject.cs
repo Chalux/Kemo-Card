@@ -1,93 +1,101 @@
 using Godot;
 using KemoCard.Scripts;
 using KemoCard.Scripts.Cards;
-using StaticClass;
+
+namespace KemoCard.Pages;
 
 public partial class CardShowObject : Control
 {
-    [Export] public RichTextLabel cardName;
-    [Export] public RichTextLabel cardDesc;
-    [Export] public Label cardCost;
+    [Export] public RichTextLabel CardName;
+    [Export] public RichTextLabel CardDesc;
+    [Export] public Label CardCost;
     [Export] public ColorRect BgRect;
-    [Export] public Polygon2D costBg;
+    [Export] public Polygon2D CostBg;
     [Export] public ColorRect FrameRect;
-    [Export] public SubViewportContainer SVContainer;
+    [Export] public SubViewportContainer SvContainer;
     [Export] public float AngleXMax = 0.15f;
     [Export] public float AngleYMax = 0.15f;
-    public Tween AnimTween;
-    public Card card;
+    private Tween _animTween;
+    public Card Card;
 
-    public void InitData(string id)
+    private void InitData(string id)
     {
-        if (!Datas.Ins.CardPool.ContainsKey(id)) return;
-        var cdata = Datas.Ins.CardPool[id];
-        CSharpScript res = ResourceLoader.Load<CSharpScript>("res://Mods/" + cdata.mod_id + "/Scripts/C" + cdata.card_id + ".cs");
+        if (!Datas.Ins.CardPool.TryGetValue(id, out var cData)) return;
         Card card = new();
-        if (res != null)
-        {
-            var cardScript = res.New().As<BaseCardScript>();
-            cardScript.OnCardScriptInit(card);
-        }
-        this.card = card;
+        var script = CardFactory.CreateCard(cData.CardId);
+        script?.OnCardScriptInit(card);
+        Card = card;
         UpdateCardObject();
     }
 
     public void InitDataByCard(Card card)
     {
-        this.card = card;
+        Card = card;
         UpdateCardObject();
     }
 
     public override void _Ready()
     {
-        MouseEntered += new(() =>
+        MouseEntered += OnMouseEnter;
+        MouseExited += OnMouseExit;
+    }
+
+    private void OnMouseEnter()
+    {
+        _animTween?.Kill();
+        _animTween = CreateTween();
+        _animTween.TweenProperty(this, "scale", new Vector2(1.2f, 1.2f), 0.5f).SetEase(Tween.EaseType.Out)
+            .SetTrans(Tween.TransitionType.Elastic);
+        var desc = Card.GetDesc;
+        if (desc != "")
         {
-            AnimTween?.Kill();
-            AnimTween = CreateTween();
-            AnimTween.TweenProperty(this, "scale", new Vector2(1.2f, 1.2f), 0.5f).SetEase(Tween.EaseType.Out).SetTrans(Tween.TransitionType.Elastic);
-            string desc = card.GetDesc;
-            if (desc != "")
-            {
-                StaticInstance.MainRoot.ShowRichHint(StaticUtils.MakeBBCodeString(desc, "left"));
-            }
-        });
-        MouseExited += new(() =>
+            StaticInstance.MainRoot.ShowRichHint(StaticUtils.MakeBBCodeString(desc, "left"));
+        }
+    }
+
+    private void OnMouseExit()
+    {
+        _animTween?.Kill();
+        _animTween = CreateTween();
+        _animTween.TweenProperty(this, "scale", Vector2.One, 0.5f).SetEase(Tween.EaseType.Out)
+            .SetTrans(Tween.TransitionType.Elastic);
+        if (SvContainer.Material is ShaderMaterial sm)
         {
-            AnimTween?.Kill();
-            AnimTween = CreateTween();
-            AnimTween.TweenProperty(this, "scale", Vector2.One, 0.5f).SetEase(Tween.EaseType.Out).SetTrans(Tween.TransitionType.Elastic);
-            (SVContainer.Material as ShaderMaterial).SetShaderParameter("x_rot", 0);
-            (SVContainer.Material as ShaderMaterial).SetShaderParameter("y_rot", 0);
-            StaticInstance.MainRoot.HideRichHint();
-        });
+            sm.SetShaderParameter("x_rot", 0);
+            sm.SetShaderParameter("y_rot", 0);
+        }
+
+        StaticInstance.MainRoot.HideRichHint();
     }
 
     public override void _GuiInput(InputEvent @event)
     {
         if (@event is not InputEventMouseMotion) return;
-        var MousePos = GetGlobalMousePosition();
-        var Diff = (SVContainer.GlobalPosition + SVContainer.Size) - MousePos;
-        var LerpValueX = Mathf.Remap(Diff.X, 0, Size.X, 0, 1);
-        var LerpValueY = Mathf.Remap(Diff.Y, 0, Size.Y, 0, 1);
+        var mousePos = GetGlobalMousePosition();
+        var diff = (SvContainer.GlobalPosition + SvContainer.Size) - mousePos;
+        var lerpValueX = Mathf.Remap(diff.X, 0, Size.X, 0, 1);
+        var lerpValueY = Mathf.Remap(diff.Y, 0, Size.Y, 0, 1);
         //var RotX = Mathf.RadToDeg(Mathf.LerpAngle(-AngleXMax, AngleXMax, LerpValueX));
         //var RotY = Mathf.RadToDeg(Mathf.LerpAngle(-AngleYMax, AngleYMax, LerpValueY));
-        var RotX = Mathf.RadToDeg(Mathf.LerpAngle(-AngleYMax, AngleYMax, LerpValueY));
-        var RotY = Mathf.RadToDeg(Mathf.LerpAngle(AngleXMax, -AngleXMax, LerpValueX));
-        (SVContainer.Material as ShaderMaterial).SetShaderParameter("x_rot", RotX);
-        (SVContainer.Material as ShaderMaterial).SetShaderParameter("y_rot", RotY);
+        var rotX = Mathf.RadToDeg(Mathf.LerpAngle(-AngleYMax, AngleYMax, lerpValueY));
+        var rotY = Mathf.RadToDeg(Mathf.LerpAngle(AngleXMax, -AngleXMax, lerpValueX));
+        if (SvContainer.Material is not ShaderMaterial sm) return;
+        sm.SetShaderParameter("x_rot", rotX);
+        sm.SetShaderParameter("y_rot", rotY);
     }
 
-    void UpdateCardObject()
+    private void UpdateCardObject()
     {
-        cardName.Text = StaticUtils.MakeBBCodeString(card.Alias);
-        cardDesc.Text = StaticUtils.MakeBBCodeString(card.Desc);
-        cardCost.Text = card.Cost.ToString();
-        costBg.Color = new(StaticEnums.CostBgColor[card.CostType]);
+        CardName.Text = StaticUtils.MakeBBCodeString(Card.Alias);
+        CardDesc.Text = StaticUtils.MakeBBCodeString(Card.Desc);
+        CardCost.Text = Card.Cost.ToString();
+        CostBg.Color = new Color(StaticEnums.CostBgColor[Card.CostType]);
         SetRare();
     }
 
     private void SetRare()
     {
-        (FrameRect.Material as ShaderMaterial).SetShaderParameter("color", new Color(StaticUtils.GetFrameColorByRare(card.Rare)));
+        (FrameRect.Material as ShaderMaterial)?.SetShaderParameter("color",
+            new Color(StaticUtils.GetFrameColorByRare(Card.Rare)));
     }
 }

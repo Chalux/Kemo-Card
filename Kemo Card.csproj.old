@@ -1,0 +1,22 @@
+<Project Sdk="Godot.NET.Sdk/4.2.2">
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <TargetFramework Condition=" '$(GodotTargetPlatform)' == 'android' ">net7.0</TargetFramework>
+    <TargetFramework Condition=" '$(GodotTargetPlatform)' == 'ios' ">net8.0</TargetFramework>
+    <EnableDynamicLoading>true</EnableDynamicLoading>
+    <RootNamespace>KemoCard</RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Remove="Mods\MainPackage\Scripts\Dialogues\**" />
+    <EmbeddedResource Remove="Mods\MainPackage\Scripts\Dialogues\**" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Mods\MainPackage\Scripts\Roles\" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="MemoryPack" Version="1.21.4" />
+    <PackageReference Update="Godot.SourceGenerators" Version="4.5.1" />
+    <PackageReference Update="GodotSharp" Version="4.5.1" />
+    <PackageReference Update="GodotSharpEditor" Version="4.5.1" />
+  </ItemGroup>
+</Project>

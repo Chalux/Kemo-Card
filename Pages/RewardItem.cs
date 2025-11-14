@@ -1,6 +1,5 @@
 ﻿using Godot;
 using KemoCard.Scripts;
-using StaticClass;
 using System.Collections.Generic;
 
 public enum RewardType
@@ -71,27 +70,27 @@ public partial class RewardItem : Control
 
     private void GoldAction()
     {
-        StaticInstance.playerData.gsd.MajorRole.Gold += Rewards.Count > 0 ? Rewards[0].ToInt() : 0;
+        StaticInstance.PlayerData.Gsd.MajorRole.Gold += Rewards.Count > 0 ? Rewards[0].ToInt() : 0;
         GetParent().RemoveChild(this);
         QueueFree();
     }
     private void CardAction()
     {
-        SelectCardScene selectCardScene = ResourceLoader.Load<PackedScene>("res://Pages/SelectCardScene.tscn").Instantiate<SelectCardScene>();
+        KemoCard.Pages.SelectCardScene selectCardScene = ResourceLoader.Load<PackedScene>("res://Pages/SelectCardScene.tscn").Instantiate<KemoCard.Pages.SelectCardScene>();
         selectCardScene.Init(Rewards);
-        StaticInstance.windowMgr.AddScene(selectCardScene, this);
+        StaticInstance.WindowMgr.AddScene(selectCardScene, this);
     }
     private void EquipAction()
     {
         if (Rewards.Count == 0) return;
         string id = Rewards[0];
-        StaticInstance.playerData.gsd.MajorRole.AddEquipToBag(new(id));
+        StaticInstance.PlayerData.Gsd.MajorRole.AddEquipToBag(new(id));
         GetParent().RemoveChild(this);
         QueueFree();
     }
     private void ExpAction()
     {
-        StaticInstance.playerData.gsd.MajorRole.Exp += Rewards.Count > 0 ? (uint)Rewards[0].ToInt() : 0;
+        StaticInstance.PlayerData.Gsd.MajorRole.Exp += Rewards.Count > 0 ? (uint)Rewards[0].ToInt() : 0;
         GetParent().RemoveChild(this);
         QueueFree();
     }

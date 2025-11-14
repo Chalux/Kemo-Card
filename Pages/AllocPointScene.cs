@@ -1,10 +1,10 @@
-﻿using Godot;
-using KemoCard.Pages;
+﻿using System.Collections.Generic;
+using System.Linq;
+using Godot;
 using KemoCard.Scripts;
 using KemoCard.Scripts.Cards;
-using StaticClass;
-using System.Collections.Generic;
-using System.Linq;
+
+namespace KemoCard.Pages;
 
 public partial class AllocPointScene : BaseScene
 {
@@ -47,49 +47,45 @@ public partial class AllocPointScene : BaseScene
     [Export] private Label RemainPoint;
     private List<Card> Deck = new();
     private PlayerRole player;
+
     public override void _Ready()
     {
         UpdateView();
-        SpeedPlus.Pressed += new(() => TryPlusProperty("SpeedPoint"));
-        SpeedMinus.Pressed += new(() => TryMinusProperty("SpeedPoint"));
-        StrengthPlus.Pressed += new(() => TryPlusProperty("StrengthPoint"));
-        StrengthMinus.Pressed += new(() => TryMinusProperty("StrengthPoint"));
-        EfficiencyPlus.Pressed += new(() => TryPlusProperty("EfficiencyPoint"));
-        EfficiencyMinus.Pressed += new(() => TryMinusProperty("EfficiencyPoint"));
-        MantraPlus.Pressed += new(() => TryPlusProperty("MantraPoint"));
-        MantraMinus.Pressed += new(() => TryMinusProperty("MantraPoint"));
-        EquipPlus.Pressed += new(() => TryPlusProperty("CraftEquipPoint"));
-        EquipMinus.Pressed += new(() => TryMinusProperty("CraftEquipPoint"));
-        BookPlus.Pressed += new(() => TryPlusProperty("CraftBookPoint"));
-        BookMinus.Pressed += new(() => TryMinusProperty("CraftBookPoint"));
-        CriticalPlus.Pressed += new(() => TryPlusProperty("CriticalPoint"));
-        CriticalMinus.Pressed += new(() => TryMinusProperty("CriticalPoint"));
-        DodgePlus.Pressed += new(() => TryPlusProperty("DodgePoint"));
-        DodgeMinus.Pressed += new(() => TryMinusProperty("DodgePoint"));
+        SpeedPlus.Pressed += () => TryPlusProperty("SpeedPoint");
+        SpeedMinus.Pressed += () => TryMinusProperty("SpeedPoint");
+        StrengthPlus.Pressed += () => TryPlusProperty("StrengthPoint");
+        StrengthMinus.Pressed += () => TryMinusProperty("StrengthPoint");
+        EfficiencyPlus.Pressed += () => TryPlusProperty("EfficiencyPoint");
+        EfficiencyMinus.Pressed += () => TryMinusProperty("EfficiencyPoint");
+        MantraPlus.Pressed += () => TryPlusProperty("MantraPoint");
+        MantraMinus.Pressed += () => TryMinusProperty("MantraPoint");
+        EquipPlus.Pressed += () => TryPlusProperty("CraftEquipPoint");
+        EquipMinus.Pressed += () => TryMinusProperty("CraftEquipPoint");
+        BookPlus.Pressed += () => TryPlusProperty("CraftBookPoint");
+        BookMinus.Pressed += () => TryMinusProperty("CraftBookPoint");
+        CriticalPlus.Pressed += () => TryPlusProperty("CriticalPoint");
+        CriticalMinus.Pressed += () => TryMinusProperty("CriticalPoint");
+        DodgePlus.Pressed += () => TryPlusProperty("DodgePoint");
+        DodgeMinus.Pressed += () => TryMinusProperty("DodgePoint");
         ConfirmBtn.Pressed += DoConfirm;
         CancelBtn.Pressed += DoCancel;
     }
 
     public override void OnAdd(params object[] datas)
     {
-        if (datas != null && datas[0] != null)
-        {
-            if (datas[0] is PlayerRole pr)
-            {
-                player = pr;
-                Deck = pr.Deck.ToList();
-                CurrentPoint = pr.UnUsedPoints;
-                SpeedPoint = pr.OriginSpeed;
-                StrengthPoint = pr.OriginStrength;
-                EfficiencyPoint = pr.OriginEffeciency;
-                MantraPoint = pr.OriginMantra;
-                CraftEquipPoint = pr.OriginCraftEquip;
-                CraftBookPoint = pr.OriginCraftBook;
-                CriticalPoint = pr.OriginCritical;
-                DodgePoint = pr.OriginDodge;
-                UpdateView();
-            }
-        }
+        if (datas?[0] is not PlayerRole pr) return;
+        player = pr;
+        Deck = pr.Deck.ToList();
+        CurrentPoint = pr.UnUsedPoints;
+        SpeedPoint = pr.OriginSpeed;
+        StrengthPoint = pr.OriginStrength;
+        EfficiencyPoint = pr.OriginEffeciency;
+        MantraPoint = pr.OriginMantra;
+        CraftEquipPoint = pr.OriginCraftEquip;
+        CraftBookPoint = pr.OriginCraftBook;
+        CriticalPoint = pr.OriginCritical;
+        DodgePoint = pr.OriginDodge;
+        UpdateView();
     }
 
     private void UpdateView()
@@ -110,14 +106,16 @@ public partial class AllocPointScene : BaseScene
         if (Get(propertyName).Obj != null && CurrentPoint > 0)
         {
             CurrentPoint--;
-            Set(propertyName, (double)Get(propertyName).Obj + 1);
+            var obj = Get(propertyName).Obj;
+            if (obj != null) Set(propertyName, (double)obj + 1);
         }
+
         UpdateView();
     }
 
     private void TryMinusProperty(string protertyName)
     {
-        Variant v = Get(protertyName);
+        var v = Get(protertyName);
         if (v.Obj != null)
         {
             if (((double)v) > 0)
@@ -126,37 +124,36 @@ public partial class AllocPointScene : BaseScene
                 CurrentPoint++;
             }
         }
+
         UpdateView();
     }
 
-    void DoConfirm()
+    private void DoConfirm()
     {
-        AlertView.PopupAlert("是否确定修改？", false, new(() =>
+        AlertView.PopupAlert("是否确定修改？", false, () =>
         {
-            if (player != null)
-            {
-                player.OriginSpeed = SpeedPoint;
-                player.OriginStrength = StrengthPoint;
-                player.OriginEffeciency = EfficiencyPoint;
-                player.OriginMantra = MantraPoint;
-                player.OriginCraftBook = CraftBookPoint;
-                player.OriginCraftEquip = CraftEquipPoint;
-                player.OriginCritical = CriticalPoint;
-                player.OriginDodge = DodgePoint;
-                player.UnUsedPoints = CurrentPoint;
-                MainScene node = (MainScene)ResourceLoader.Load<PackedScene>("res://Pages/MainScene.tscn").Instantiate();
-                StaticInstance.windowMgr.ChangeScene(node);
-                node.UpdateView();
-            }
-        }));
+            if (player == null) return;
+            player.OriginSpeed = SpeedPoint;
+            player.OriginStrength = StrengthPoint;
+            player.OriginEffeciency = EfficiencyPoint;
+            player.OriginMantra = MantraPoint;
+            player.OriginCraftBook = CraftBookPoint;
+            player.OriginCraftEquip = CraftEquipPoint;
+            player.OriginCritical = CriticalPoint;
+            player.OriginDodge = DodgePoint;
+            player.UnUsedPoints = CurrentPoint;
+            var node = (MainScene)ResourceLoader.Load<PackedScene>("res://Pages/MainScene.tscn").Instantiate();
+            StaticInstance.WindowMgr.ChangeScene(node);
+            node.UpdateView();
+        });
     }
 
-    private void DoCancel()
+    private static void DoCancel()
     {
-        AlertView.PopupAlert("是否取消修改？未保存的修改不会生效。", false, new(() =>
+        AlertView.PopupAlert("是否取消修改？未保存的修改不会生效。", false, () =>
         {
-            MainScene node = (MainScene)ResourceLoader.Load<PackedScene>("res://Pages/MainScene.tscn").Instantiate();
-            StaticInstance.windowMgr.ChangeScene(node);
-        }));
+            var node = (MainScene)ResourceLoader.Load<PackedScene>("res://Pages/MainScene.tscn").Instantiate();
+            StaticInstance.WindowMgr.ChangeScene(node);
+        });
     }
 }

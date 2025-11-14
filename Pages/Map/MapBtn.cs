@@ -1,6 +1,6 @@
 using Godot;
+using KemoCard.Scripts;
 using KemoCard.Scripts.Map;
-using StaticClass;
 
 public partial class MapBtn : Control
 {
@@ -18,7 +18,7 @@ public partial class MapBtn : Control
             _mapData = value;
             ShowNameLab.Text = value.ShowName;
             TierRangeLab.Text = $"{value.MinTier}~{value.MaxTier}";
-            MapSizeLab.Text = $"{value.FLOORS}x{value.MAP_WIDTH}";
+            MapSizeLab.Text = $"{value.Floors}x{value.MapWidth}";
         }
     }
 
@@ -26,18 +26,18 @@ public partial class MapBtn : Control
     {
         CreateBtn.Pressed += new(() =>
         {
-            if (_mapData != null && !StaticInstance.playerData.gsd.MapGenerator.IsStillRunning)
+            if (_mapData != null && !StaticInstance.PlayerData.Gsd.MapGenerator.IsStillRunning)
             {
                 //StaticInstance.playerData.gsd.MapGenerator.GenerateMap(_mapData);
-                if (StaticInstance.windowMgr.GetSceneByName("MainScene") is MainScene mainScene && mainScene != null)
+                if (StaticInstance.WindowMgr.GetSceneByName("MainScene") is KemoCard.Pages.MainScene mainScene && mainScene != null)
                 {
                     mainScene.MapView.GenerateNewMap(MapData);
-                    mainScene.MapView.UnlockFloor(StaticInstance.playerData.gsd.MapGenerator.FloorsClimbed);
+                    mainScene.MapView.UnlockFloor(StaticInstance.PlayerData.Gsd.MapGenerator.FloorsClimbed);
                 }
-                var mss = StaticInstance.windowMgr.GetSceneByName("MapSelectScene");
+                var mss = StaticInstance.WindowMgr.GetSceneByName("MapSelectScene");
                 if (mss != null)
                 {
-                    StaticInstance.windowMgr.RemoveScene(mss);
+                    StaticInstance.WindowMgr.RemoveScene(mss);
                 }
             }
         });

@@ -23,7 +23,7 @@ namespace KemoCard.Scripts
         public string Desc = "";
         public void OnPutOn()
         {
-            if (Binder != null && DoDefaultPutOn && Binder.owner is PlayerRole pr)
+            if (Binder != null && DoDefaultPutOn && Binder.Owner is PlayerRole pr)
             {
                 int Count = 0;
                 foreach (var keyValuePair in CardDic)
@@ -48,7 +48,7 @@ namespace KemoCard.Scripts
         public Action<EquipImplBase> CustomPutOff;
         public void OnPutOff()
         {
-            if (Binder != null && DoDefaultPutOff && Binder.owner is PlayerRole pr)
+            if (Binder != null && DoDefaultPutOff && Binder.Owner is PlayerRole pr)
             {
                 int Count = 0;
                 var tempDeck = pr.Deck.ToList();

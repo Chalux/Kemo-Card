@@ -1,6 +1,4 @@
-﻿using KemoCard.Scripts.Cards;
-using KemoCard.Scripts.Map;
-using StaticClass;
+﻿using KemoCard.Scripts.Map;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,19 +7,20 @@ namespace KemoCard.Scripts
 {
     public class MapGeneration
     {
-        public MapData Data { get; set; } = new();
-        public Dictionary<RoomType, double> RANDOM_ROOM_TYPE_WEIGHTS { get; set; } = new()
+        public MapData Data { get; private set; } = new();
+
+        private Dictionary<RoomType, double> RandomRoomTypeWeights { get; } = new()
         {
-            {RoomType.Monster,0.0 },
-            {RoomType.Event,0.0 },
-            {RoomType.Shop,0.0 },
+            { RoomType.Monster, 0.0 },
+            { RoomType.Event, 0.0 },
+            { RoomType.Shop, 0.0 },
         };
 
-        public double RANDOM_ROOM_TYPE_TOTAL_WEIGHT { get; set; } = 0.0;
-        public List<List<Room>> MapData { get; set; } = new();
-        public int FloorsClimbed { get; set; } = 0;
+        private double RandomRoomTypeTotalWeight { get; set; }
+        public List<List<Room>> MapData { get; private set; } = [];
+        public int FloorsClimbed { get; set; }
         public Room LastRoom { get; set; }
-        public bool IsStillRunning { get; set; } = false;
+        public bool IsStillRunning { get; private set; }
 
         public void GenerateMap(MapData data = null, bool runStartAction = false)
         {
@@ -29,16 +28,17 @@ namespace KemoCard.Scripts
             {
                 Data = data;
             }
+
             //StaticInstance.MainRoot.MapView.CameraEdgeY = StaticInstance.playerData.gsd.MapGenerator.Data.Y_DISTANCE * (StaticInstance.playerData.gsd.MapGenerator.Data.FLOORS - 1);
             MapData = GenerateGrid();
-            var StartPoints = GetRandomStartingPoints();
+            var startPoints = GetRandomStartingPoints();
             //GD.Print(string.Join(",", StartPoints));
-            StartPoints.ForEach(StartPoint =>
+            startPoints.ForEach(startPoint =>
             {
-                int CurrentJ = StartPoint;
-                for (int i = 0; i < Data.FLOORS - 1; i++)
+                var currentJ = startPoint;
+                for (var i = 0; i < Data.Floors - 1; i++)
                 {
-                    CurrentJ = SetUpConnection(i, CurrentJ);
+                    currentJ = SetUpConnection(i, currentJ);
                 }
             });
             //int j = 0;
@@ -53,18 +53,18 @@ namespace KemoCard.Scripts
             SetUpRandomRoomWeight();
             SetUpRoomTypes();
 
-            var major = StaticInstance.playerData.gsd.MajorRole;
-            major.TempDeck = new();
+            var major = StaticInstance.PlayerData.Gsd.MajorRole;
+            major.TempDeck = [];
             major.CurrHealth = major.CurrHpLimit;
             major.CurrMagic = major.CurrMpLimit;
             major.RunSymbol.Clear();
             major.FightSymbol.Clear();
             IsStillRunning = true;
             Data.Rules?.Invoke(MapData);
-            MainScene MainScene = (MainScene)StaticInstance.windowMgr.GetSceneByName("MainScene");
+            var mainScene = (Pages.MainScene)StaticInstance.WindowMgr.GetSceneByName("MainScene");
             //MainScene?.MapView.GenerateNewMap(Data);
-            MainScene?.UpdateView();
-            MainScene?.MapView.UnlockFloor(0);
+            mainScene?.UpdateView();
+            mainScene?.MapView.UnlockFloor(0);
 
             if (runStartAction)
             {
@@ -81,107 +81,113 @@ namespace KemoCard.Scripts
 
         private List<List<Room>> GenerateGrid()
         {
-            List<List<Room>> Result = new((int)Data.FLOORS);
-            for (int i = 0; i < Data.FLOORS; i++)
+            List<List<Room>> result = new((int)Data.Floors);
+            for (var i = 0; i < Data.Floors; i++)
             {
-                List<Room> AdjacentRooms = new((int)Data.MAP_WIDTH);
-                for (int j = 0; j < Data.MAP_WIDTH; j++)
+                List<Room> adjacentRooms = new((int)Data.MapWidth);
+                for (var j = 0; j < Data.MapWidth; j++)
                 {
-                    Room CurrentRoom = new();
+                    Room currentRoom = new();
                     Random r = new();
-                    CurrentRoom.X = r.NextSingle() * Data.PLACEMENT_RANDOMNESS + Data.X_DISTANCE * j;
-                    CurrentRoom.Y = r.NextSingle() * Data.PLACEMENT_RANDOMNESS - Data.Y_DISTANCE * i;
-                    CurrentRoom.Row = i;
-                    CurrentRoom.Col = j;
-                    CurrentRoom.NextRooms = new();
-                    if (i == Data.FLOORS - 1)
+                    currentRoom.X = r.NextSingle() * Data.PlacementRandomness + Data.XDistance * j;
+                    currentRoom.Y = r.NextSingle() * Data.PlacementRandomness - Data.YDistance * i;
+                    currentRoom.Row = i;
+                    currentRoom.Col = j;
+                    currentRoom.NextRooms = [];
+                    if (i == Data.Floors - 1)
                     {
-                        CurrentRoom.Y = (i + 1) * -Data.Y_DISTANCE;
+                        currentRoom.Y = (i + 1) * -Data.YDistance;
                     }
-                    AdjacentRooms.Add(CurrentRoom);
+
+                    adjacentRooms.Add(currentRoom);
                 }
-                Result.Add(AdjacentRooms);
+
+                result.Add(adjacentRooms);
             }
-            return Result;
+
+            return result;
         }
 
         private List<int> GetRandomStartingPoints()
         {
-            List<int> YCoors = null;
-            int UniquePoints = 0;
-            while (UniquePoints < 2)
+            List<int> yCoors = null;
+            var uniquePoints = 0;
+            while (uniquePoints < 2)
             {
-                UniquePoints = 0;
-                YCoors = new();
+                uniquePoints = 0;
+                yCoors = [];
 
-                for (int i = 0; i < Data.PATHS; i++)
+                for (var i = 0; i < Data.Paths; i++)
                 {
                     Random r = new();
-                    int StartingPoint = r.Next((int)Data.MAP_WIDTH);
-                    if (!YCoors.Contains(StartingPoint))
+                    var startingPoint = r.Next((int)Data.MapWidth);
+                    if (!yCoors.Contains(startingPoint))
                     {
-                        UniquePoints += 1;
+                        uniquePoints += 1;
                     }
-                    YCoors.Add(StartingPoint);
+
+                    yCoors.Add(startingPoint);
                 }
             }
-            return YCoors;
+
+            return yCoors;
         }
 
         private int SetUpConnection(int i, int j)
         {
-            Room NextRoom = null;
-            Room CurrentRoom = MapData[i][j];
-            while (NextRoom == null || WouldCrossExistingPath(i, j, NextRoom))
+            Room nextRoom = null;
+            var currentRoom = MapData[i][j];
+            while (nextRoom == null || WouldCrossExistingPath(i, j, nextRoom))
             {
                 Random r = new();
-                int RandomJ = (int)Math.Clamp(r.Next(j - 1, j + 2), 0, Data.MAP_WIDTH - 1);
-                NextRoom = MapData[i + 1][RandomJ];
+                var randomJ = (int)Math.Clamp(r.Next(j - 1, j + 2), 0, Data.MapWidth - 1);
+                nextRoom = MapData[i + 1][randomJ];
             }
-            CurrentRoom.NextRooms.Add(NextRoom.Row * 100 + NextRoom.Col);
-            return NextRoom.Col;
+
+            currentRoom.NextRooms.Add(nextRoom.Row * 100 + nextRoom.Col);
+            return nextRoom.Col;
         }
 
         private bool WouldCrossExistingPath(int i, int j, Room room)
         {
-            Room LeftNeighbour = null, RightNeighbour = null;
+            Room leftNeighbour = null, rightNeighbour = null;
             if (j > 0)
-                LeftNeighbour = MapData[i][j - 1];
-            if (j < Data.MAP_WIDTH - 1)
-                RightNeighbour = MapData[i][j + 1];
-            if (RightNeighbour != null && room.Col > j)
+                leftNeighbour = MapData[i][j - 1];
+            if (j < Data.MapWidth - 1)
+                rightNeighbour = MapData[i][j + 1];
+            if (rightNeighbour != null && room.Col > j)
             {
-                foreach (var NextRoom in RightNeighbour.NextRooms)
+                foreach (var nextRoom in rightNeighbour.NextRooms)
                 {
-                    if (NextRoom % 100 < room.Col) return true;
+                    if (nextRoom % 100 < room.Col) return true;
                 }
             }
-            if (LeftNeighbour != null && room.Col < j)
+
+            if (leftNeighbour != null && room.Col < j)
             {
-                foreach (var NextRoom in LeftNeighbour.NextRooms)
+                foreach (var nextRoom in leftNeighbour.NextRooms)
                 {
-                    if (NextRoom % 100 > room.Col) return true;
+                    if (nextRoom % 100 > room.Col) return true;
                 }
             }
+
             return false;
         }
 
         private void SetUpBossRoom()
         {
-            int Middle = (int)Math.Floor(Data.MAP_WIDTH * 0.5);
-            Room BossRoom = MapData[(int)Data.FLOORS - 1][Middle];
-            for (int j = 0; j < Data.MAP_WIDTH; j++)
+            var middle = (int)Math.Floor(Data.MapWidth * 0.5);
+            var bossRoom = MapData[(int)Data.Floors - 1][middle];
+            for (var j = 0; j < Data.MapWidth; j++)
             {
-                var CurrentRoom = MapData[(int)Data.FLOORS - 2][j];
-                if (CurrentRoom.NextRooms != null && CurrentRoom.NextRooms.Count > 0)
+                var currentRoom = MapData[(int)Data.Floors - 2][j];
+                if (currentRoom.NextRooms is { Count: > 0 })
                 {
-                    CurrentRoom.NextRooms = new()
-                    {
-                        BossRoom.Row * 100 + BossRoom.Col
-                    };
+                    currentRoom.NextRooms = [bossRoom.Row * 100 + bossRoom.Col];
                 }
             }
-            BossRoom.Type = RoomType.Boss;
+
+            bossRoom.Type = RoomType.Boss;
             //List<string> plist = new();
             //foreach (var kvp in Datas.Ins.PresetPool)
             //{
@@ -198,74 +204,64 @@ namespace KemoCard.Scripts
 
         private void SetUpRandomRoomWeight()
         {
-            RANDOM_ROOM_TYPE_WEIGHTS[RoomType.Monster] = Data.MONSTER_ROOM_WEIGHT;
-            RANDOM_ROOM_TYPE_WEIGHTS[RoomType.Event] = Data.MONSTER_ROOM_WEIGHT + Data.EVENT_ROOM_WEIGHT;
-            RANDOM_ROOM_TYPE_WEIGHTS[RoomType.Shop] = Data.SHOP_ROOM_WEIGHT + RANDOM_ROOM_TYPE_WEIGHTS[RoomType.Event];
+            RandomRoomTypeWeights[RoomType.Monster] = Data.MonsterRoomWeight;
+            RandomRoomTypeWeights[RoomType.Event] = Data.MonsterRoomWeight + Data.EventRoomWeight;
+            RandomRoomTypeWeights[RoomType.Shop] = Data.ShopRoomWeight + RandomRoomTypeWeights[RoomType.Event];
 
-            RANDOM_ROOM_TYPE_TOTAL_WEIGHT = RANDOM_ROOM_TYPE_WEIGHTS[RoomType.Shop];
+            RandomRoomTypeTotalWeight = RandomRoomTypeWeights[RoomType.Shop];
         }
 
         private void SetUpRoomTypes()
         {
-            foreach (var Room in MapData[0])
+            foreach (var room in MapData[0].Where(room => room.NextRooms is { Count: > 0 }))
             {
-                if (Room.NextRooms != null && Room.NextRooms.Count > 0)
-                {
-                    Room.Type = RoomType.Monster;
-                    //var random = Math.Round(StaticUtils.GenerateRandomValue(0, Data.PresetPool.Count - 1, Data.PresetPool.Count / (Data.FLOORS - Room.Row), OffsetRange));
-                    //Room.RoomPresetId = Data.PresetPool[(int)random];
-                }
+                room.Type = RoomType.Monster;
+                //var random = Math.Round(StaticUtils.GenerateRandomValue(0, Data.PresetPool.Count - 1, Data.PresetPool.Count / (Data.FLOORS - Room.Row), OffsetRange));
+                //Room.RoomPresetId = Data.PresetPool[(int)random];
             }
 
-            foreach (var Room in MapData[(int)Math.Floor(Data.FLOORS / 2d)])
+            foreach (var room in MapData[(int)Math.Floor(Data.Floors / 2d)]
+                         .Where(room => room.NextRooms is { Count: > 0 }))
             {
-                if (Room.NextRooms != null && Room.NextRooms.Count > 0)
-                {
-                    Room.Type = RoomType.Treasure;
-                    //SetTreasureRoom(Room);
-                }
+                room.Type = RoomType.Treasure;
+                //SetTreasureRoom(Room);
             }
 
-            foreach (var Room in MapData[(int)Data.FLOORS - 2])
+            foreach (Room room in MapData[(int)Data.Floors - 2].Where(room => room.NextRooms is { Count: > 0 }))
             {
-                if (Room.NextRooms != null && Room.NextRooms.Count > 0)
-                {
-                    Room.Type = RoomType.Treasure;
-                    //SetTreasureRoom(Room);
-                }
+                room.Type = RoomType.Treasure;
+                //SetTreasureRoom(Room);
             }
 
-            foreach (var floor in MapData)
+            foreach (var r in from floor in MapData
+                     from room in floor
+                     from nextRoom in room.NextRooms
+                     select StaticInstance.PlayerData.Gsd.MapGenerator.MapData[nextRoom / 100][nextRoom % 100]
+                     into r
+                     where r.Type == RoomType.None
+                     select r)
             {
-                foreach (var Room in floor)
-                {
-                    foreach (var NextRoom in Room.NextRooms)
-                    {
-                        var r = StaticInstance.playerData.gsd.MapGenerator.MapData[NextRoom / 100][NextRoom % 100];
-                        if (r.Type == RoomType.None)
-                        {
-                            SetRoomRandomly(r);
-                        }
-                    }
-                }
+                SetRoomRandomly(r);
             }
         }
 
-        public static readonly int OffsetRange = 5;
+        private const int OffsetRange = 5;
+
         private void SetRoomRandomly(Room room)
         {
-            bool ConsecutiveShop = true;
-            bool NoShopUnderFloor4 = true;
-            RoomType TypeCandidate = RoomType.None;
-            while (ConsecutiveShop || NoShopUnderFloor4)
+            var consecutiveShop = true;
+            var noShopUnderFloor4 = true;
+            var typeCandidate = RoomType.None;
+            while (consecutiveShop || noShopUnderFloor4)
             {
-                TypeCandidate = GetRandomRoomTypeByWeight();
-                bool isShop = TypeCandidate == RoomType.Shop;
-                bool hasShopParent = RoomHasParentOfType(room, RoomType.Shop);
-                ConsecutiveShop = isShop && hasShopParent;
-                NoShopUnderFloor4 = room.Row <= 4 && TypeCandidate == RoomType.Shop;
+                typeCandidate = GetRandomRoomTypeByWeight();
+                var isShop = typeCandidate == RoomType.Shop;
+                var hasShopParent = RoomHasParentOfType(room, RoomType.Shop);
+                consecutiveShop = isShop && hasShopParent;
+                noShopUnderFloor4 = room.Row <= 4 && typeCandidate == RoomType.Shop;
             }
-            room.Type = TypeCandidate;
+
+            room.Type = typeCandidate;
             //if (room.Type == RoomType.Monster)
             //{
             //    var random = Math.Round(StaticUtils.GenerateRandomValue(0, Data.PresetPool.Count - 1, Data.PresetPool.Count / (Data.FLOORS - room.Row), OffsetRange));
@@ -285,54 +281,54 @@ namespace KemoCard.Scripts
 
         private bool RoomHasParentOfType(Room room, RoomType roomType)
         {
-            List<Room> parents = new();
+            List<Room> parents = [];
             var idx = room.Row * 100 + room.Col;
             // 左下父节点
             if (room.Col > 0 && room.Row > 0)
             {
-                var parent_candidate = MapData[room.Row - 1][room.Col - 1];
-                if (parent_candidate.NextRooms.Contains(idx))
-                    parents.Add(parent_candidate);
+                var parentCandidate = MapData[room.Row - 1][room.Col - 1];
+                if (parentCandidate.NextRooms.Contains(idx))
+                    parents.Add(parentCandidate);
             }
+
             // 下父节点
             if (room.Row > 0)
             {
-                var parent_candidate = MapData[room.Row - 1][room.Col];
-                if (parent_candidate.NextRooms.Contains(idx))
-                    parents.Add(parent_candidate);
+                var parentCandidate = MapData[room.Row - 1][room.Col];
+                if (parentCandidate.NextRooms.Contains(idx))
+                    parents.Add(parentCandidate);
             }
+
             // 右下父节点
-            if (room.Col < Data.MAP_WIDTH - 1 && room.Row > 0)
+            if (room.Col >= Data.MapWidth - 1 || room.Row <= 0) return parents.Any(parent => parent.Type == roomType);
             {
-                var parent_candidate = MapData[room.Row - 1][room.Col + 1];
-                if (parent_candidate.NextRooms.Contains(idx))
-                    parents.Add(parent_candidate);
+                var parentCandidate = MapData[room.Row - 1][room.Col + 1];
+                if (parentCandidate.NextRooms.Contains(idx))
+                    parents.Add(parentCandidate);
             }
-            foreach (var parent in parents)
-            {
-                if (parent.Type == roomType) return true;
-            }
-            return false;
+
+            return parents.Any(parent => parent.Type == roomType);
         }
 
         private RoomType GetRandomRoomTypeByWeight()
         {
             Random r = new();
-            var roll = r.NextDouble() * RANDOM_ROOM_TYPE_TOTAL_WEIGHT;
-            foreach (var type in RANDOM_ROOM_TYPE_WEIGHTS.Keys)
+            var roll = r.NextDouble() * RandomRoomTypeTotalWeight;
+            foreach (var type in RandomRoomTypeWeights.Keys.Where(type => RandomRoomTypeWeights[type] > roll))
             {
-                if (RANDOM_ROOM_TYPE_WEIGHTS[type] > roll) return type;
+                return type;
             }
+
             return RoomType.Monster;
         }
 
         public override string ToString()
         {
-            string res = "";
-            int i = 0;
-            MapData.ForEach(Rooms =>
+            var res = "";
+            var i = 0;
+            MapData.ForEach(rooms =>
             {
-                res += $"floor {i}:\t[{string.Join(",", Rooms)}]\n";
+                res += $"floor {i}:\t[{string.Join(",", rooms)}]\n";
                 i += 1;
             });
             res += $"CardPool:{string.Join(",", Data.CardPool)}\n";
@@ -348,64 +344,64 @@ namespace KemoCard.Scripts
             var oldMapId = Data.Id;
             if (!isAbort)
             {
-                string key = $"Map{Data.Id}Passed";
-                if (StaticInstance.playerData.gsd.IntData.ContainsKey(key))
+                var key = $"Map{Data.Id}Passed";
+                if (!StaticInstance.PlayerData.Gsd.IntData.TryAdd(key, 1))
                 {
-                    StaticInstance.playerData.gsd.IntData[key] += 1;
+                    StaticInstance.PlayerData.Gsd.IntData[key] += 1;
                 }
-                else
-                {
-                    StaticInstance.playerData.gsd.IntData.Add(key, 1);
-                }
+
                 Data.MapEndAction?.Invoke();
             }
+
             if (oldMapId == Data.Id)
             {
-                Data = new();
+                Data = new MapData();
                 IsStillRunning = false;
                 FloorsClimbed = 0;
                 LastRoom = null;
-                MapData = new();
+                MapData = [];
             }
-            MainScene ms = StaticInstance.windowMgr.GetSceneByName("MainScene") as MainScene;
+
+            var ms = StaticInstance.WindowMgr.GetSceneByName("MainScene") as Pages.MainScene;
             ms?.MapView?.HideMap();
-            StaticInstance.eventMgr.Dispatch("MapStateChange");
+            StaticInstance.EventMgr.Dispatch("MapStateChange");
         }
 
         public static void SetTreasureRoom(Room room)
         {
             Random r = new();
-            var random = r.Next(0, StaticInstance.playerData.gsd.MapGenerator.Data.EquipPool.Count);
-            room.RoomEquipId = StaticInstance.playerData.gsd.MapGenerator.Data.EquipPool[random];
+            var random = r.Next(0, StaticInstance.PlayerData.Gsd.MapGenerator.Data.EquipPool.Count);
+            room.RoomEquipId = StaticInstance.PlayerData.Gsd.MapGenerator.Data.EquipPool[random];
         }
 
         public static void SetEventRoom(Room room)
         {
             Random r = new();
-            var random = r.Next(0, StaticInstance.playerData.gsd.MapGenerator.Data.EventPool.Count);
-            room.RoomEventId = StaticInstance.playerData.gsd.MapGenerator.Data.EventPool[random];
+            var random = r.Next(0, StaticInstance.PlayerData.Gsd.MapGenerator.Data.EventPool.Count);
+            room.RoomEventId = StaticInstance.PlayerData.Gsd.MapGenerator.Data.EventPool[random];
         }
 
         public static void SetMonsterRoom(Room room, bool notBoss = false)
         {
-            var Data = StaticInstance.playerData.gsd.MapGenerator.Data;
+            var data = StaticInstance.PlayerData.Gsd.MapGenerator.Data;
             if (notBoss)
             {
-                var random = Math.Round(StaticUtils.GenerateRandomValue(0, Data.PresetPool.Count - 1, Data.PresetPool.Count / (Data.FLOORS - room.Row), OffsetRange));
-                room.RoomPresetId = Data.PresetPool[(int)random];
+                var random = Math.Round(StaticUtils.GenerateRandomValue(0, data.PresetPool.Count - 1, (int)(data
+                    .PresetPool.Count / (data.Floors - room.Row)), OffsetRange));
+                room.RoomPresetId = data.PresetPool[(int)random];
             }
             else
             {
-                List<string> plist = new();
-                foreach (var kvp in Datas.Ins.PresetPool)
-                {
-                    if (kvp.Value.is_boss && kvp.Value.tier >= Data.MinTier && kvp.Value.tier <= Data.MaxTier) plist.Add(kvp.Key);
-                }
+                List<string> plist = [];
+                plist.AddRange(from kvp in Datas.Ins.PresetPool
+                    where kvp.Value.IsBoss && kvp.Value.Tier >= data.MinTier && kvp.Value.Tier <= data.MaxTier
+                    select kvp.Key);
                 if (plist.Count == 0)
                 {
                     StaticInstance.MainRoot.ShowBanner($"找不到任何处于此地图设定范围内的怪物配置，生成地图出错");
                     return;
                 }
+
                 Random r = new();
                 room.RoomPresetId = plist[r.Next(plist.Count)];
             }

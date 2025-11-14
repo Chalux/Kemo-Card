@@ -1,7 +1,7 @@
 using Godot;
 using Godot.Collections;
 using KemoCard.Scripts.Cards;
-using static StaticClass.StaticEnums;
+using static KemoCard.Scripts.StaticEnums;
 
 public partial class CardStateMachine : Control
 {

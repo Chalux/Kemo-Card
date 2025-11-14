@@ -1,6 +1,5 @@
 ﻿using Godot;
-using StaticClass;
-using static StaticClass.StaticEnums;
+using static KemoCard.Scripts.StaticEnums;
 
 namespace KemoCard.Scripts.Cards
 {
@@ -11,7 +10,7 @@ namespace KemoCard.Scripts.Cards
             //cardObject.EFRect.Visible = true;
             //BattleStatic.discard_list.Add(cardObject.card);
             BattleStatic.SelectCard(cardObject);
-            StaticInstance.eventMgr.Dispatch("SelectCard");
+            StaticInstance.EventMgr.Dispatch("SelectCard");
         }
 
         public override void OnGUIInput(InputEvent @event)
@@ -21,7 +20,7 @@ namespace KemoCard.Scripts.Cards
                 if (BattleStatic.isDiscarding)
                 {
                     BattleStatic.SelectCard(cardObject);
-                    cardObject.csm.OnTransitionRequest(this, CardStateEnum.BASE);
+                    cardObject.csm.OnTransitionRequest(this, CardStateEnum.Base);
                 }
             }
         }
