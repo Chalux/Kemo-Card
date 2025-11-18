@@ -10,7 +10,7 @@ width = 576
 height = 704
 noise = SubResource("FastNoiseLite_o4rr6")
 
-[node name="EventScene" type="Control" node_paths=PackedStringArray("BtnContainer", "EventImg", "EventTitle")]
+[node name="EventScene" type="Control" node_paths=PackedStringArray("_btnContainer", "_eventImg", "_eventTitle")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -18,9 +18,9 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_qalbm")
-BtnContainer = NodePath("Root/BtnContainer")
-EventImg = NodePath("Root/EventImg")
-EventTitle = NodePath("Root/EventTitle")
+_btnContainer = NodePath("Root/BtnContainer")
+_eventImg = NodePath("Root/EventImg")
+_eventTitle = NodePath("Root/EventTitle")
 
 [node name="Root" type="Control" parent="."]
 custom_minimum_size = Vector2(1920, 1080)

@@ -1,8 +1,8 @@
 [gd_scene load_steps=10 format=3 uid="uid://bhiqlhvrt8uq2"]
 
-[ext_resource type="Script" path="res://Pages/CardShowObject.cs" id="1_mqmob"]
-[ext_resource type="Shader" path="res://Resources/fake3d.gdshader" id="1_nu6xd"]
-[ext_resource type="Shader" path="res://Pages/CardFrame.gdshader" id="3_psduj"]
+[ext_resource type="Script" uid="uid://dnkaue0uhpd20" path="res://Pages/CardShowObject.cs" id="1_mqmob"]
+[ext_resource type="Shader" uid="uid://bl753ihbpq1tq" path="res://Resources/fake3d.gdshader" id="1_nu6xd"]
+[ext_resource type="Shader" uid="uid://bxu8n3de65e0p" path="res://Pages/CardFrame.gdshader" id="3_psduj"]
 
 [sub_resource type="Gradient" id="Gradient_kotth"]
 
@@ -10,8 +10,8 @@
 frequency = 0.0016
 
 [sub_resource type="NoiseTexture2D" id="NoiseTexture2D_hp427"]
-color_ramp = SubResource("Gradient_kotth")
 noise = SubResource("FastNoiseLite_ep83x")
+color_ramp = SubResource("Gradient_kotth")
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_kydiv"]
 resource_local_to_scene = true
@@ -21,10 +21,10 @@ shader_parameter/cull_back = true
 shader_parameter/y_rot = 0.0
 shader_parameter/x_rot = 0.0
 shader_parameter/inset = 0.0
+shader_parameter/dissolve_texture = SubResource("NoiseTexture2D_hp427")
 shader_parameter/dissolve_value = 1.0
 shader_parameter/burn_size = 0.2
 shader_parameter/burn_color = Color(0.922391, 0.121125, 0, 1)
-shader_parameter/dissolve_texture = SubResource("NoiseTexture2D_hp427")
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_lmy76"]
 resource_local_to_scene = true
@@ -38,7 +38,7 @@ shader_parameter/add_margins = false
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_6damg"]
 size = Vector2(256, 320)
 
-[node name="CardShowObject" type="Control" node_paths=PackedStringArray("cardName", "cardDesc", "cardCost", "BgRect", "costBg", "FrameRect", "SVContainer")]
+[node name="CardShowObject" type="Control" node_paths=PackedStringArray("CardName", "CardDesc", "CardCost", "BgRect", "CostBg", "FrameRect", "SvContainer")]
 custom_minimum_size = Vector2(256, 320)
 layout_mode = 3
 anchors_preset = 15
@@ -50,13 +50,13 @@ grow_horizontal = 2
 grow_vertical = 2
 pivot_offset = Vector2(128, 160)
 script = ExtResource("1_mqmob")
-cardName = NodePath("SubViewportContainer/SubViewport/CardName")
-cardDesc = NodePath("SubViewportContainer/SubViewport/CardDesc")
-cardCost = NodePath("SubViewportContainer/SubViewport/CostBg/CardCost")
+CardName = NodePath("SubViewportContainer/SubViewport/CardName")
+CardDesc = NodePath("SubViewportContainer/SubViewport/CardDesc")
+CardCost = NodePath("SubViewportContainer/SubViewport/CostBg/CardCost")
 BgRect = NodePath("SubViewportContainer/SubViewport/ColorRect")
-costBg = NodePath("SubViewportContainer/SubViewport/CostBg")
+CostBg = NodePath("SubViewportContainer/SubViewport/CostBg")
 FrameRect = NodePath("SubViewportContainer/SubViewport/FrameRect")
-SVContainer = NodePath("SubViewportContainer")
+SvContainer = NodePath("SubViewportContainer")
 metadata/_edit_use_anchors_ = true
 
 [node name="SubViewportContainer" type="SubViewportContainer" parent="."]

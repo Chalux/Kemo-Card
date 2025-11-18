@@ -8,22 +8,22 @@ namespace KemoCard.Pages;
 
 public partial class RoleDeckView : BaseScene
 {
-    [Export] FlowContainer FlowContainer;
-    [Export] Godot.Button ExitBtn;
-    [Export] TabBar Tab;
+    [Export] private FlowContainer _flowContainer;
+    [Export] private Button _exitBtn;
+    [Export] private TabBar _tab;
     private PlayerRole _role;
 
     public override void OnAdd(params object[] datas)
     {
-        ExitBtn.Pressed += () => { StaticInstance.WindowMgr.RemoveScene(this); };
+        _exitBtn.Pressed += () => { StaticInstance.WindowMgr.RemoveScene(this); };
         if (datas[0] is PlayerRole pr)
         {
             _role = pr;
         }
 
-        Tab.TabChanged += UpdateView;
-        Tab.TabHovered += ShowHint;
-        Tab.MouseExited += StaticInstance.MainRoot.HideRichHint;
+        _tab.TabChanged += UpdateView;
+        _tab.TabHovered += ShowHint;
+        _tab.MouseExited += StaticInstance.MainRoot.HideRichHint;
         UpdateView(0);
     }
 
@@ -66,37 +66,37 @@ public partial class RoleDeckView : BaseScene
                 break;
         }
 
-        if (cards.Count > FlowContainer.GetChildCount())
+        if (cards.Count > _flowContainer.GetChildCount())
         {
             for (var i = 0; i < cards.Count; i++)
             {
                 var card = cards[i];
-                if (i < FlowContainer.GetChildCount())
+                if (i < _flowContainer.GetChildCount())
                 {
-                    var cardobject = (CardShowObject)FlowContainer.GetChild(i);
-                    cardobject.InitDataByCard(card);
+                    var cardShowObject = (CardShowObject)_flowContainer.GetChild(i);
+                    cardShowObject.InitDataByCard(card);
                 }
                 else
                 {
-                    var cardobject = ResourceLoader.Load<PackedScene>("res://Pages/CardShowObject.tscn")
+                    var cardShowObject = ResourceLoader.Load<PackedScene>("res://Pages/CardShowObject.tscn")
                         .Instantiate<CardShowObject>();
-                    cardobject.InitDataByCard(card);
-                    FlowContainer.AddChild(cardobject);
+                    cardShowObject.InitDataByCard(card);
+                    _flowContainer.AddChild(cardShowObject);
                 }
             }
         }
         else
         {
-            for (var i = 0; i < FlowContainer.GetChildCount(); i++)
+            for (var i = 0; i < _flowContainer.GetChildCount(); i++)
             {
-                var cardobject = (CardShowObject)FlowContainer.GetChild(i);
+                var cardShowObject = (CardShowObject)_flowContainer.GetChild(i);
                 if (i < cards.Count)
                 {
-                    cardobject.InitDataByCard(cards[i]);
+                    cardShowObject.InitDataByCard(cards[i]);
                 }
                 else
                 {
-                    cardobject.QueueFree();
+                    cardShowObject.QueueFree();
                 }
             }
         }

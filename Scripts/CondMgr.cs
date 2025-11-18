@@ -1,68 +1,41 @@
-﻿using Godot;
+﻿using System;
+using System.Linq;
+using Godot;
 using Godot.Collections;
-using System;
 
 namespace KemoCard.Scripts
 {
     internal class CondMgr
     {
-        private readonly System.Collections.Generic.Dictionary<string, Func<Array<Variant>, bool>> CondActions = new();
+        private readonly System.Collections.Generic.Dictionary<string, Func<Array<Variant>, bool>> _condActions = new();
 
-        public bool CheckCond(System.Collections.Generic.Dictionary<string, Array<Variant>> CondList)
+        public bool CheckCond(System.Collections.Generic.Dictionary<string, Array<Variant>> condList)
         {
-            if (CondList == null) return true;
-            foreach (var Cond in CondList)
-            {
-                if (CondActions.ContainsKey(Cond.Key))
-                {
-                    if (!CondActions[Cond.Key].Invoke(Cond.Value))
-                    {
-                        return false;
-                    }
-                }
-            }
-            return true;
+            return condList == null || condList.Where(cond => _condActions.ContainsKey(cond.Key))
+                .All(cond => _condActions[cond.Key].Invoke(cond.Value));
         }
 
-        public bool CheckCond(Dictionary<string, Array<Variant>> CondList)
+        public bool CheckCond(Dictionary<string, Array<Variant>> condList)
         {
-            if (CondList == null) return true;
-            foreach (var Cond in CondList)
-            {
-                if (CondActions.ContainsKey(Cond.Key))
-                {
-                    if (!CondActions[Cond.Key].Invoke(Cond.Value))
-                    {
-                        return false;
-                    }
-                }
-            }
-            return true;
+            return condList == null || condList.Where(cond => _condActions.ContainsKey(cond.Key))
+                .All(cond => _condActions[cond.Key].Invoke(cond.Value));
         }
 
-        public CondMgr()
+        private CondMgr()
         {
-            CondActions.Add("Map", (Array<Variant> variants) =>
-            {
-                bool res = false;
-                foreach (var id in variants)
+            _condActions.Add("Map",
+                variants =>
                 {
-                    string key = $"Map{variants[0].AsString()}Passed";
-                    if (StaticInstance.PlayerData.Gsd.IntData.ContainsKey(key) && StaticInstance.PlayerData.Gsd.IntData[key] > 0)
-                    {
-                        res = true;
-                        break;
-                    }
-                }
-                return res;
-            });
-            CondActions.Add("Level", (Array<Variant> variants) =>
-            {
-                return StaticInstance.PlayerData.Gsd.MajorRole.Level >= variants[0].AsInt32();
-            });
+                    return variants.Select(_ => $"Map{variants[0].AsString()}Passed").Any(key =>
+                        StaticInstance.PlayerData.Gsd.IntData.ContainsKey(key) &&
+                        StaticInstance.PlayerData.Gsd.IntData[key] > 0);
+                });
+            _condActions.Add("Level",
+                variants => StaticInstance.PlayerData.Gsd.MajorRole.Level >= variants[0].AsInt32());
         }
 
         private static CondMgr _ins;
+
         public static CondMgr Ins
         {
             get

@@ -26,11 +26,11 @@ namespace KemoCard.Pages
         [Export] private EquipObject _otherSlot4;
         [Export] private EquipObject _otherSlot5;
         [Export] private TextEdit _gmEdit;
-        [Export] private Godot.Button _addBtn;
-        [Export] private Godot.Button _deleteBtn;
+        [Export] private Button _addBtn;
+        [Export] private Button _deleteBtn;
         [Export] public PopupMenu Popup;
         [Export] private FlowContainer _flowContainer;
-        [Export] private Godot.Button _quitBtn;
+        [Export] private Button _quitBtn;
         [Export] private Control _debugControl;
         private Equip _popupData;
         private uint _bagIndex;

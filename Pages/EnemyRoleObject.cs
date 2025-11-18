@@ -1,58 +1,62 @@
+using System.Linq;
 using Godot;
 using KemoCard.Scripts;
-using System.Linq;
 using static KemoCard.Scripts.StaticEnums;
+
+namespace KemoCard.Pages;
 
 public partial class EnemyRoleObject : Control, IEvent
 {
-    public EnemyRole data;
-    [Export] private ProgressBar hpProgress;
-    [Export] private ProgressBar mpProgress;
-    [Export] private RichTextLabel hpLabel;
-    [Export] private RichTextLabel mpLabel;
-    [Export] private ProgressBar PBProgress;
-    [Export] private ProgressBar MBProgress;
-    [Export] private RichTextLabel PBLabel;
-    [Export] private RichTextLabel MBLabel;
-    [Export] public AnimationPlayer hitFlashAnimationPlayer;
-    [Export] private RichTextLabel monsterName;
-    [Export] private AnimatedSprite2D animation;
-    [Export] public HBoxContainer buffContainer;
-    [Export] private TextureRect SelectRect;
-    [Export] private Control mainControl;
+    public EnemyRole Data;
+    [Export] private ProgressBar _hpProgress;
+    [Export] private ProgressBar _mpProgress;
+    [Export] private RichTextLabel _hpLabel;
+    [Export] private RichTextLabel _mpLabel;
+    [Export] private ProgressBar _pbProgress;
+    [Export] private ProgressBar _mbProgress;
+    [Export] private RichTextLabel _pbLabel;
+    [Export] private RichTextLabel _mbLabel;
+    [Export] public AnimationPlayer HitFlashAnimationPlayer;
+    [Export] private RichTextLabel _monsterName;
+    [Export] private AnimatedSprite2D _animation;
+    [Export] public HBoxContainer BuffContainer;
+    [Export] private TextureRect _selectRect;
+    [Export] private Control _mainControl;
     [Export] public RichTextLabel IntentRichLabel;
 
-    private bool SelectingTarget = false;
+    private bool _selectingTarget;
+
     // Called when the node enters the scene tree for the first time.
     public override void _Ready()
     {
         base._Ready();
         StaticInstance.EventMgr.RegisterIEvent(this);
-        mainControl.MouseEntered += new(() =>
+        _mainControl.MouseEntered += () =>
         {
-            if (SelectingTarget)
+            if (_selectingTarget)
             {
-                SelectRect.Visible = true;
-                BattleStatic.Targets.Add(data);
+                _selectRect.Visible = true;
+                BattleStatic.Targets.Add(Data);
             }
             else
             {
-                StaticInstance.MainRoot.ShowRichHint(data.GetRichDesc() + data.Script.Intent);
+                StaticInstance.MainRoot.ShowRichHint(Data.GetRichDesc() + Data.Script.Intent);
             }
-        });
-        mainControl.MouseExited += new(() =>
+        };
+        _mainControl.MouseExited += () =>
         {
-            if (SelectingTarget)
+            if (_selectingTarget)
             {
-                SelectRect.Visible = false;
-                if (BattleStatic.Targets.Contains(data))
+                _selectRect.Visible = false;
+                if (BattleStatic.Targets.Contains(Data))
                 {
-                    BattleStatic.Targets.Remove(data);
+                    BattleStatic.Targets.Remove(Data);
                 }
                 //GD.Print(BattleStatic.Targets.Count);
             }
+
             StaticInstance.MainRoot.HideRichHint();
-        });
+        };
     }
 
     public override void _ExitTree()
@@ -61,115 +65,116 @@ public partial class EnemyRoleObject : Control, IEvent
         base._ExitTree();
     }
 
-    public void Init(string id)
+    private void Init(string id)
     {
-        data = new(id);
-        monsterName.Text = StaticUtils.MakeBBCodeString(data.Name);
-        hpProgress.MaxValue = data.CurrHpLimit;
-        mpProgress.MaxValue = data.CurrMpLimit;
-        PBProgress.MaxValue = MBProgress.MaxValue = data.CurrHpLimit;
-        data.RoleObject = this;
-        var res = ResourceLoader.Load<SpriteFrames>(data.Script.AnimationResourcePath);
+        Data = new EnemyRole(id);
+        _monsterName.Text = StaticUtils.MakeBBCodeString(Data.Name);
+        _hpProgress.MaxValue = Data.CurrHpLimit;
+        _mpProgress.MaxValue = Data.CurrMpLimit;
+        _pbProgress.MaxValue = _mbProgress.MaxValue = Data.CurrHpLimit;
+        Data.RoleObject = this;
+        var res = ResourceLoader.Load<SpriteFrames>(Data.Script.AnimationResourcePath);
         if (res != null)
         {
-            animation.SpriteFrames = res;
+            _animation.SpriteFrames = res;
         }
+
         UpdateObject();
     }
 
     public void Init(EnemyRole enemyRole)
     {
-        data = enemyRole;
-        monsterName.Text = StaticUtils.MakeBBCodeString(data.Name);
-        hpProgress.MaxValue = data.CurrHpLimit;
-        mpProgress.MaxValue = data.CurrMpLimit;
-        PBProgress.MaxValue = MBProgress.MaxValue = data.CurrHpLimit;
+        Data = enemyRole;
+        _monsterName.Text = StaticUtils.MakeBBCodeString(Data.Name);
+        _hpProgress.MaxValue = Data.CurrHpLimit;
+        _mpProgress.MaxValue = Data.CurrMpLimit;
+        _pbProgress.MaxValue = _mbProgress.MaxValue = Data.CurrHpLimit;
         enemyRole.RoleObject = this;
-        var res = ResourceLoader.Load<SpriteFrames>(data.Script.AnimationResourcePath);
+        var res = ResourceLoader.Load<SpriteFrames>(Data.Script.AnimationResourcePath);
         if (res != null)
         {
-            animation.SpriteFrames = res;
+            _animation.SpriteFrames = res;
         }
-        enemyRole.Buffs.ForEach(buff =>
-        {
-            AddBuff(buff);
-        });
+
+        enemyRole.Buffs.ForEach(AddBuff);
         UpdateObject();
     }
 
-    public void UpdateObject(EnemyRole role = null)
+    private void UpdateObject(EnemyRole role = null)
     {
         if (role != null)
         {
-            data = role;
+            Data = role;
         }
-        if (data == null) return;
-        hpProgress.Value = data.CurrHealth;
-        mpProgress.Value = data.CurrMagic;
-        PBProgress.Value = data.CurrPBlock;
-        MBProgress.Value = data.CurrMBlock;
-        PBLabel.Text = StaticUtils.MakeBBCodeString(data.CurrPBlock.ToString());
-        MBLabel.Text = StaticUtils.MakeBBCodeString(data.CurrMBlock.ToString());
-        hpLabel.Text = StaticUtils.MakeBBCodeString(data.CurrHealth + "/" + data.CurrHpLimit);
-        mpLabel.Text = StaticUtils.MakeBBCodeString(data.CurrMagic + "/" + data.CurrMpLimit);
+
+        if (Data == null) return;
+        _hpProgress.Value = Data.CurrHealth;
+        _mpProgress.Value = Data.CurrMagic;
+        _pbProgress.Value = Data.CurrPBlock;
+        _mbProgress.Value = Data.CurrMBlock;
+        _pbLabel.Text = StaticUtils.MakeBBCodeString(Data.CurrPBlock.ToString());
+        _mbLabel.Text = StaticUtils.MakeBBCodeString(Data.CurrMBlock.ToString());
+        _hpLabel.Text = StaticUtils.MakeBBCodeString(Data.CurrHealth + "/" + Data.CurrHpLimit);
+        _mpLabel.Text = StaticUtils.MakeBBCodeString(Data.CurrMagic + "/" + Data.CurrMpLimit);
     }
 
     public void ReceiveEvent(string @event, params object[] datas)
     {
-        if (@event == "PropertiesChanged")
+        switch (@event)
         {
-            UpdateObject();
-        }
-        else if (@event == "StartSelectTarget")
-        {
-            var type = (TargetType)datas[0];
-            if (type == TargetType.AllSingle || type == TargetType.EnemySingle)
-                SelectingTarget = true;
-        }
-        else if (@event == "EndSelectTarget")
-        {
-            SelectingTarget = false;
-            SelectRect.Visible = false;
-        }
-        else if (@event == "SelectTargetAll")
-        {
-            var type = (TargetType)datas[0];
-            if (type == TargetType.EnemyAll || type == TargetType.All)
+            case "PropertiesChanged":
+                UpdateObject();
+                break;
+            case "StartSelectTarget":
             {
-                SelectingTarget = false;
-                SelectRect.Visible = true;
+                var type = (TargetType)datas[0];
+                if (type is TargetType.AllSingle or TargetType.EnemySingle)
+                    _selectingTarget = true;
+                break;
+            }
+            case "EndSelectTarget":
+                _selectingTarget = false;
+                _selectRect.Visible = false;
+                break;
+            case "SelectTargetAll":
+            {
+                var type = (TargetType)datas[0];
+                if (type is TargetType.EnemyAll or TargetType.All)
+                {
+                    _selectingTarget = false;
+                    _selectRect.Visible = true;
+                }
+
+                break;
             }
         }
-        data?.ReceiveEvent(@event, datas);
-        foreach (BuffObject buffObject in buffContainer?.GetChildren().Cast<BuffObject>())
+
+        Data?.ReceiveEvent(@event, datas);
+        foreach (var buffObject in BuffContainer?.GetChildren().Cast<BuffObject>() ?? [])
         {
             buffObject.ReceiveEvent(@event, datas);
         }
     }
 
-    public void AddBuff(string id, object Creator)
+    public void AddBuff(string id, object creator)
     {
-        BuffObject bobj = (BuffObject)ResourceLoader.Load<PackedScene>("res://Pages/BuffObject.tscn").Instantiate();
-        bobj.Init(id, Creator);
-        if (bobj.data != null)
-        {
-            bobj.data.Binder = data;
-            bobj.data.BuffObj = bobj;
-            bobj.data.OnBuffAdded?.Invoke(bobj.data);
-            buffContainer?.AddChild(bobj);
-        }
+        var buffObj = (BuffObject)ResourceLoader.Load<PackedScene>("res://Pages/BuffObject.tscn").Instantiate();
+        buffObj.Init(id, creator);
+        if (buffObj.Data == null) return;
+        buffObj.Data.Binder = Data;
+        buffObj.Data.BuffObj = buffObj;
+        buffObj.Data.OnBuffAdded?.Invoke(buffObj.Data);
+        BuffContainer?.AddChild(buffObj);
     }
 
     public void AddBuff(BuffImplBase buff)
     {
-        BuffObject bobj = (BuffObject)ResourceLoader.Load<PackedScene>("res://Pages/BuffObject.tscn").Instantiate();
-        bobj.Init(buff);
-        if (bobj.data != null)
-        {
-            bobj.data.Binder = data;
-            bobj.data.BuffObj = bobj;
-            bobj.data.OnBuffAdded?.Invoke(bobj.data);
-            buffContainer?.AddChild(bobj);
-        }
+        var buffObj = (BuffObject)ResourceLoader.Load<PackedScene>("res://Pages/BuffObject.tscn").Instantiate();
+        buffObj.Init(buff);
+        if (buffObj.Data == null) return;
+        buffObj.Data.Binder = Data;
+        buffObj.Data.BuffObj = buffObj;
+        buffObj.Data.OnBuffAdded?.Invoke(buffObj.Data);
+        BuffContainer?.AddChild(buffObj);
     }
 }

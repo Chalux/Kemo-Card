@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://c62bvj2nmqsdj" path="res://Pages/ChoseCardScene.cs" id="1_qiuks"]
 
-[node name="ChoseCardScene" type="Control" node_paths=PackedStringArray("hBox", "confirmBtn")]
+[node name="ChoseCardScene" type="Control" node_paths=PackedStringArray("_hBox", "_confirmBtn")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -10,8 +10,8 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_qiuks")
-hBox = NodePath("Root/HBoxContainer")
-confirmBtn = NodePath("Root/Button")
+_hBox = NodePath("Root/HBoxContainer")
+_confirmBtn = NodePath("Root/Button")
 
 [node name="Root" type="Control" parent="."]
 custom_minimum_size = Vector2(1920, 1080)

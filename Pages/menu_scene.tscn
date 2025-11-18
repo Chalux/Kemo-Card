@@ -9,7 +9,7 @@ font_weight = 800
 font = SubResource("SystemFont_ndu3p")
 font_size = 60
 
-[node name="MenuScene" type="Control" node_paths=PackedStringArray("exit", "start", "load", "DebugTempBtn")]
+[node name="MenuScene" type="Control" node_paths=PackedStringArray("_exit", "_start", "_load", "_debugTempBtn")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -17,10 +17,10 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_ulw2r")
-exit = NodePath("exit")
-start = NodePath("start")
-load = NodePath("load")
-DebugTempBtn = NodePath("DebugTemp")
+_exit = NodePath("exit")
+_start = NodePath("start")
+_load = NodePath("load")
+_debugTempBtn = NodePath("DebugTemp")
 
 [node name="ColorRect" type="ColorRect" parent="."]
 layout_mode = 1

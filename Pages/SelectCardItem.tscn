@@ -1,8 +1,8 @@
 [gd_scene load_steps=7 format=3 uid="uid://5xfp70h2kjyw"]
 
 [ext_resource type="PackedScene" uid="uid://bhiqlhvrt8uq2" path="res://Pages/CardShowObject.tscn" id="1_hc2kk"]
-[ext_resource type="Script" path="res://Pages/SelectCardItem.cs" id="1_rewy6"]
-[ext_resource type="Shader" path="res://Resources/SelectorShader.gdshader" id="2_gj3ga"]
+[ext_resource type="Script" uid="uid://ds17xvh2fcq28" path="res://Pages/SelectCardItem.cs" id="1_rewy6"]
+[ext_resource type="Shader" uid="uid://c3ft2m1jd6mpb" path="res://Resources/SelectorShader.gdshader" id="2_gj3ga"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_rcfia"]
 shader = ExtResource("2_gj3ga")
@@ -14,13 +14,15 @@ shader_parameter/threshold = 0.809
 [sub_resource type="NoiseTexture2D" id="NoiseTexture2D_6uv8d"]
 noise = SubResource("FastNoiseLite_jffk6")
 
-[node name="Card1" type="Control"]
+[node name="Card1" type="Control" node_paths=PackedStringArray("ShowObject", "ShaderRect")]
 custom_minimum_size = Vector2(256, 320)
 layout_mode = 3
 anchors_preset = 0
 offset_right = 256.0
 offset_bottom = 320.0
 script = ExtResource("1_rewy6")
+ShowObject = NodePath("CardShowObject")
+ShaderRect = NodePath("TextureRect")
 
 [node name="CardShowObject" parent="." instance=ExtResource("1_hc2kk")]
 layout_mode = 1

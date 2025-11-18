@@ -3,16 +3,13 @@ using static KemoCard.Scripts.StaticEnums;
 
 namespace KemoCard.Scripts.Cards
 {
-    partial class CardBaseState : CardState
+    internal partial class CardBaseState : CardState
     {
         public override void Enter()
         {
-            if (!cardObject.IsNodeReady())
+            if (!CardObject.IsNodeReady())
             {
-                cardObject.Ready += new(() =>
-                {
-                    OnEnter();
-                });
+                CardObject.Ready += OnEnter;
             }
             else
             {
@@ -20,40 +17,42 @@ namespace KemoCard.Scripts.Cards
             }
         }
 
-        void OnEnter()
+        private void OnEnter()
         {
-            cardObject.ReparentToSourceRoot();
-            object[] param = { -1 };
+            CardObject.ReparentToSourceRoot();
+            object[] param = [-1];
             StaticInstance.EventMgr.Dispatch("RepositionHand", param);
             StaticInstance.EventMgr.Dispatch("DraggingCard");
             //cardObject.BgRect.Color = new("0000006e");
             //cardObject.PivotOffset = Vector2.Zero;
-            cardObject.PivotOffset = new(cardObject.Size.X / 2, cardObject.Size.Y);
-            cardObject.stateLabel.Text = "BASE";
-            (cardObject.SVContainer.Material as ShaderMaterial).SetShaderParameter("x_rot", 0);
-            (cardObject.SVContainer.Material as ShaderMaterial).SetShaderParameter("y_rot", 0);
-            if (cardObject.EnterTween != null && cardObject.EnterTween.IsRunning()) cardObject.EnterTween.Kill();
-            cardObject.EnterTween = CreateTween().SetEase(Tween.EaseType.Out).SetTrans(Tween.TransitionType.Elastic);
-            cardObject.EnterTween.TweenProperty(this, "scale", Vector2.One, 0.55f);
-            cardObject.EnterTween.Play();
+            CardObject.PivotOffset = new Vector2(CardObject.Size.X / 2, CardObject.Size.Y);
+            CardObject.StateLabel.Text = "BASE";
+            if (CardObject.SvContainer.Material is ShaderMaterial sm)
+            {
+                sm.SetShaderParameter("x_rot", 0);
+                sm.SetShaderParameter("y_rot", 0);
+            }
+
+            if (CardObject.EnterTween != null && CardObject.EnterTween.IsRunning()) CardObject.EnterTween.Kill();
+            CardObject.EnterTween = CreateTween().SetEase(Tween.EaseType.Out).SetTrans(Tween.TransitionType.Elastic);
+            CardObject.EnterTween.TweenProperty(this, "scale", Vector2.One, 0.55f);
+            CardObject.EnterTween.Play();
         }
 
         public override void OnGUIInput(InputEvent @event)
         {
-            if (@event.IsActionPressed("left_mouse"))
+            if (!@event.IsActionPressed("left_mouse")) return;
+            if (BattleStatic.IsDiscarding)
             {
-                if (BattleStatic.isDiscarding)
+                if (BattleStatic.SelectFilterFunc == null || BattleStatic.SelectFilterFunc.Invoke(CardObject.Card))
                 {
-                    if (BattleStatic.SelectFilterFunc == null || BattleStatic.SelectFilterFunc.Invoke(cardObject.card))
-                    {
-                        cardObject.csm.OnTransitionRequest(this, CardStateEnum.Discarding);
-                    }
+                    CardObject.Csm.OnTransitionRequest(this, CardStateEnum.Discarding);
                 }
-                else
-                {
-                    cardObject.PivotOffset = cardObject.GetGlobalMousePosition() - cardObject.GlobalPosition;
-                    cardObject.csm.OnTransitionRequest(this, CardStateEnum.Clicked);
-                }
+            }
+            else
+            {
+                CardObject.PivotOffset = CardObject.GetGlobalMousePosition() - CardObject.GlobalPosition;
+                CardObject.Csm.OnTransitionRequest(this, CardStateEnum.Clicked);
             }
         }
     }

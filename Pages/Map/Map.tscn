@@ -1,25 +1,25 @@
 [gd_scene load_steps=2 format=3 uid="uid://bxu5oaf5w8o2p"]
 
-[ext_resource type="Script" uid="uid://07j3vile11pe" path="res://Pages/Map/Map.cs" id="1_wdry2"]
+[ext_resource type="Script" uid="uid://07j3vile11pe" path="res://Pages/Map/MapView.cs" id="1_rh6j2"]
 
-[node name="Map" type="Control" node_paths=PackedStringArray("Lines", "Rooms", "Visual", "Camera2D", "HideBtn", "DebugBtn", "DebugBtn2", "HealBtn", "AbortBtn", "HealLabel")]
+[node name="Map" type="Control" node_paths=PackedStringArray("_lines", "_rooms", "_visual", "_camera2D", "_hideBtn", "_debugBtn", "_debugBtn2", "_healBtn", "_abortBtn", "_healLabel")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-script = ExtResource("1_wdry2")
-Lines = NodePath("Visual/Lines")
-Rooms = NodePath("Visual/Rooms")
-Visual = NodePath("Visual")
-Camera2D = NodePath("Camera2D")
-HideBtn = NodePath("Camera2D/HideBtn")
-DebugBtn = NodePath("Camera2D/DebugBtn")
-DebugBtn2 = NodePath("Camera2D/DebugBtn2")
-HealBtn = NodePath("Camera2D/HealBtn")
-AbortBtn = NodePath("Camera2D/AbortBtn")
-HealLabel = NodePath("Camera2D/HealLabel")
+script = ExtResource("1_rh6j2")
+_lines = NodePath("Visual/Lines")
+_rooms = NodePath("Visual/Rooms")
+_visual = NodePath("Visual")
+_camera2D = NodePath("Camera2D")
+_hideBtn = NodePath("Camera2D/HideBtn")
+_debugBtn = NodePath("Camera2D/DebugBtn")
+_debugBtn2 = NodePath("Camera2D/DebugBtn2")
+_healBtn = NodePath("Camera2D/HealBtn")
+_abortBtn = NodePath("Camera2D/AbortBtn")
+_healLabel = NodePath("Camera2D/HealLabel")
 
 [node name="Camera2D" type="Camera2D" parent="."]
 offset = Vector2(960, 540)

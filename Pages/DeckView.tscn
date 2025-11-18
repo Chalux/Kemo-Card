@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://b3gr70q00ws5f" path="res://Pages/DeckView.cs" id="1_ine4d"]
 
-[node name="DeckView" type="Control" node_paths=PackedStringArray("FlowContainer", "ExitBtn")]
+[node name="DeckView" type="Control" node_paths=PackedStringArray("_flowContainer", "_exitBtn")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -10,8 +10,8 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_ine4d")
-FlowContainer = NodePath("FlowContainer")
-ExitBtn = NodePath("Button")
+_flowContainer = NodePath("FlowContainer")
+_exitBtn = NodePath("Button")
 
 [node name="ColorRect" type="ColorRect" parent="."]
 custom_minimum_size = Vector2(1920, 1080)

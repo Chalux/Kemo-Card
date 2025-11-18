@@ -1,8 +1,8 @@
 [gd_scene load_steps=13 format=3 uid="uid://cn1xqe8mwgyr0"]
 
-[ext_resource type="Script" path="res://Pages/EnemyRoleObject.cs" id="1_w664j"]
+[ext_resource type="Script" uid="uid://bgtavsgylcekk" path="res://Pages/EnemyRoleObject.cs" id="1_w664j"]
 [ext_resource type="Material" uid="uid://vlemaqje0h5l" path="res://Resources/HitFlashMaterial.tres" id="2_caie8"]
-[ext_resource type="Shader" path="res://Resources/SelectorShader.gdshader" id="4_o8kpm"]
+[ext_resource type="Shader" uid="uid://c3ft2m1jd6mpb" path="res://Resources/SelectorShader.gdshader" id="4_o8kpm"]
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_i8yhf"]
 
@@ -30,9 +30,9 @@ resource_name = "swap_texture"
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_pmhtp"]
 _data = {
-"RESET": SubResource("Animation_v1i4x"),
-"hit_flash": SubResource("Animation_358d4"),
-"swap_texture": SubResource("Animation_4xxqk")
+&"RESET": SubResource("Animation_v1i4x"),
+&"hit_flash": SubResource("Animation_358d4"),
+&"swap_texture": SubResource("Animation_4xxqk")
 }
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_68ljr"]
@@ -46,30 +46,30 @@ shader_parameter/threshold = 0.526
 frequency = 0.03
 
 [sub_resource type="NoiseTexture2D" id="NoiseTexture2D_eecrr"]
-color_ramp = SubResource("Gradient_t1mix")
 noise = SubResource("FastNoiseLite_ps8mf")
+color_ramp = SubResource("Gradient_t1mix")
 
-[node name="EnemyRoleObject" type="Control" node_paths=PackedStringArray("hpProgress", "mpProgress", "hpLabel", "mpLabel", "PBProgress", "MBProgress", "PBLabel", "MBLabel", "hitFlashAnimationPlayer", "monsterName", "animation", "buffContainer", "SelectRect", "mainControl", "IntentRichLabel")]
+[node name="EnemyRoleObject" type="Control" node_paths=PackedStringArray("_hpProgress", "_mpProgress", "_hpLabel", "_mpLabel", "_pbProgress", "_mbProgress", "_pbLabel", "_mbLabel", "HitFlashAnimationPlayer", "_monsterName", "_animation", "BuffContainer", "_selectRect", "_mainControl", "IntentRichLabel")]
 custom_minimum_size = Vector2(300, 448)
 layout_mode = 3
 anchors_preset = 0
 offset_right = 300.0
 offset_bottom = 448.0
 script = ExtResource("1_w664j")
-hpProgress = NodePath("PanelContainer/Control/RoleHealthBar")
-mpProgress = NodePath("PanelContainer/Control/RoleMagicBar")
-hpLabel = NodePath("PanelContainer/Control/RoleHealthBar/RoleHealth")
-mpLabel = NodePath("PanelContainer/Control/RoleMagicBar/RoleMagic")
-PBProgress = NodePath("PanelContainer/Control/PBlockProg")
-MBProgress = NodePath("PanelContainer/Control/MBlockProg")
-PBLabel = NodePath("PanelContainer/Control/PBlockProg/PBlockTxt")
-MBLabel = NodePath("PanelContainer/Control/MBlockProg/MBlockTxt")
-hitFlashAnimationPlayer = NodePath("PanelContainer/Control/AnimationPlayer")
-monsterName = NodePath("PanelContainer/Control/MonsterName")
-animation = NodePath("PanelContainer/Control/Animation")
-buffContainer = NodePath("PanelContainer/Control/ScrollContainer/BuffContainer")
-SelectRect = NodePath("PanelContainer/Control/ColorRect")
-mainControl = NodePath("PanelContainer/Control")
+_hpProgress = NodePath("PanelContainer/Control/RoleHealthBar")
+_mpProgress = NodePath("PanelContainer/Control/RoleMagicBar")
+_hpLabel = NodePath("PanelContainer/Control/RoleHealthBar/RoleHealth")
+_mpLabel = NodePath("PanelContainer/Control/RoleMagicBar/RoleMagic")
+_pbProgress = NodePath("PanelContainer/Control/PBlockProg")
+_mbProgress = NodePath("PanelContainer/Control/MBlockProg")
+_pbLabel = NodePath("PanelContainer/Control/PBlockProg/PBlockTxt")
+_mbLabel = NodePath("PanelContainer/Control/MBlockProg/MBlockTxt")
+HitFlashAnimationPlayer = NodePath("PanelContainer/Control/AnimationPlayer")
+_monsterName = NodePath("PanelContainer/Control/MonsterName")
+_animation = NodePath("PanelContainer/Control/Animation")
+BuffContainer = NodePath("PanelContainer/Control/ScrollContainer/BuffContainer")
+_selectRect = NodePath("PanelContainer/Control/ColorRect")
+_mainControl = NodePath("PanelContainer/Control")
 IntentRichLabel = NodePath("PanelContainer/Control/IntentRichLabel")
 
 [node name="PanelContainer" type="PanelContainer" parent="."]
@@ -91,7 +91,7 @@ autoplay = "default"
 
 [node name="MonsterName" type="RichTextLabel" parent="PanelContainer/Control"]
 unique_name_in_owner = true
-layout_mode = 2
+layout_mode = 0
 offset_right = 300.0
 offset_bottom = 64.0
 bbcode_enabled = true
@@ -137,7 +137,7 @@ text = "[center][color=#28ff00][font_size=36]999/999[/font_size][/color][/center
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="PanelContainer/Control"]
 libraries = {
-"": SubResource("AnimationLibrary_pmhtp")
+&"": SubResource("AnimationLibrary_pmhtp")
 }
 
 [node name="PBlockProg" type="ProgressBar" parent="PanelContainer/Control"]

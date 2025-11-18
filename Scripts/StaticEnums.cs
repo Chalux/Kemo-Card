@@ -106,6 +106,7 @@ namespace KemoCard.Scripts
             BothWeapon = 10,
         }
 
+        [Flags]
         public enum EffectTriggerTiming
         {
             None = 0,

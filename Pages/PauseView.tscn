@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://csdscgrncpdup" path="res://Pages/PauseView.cs" id="1_uccy1"]
 
-[node name="PauseView" type="Control" node_paths=PackedStringArray("Quit", "Back")]
+[node name="PauseView" type="Control" node_paths=PackedStringArray("_quit", "_back")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -10,8 +10,8 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_uccy1")
-Quit = NodePath("Quit")
-Back = NodePath("Back")
+_quit = NodePath("Quit")
+_back = NodePath("Back")
 
 [node name="ColorRect" type="ColorRect" parent="."]
 modulate = Color(0, 0, 0, 0.196078)

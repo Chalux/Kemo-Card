@@ -1,9 +1,10 @@
-﻿using Godot;
-using KemoCard.Scripts.Buffs;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json.Serialization;
+using Godot;
+using KemoCard.Pages;
+using KemoCard.Scripts.Buffs;
 using static KemoCard.Scripts.StaticEnums;
 
 namespace KemoCard.Scripts
@@ -59,9 +60,9 @@ namespace KemoCard.Scripts
             }
         }
 
-        public bool CustomBuffCountCalculate { get; set; } = false;
+        private bool CustomBuffCountCalculate { get; set; } = false;
         private double _buffValue;
-        [JsonIgnore] public object Creator { get; set; } = null;
+        [JsonIgnore] public object Creator { get; set; }
         public string CreatorId { get; set; } = "";
 
         public double BuffValue
@@ -78,7 +79,7 @@ namespace KemoCard.Scripts
         public bool IsInfinite { get; set; }
         public bool IsDebuff { get; set; }
         public HashSet<string> tags = [];
-        public EffectTriggerTiming CountTriTiming { get; set; } = EffectTriggerTiming.OnTurnEnd;
+        private EffectTriggerTiming CountTriTiming { get; set; } = EffectTriggerTiming.OnTurnEnd;
         [JsonIgnore] public object Binder;
         [JsonIgnore] public BuffObject BuffObj;
         public string BuffShowname { get; set; } = "未命名";
@@ -103,13 +104,13 @@ namespace KemoCard.Scripts
                 list.Clear();
             }
 
-            if (Binder is BaseRole br) br?.Buffs.Remove(this);
+            if (Binder is BaseRole br) br.Buffs.Remove(this);
             Binder = null;
-            if (BuffObj != null) BuffObj.data = null;
+            if (BuffObj != null) BuffObj.Data = null;
             BuffObj = null;
         }
 
-        public void CheckCountNeedMinus(params object[] datas)
+        private void CheckCountNeedMinus(params object[] datas)
         {
             if (CustomBuffCountCalculate || !(datas is { Length: > 0 } &&
                                               datas[0] is EffectTriggerTiming timing && (timing & CountTriTiming) > 0))
@@ -124,7 +125,7 @@ namespace KemoCard.Scripts
             }
         }
 
-        public void RemoveThisFromBinder()
+        private void RemoveThisFromBinder()
         {
             var tempBinder = Binder;
             switch (Binder)
@@ -138,10 +139,10 @@ namespace KemoCard.Scripts
                     ifp.InFightBuffs.Remove(this);
                     if (ifp.RoleObject != null)
                     {
-                        foreach (var i in ifp.RoleObject?.buffContainer?.GetChildren()?.Cast<BuffObject>() ?? [])
+                        foreach (var i in ifp.RoleObject?.BuffContainer?.GetChildren()?.Cast<BuffObject>() ?? [])
                         {
-                            if (i?.data != this) continue;
-                            i.data = null;
+                            if (i?.Data != this) continue;
+                            i.Data = null;
                             Binder = null;
                             i.QueueFree();
                             break;
@@ -155,10 +156,10 @@ namespace KemoCard.Scripts
                     em.InFightBuffs.Remove(this);
                     if (em.RoleObject != null)
                     {
-                        foreach (var i in em?.RoleObject?.buffContainer?.GetChildren().Cast<BuffObject>() ?? [])
+                        foreach (var i in em.RoleObject?.BuffContainer?.GetChildren().Cast<BuffObject>() ?? [])
                         {
-                            if (i?.data != this) continue;
-                            i.data = null;
+                            if (i?.Data != this) continue;
+                            i.Data = null;
                             Binder = null;
                             i.QueueFree();
                             break;

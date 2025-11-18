@@ -1,24 +1,23 @@
 ﻿using Godot;
+using KemoCard.Pages;
 using static KemoCard.Scripts.StaticEnums;
 
 namespace KemoCard.Scripts.Cards
 {
     public partial class CardState : Control
     {
-        [Export] public CardStateEnum state = CardStateEnum.Base;
+        [Export] public CardStateEnum State = CardStateEnum.Base;
 
         //[Signal] public delegate void TransitionRequestEventHandler(CardState from, State to);
 
-        public CardObject cardObject;
+        public CardObject CardObject;
 
         public virtual void Enter()
         {
-
         }
 
         public virtual void Exit()
         {
-
         }
 
         public virtual void OnInput(InputEvent @event)
@@ -31,22 +30,18 @@ namespace KemoCard.Scripts.Cards
 
         public virtual void OnMouseEnter()
         {
-
         }
 
         public virtual void OnMouseExit()
         {
-
         }
 
         public virtual void Process(double delta)
         {
-
         }
 
         public virtual void ReceiveEvent(string @event, params object[] datas)
         {
-
         }
     }
 }

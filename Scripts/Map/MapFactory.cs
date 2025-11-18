@@ -44,7 +44,6 @@ public static class MapFactory
         else
         {
             GD.PrintErr($"试图注册非地图类:{type.Name}");
-            return;
         }
     }
 }

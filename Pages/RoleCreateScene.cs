@@ -2,20 +2,22 @@ using Godot;
 using KemoCard.Scripts;
 using KemoCard.Scripts.Cards;
 
+// ReSharper disable InconsistentNaming
+
 namespace KemoCard.Pages;
 
 public partial class RoleCreateScene : BaseScene
 {
     // Called when the node enters the scene tree for the first time.
-    public int CurrentPoint = 2;
-    public int SpeedPoint = 5;
-    public int StrengthPoint = 5;
-    public int EfficiencyPoint = 5;
-    public int MantraPoint = 5;
-    public int CraftEquipPoint = 5;
-    public int CraftBookPoint = 5;
-    public int CriticalPoint = 5;
-    public int DodgePoint = 5;
+    private int CurrentPoint = 2;
+    private int SpeedPoint = 5;
+    private int StrengthPoint = 5;
+    private int EfficiencyPoint = 5;
+    private int MantraPoint = 5;
+    private int CraftEquipPoint = 5;
+    private int CraftBookPoint = 5;
+    private int CriticalPoint = 5;
+    private int DodgePoint = 5;
     [Export] private TextEdit NameInput;
     [Export] private Label SpeedTxt;
     [Export] private Label StrengthTxt;
@@ -25,23 +27,23 @@ public partial class RoleCreateScene : BaseScene
     [Export] private Label BookTxt;
     [Export] private Label CriticalTxt;
     [Export] private Label DodgeTxt;
-    [Export] private Godot.Button SpeedMinus;
-    [Export] private Godot.Button StrengthMinus;
-    [Export] private Godot.Button EfficiencyMinus;
-    [Export] private Godot.Button MantraMinus;
-    [Export] private Godot.Button EquipMinus;
-    [Export] private Godot.Button BookMinus;
-    [Export] private Godot.Button CriticalMinus;
-    [Export] private Godot.Button DodgeMinus;
-    [Export] private Godot.Button SpeedPlus;
-    [Export] private Godot.Button StrengthPlus;
-    [Export] private Godot.Button EfficiencyPlus;
-    [Export] private Godot.Button MantraPlus;
-    [Export] private Godot.Button EquipPlus;
-    [Export] private Godot.Button BookPlus;
-    [Export] private Godot.Button CriticalPlus;
-    [Export] private Godot.Button DodgePlus;
-    [Export] private Godot.Button ConfirmBtn;
+    [Export] private Button SpeedMinus;
+    [Export] private Button StrengthMinus;
+    [Export] private Button EfficiencyMinus;
+    [Export] private Button MantraMinus;
+    [Export] private Button EquipMinus;
+    [Export] private Button BookMinus;
+    [Export] private Button CriticalMinus;
+    [Export] private Button DodgeMinus;
+    [Export] private Button SpeedPlus;
+    [Export] private Button StrengthPlus;
+    [Export] private Button EfficiencyPlus;
+    [Export] private Button MantraPlus;
+    [Export] private Button EquipPlus;
+    [Export] private Button BookPlus;
+    [Export] private Button CriticalPlus;
+    [Export] private Button DodgePlus;
+    [Export] private Button ConfirmBtn;
     [Export] private Label RemainPoint;
     [Export] private TextEdit PresetRoleInput;
 
@@ -93,14 +95,14 @@ public partial class RoleCreateScene : BaseScene
         UpdateView();
     }
 
-    private void TryMinusProperty(string protertyName)
+    private void TryMinusProperty(string propertyName)
     {
-        var v = Get(protertyName);
+        var v = Get(propertyName);
         if (v.Obj != null)
         {
             if (((long)v) > 0)
             {
-                Set(protertyName, ((long)v) - 1);
+                Set(propertyName, ((long)v) - 1);
                 CurrentPoint++;
             }
         }
@@ -126,7 +128,7 @@ public partial class RoleCreateScene : BaseScene
 
                 var node =
                     (MainScene)ResourceLoader.Load<PackedScene>("res://Pages/MainScene.tscn").Instantiate();
-                StaticInstance.WindowMgr.ChangeScene(node, scene => { StaticInstance.MainRoot.CanPause = true; });
+                StaticInstance.WindowMgr.ChangeScene(node, _ => { StaticInstance.MainRoot.CanPause = true; });
             });
         }
         else
@@ -154,24 +156,24 @@ public partial class RoleCreateScene : BaseScene
             Name = NameInput.Text == "" ? "Able" : NameInput.Text,
         };
 
-        var majorrole = new PlayerRole(player.OriginSpeed, player.OriginStrength, player.OriginEffeciency,
+        var majorRole = new PlayerRole(player.OriginSpeed, player.OriginStrength, player.OriginEffeciency,
             player.OriginMantra, player.OriginCraftEquip, player.OriginCraftBook, player.OriginCritical,
             player.OriginDodge, player.Name)
         {
             Id = "major"
         };
-        majorrole.AddCardIntoDeck(new Card("infinite"));
-        majorrole.AddCardIntoDeck(new Card("infinite"));
-        StaticUtils.CreateBuffAndAddToRole("get_lucky", majorrole, majorrole);
-        StaticUtils.CreateEquipAndPutOn("base_attack", majorrole);
-        StaticUtils.CreateEquipAndPutOn("base_attack", majorrole);
-        StaticUtils.CreateEquipAndPutOn("base_defense", majorrole);
-        StaticUtils.CreateEquipAndPutOn("base_defense", majorrole);
-        majorrole.ActionPoint = 3;
+        majorRole.AddCardIntoDeck(new Card("infinite"));
+        majorRole.AddCardIntoDeck(new Card("infinite"));
+        StaticUtils.CreateBuffAndAddToRole("get_lucky", majorRole, majorRole);
+        StaticUtils.CreateEquipAndPutOn("base_attack", majorRole);
+        StaticUtils.CreateEquipAndPutOn("base_attack", majorRole);
+        StaticUtils.CreateEquipAndPutOn("base_defense", majorRole);
+        StaticUtils.CreateEquipAndPutOn("base_defense", majorRole);
+        majorRole.ActionPoint = 3;
 
-        StaticInstance.PlayerData.Gsd.MajorRole = majorrole;
+        StaticInstance.PlayerData.Gsd.MajorRole = majorRole;
 
         var node = (MainScene)ResourceLoader.Load<PackedScene>("res://Pages/MainScene.tscn").Instantiate();
-        StaticInstance.WindowMgr.ChangeScene(node, scene => { StaticInstance.MainRoot.CanPause = true; });
+        StaticInstance.WindowMgr.ChangeScene(node, _ => { StaticInstance.MainRoot.CanPause = true; });
     }
 }

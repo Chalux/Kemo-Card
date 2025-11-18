@@ -1,9 +1,9 @@
-﻿using Godot;
-using Godot.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text.Json;
+using Godot;
+using Godot.Collections;
 
 namespace KemoCard.Scripts
 {

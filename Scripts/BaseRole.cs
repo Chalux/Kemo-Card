@@ -360,11 +360,11 @@ namespace KemoCard.Scripts
 
         public string RichMantra() => $"[color={StaticInstance.MagicColor}]{CurrMantra}[/color]";
 
-        public string RichKnowledge() => $"[color={StaticInstance.KnowlegdeColor}]{Knowlegde}[/color]";
+        public string RichKnowledge() => $"[color={StaticInstance.KnowledgeColor}]{Knowlegde}[/color]";
 
-        public string RichCraftEquip() => $"[color={StaticInstance.KnowlegdeColor}]{CurrCraftEquip}[/color]";
+        public string RichCraftEquip() => $"[color={StaticInstance.KnowledgeColor}]{CurrCraftEquip}[/color]";
 
-        public string RichCraftBook() => $"[color={StaticInstance.KnowlegdeColor}]{CurrCraftBook}[/color]";
+        public string RichCraftBook() => $"[color={StaticInstance.KnowledgeColor}]{CurrCraftBook}[/color]";
 
         public string RichTechnique() => $"[color={StaticInstance.TechniqueColor}]{Technique}[/color]";
 

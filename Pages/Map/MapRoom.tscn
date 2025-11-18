@@ -1,6 +1,6 @@
 [gd_scene load_steps=6 format=3 uid="uid://bwmrhonaeverm"]
 
-[ext_resource type="Script" path="res://Pages/Map/MapRoom.cs" id="1_d7odx"]
+[ext_resource type="Script" uid="uid://m5iit7bwvx5m" path="res://Pages/Map/MapRoom.cs" id="1_d7odx"]
 
 [sub_resource type="Animation" id="Animation_abfdf"]
 length = 0.001
@@ -65,12 +65,12 @@ tracks/1/keys = {
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_bmxfp"]
 _data = {
-"RESET": SubResource("Animation_abfdf"),
-"highlight": SubResource("Animation_ihinl"),
-"select": SubResource("Animation_ijktm")
+&"RESET": SubResource("Animation_abfdf"),
+&"highlight": SubResource("Animation_ihinl"),
+&"select": SubResource("Animation_ijktm")
 }
 
-[node name="MapRoom" type="Control" node_paths=PackedStringArray("Sprite", "Line", "Animation")]
+[node name="MapRoom" type="Control" node_paths=PackedStringArray("_sprite", "_line", "_animation")]
 custom_minimum_size = Vector2(32, 32)
 layout_mode = 3
 anchors_preset = 0
@@ -79,9 +79,9 @@ offset_bottom = 32.0
 scale = Vector2(2, 2)
 pivot_offset = Vector2(32, 32)
 script = ExtResource("1_d7odx")
-Sprite = NodePath("Visual/Sprite2D")
-Line = NodePath("Visual/Line2D")
-Animation = NodePath("AnimationPlayer")
+_sprite = NodePath("Visual/Sprite2D")
+_line = NodePath("Visual/Line2D")
+_animation = NodePath("AnimationPlayer")
 
 [node name="Visual" type="Node2D" parent="."]
 position = Vector2(16, 16)
@@ -96,5 +96,5 @@ width = 2.0
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 libraries = {
-"": SubResource("AnimationLibrary_bmxfp")
+&"": SubResource("AnimationLibrary_bmxfp")
 }

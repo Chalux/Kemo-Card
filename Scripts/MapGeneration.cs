@@ -1,7 +1,8 @@
-﻿using KemoCard.Scripts.Map;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using KemoCard.Pages;
+using KemoCard.Scripts.Map;
 
 namespace KemoCard.Scripts
 {
@@ -61,7 +62,7 @@ namespace KemoCard.Scripts
             major.FightSymbol.Clear();
             IsStillRunning = true;
             Data.Rules?.Invoke(MapData);
-            var mainScene = (Pages.MainScene)StaticInstance.WindowMgr.GetSceneByName("MainScene");
+            var mainScene = (MainScene)StaticInstance.WindowMgr.GetSceneByName("MainScene");
             //MainScene?.MapView.GenerateNewMap(Data);
             mainScene?.UpdateView();
             mainScene?.MapView.UnlockFloor(0);
@@ -362,7 +363,7 @@ namespace KemoCard.Scripts
                 MapData = [];
             }
 
-            var ms = StaticInstance.WindowMgr.GetSceneByName("MainScene") as Pages.MainScene;
+            var ms = StaticInstance.WindowMgr.GetSceneByName("MainScene") as MainScene;
             ms?.MapView?.HideMap();
             StaticInstance.EventMgr.Dispatch("MapStateChange");
         }
@@ -398,7 +399,7 @@ namespace KemoCard.Scripts
                     select kvp.Key);
                 if (plist.Count == 0)
                 {
-                    StaticInstance.MainRoot.ShowBanner($"找不到任何处于此地图设定范围内的怪物配置，生成地图出错");
+                    StaticInstance.MainRoot.ShowBanner("找不到任何处于此地图设定范围内的怪物配置，生成地图出错");
                     return;
                 }
 

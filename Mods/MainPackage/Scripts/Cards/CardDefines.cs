@@ -125,7 +125,7 @@ internal partial class DoubleHit : BaseCardScript
         {
             if (reason != Pages.BattleScene.DisCardReason.Effect) return;
             if (StaticInstance.CurrWindow is not Pages.BattleScene bs) return;
-            if (!BattleStatic.isFighting) return;
+            if (!BattleStatic.IsFighting) return;
             List<BaseRole> tars = [];
             Random r = new();
             tars.Add(bs.CurrentEnemyRoles[r.Next(bs.CurrentEnemyRoles.Count)]);
@@ -142,7 +142,7 @@ internal partial class FireBall : BaseCardScript
         c.FunctionUse = (user, targets, _) =>
         {
             if (StaticInstance.CurrWindow is not Pages.BattleScene bs) return;
-            if (BattleStatic.isFighting)
+            if (BattleStatic.IsFighting)
             {
                 bs.DealDamage(7, StaticEnums.AttackType.Magic, user, targets, StaticEnums.AttributeEnum.Fire);
             }
@@ -163,7 +163,7 @@ internal partial class GracefulCharity : BaseCardScript
         c.FunctionUse = (user, targets, _) =>
         {
             if (StaticInstance.CurrWindow is not Pages.BattleScene bs) return;
-            if (!BattleStatic.isFighting) return;
+            if (!BattleStatic.IsFighting) return;
             bs.DrawCard(3, (PlayerRole)targets[0]);
             bs.SelectCard(2, 2, null,
                 cards => { bs.DisCard(cards, (PlayerRole)targets[0], Pages.BattleScene.DisCardReason.Effect, user); });
@@ -227,7 +227,7 @@ internal partial class MagDraw : BaseCardScript
         c.FunctionUse = (user, targets, _) =>
         {
             if (StaticInstance.CurrWindow is not Pages.BattleScene bs) return;
-            if (!BattleStatic.isFighting) return;
+            if (!BattleStatic.IsFighting) return;
             if (targets[0] is not EnemyRole er) return;
             var oldHealth = er.CurrHealth;
             bs.DealDamage(3 + user.CurrEffeciency, StaticEnums.AttackType.Magic, user, targets);
@@ -247,7 +247,7 @@ internal partial class MagicMissile : BaseCardScript
         c.FunctionUse = (user, targets, _) =>
         {
             if (StaticInstance.CurrWindow is not Pages.BattleScene bs) return;
-            if (BattleStatic.isFighting)
+            if (BattleStatic.IsFighting)
             {
                 bs.DealDamage(5, StaticEnums.AttackType.Physics, user, targets);
             }
@@ -281,7 +281,7 @@ internal partial class NoAttack : BaseCardScript
         {
             var bs = StaticUtils.TryGetBattleScene();
             if (bs == null) return;
-            if (!BattleStatic.isFighting) return;
+            if (!BattleStatic.IsFighting) return;
             if (user is not PlayerRole pr) return;
             List<Card> cards = [];
             cards.AddRange(pr.InFightHands.Where(card => (card.FilterFlags & (ulong)StaticEnums.CardFlag.Attack) != 0));
@@ -301,7 +301,7 @@ internal partial class NoDefense : BaseCardScript
         c.FunctionUse = (user, targets, _) =>
         {
             if (StaticInstance.CurrWindow is not Pages.BattleScene bs) return;
-            if (!BattleStatic.isFighting) return;
+            if (!BattleStatic.IsFighting) return;
             if (user is not PlayerRole pr) return;
             List<Card> cards = [];
             cards.AddRange(pr.InFightHands.Where(card => (card.FilterFlags & (ulong)StaticEnums.CardFlag.Armor) != 0));
@@ -321,7 +321,7 @@ internal partial class Punch : BaseCardScript
         c.FunctionUse = (user, targets, _) =>
         {
             if (StaticInstance.CurrWindow is not Pages.BattleScene bs) return;
-            if (BattleStatic.isFighting)
+            if (BattleStatic.IsFighting)
             {
                 bs.DealDamage(5, StaticEnums.AttackType.Physics, user, targets);
             }
@@ -337,7 +337,7 @@ internal partial class RockDrill : BaseCardScript
         c.FunctionUse = (user, targets, _) =>
         {
             if (StaticInstance.CurrWindow is not Pages.BattleScene bs) return;
-            if (!BattleStatic.isFighting) return;
+            if (!BattleStatic.IsFighting) return;
             if (targets[0] is EnemyRole { CurrPBlock: > 0 })
             {
                 bs.DealDamage(8, StaticEnums.AttackType.Physics, user, targets,
@@ -391,7 +391,7 @@ internal partial class ShadowShot : BaseCardScript
         c.FunctionUse = (user, targets, _) =>
         {
             if (StaticInstance.CurrWindow is not Pages.BattleScene bs) return;
-            if (BattleStatic.isFighting)
+            if (BattleStatic.IsFighting)
             {
                 bs.DealDamage(3 + user.CurrEffeciency * 2, StaticEnums.AttackType.Magic, user, targets,
                     StaticEnums.AttributeEnum.Dark);
@@ -420,7 +420,7 @@ internal partial class WaterSlash : BaseCardScript
         c.FunctionUse = (user, targets, _) =>
         {
             if (StaticInstance.CurrWindow is not Pages.BattleScene bs) return;
-            if (BattleStatic.isFighting)
+            if (BattleStatic.IsFighting)
             {
                 bs.DealDamage(7, StaticEnums.AttackType.Magic, user, targets, StaticEnums.AttributeEnum.Water);
             }

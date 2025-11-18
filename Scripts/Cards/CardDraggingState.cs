@@ -6,57 +6,65 @@ namespace KemoCard.Scripts.Cards
 {
     public partial class CardDraggingState : CardState
     {
-        private ulong RecordTimeStamp = 0;
+        private ulong _recordTimeStamp;
+
         public override void Enter()
         {
             OnEnter();
-            BattleStatic.currCard = cardObject;
+            BattleStatic.CurrCard = CardObject;
         }
 
-        void OnEnter()
+        private void OnEnter()
         {
             StaticInstance.EventMgr.Dispatch("DraggingCard", true);
-            cardObject.AnimTween.Stop();
-            cardObject.BindRoot(cardObject.GetParent());
+            CardObject.AnimTween.Stop();
+            CardObject.BindRoot(CardObject.GetParent());
             Node uiLayer = StaticInstance.MainRoot;
             if (uiLayer != null)
             {
-                cardObject.Reparent(uiLayer);
+                CardObject.Reparent(uiLayer);
             }
+
             //cardObject.BgRect.Color = Colors.NavyBlue;
-            cardObject.Rotation = 0;
-            cardObject.stateLabel.Text = "DRAGGING";
-            RecordTimeStamp = Time.GetTicksMsec();
-            switch (cardObject.card.TargetType)
+            CardObject.Rotation = 0;
+            CardObject.StateLabel.Text = "DRAGGING";
+            _recordTimeStamp = Time.GetTicksMsec();
+            switch (CardObject.Card.TargetType)
             {
                 case TargetType.EnemySingle:
                 case TargetType.AllSingle:
                 case TargetType.TeamSingle:
-                    StaticInstance.EventMgr.Dispatch("StartSelectTarget", cardObject.card.TargetType);
+                    StaticInstance.EventMgr.Dispatch("StartSelectTarget", CardObject.Card.TargetType);
+                    break;
+                case TargetType.EnemyAll:
+                case TargetType.TeamAll:
+                case TargetType.Self:
+                case TargetType.All:
                     break;
                 default:
                     StaticInstance.EventMgr.Dispatch("EndSelectTarget");
-                    cardObject.csm.OnTransitionRequest(this, CardStateEnum.Base);
-                    BattleStatic.currCard = null;
+                    CardObject.Csm.OnTransitionRequest(this, CardStateEnum.Base);
+                    BattleStatic.CurrCard = null;
                     return;
             }
-            cardObject.BezierControl.Visible = true;
+
+            CardObject.BezierControl.Visible = true;
         }
 
         public override void Exit()
         {
-            cardObject.BezierControl.Visible = false;
+            CardObject.BezierControl.Visible = false;
             base.Exit();
         }
 
         public override void OnInput(InputEvent @event)
         {
-            bool mouseMotion = @event is InputEventMouseMotion;
-            bool cancel = @event.IsActionPressed("right_mouse") || RecordTimeStamp + 200 > Time.GetTicksMsec();
-            bool confirm = (@event.IsActionPressed("left_mouse") || @event.IsActionReleased("left_mouse"));
-            if (confirm && StaticInstance.CurrWindow is Pages.BattleScene bs)
+            var mouseMotion = @event is InputEventMouseMotion;
+            var cancel = @event.IsActionPressed("right_mouse") || _recordTimeStamp + 200 > Time.GetTicksMsec();
+            var confirm = (@event.IsActionPressed("left_mouse") || @event.IsActionReleased("left_mouse"));
+            if (confirm && StaticInstance.CurrWindow is BattleScene bs)
             {
-                var rectA = cardObject.GetGlobalRect();
+                var rectA = CardObject.GetGlobalRect();
                 var rectB = bs.DragDownArea.GetGlobalRect();
                 confirm = rectA.Intersection(rectB).Area > 0f;
             }
@@ -64,22 +72,23 @@ namespace KemoCard.Scripts.Cards
             if (mouseMotion)
             {
                 //cardObject.GlobalPosition = cardObject.GetGlobalMousePosition() - cardObject.PivotOffset;
-                (cardObject.BezierControl as Bezier).Reset(cardObject.GlobalPosition + cardObject.Size / 2, GetGlobalMousePosition());
+                if (CardObject.BezierControl is Bezier bezier)
+                    bezier.Reset(CardObject.GlobalPosition + CardObject.Size / 2, GetGlobalMousePosition());
             }
-            else if (confirm && BattleStatic.isFighting)
+            else if (confirm && BattleStatic.IsFighting)
             {
                 //GD.Print(RecordTimeStamp + 10000 + ":" + Time.GetTicksMsec());
                 GetViewport().SetInputAsHandled();
                 StaticInstance.EventMgr.Dispatch("EndSelectTarget");
-                cardObject.csm.OnTransitionRequest(this, CardStateEnum.Released);
+                CardObject.Csm.OnTransitionRequest(this, CardStateEnum.Released);
             }
             else if (cancel || !confirm)
             {
                 GetViewport().SetInputAsHandled();
                 BattleStatic.Targets.Clear();
                 StaticInstance.EventMgr.Dispatch("EndSelectTarget");
-                cardObject.csm.OnTransitionRequest(this, CardStateEnum.Base);
-                BattleStatic.currCard = null;
+                CardObject.Csm.OnTransitionRequest(this, CardStateEnum.Base);
+                BattleStatic.CurrCard = null;
             }
         }
     }

@@ -16,11 +16,11 @@ public partial class MapView : BaseScene, IEvent
     [Export] private Node2D _rooms;
     [Export] private Node2D _visual;
     [Export] private Camera2D _camera2D;
-    [Export] private Godot.Button _hideBtn;
-    [Export] private Godot.Button _debugBtn;
-    [Export] private Godot.Button _debugBtn2;
-    [Export] private Godot.Button _healBtn;
-    [Export] private Godot.Button _abortBtn;
+    [Export] private Button _hideBtn;
+    [Export] private Button _debugBtn;
+    [Export] private Button _debugBtn2;
+    [Export] private Button _healBtn;
+    [Export] private Button _abortBtn;
     [Export] private Label _healLabel;
 
     private float CameraEdgeY { get; set; }

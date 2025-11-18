@@ -1,71 +1,79 @@
-﻿using Godot;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Godot;
 using static KemoCard.Scripts.StaticEnums;
 
 namespace KemoCard.Scripts.Cards
 {
-    partial class CardReleasedState : CardState
+    internal partial class CardReleasedState : CardState
     {
         public override void Enter()
         {
-            List<BaseRole> roles = new();
+            List<BaseRole> roles = [];
             if (BattleStatic.Targets.Count > 0) roles = BattleStatic.Targets.ToList();
-            bool isCosted = true;
+            var isCosted = true;
             if (BattleStatic.Targets.Count > 0)
             {
-                switch (cardObject.card.CostType)
+                switch (CardObject.Card.CostType)
                 {
                     case CostType.Health:
-                        if (cardObject.card.Owner.CurrHealth > cardObject.card.Cost)
+                        if (CardObject.Card.Owner.CurrHealth > CardObject.Card.Cost)
                         {
-                            cardObject.card.Owner.CurrHealth -= cardObject.card.Cost;
+                            CardObject.Card.Owner.CurrHealth -= CardObject.Card.Cost;
                         }
                         else
                         {
                             StaticInstance.MainRoot.ShowBanner("血量不足以支付卡牌费用");
                             isCosted = false;
                         }
+
                         break;
                     case CostType.Magic:
-                        if (cardObject.card.Owner.CurrMagic > cardObject.card.Cost)
+                        if (CardObject.Card.Owner.CurrMagic > CardObject.Card.Cost)
                         {
-                            cardObject.card.Owner.CurrMagic -= cardObject.card.Cost;
+                            CardObject.Card.Owner.CurrMagic -= CardObject.Card.Cost;
                         }
                         else
                         {
                             StaticInstance.MainRoot.ShowBanner("魔力不足以支付卡牌费用");
                             isCosted = false;
                         }
+
                         break;
                     case CostType.ActionPoint:
-                        var owner = cardObject.card.Owner as PlayerRole;
-                        if (owner != null && owner.CurrentActionPoint >= cardObject.card.Cost)
+                        if (CardObject.Card.Owner is PlayerRole owner &&
+                            owner.CurrentActionPoint >= CardObject.Card.Cost)
                         {
-                            owner.CurrentActionPoint -= cardObject.card.Cost;
+                            owner.CurrentActionPoint -= CardObject.Card.Cost;
                         }
                         else
                         {
                             StaticInstance.MainRoot.ShowBanner("行动力不足以支付卡牌费用");
                             isCosted = false;
                         }
+
                         break;
+                    default:
+                        throw new ArgumentOutOfRangeException();
                 }
             }
-            bool flag = true;
-            if (cardObject.card.UseFilter != null) flag = cardObject.card.UseFilter.Invoke(cardObject.card?.Owner, roles, null);
+
+            var flag = true;
+            if (CardObject.Card.UseFilter != null)
+                flag = CardObject.Card.UseFilter.Invoke(CardObject.Card?.Owner, roles, null);
             if (isCosted && BattleStatic.Targets.Count > 0 && flag)
             {
-                cardObject.card.FunctionUse?.Invoke(cardObject.card.Owner, roles, new[] { cardObject.card });
-                BattleStatic.AddUsedCard(cardObject.card);
-                GD.Print($"卡牌C{cardObject.card.Id}已使用");
-                BattleStatic.currCard = null;
+                CardObject.Card?.FunctionUse?.Invoke(CardObject.Card.Owner, roles, [CardObject.Card]);
+                BattleStatic.AddUsedCard(CardObject.Card);
+                GD.Print($"卡牌C{CardObject.Card?.Id}已使用");
+                BattleStatic.CurrCard = null;
                 BattleStatic.Targets.Clear();
-                if (cardObject.card.Owner is PlayerRole ifp)
+                if (CardObject.Card?.Owner is PlayerRole ifp)
                 {
-                    if (!cardObject.card.CheckHasSymbol("Exhaust"))
+                    if (!CardObject.Card.CheckHasSymbol("Exhaust"))
                     {
-                        ifp.AddCardToGrave(cardObject.card);
+                        ifp.AddCardToGrave(CardObject.Card);
                         //if (StaticInstance.currWindow is BattleScene bs)
                         //{
                         //    Vector2 startPos = cardObject.Position;
@@ -84,33 +92,37 @@ namespace KemoCard.Scripts.Cards
                         //{
                         //    cardObject.QueueFree();
                         //}
-                        cardObject.QueueFree();
+                        CardObject.QueueFree();
                     }
                     else
                     {
-                        cardObject.SVContainer.UseParentMaterial = true;
-                        cardObject.ShowHint = false;
+                        CardObject.SvContainer.UseParentMaterial = true;
+                        CardObject.ShowHint = false;
                         var tween = CreateTween();
-                        tween.TweenProperty((cardObject.Material as ShaderMaterial), "shader_parameter/dissolve_value", 0, 1f);
-                        tween.TweenCallback(Callable.From(cardObject.QueueFree));
+                        tween.TweenProperty((CardObject.Material as ShaderMaterial), "shader_parameter/dissolve_value",
+                            0, 1f);
+                        tween.TweenCallback(Callable.From(CardObject.QueueFree));
                         tween.Play();
                     }
-                    ifp.InFightHands.Remove(cardObject.card);
+
+                    ifp.InFightHands.Remove(CardObject.Card);
                 }
-                cardObject.GetTree().CreateTimer(0.1f).Timeout += new(() =>
+
+                CardObject.GetTree().CreateTimer(0.1f).Timeout += () =>
                 {
                     StaticInstance.EventMgr.Dispatch("RepositionHand");
                     StaticInstance.EventMgr.Dispatch("DraggingCard");
-                });
+                };
             }
             else
             {
                 GetViewport().SetInputAsHandled();
                 BattleStatic.Targets.Clear();
                 StaticInstance.EventMgr.Dispatch("EndSelectTarget");
-                cardObject.csm.OnTransitionRequest(this, CardStateEnum.Base);
-                BattleStatic.currCard = null;
+                CardObject.Csm.OnTransitionRequest(this, CardStateEnum.Base);
+                BattleStatic.CurrCard = null;
             }
+
             BattleStatic.Targets.Clear();
         }
     }

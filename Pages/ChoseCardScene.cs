@@ -9,8 +9,8 @@ namespace KemoCard.Pages;
 
 public partial class ChoseCardScene : BaseScene, IEvent
 {
-    [Export] HBoxContainer hBox;
-    [Export] Godot.Button confirmBtn;
+    [Export] private HBoxContainer _hBox;
+    [Export] private Button _confirmBtn;
     private int _min = 1;
     private int _max = 1;
 
@@ -19,37 +19,37 @@ public partial class ChoseCardScene : BaseScene, IEvent
         BattleStatic.StartSelect();
         foreach (var c in (List<Card>)datas[0])
         {
-            var cardobj = ResourceLoader.Load<PackedScene>("res://Pages/CardObject.tscn");
-            if (cardobj == null) continue;
+            var cardObj = ResourceLoader.Load<PackedScene>("res://Pages/CardObject.tscn");
+            if (cardObj == null) continue;
             //var obj = new CardObject();
-            var obj = cardobj.Instantiate<CardObject>();
+            var obj = cardObj.Instantiate<CardObject>();
             obj.InitData(c);
-            hBox?.AddChild(obj);
+            _hBox?.AddChild(obj);
         }
 
         _min = (int)datas[1];
         _max = (int)datas[2];
-        confirmBtn.Pressed += Confirm;
+        _confirmBtn.Pressed += Confirm;
     }
 
     public void ReceiveEvent(string @event, params object[] datas)
     {
         if (@event != "SelectCard") return;
-        var nowCount = hBox?.GetChildren()?.Cast<CardObject>()
-            .Count(obj => obj.csm.currentState.state == CardStateEnum.Discarding);
-        confirmBtn.Disabled = nowCount < _min || nowCount > _max;
+        var nowCount = _hBox?.GetChildren()?.Cast<CardObject>()
+            .Count(obj => obj.Csm.CurrentState.State == CardStateEnum.Discarding);
+        _confirmBtn.Disabled = nowCount < _min || nowCount > _max;
     }
 
     private void Confirm()
     {
         List<Card> cards = [];
-        cards.AddRange(from obj in hBox?.GetChildren()?.Cast<CardObject>()
-            where obj.csm.currentState.state == CardStateEnum.Discarding
-            select obj.card);
+        cards.AddRange(from obj in _hBox?.GetChildren()?.Cast<CardObject>()
+            where obj.Csm.CurrentState.State == CardStateEnum.Discarding
+            select obj.Card);
 
         if (cards.Count < _min || cards.Count > _max) return;
         BattleStatic.EndSelect();
-        if (BattleStatic.isFighting)
+        if (BattleStatic.IsFighting)
         {
             if (StaticInstance.WindowMgr.GetSceneByName("BattleScene") is BattleScene bs)
             {

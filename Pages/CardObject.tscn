@@ -1,20 +1,20 @@
 [gd_scene load_steps=28 format=3 uid="uid://w7e40lauidt0"]
 
-[ext_resource type="Shader" path="res://Resources/burn_shader.gdshader" id="1_8ochk"]
-[ext_resource type="Script" path="res://Pages/CardObject.cs" id="1_bld5k"]
-[ext_resource type="Shader" path="res://Resources/fake3d.gdshader" id="2_03cat"]
-[ext_resource type="Script" path="res://Pages/Bezier.cs" id="2_13l5h"]
-[ext_resource type="Script" path="res://Scripts/Cards/CardStateMachine.cs" id="2_ugu8i"]
-[ext_resource type="Script" path="res://Scripts/Cards/CardBaseState.cs" id="3_kyomr"]
+[ext_resource type="Shader" uid="uid://bxdawormwjyst" path="res://Resources/burn_shader.gdshader" id="1_8ochk"]
+[ext_resource type="Script" uid="uid://k4v0udrobod8" path="res://Pages/CardObject.cs" id="1_bld5k"]
+[ext_resource type="Shader" uid="uid://bl753ihbpq1tq" path="res://Resources/fake3d.gdshader" id="2_03cat"]
+[ext_resource type="Script" uid="uid://drmikumvfpk6r" path="res://Pages/Bezier.cs" id="2_13l5h"]
+[ext_resource type="Script" uid="uid://cq8o0x5yex1hg" path="res://Scripts/Cards/CardStateMachine.cs" id="2_ugu8i"]
+[ext_resource type="Script" uid="uid://crd2dtkh5gdxg" path="res://Scripts/Cards/CardBaseState.cs" id="3_kyomr"]
 [ext_resource type="Texture2D" uid="uid://byn85mmoj86ck" path="res://Resources/Cursor/104.png" id="3_wi0nh"]
 [ext_resource type="Texture2D" uid="uid://lhm0o7fr7df3" path="res://Resources/Cursor/75.png" id="4_7smcf"]
-[ext_resource type="Shader" path="res://Pages/CardFrame.gdshader" id="4_kdjdm"]
-[ext_resource type="Script" path="res://Scripts/Cards/CardClickedState.cs" id="4_wim2r"]
-[ext_resource type="Script" path="res://Scripts/Cards/CardDraggingState.cs" id="5_ff1ko"]
+[ext_resource type="Shader" uid="uid://bxu8n3de65e0p" path="res://Pages/CardFrame.gdshader" id="4_kdjdm"]
+[ext_resource type="Script" uid="uid://be3qqxonix6wy" path="res://Scripts/Cards/CardClickedState.cs" id="4_wim2r"]
+[ext_resource type="Script" uid="uid://bfqku7mttvkiv" path="res://Scripts/Cards/CardDraggingState.cs" id="5_ff1ko"]
 [ext_resource type="Material" uid="uid://btgvdfeaqsxas" path="res://Resources/EffectFrameMaterial.tres" id="5_q2jmy"]
-[ext_resource type="Script" path="res://Scripts/Cards/CardReleasedState.cs" id="6_iatr0"]
-[ext_resource type="Script" path="res://Scripts/Cards/CardAllState.cs" id="8_m444i"]
-[ext_resource type="Script" path="res://Scripts/Cards/CardDiscardingState.cs" id="15_dok7q"]
+[ext_resource type="Script" uid="uid://d17orsdtpuk4k" path="res://Scripts/Cards/CardReleasedState.cs" id="6_iatr0"]
+[ext_resource type="Script" uid="uid://bn86s4bryyjpx" path="res://Scripts/Cards/CardAllState.cs" id="8_m444i"]
+[ext_resource type="Script" uid="uid://cmtlrmmt1u2t0" path="res://Scripts/Cards/CardDiscardingState.cs" id="15_dok7q"]
 
 [sub_resource type="Gradient" id="Gradient_mcxnm"]
 
@@ -22,16 +22,16 @@
 frequency = 0.001
 
 [sub_resource type="NoiseTexture2D" id="NoiseTexture2D_ocyq7"]
-color_ramp = SubResource("Gradient_mcxnm")
 noise = SubResource("FastNoiseLite_wjo5k")
+color_ramp = SubResource("Gradient_mcxnm")
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_proen"]
 resource_local_to_scene = true
 shader = ExtResource("1_8ochk")
+shader_parameter/dissolve_texture = SubResource("NoiseTexture2D_ocyq7")
 shader_parameter/dissolve_value = 1.0
 shader_parameter/burn_size = 0.14
 shader_parameter/burn_color = Color(0.831373, 0.137255, 0, 1)
-shader_parameter/dissolve_texture = SubResource("NoiseTexture2D_ocyq7")
 
 [sub_resource type="Gradient" id="Gradient_5i4y7"]
 
@@ -39,8 +39,8 @@ shader_parameter/dissolve_texture = SubResource("NoiseTexture2D_ocyq7")
 frequency = 0.0016
 
 [sub_resource type="NoiseTexture2D" id="NoiseTexture2D_hp427"]
-color_ramp = SubResource("Gradient_5i4y7")
 noise = SubResource("FastNoiseLite_kogeu")
+color_ramp = SubResource("Gradient_5i4y7")
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_on47y"]
 resource_local_to_scene = true
@@ -50,10 +50,10 @@ shader_parameter/cull_back = true
 shader_parameter/y_rot = 0.0
 shader_parameter/x_rot = 0.0
 shader_parameter/inset = 0.0
+shader_parameter/dissolve_texture = SubResource("NoiseTexture2D_hp427")
 shader_parameter/dissolve_value = 1.0
 shader_parameter/burn_size = 0.2
 shader_parameter/burn_color = Color(0.922391, 0.121125, 0, 1)
-shader_parameter/dissolve_texture = SubResource("NoiseTexture2D_hp427")
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_auwai"]
 resource_local_to_scene = true
@@ -74,7 +74,7 @@ width = 256
 height = 320
 noise = SubResource("FastNoiseLite_sk25p")
 
-[node name="CardObject" type="Control" node_paths=PackedStringArray("cardName", "cardDesc", "cardCost", "BgRect", "costBg", "dropPointDetector", "stateLabel", "csm", "BezierControl", "SVContainer", "FrameRect", "EFRect")]
+[node name="CardObject" type="Control" node_paths=PackedStringArray("CardName", "CardDesc", "CardCost", "BgRect", "CostBg", "DropPointDetector", "StateLabel", "Csm", "BezierControl", "SvContainer", "FrameRect", "EfRect")]
 material = SubResource("ShaderMaterial_proen")
 custom_minimum_size = Vector2(256, 320)
 layout_mode = 3
@@ -84,18 +84,18 @@ offset_bottom = 320.0
 pivot_offset = Vector2(128, 320)
 mouse_default_cursor_shape = 7
 script = ExtResource("1_bld5k")
-cardName = NodePath("Container/SubViewportContainer/SubViewport/CardName")
-cardDesc = NodePath("Container/SubViewportContainer/SubViewport/CardDesc")
-cardCost = NodePath("Container/SubViewportContainer/SubViewport/CostBg/CardCost")
+CardName = NodePath("Container/SubViewportContainer/SubViewport/CardName")
+CardDesc = NodePath("Container/SubViewportContainer/SubViewport/CardDesc")
+CardCost = NodePath("Container/SubViewportContainer/SubViewport/CostBg/CardCost")
 BgRect = NodePath("Container/SubViewportContainer/SubViewport/BgRect")
-costBg = NodePath("Container/SubViewportContainer/SubViewport/CostBg")
-dropPointDetector = NodePath("Container/SubViewportContainer/SubViewport/Area2D")
-stateLabel = NodePath("Container/SubViewportContainer/SubViewport/Label")
-csm = NodePath("CardStateMachine")
+CostBg = NodePath("Container/SubViewportContainer/SubViewport/CostBg")
+DropPointDetector = NodePath("Container/SubViewportContainer/SubViewport/Area2D")
+StateLabel = NodePath("Container/SubViewportContainer/SubViewport/Label")
+Csm = NodePath("CardStateMachine")
 BezierControl = NodePath("Bezier")
-SVContainer = NodePath("Container/SubViewportContainer")
+SvContainer = NodePath("Container/SubViewportContainer")
 FrameRect = NodePath("Container/SubViewportContainer/SubViewport/FrameRect")
-EFRect = NodePath("Container/SubViewportContainer/SubViewport/EFRect")
+EfRect = NodePath("Container/SubViewportContainer/SubViewport/EFRect")
 AngleXMax = 0.08
 AngleYMax = 0.08
 
@@ -203,20 +203,19 @@ texture = SubResource("NoiseTexture2D_fwgws")
 
 [node name="Bezier" type="Control" parent="."]
 visible = false
-layout_mode = 3
 anchors_preset = 0
 offset_right = 256.0
 offset_bottom = 320.0
 mouse_filter = 2
 script = ExtResource("2_13l5h")
-t_arrow_head = ExtResource("3_wi0nh")
-t_arrow_body = ExtResource("4_7smcf")
+_tArrowHead = ExtResource("3_wi0nh")
+_tArrowBody = ExtResource("4_7smcf")
 
-[node name="CardStateMachine" type="Control" parent="." node_paths=PackedStringArray("initialState")]
+[node name="CardStateMachine" type="Control" parent="." node_paths=PackedStringArray("InitialState")]
 visible = false
 anchors_preset = 0
 script = ExtResource("2_ugu8i")
-initialState = NodePath("CardBaseState")
+InitialState = NodePath("CardBaseState")
 
 [node name="CardBaseState" type="Control" parent="CardStateMachine"]
 anchors_preset = 0
@@ -229,32 +228,32 @@ anchors_preset = 0
 offset_right = 40.0
 offset_bottom = 40.0
 script = ExtResource("4_wim2r")
-state = 1
+State = 1
 
 [node name="CardDraggingState" type="Control" parent="CardStateMachine"]
 anchors_preset = 0
 offset_right = 40.0
 offset_bottom = 40.0
 script = ExtResource("5_ff1ko")
-state = 3
+State = 3
 
 [node name="CardReleasedState" type="Control" parent="CardStateMachine"]
 anchors_preset = 0
 offset_right = 40.0
 offset_bottom = 40.0
 script = ExtResource("6_iatr0")
-state = 5
+State = 5
 
 [node name="CardAllState" type="Control" parent="CardStateMachine"]
 anchors_preset = 0
 offset_right = 40.0
 offset_bottom = 40.0
 script = ExtResource("8_m444i")
-state = 2
+State = 2
 
 [node name="CardDiscardingState" type="Control" parent="CardStateMachine"]
 anchors_preset = 0
 offset_right = 40.0
 offset_bottom = 40.0
 script = ExtResource("15_dok7q")
-state = 6
+State = 6

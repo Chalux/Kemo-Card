@@ -61,7 +61,7 @@ namespace KemoCard.Scripts
         {
             if (Binder is { RoleObject: not null })
                 Binder.RoleObject.IntentRichLabel.Text = StaticUtils.MakeBBCodeString(intent);
-            this.Intent = intent;
+            Intent = intent;
         }
     }
 }

@@ -2,13 +2,15 @@ using Godot;
 using KemoCard.Scripts;
 using KemoCard.Scripts.Map;
 
+namespace KemoCard.Pages.Map;
+
 public partial class MapBtn : Control
 {
     private MapData _mapData;
-    [Export] Godot.Button CreateBtn;
-    [Export] Label ShowNameLab;
-    [Export] Label TierRangeLab;
-    [Export] Label MapSizeLab;
+    [Export] private Button _createBtn;
+    [Export] private Label _showNameLab;
+    [Export] private Label _tierRangeLab;
+    [Export] private Label _mapSizeLab;
 
     public MapData MapData
     {
@@ -16,30 +18,29 @@ public partial class MapBtn : Control
         set
         {
             _mapData = value;
-            ShowNameLab.Text = value.ShowName;
-            TierRangeLab.Text = $"{value.MinTier}~{value.MaxTier}";
-            MapSizeLab.Text = $"{value.Floors}x{value.MapWidth}";
+            _showNameLab.Text = value.ShowName;
+            _tierRangeLab.Text = $"{value.MinTier}~{value.MaxTier}";
+            _mapSizeLab.Text = $"{value.Floors}x{value.MapWidth}";
         }
     }
 
     public override void _Ready()
     {
-        CreateBtn.Pressed += new(() =>
+        _createBtn.Pressed += () =>
         {
-            if (_mapData != null && !StaticInstance.PlayerData.Gsd.MapGenerator.IsStillRunning)
+            if (_mapData == null || StaticInstance.PlayerData.Gsd.MapGenerator.IsStillRunning) return;
+            //StaticInstance.playerData.gsd.MapGenerator.GenerateMap(_mapData);
+            if (StaticInstance.WindowMgr.GetSceneByName("MainScene") is MainScene mainScene)
             {
-                //StaticInstance.playerData.gsd.MapGenerator.GenerateMap(_mapData);
-                if (StaticInstance.WindowMgr.GetSceneByName("MainScene") is KemoCard.Pages.MainScene mainScene && mainScene != null)
-                {
-                    mainScene.MapView.GenerateNewMap(MapData);
-                    mainScene.MapView.UnlockFloor(StaticInstance.PlayerData.Gsd.MapGenerator.FloorsClimbed);
-                }
-                var mss = StaticInstance.WindowMgr.GetSceneByName("MapSelectScene");
-                if (mss != null)
-                {
-                    StaticInstance.WindowMgr.RemoveScene(mss);
-                }
+                mainScene.MapView.GenerateNewMap(MapData);
+                mainScene.MapView.UnlockFloor(StaticInstance.PlayerData.Gsd.MapGenerator.FloorsClimbed);
             }
-        });
+
+            var mss = StaticInstance.WindowMgr.GetSceneByName("MapSelectScene");
+            if (mss != null)
+            {
+                StaticInstance.WindowMgr.RemoveScene(mss);
+            }
+        };
     }
 }

@@ -6,7 +6,7 @@ namespace KemoCard.Pages.Map;
 
 public partial class MapSelectScene : BaseScene
 {
-    [Export] private Godot.Button _exitButton;
+    [Export] private Button _exitButton;
     [Export] private FlowContainer _flowContainer;
 
     public override void _Ready()

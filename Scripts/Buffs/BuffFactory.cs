@@ -44,7 +44,6 @@ public static class BuffFactory
         else
         {
             GD.PrintErr($"试图注册非buff的类:{buffType.Name}, Id为{buffId}");
-            return;
         }
     }
 }

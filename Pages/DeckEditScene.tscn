@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://hf0gtlfwwts" path="res://Pages/DeckEditScene.cs" id="1_1ya2g"]
 
-[node name="DeckEditScene" type="Control" node_paths=PackedStringArray("flagFilter", "IDFilter", "NameFilter", "clearBtn")]
+[node name="DeckEditScene" type="Control" node_paths=PackedStringArray("_flagFilter", "_idFilter", "_nameFilter", "_clearBtn")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -10,10 +10,10 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_1ya2g")
-flagFilter = NodePath("MenuButton")
-IDFilter = NodePath("IDFilter")
-NameFilter = NodePath("NameFilter")
-clearBtn = NodePath("ClearBtn")
+_flagFilter = NodePath("MenuButton")
+_idFilter = NodePath("IDFilter")
+_nameFilter = NodePath("NameFilter")
+_clearBtn = NodePath("ClearBtn")
 
 [node name="ColorRect" type="ColorRect" parent="."]
 layout_mode = 1

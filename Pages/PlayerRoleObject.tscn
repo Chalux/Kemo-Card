@@ -1,6 +1,6 @@
 [gd_scene load_steps=6 format=3 uid="uid://demprxrejhkpd"]
 
-[ext_resource type="Script" path="res://Pages/PlayerRoleObject.cs" id="1_18ktr"]
+[ext_resource type="Script" uid="uid://067hvh1tqcdp" path="res://Pages/PlayerRoleObject.cs" id="1_18ktr"]
 [ext_resource type="Material" uid="uid://btgvdfeaqsxas" path="res://Resources/EffectFrameMaterial.tres" id="2_2oqn8"]
 
 [sub_resource type="Gradient" id="Gradient_elmam"]
@@ -9,10 +9,10 @@
 frequency = 0.03
 
 [sub_resource type="NoiseTexture2D" id="NoiseTexture2D_hjk3e"]
-color_ramp = SubResource("Gradient_elmam")
 noise = SubResource("FastNoiseLite_ymh53")
+color_ramp = SubResource("Gradient_elmam")
 
-[node name="PlayerRoleObject" type="Control" node_paths=PackedStringArray("hpProgress", "mpProgress", "hpLabel", "mpLabel", "PBProgress", "MBProgress", "PBLabel", "MBLabel", "roleName", "buffContainer", "SelectRect", "mainControl")]
+[node name="PlayerRoleObject" type="Control" node_paths=PackedStringArray("_hpProgress", "_mpProgress", "_hpLabel", "_mpLabel", "_pbProgress", "_mbProgress", "_pbLabel", "_mbLabel", "_roleName", "BuffContainer", "_selectRect", "_mainControl")]
 custom_minimum_size = Vector2(300, 448)
 layout_mode = 3
 anchors_preset = 0
@@ -20,18 +20,18 @@ offset_right = 300.0
 offset_bottom = 448.0
 scale = Vector2(1.0013, 1)
 script = ExtResource("1_18ktr")
-hpProgress = NodePath("PlayerContainer1/Control/RoleHealthBar")
-mpProgress = NodePath("PlayerContainer1/Control/RoleMagicBar")
-hpLabel = NodePath("PlayerContainer1/Control/RoleHealthBar/RoleHealth")
-mpLabel = NodePath("PlayerContainer1/Control/RoleMagicBar/RoleMagic")
-PBProgress = NodePath("PlayerContainer1/Control/PBlockProg")
-MBProgress = NodePath("PlayerContainer1/Control/MBlockProg")
-PBLabel = NodePath("PlayerContainer1/Control/PBlockProg/PBlockTxt")
-MBLabel = NodePath("PlayerContainer1/Control/MBlockProg/MBlockTxt")
-roleName = NodePath("PlayerContainer1/Control/RoleName")
-buffContainer = NodePath("PlayerContainer1/Control/ScrollContainer/BuffContainer")
-SelectRect = NodePath("PlayerContainer1/Control/ColorRect")
-mainControl = NodePath("PlayerContainer1/Control")
+_hpProgress = NodePath("PlayerContainer1/Control/RoleHealthBar")
+_mpProgress = NodePath("PlayerContainer1/Control/RoleMagicBar")
+_hpLabel = NodePath("PlayerContainer1/Control/RoleHealthBar/RoleHealth")
+_mpLabel = NodePath("PlayerContainer1/Control/RoleMagicBar/RoleMagic")
+_pbProgress = NodePath("PlayerContainer1/Control/PBlockProg")
+_mbProgress = NodePath("PlayerContainer1/Control/MBlockProg")
+_pbLabel = NodePath("PlayerContainer1/Control/PBlockProg/PBlockTxt")
+_mbLabel = NodePath("PlayerContainer1/Control/MBlockProg/MBlockTxt")
+_roleName = NodePath("PlayerContainer1/Control/RoleName")
+BuffContainer = NodePath("PlayerContainer1/Control/ScrollContainer/BuffContainer")
+_selectRect = NodePath("PlayerContainer1/Control/ColorRect")
+_mainControl = NodePath("PlayerContainer1/Control")
 
 [node name="PlayerContainer1" type="PanelContainer" parent="."]
 custom_minimum_size = Vector2(300, 448)
@@ -44,7 +44,7 @@ layout_mode = 2
 
 [node name="RoleName" type="RichTextLabel" parent="PlayerContainer1/Control"]
 unique_name_in_owner = true
-layout_mode = 2
+layout_mode = 0
 offset_top = 16.0
 offset_right = 600.0
 offset_bottom = 128.0

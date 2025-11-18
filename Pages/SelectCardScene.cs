@@ -22,8 +22,8 @@ public partial class SelectCardScene : BaseScene, IEvent
         }
     }
 
-    [Export] public HBoxContainer boxContainer;
-    [Export] Godot.Button SelectBtn;
+    [Export] public HBoxContainer BoxContainer;
+    [Export] private Button _selectBtn;
 
     public SelectCardScene()
     {
@@ -38,8 +38,8 @@ public partial class SelectCardScene : BaseScene, IEvent
     public void Init(List<string> list)
     {
         _data = list;
-        foreach (var child in boxContainer?.GetChildren() ?? [])
-            boxContainer?.RemoveChild(child);
+        foreach (var child in BoxContainer?.GetChildren() ?? [])
+            BoxContainer?.RemoveChild(child);
         foreach (var id in list)
         {
             if (string.IsNullOrEmpty(id)) continue;
@@ -49,18 +49,18 @@ public partial class SelectCardScene : BaseScene, IEvent
             };
             var item = ResourceLoader.Load<PackedScene>("res://Pages/SelectCardItem.tscn")
                 .Instantiate<SelectCardItem>();
-            item.showObject.InitDataByCard(card);
+            item.ShowObject.InitDataByCard(card);
             item.GuiInput += @event => { OnItemGuiInput(@event, item); };
-            boxContainer?.AddChild(item);
+            BoxContainer?.AddChild(item);
         }
 
         UpdateView();
-        SelectBtn.Disabled = true;
-        SelectBtn.Pressed += () =>
+        _selectBtn.Disabled = true;
+        _selectBtn.Pressed += () =>
         {
             if (CurrIdx <= 0) return;
-            StaticInstance.PlayerData.Gsd.MajorRole.TempDeck.Add((boxContainer?.GetChild(CurrIdx) as SelectCardItem)
-                ?.showObject.Card);
+            StaticInstance.PlayerData.Gsd.MajorRole.TempDeck.Add((BoxContainer?.GetChild(CurrIdx) as SelectCardItem)
+                ?.ShowObject.Card);
             CurrIdx = -1;
             var ms = ResourceLoader.Load<PackedScene>("res://Pages/MainScene.tscn")
                 .Instantiate<MainScene>();
@@ -74,17 +74,17 @@ public partial class SelectCardScene : BaseScene, IEvent
 
     private void UpdateView()
     {
-        foreach (var item in boxContainer?.GetChildren().Cast<SelectCardItem>() ?? [])
+        foreach (var item in BoxContainer?.GetChildren().Cast<SelectCardItem>() ?? [])
         {
-            item.shaderRect.Visible = CurrIdx == item.GetIndex();
+            item.ShaderRect.Visible = CurrIdx == item.GetIndex();
         }
     }
 
     private void OnItemGuiInput(InputEvent @event, SelectCardItem item)
     {
         if (!@event.IsActionPressed("left_mouse")) return;
-        CurrIdx = _data.IndexOf(item.showObject.Card.Id);
+        CurrIdx = _data.IndexOf(item.ShowObject.Card.Id);
         UpdateView();
-        SelectBtn.Disabled = false;
+        _selectBtn.Disabled = false;
     }
 }

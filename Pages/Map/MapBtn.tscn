@@ -1,18 +1,18 @@
 [gd_scene load_steps=2 format=3 uid="uid://clm0bqa32hb5f"]
 
-[ext_resource type="Script" path="res://Pages/Map/MapBtn.cs" id="1_7bhi1"]
+[ext_resource type="Script" uid="uid://cpymjbptkg2aw" path="res://Pages/Map/MapBtn.cs" id="1_7bhi1"]
 
-[node name="MapBtn" type="Control" node_paths=PackedStringArray("CreateBtn", "ShowNameLab", "TierRangeLab", "MapSizeLab")]
+[node name="MapBtn" type="Control" node_paths=PackedStringArray("_createBtn", "_showNameLab", "_tierRangeLab", "_mapSizeLab")]
 custom_minimum_size = Vector2(256, 320)
 layout_mode = 3
 anchors_preset = 0
 offset_right = 256.0
 offset_bottom = 320.0
 script = ExtResource("1_7bhi1")
-CreateBtn = NodePath("Button")
-ShowNameLab = NodePath("ShowName")
-TierRangeLab = NodePath("TierRange")
-MapSizeLab = NodePath("MapSize")
+_createBtn = NodePath("Button")
+_showNameLab = NodePath("ShowName")
+_tierRangeLab = NodePath("TierRange")
+_mapSizeLab = NodePath("MapSize")
 
 [node name="ColorRect" type="ColorRect" parent="."]
 layout_mode = 0

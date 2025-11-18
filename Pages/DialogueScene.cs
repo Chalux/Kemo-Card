@@ -7,8 +7,8 @@ namespace KemoCard.Pages;
 
 public partial class DialogueScene : BaseScene
 {
-    [Export] TextureRect Background;
-    [Export] ColorRect BlackMask;
+    [Export] private TextureRect _background;
+    [Export] private ColorRect _blackMask;
     private Tween _switchTween;
     private int _id;
 
@@ -25,13 +25,13 @@ public partial class DialogueScene : BaseScene
         var image = ResourceLoader.Load<CompressedTexture2D>(url);
         if (image != null)
         {
-            var toTexture = image;
+            // var toTexture = ImageTexture.CreateFromImage(image);
             _switchTween?.Kill();
             _switchTween = GetTree().CreateTween();
             _switchTween.SetParallel(false);
-            _switchTween.TweenProperty(BlackMask, "modulate", Colors.Black, duration / 2);
-            _switchTween.TweenCallback(Callable.From(() => Background.Texture = toTexture));
-            _switchTween.TweenProperty(BlackMask, "modulate", Color.Color8(0, 0, 0, 0), duration / 2);
+            _switchTween.TweenProperty(_blackMask, "modulate", Colors.Black, duration / 2);
+            _switchTween.TweenCallback(Callable.From(() => _background.Texture = image));
+            _switchTween.TweenProperty(_blackMask, "modulate", Color.Color8(0, 0, 0, 0), duration / 2);
             _switchTween.Play();
             await ToSignal(_switchTween, Tween.SignalName.Finished);
         }

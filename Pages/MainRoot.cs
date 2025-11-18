@@ -22,8 +22,8 @@ public partial class MainRoot : Control
     // Called when the node enters the scene tree for the first time.
     public override void _Ready()
     {
-        // GetTree().Root.Size = new Vector2I(1280, 720);
-        // GetTree().Root.Position = (DisplayServer.ScreenGetSize() - GetTree().Root.Size) / 2;
+        GetTree().Root.Size = new Vector2I(1280, 720);
+        GetTree().Root.Position = (DisplayServer.ScreenGetSize() - GetTree().Root.Size) / 2;
 
         #region 静态全局初始化开始
 

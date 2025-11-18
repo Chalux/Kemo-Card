@@ -1,5 +1,4 @@
-﻿using Godot;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace KemoCard.Scripts.Presets
 {
@@ -10,7 +9,7 @@ namespace KemoCard.Scripts.Presets
         public int MinGoldReward { get; set; } = 0;
         public int MaxGoldReward { get; set; } = 0;
         public int GainExp { get; set; } = 0;
-        public bool IsBoss { get; set; } = false;
+        public bool IsBoss { get; set; }
 
         public Preset(string id)
         {

@@ -5,14 +5,14 @@ namespace KemoCard.Pages;
 
 public partial class PauseView : BaseScene
 {
-    [Export] Godot.Button Quit;
+    [Export] private Button _quit;
 
-    [Export] Godot.Button Back;
+    [Export] private Button _back;
 
     // Called when the node enters the scene tree for the first time.
     public override void _Ready()
     {
-        Quit.Pressed += () =>
+        _quit.Pressed += () =>
         {
             AlertView.PopupAlert("[font_size=50]是否退出游戏？[color=#f70101]未保存的进度将会丢失。[/color][/font_size]", true, () =>
             {
@@ -20,6 +20,6 @@ public partial class PauseView : BaseScene
                 GetTree().Quit();
             });
         };
-        Back.Pressed += () => StaticInstance.WindowMgr.RemoveScene(this);
+        _back.Pressed += () => StaticInstance.WindowMgr.RemoveScene(this);
     }
 }

@@ -5,13 +5,13 @@ namespace KemoCard.Scripts
 {
     public class Damage
     {
-        public double value;
-        public BaseRole from;
-        public List<BaseRole> targets;
-        public AttributeEnum atrribute;
-        public AttackType attackType;
-        public bool validTag;
-        public int times;
-        public int criticaltimes;
+        public double Value;
+        public BaseRole From;
+        public List<BaseRole> Targets;
+        public AttributeEnum Attribute;
+        public AttackType AttackType;
+        public bool ValidTag;
+        public int Times;
+        public int CriticalTimes;
     }
 }

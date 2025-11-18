@@ -1,14 +1,14 @@
 [gd_scene load_steps=2 format=3 uid="uid://ddwxny6eexch7"]
 
-[ext_resource type="Script" path="res://Pages/EndBattleRewardItem.cs" id="1_1x8ja"]
+[ext_resource type="Script" uid="uid://c8hqm455m656q" path="res://Pages/EndBattleRewardItem.cs" id="1_1x8ja"]
 
-[node name="Control" type="Control" node_paths=PackedStringArray("btn")]
+[node name="Control" type="Control" node_paths=PackedStringArray("_btn")]
 custom_minimum_size = Vector2(0, 50)
 layout_mode = 3
 anchors_preset = 0
 size_flags_vertical = 0
 script = ExtResource("1_1x8ja")
-btn = NodePath("Button")
+_btn = NodePath("Button")
 
 [node name="Button" type="Button" parent="."]
 layout_mode = 1

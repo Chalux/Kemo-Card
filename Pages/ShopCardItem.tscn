@@ -1,16 +1,16 @@
 [gd_scene load_steps=4 format=3 uid="uid://djonegxt0fxoh"]
 
 [ext_resource type="PackedScene" uid="uid://bhiqlhvrt8uq2" path="res://Pages/CardShowObject.tscn" id="1_3eo5o"]
-[ext_resource type="Script" path="res://Pages/ShopCardItem.cs" id="1_o7eah"]
+[ext_resource type="Script" uid="uid://c2qf5q2v1lpaa" path="res://Pages/ShopCardItem.cs" id="1_o7eah"]
 [ext_resource type="Texture2D" uid="uid://dyygagjf1l0r6" path="res://Mods/MainPackage/Resources/Icons/icons_204.png" id="2_sby5r"]
 
-[node name="Control" type="Control" node_paths=PackedStringArray("ShowObject", "BuyButton")]
+[node name="Control" type="Control" node_paths=PackedStringArray("_showObject", "_buyButton")]
 custom_minimum_size = Vector2(286, 400)
 layout_mode = 3
 anchors_preset = 0
 script = ExtResource("1_o7eah")
-ShowObject = NodePath("CardShowObject")
-BuyButton = NodePath("Button")
+_showObject = NodePath("CardShowObject")
+_buyButton = NodePath("Button")
 
 [node name="CardShowObject" parent="." instance=ExtResource("1_3eo5o")]
 layout_mode = 1

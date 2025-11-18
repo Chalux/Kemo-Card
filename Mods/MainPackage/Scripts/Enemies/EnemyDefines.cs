@@ -585,7 +585,7 @@ public partial class Wolf : BaseEnemyScript
         enemy.Name = "狼";
         enemy.AnimationResourcePath = $"res://Mods/MainPackage/Resources/Animations/Bat.tres";
         enemy.ActionFunc = ActionFunction;
-        if (BattleStatic.isFighting)
+        if (BattleStatic.IsFighting)
         {
             SetAction(enemy, null);
         }
@@ -646,7 +646,7 @@ public partial class Wolf : BaseEnemyScript
                 if (res != null)
                 {
                     bs.CurrentEnemyRoles.Add(helper);
-                    EnemyRoleObject ero = res.Instantiate<EnemyRoleObject>();
+                    Pages.EnemyRoleObject ero = res.Instantiate<Pages.EnemyRoleObject>();
                     ero.Init(helper);
                     helper.Script.InGameDict["action"] = 0;
                     bs.EnemyContainer.AddChild(ero);
@@ -671,13 +671,13 @@ public partial class Wolf : BaseEnemyScript
     {
         BuffImplBase buff = new("bleed_wolf")
         {
-            Creator = damage.from,
-            BuffValue = (int)Math.Floor(damage.from.CurrStrength * 0.5)
+            Creator = damage.From,
+            BuffValue = (int)Math.Floor(damage.From.CurrStrength * 0.5)
         };
         buff.Desc = $"每回合开始时，受到{buff.BuffValue}点无属性物理伤害";
         currTarget.AddBuff(buff);
         if (StaticUtils.TryGetBattleScene() is not { } bs) return;
-        if (damage.from is not EnemyRole wolf) return;
+        if (damage.From is not EnemyRole wolf) return;
         if (bs.FindEnemyObjectByRole(wolf) is { } ero)
         {
             ero.AddBuff(buff);

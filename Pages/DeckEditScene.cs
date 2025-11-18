@@ -6,22 +6,22 @@ namespace KemoCard.Pages;
 
 public partial class DeckEditScene : BaseScene
 {
-    [Export] MenuButton flagFilter;
-    [Export] TextEdit IDFilter;
-    [Export] TextEdit NameFilter;
-    [Export] Godot.Button clearBtn;
+    [Export] private MenuButton _flagFilter;
+    [Export] private TextEdit _idFilter;
+    [Export] private TextEdit _nameFilter;
+    [Export] private Button _clearBtn;
     private int _flags;
 
     // Called when the node enters the scene tree for the first time.
     public override void _Ready()
     {
-        var popup = flagFilter.GetPopup();
+        var popup = _flagFilter.GetPopup();
         foreach (var flag in StaticEnums.CardFlagDic.Values)
         {
             popup.AddCheckItem(flag);
         }
 
-        popup.IndexPressed += (index) =>
+        popup.IndexPressed += index =>
         {
             // var text = popup.GetItemText((int)index);
             var value = StaticEnums.CardFlagDic.ElementAt((int)index).Key;
@@ -36,7 +36,7 @@ public partial class DeckEditScene : BaseScene
 
             ReDrawMenu();
         };
-        clearBtn.Pressed += () =>
+        _clearBtn.Pressed += () =>
         {
             _flags = 0;
             ReDrawMenu();
@@ -45,10 +45,10 @@ public partial class DeckEditScene : BaseScene
 
     private void ReDrawMenu()
     {
-        if (flagFilter == null) return;
-        for (var i = 0; i < flagFilter.GetPopup().ItemCount; i++)
+        if (_flagFilter == null) return;
+        for (var i = 0; i < _flagFilter.GetPopup().ItemCount; i++)
         {
-            flagFilter.GetPopup().SetItemChecked(i, (_flags & StaticEnums.CardFlagDic.ElementAt(i).Key) > 0);
+            _flagFilter.GetPopup().SetItemChecked(i, (_flags & StaticEnums.CardFlagDic.ElementAt(i).Key) > 0);
         }
     }
 }

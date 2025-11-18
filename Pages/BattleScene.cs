@@ -33,17 +33,17 @@ public partial class BattleScene : BaseScene, IEvent
     [Export] private float _totalAngle;
     [Export] private float _spaceX = 200f;
     [Export] private float _spaceY = 7f;
-    [Export] private Godot.Button _turnEndBtn;
+    [Export] private Button _turnEndBtn;
     [Export] public Control DragDownArea;
-    [Export] private Godot.Button _debugDrawBtn;
+    [Export] private Button _debugDrawBtn;
     [Export] private Label _turnLabel;
-    [Export] private Godot.Button _deckBtn;
-    [Export] private Godot.Button _graveBtn;
-    [Export] private Godot.Button _wholeDeckBtn;
-    [Export] private Godot.Button _debugWinBtn;
-    [Export] private Godot.Button _returnBtn;
+    [Export] private Button _deckBtn;
+    [Export] private Button _graveBtn;
+    [Export] private Button _wholeDeckBtn;
+    [Export] private Button _debugWinBtn;
+    [Export] private Button _returnBtn;
     [Export] private Control _endControl;
-    [Export] private Godot.Button _selectConfirmBtn;
+    [Export] private Button _selectConfirmBtn;
     [Export] private Control _selectControl;
 
     private bool _isDebugFight;
@@ -93,7 +93,7 @@ public partial class BattleScene : BaseScene, IEvent
 
     private void OnReturnBtnOnPressed()
     {
-        if (!BattleStatic.isFighting)
+        if (!BattleStatic.IsFighting)
         {
             if (_afterBattleHandler != null)
             {
@@ -120,14 +120,14 @@ public partial class BattleScene : BaseScene, IEvent
     {
         StaticInstance.WindowMgr.AddScene(
             (BaseScene)ResourceLoader.Load<PackedScene>("res://Pages/DeckView.tscn").Instantiate(),
-            [CurrentPlayerRoles[0].Deck.ToList()]);
+            CurrentPlayerRoles[0].Deck.ToList());
     }
 
     private void OnGraveBtnOnPressed()
     {
         StaticInstance.WindowMgr.AddScene(
             (BaseScene)ResourceLoader.Load<PackedScene>("res://Pages/DeckView.tscn").Instantiate(),
-            [CurrentPlayerRoles[0].InFightGrave.ToList()]);
+            CurrentPlayerRoles[0].InFightGrave.ToList());
     }
 
     private void OnDeckBtnOnPressed()
@@ -135,7 +135,7 @@ public partial class BattleScene : BaseScene, IEvent
         var list = CurrentPlayerRoles[0].InFightDeck.ToList();
         StaticUtils.ShuffleArray(list);
         StaticInstance.WindowMgr.AddScene(
-            (BaseScene)ResourceLoader.Load<PackedScene>("res://Pages/DeckView.tscn").Instantiate(), [list]);
+            (BaseScene)ResourceLoader.Load<PackedScene>("res://Pages/DeckView.tscn").Instantiate(), list);
     }
 
     private void OnTurnEndBtnOnPressed()
@@ -182,9 +182,8 @@ public partial class BattleScene : BaseScene, IEvent
     {
         //return 0;
         if (HandControl.GetChildCount() == 0) return 0;
-        else
-            return (cardIndex - (HandControl.GetChildCount() - 1f) / 2f) * _totalAngle / HandControl.GetChildCount() /
-                   360f;
+        return (cardIndex - (HandControl.GetChildCount() - 1f) / 2f) * _totalAngle / HandControl.GetChildCount() /
+               360f;
     }
 
     private float GetCardYPosition(int cardIndex)
@@ -296,19 +295,19 @@ public partial class BattleScene : BaseScene, IEvent
         }
     }
 
-    public List<PlayerRole> PlayerRoles = [];
-    public List<PlayerRole> CurrentPlayerRoles = [];
-    public List<PlayerRole> StartPlayerRoles = [];
-    public List<EnemyRole> EnemyRoles = [];
-    public List<EnemyRole> CurrentEnemyRoles = [];
-    public List<EnemyRole> StartEnemyRoles = [];
+    private readonly List<PlayerRole> _playerRoles = [];
+    public readonly List<PlayerRole> CurrentPlayerRoles = [];
+    private readonly List<PlayerRole> _startPlayerRoles = [];
+    private readonly List<EnemyRole> _enemyRoles = [];
+    public readonly List<EnemyRole> CurrentEnemyRoles = [];
+    private readonly List<EnemyRole> _startEnemyRoles = [];
     public int Turns;
 
-    public StaticEnums.TeamEnum CurrentController;
+    private StaticEnums.TeamEnum _currentController;
 
-    public void NewBattleCore(List<PlayerRole> players, List<EnemyRole> enemies)
+    private void NewBattleCore(List<PlayerRole> players, List<EnemyRole> enemies)
     {
-        BattleStatic.isFighting = true;
+        BattleStatic.IsFighting = true;
         _endControl.Visible = false;
         foreach (var i in players)
         {
@@ -320,9 +319,9 @@ public partial class BattleScene : BaseScene, IEvent
             //     };
             //     i.InFightDeck.Add(c);
             // });
-            PlayerRoles.Add(i);
+            _playerRoles.Add(i);
             CurrentPlayerRoles.Add(i);
-            StartPlayerRoles.Add(i);
+            _startPlayerRoles.Add(i);
             var po = ResourceLoader.Load<PackedScene>("res://Pages/PlayerRoleObject.tscn")
                 .Instantiate<PlayerRoleObject>();
             po.InitByPlayerRole(i);
@@ -334,9 +333,9 @@ public partial class BattleScene : BaseScene, IEvent
 
         foreach (var i in enemies)
         {
-            EnemyRoles.Add(i);
+            _enemyRoles.Add(i);
             CurrentEnemyRoles.Add(i);
-            StartEnemyRoles.Add(i);
+            _startEnemyRoles.Add(i);
             var eo = ResourceLoader.Load<PackedScene>("res://Pages/EnemyRoleObject.tscn")
                 .Instantiate<EnemyRoleObject>();
             StaticInstance.EventMgr.RegisterIEvent(eo);
@@ -347,7 +346,7 @@ public partial class BattleScene : BaseScene, IEvent
 
         Turns = 1;
         _turnLabel.Text = "回合数：" + Turns;
-        CurrentController = StaticEnums.TeamEnum.Player;
+        _currentController = StaticEnums.TeamEnum.Player;
         NowPlayer = CurrentPlayerRoles[0];
         StartBattle();
     }
@@ -359,13 +358,13 @@ public partial class BattleScene : BaseScene, IEvent
             StaticUtils.ShuffleArray(i.InFightDeck);
         }
 
-        foreach (var player in PlayerRoles)
+        foreach (var player in _playerRoles)
         {
             player.CurrMBlock = (int)Math.Floor(player.OriginMBlock);
             player.CurrPBlock = (int)Math.Floor(player.OriginPBlock);
         }
 
-        foreach (var enemy in EnemyRoles)
+        foreach (var enemy in _enemyRoles)
         {
             enemy.CurrMBlock = (int)Math.Floor(enemy.OriginMBlock);
             enemy.CurrPBlock = (int)Math.Floor(enemy.OriginPBlock);
@@ -380,12 +379,12 @@ public partial class BattleScene : BaseScene, IEvent
         var objects = new object[] { CurrentPlayerRoles, CurrentEnemyRoles, Turns };
         StaticInstance.EventMgr.Dispatch("StartBattle", objects);
         UpdateCounts();
-        StaticInstance.EventMgr.Dispatch("NewTurn", new dynamic[] { Turns, CurrentPlayerRoles, CurrentEnemyRoles });
+        StaticInstance.EventMgr.Dispatch("NewTurn", Turns, CurrentPlayerRoles, CurrentEnemyRoles);
     }
 
-    public void NextTurn()
+    private void NextTurn()
     {
-        if (!BattleStatic.isFighting) return;
+        if (!BattleStatic.IsFighting) return;
         Turns++;
         _turnLabel.Text = "回合数：" + Turns;
         foreach (var player in CurrentPlayerRoles)
@@ -399,7 +398,7 @@ public partial class BattleScene : BaseScene, IEvent
             enemy.RecoverMagic();
         }
 
-        if (CurrentController == StaticEnums.TeamEnum.Player)
+        if (_currentController == StaticEnums.TeamEnum.Player)
         {
             NowPlayer = CurrentPlayerRoles[0];
             foreach (var i in CurrentPlayerRoles)
@@ -408,11 +407,11 @@ public partial class BattleScene : BaseScene, IEvent
             }
         }
 
-        StaticInstance.EventMgr.Dispatch("NewTurn", new dynamic[] { Turns, CurrentPlayerRoles, CurrentEnemyRoles });
+        StaticInstance.EventMgr.Dispatch("NewTurn", Turns, CurrentPlayerRoles, CurrentEnemyRoles);
         UpdateCounts();
     }
 
-    public void EndTurn()
+    private void EndTurn()
     {
         foreach (var player in CurrentPlayerRoles)
         {
@@ -423,13 +422,13 @@ public partial class BattleScene : BaseScene, IEvent
 
         foreach (var i in HandControl.GetChildren().Cast<CardObject>())
         {
-            if (i.card.CheckHasSymbol("KeepInHand")) continue;
+            if (i.Card.CheckHasSymbol("KeepInHand")) continue;
             i.QueueFree();
         }
 
         foreach (var currEnemy in CurrentEnemyRoles)
         {
-            if (currEnemy == null || !BattleStatic.isFighting) return;
+            if (currEnemy == null || !BattleStatic.IsFighting) return;
             currEnemy.Script.ActionFunc?.Invoke(Turns, CurrentPlayerRoles, CurrentEnemyRoles, currEnemy.Script);
         }
 
@@ -459,38 +458,38 @@ public partial class BattleScene : BaseScene, IEvent
         //if (!BattleStatic.isFighting) return AttackResult.Failed;
         Damage damage = new()
         {
-            validTag = true,
-            value = value,
-            from = from,
-            targets = targets,
-            atrribute = attribute,
-            attackType = attackType,
-            times = times,
-            criticaltimes = 0
+            ValidTag = true,
+            Value = value,
+            From = from,
+            Targets = targets,
+            Attribute = attribute,
+            AttackType = attackType,
+            Times = times,
+            CriticalTimes = 0
         };
         StaticInstance.EventMgr.Dispatch("BeforeAttacked", damage);
         StaticInstance.EventMgr.Dispatch("BeforeDealDamage", damage);
-        if (damage.validTag && targets != null)
+        if (damage.ValidTag && targets != null)
         {
             foreach (var target in targets)
             {
                 Damage tempDamage = new()
                 {
-                    validTag = damage.validTag,
-                    value = damage.value,
-                    from = damage.from,
-                    targets = [target],
-                    atrribute = damage.atrribute,
-                    attackType = damage.attackType,
-                    times = damage.times,
-                    criticaltimes = 0
+                    ValidTag = damage.ValidTag,
+                    Value = damage.Value,
+                    From = damage.From,
+                    Targets = [target],
+                    Attribute = damage.Attribute,
+                    AttackType = damage.AttackType,
+                    Times = damage.Times,
+                    CriticalTimes = 0
                 };
-                GD.Print("伤害结算前：" + tempDamage.value);
+                GD.Print("伤害结算前：" + tempDamage.Value);
                 StaticInstance.EventMgr.Dispatch("BeforeAttackedSingle", tempDamage);
-                if (tempDamage.validTag)
+                if (tempDamage.ValidTag)
                 {
                     if (target.CurrHealth <= 0) continue;
-                    tempDamage.value = (int)Math.Round((tempDamage.value +
+                    tempDamage.Value = (int)Math.Round((tempDamage.Value +
                                                         target.GetSymbol(
                                                             StaticEnums.AttributeDic[attribute] + "ResisProp") -
                                                         (from?.GetSymbol(
@@ -501,7 +500,7 @@ public partial class BattleScene : BaseScene, IEvent
                                                                     StaticEnums.AttributeDic[attribute] + "AtkPerm") ??
                                                                 1f))));
                     StaticInstance.EventMgr.Dispatch("BeforeDealDamageSingle", tempDamage);
-                    GD.Print("伤害结算后：" + tempDamage.value);
+                    GD.Print("伤害结算后：" + tempDamage.Value);
                     for (var i = 0; i < times; i++)
                     {
                         var random = new Random().Next(0, 100);
@@ -527,30 +526,30 @@ public partial class BattleScene : BaseScene, IEvent
                                       needValue;
                             GD.Print(log);
                             StaticInstance.MainRoot.ShowBanner(log);
-                            tempDamage.value *= 2 + (from != null ? (double)from?.GetSymbol("CriticalDamageAdd") : 0f) -
+                            tempDamage.Value *= 2 + (from != null ? (double)from?.GetSymbol("CriticalDamageAdd") : 0f) -
                                                 target.GetSymbol("CriticalDamageResis");
-                            tempDamage.criticaltimes += 1;
-                            damage.criticaltimes += 1;
+                            tempDamage.CriticalTimes += 1;
+                            damage.CriticalTimes += 1;
                             criticalAction?.Invoke(damage, target);
                         }
 
                         int diff;
-                        if (tempDamage.attackType == StaticEnums.AttackType.Physics)
+                        if (tempDamage.AttackType == StaticEnums.AttackType.Physics)
                         {
                             if (target is EnemyRole er)
-                                diff = (int)(tempDamage.value - er.CurrPBlock);
-                            else diff = (int)(tempDamage.value - (target as PlayerRole).CurrPBlock);
+                                diff = (int)(tempDamage.Value - er.CurrPBlock);
+                            else diff = (int)(tempDamage.Value - (target as PlayerRole).CurrPBlock);
                         }
                         else
                         {
                             if (target is EnemyRole er)
-                                diff = (int)(tempDamage.value - er.CurrMBlock);
-                            else diff = (int)(tempDamage.value - (target as PlayerRole).CurrMBlock);
+                                diff = (int)(tempDamage.Value - er.CurrMBlock);
+                            else diff = (int)(tempDamage.Value - (target as PlayerRole).CurrMBlock);
                         }
 
                         if (diff > 0)
                         {
-                            if (tempDamage.attackType == StaticEnums.AttackType.Physics)
+                            if (tempDamage.AttackType == StaticEnums.AttackType.Physics)
                             {
                                 if (target is EnemyRole er)
                                     er.CurrPBlock = 0;
@@ -569,23 +568,23 @@ public partial class BattleScene : BaseScene, IEvent
                         }
                         else
                         {
-                            if (tempDamage.attackType == StaticEnums.AttackType.Physics)
+                            if (tempDamage.AttackType == StaticEnums.AttackType.Physics)
                             {
-                                if (target is EnemyRole er) er.CurrPBlock -= (int)tempDamage.value;
-                                else (target as PlayerRole).CurrPBlock -= (int)tempDamage.value;
+                                if (target is EnemyRole er) er.CurrPBlock -= (int)tempDamage.Value;
+                                else (target as PlayerRole).CurrPBlock -= (int)tempDamage.Value;
                             }
                             else
                             {
-                                if (target is EnemyRole er) er.CurrMBlock -= (int)tempDamage.value;
-                                else (target as PlayerRole).CurrMBlock -= (int)tempDamage.value;
+                                if (target is EnemyRole er) er.CurrMBlock -= (int)tempDamage.Value;
+                                else (target as PlayerRole).CurrMBlock -= (int)tempDamage.Value;
                             }
                         }
 
-                        GD.Print(from?.Name + "对" + target.Name + "造成了" + tempDamage.value + "点伤害");
+                        GD.Print(from?.Name + "对" + target.Name + "造成了" + tempDamage.Value + "点伤害");
 
                         if (target is EnemyRole ter)
                         {
-                            FindEnemyObjectByRole(ter)?.hitFlashAnimationPlayer.Play("hit_flash");
+                            FindEnemyObjectByRole(ter)?.HitFlashAnimationPlayer.Play("hit_flash");
                         }
 
                         if (target.CurrHealth > 0) continue;
@@ -668,7 +667,7 @@ public partial class BattleScene : BaseScene, IEvent
         UpdateCounts();
     }
 
-    public void PlayerRoleDie(PlayerRole role)
+    private void PlayerRoleDie(PlayerRole role)
     {
         if (role.IsFriendly)
         {
@@ -677,8 +676,8 @@ public partial class BattleScene : BaseScene, IEvent
                 CurrentPlayerRoles.Remove(role);
                 foreach (var roleObject in PlayerContainer?.GetChildren().Cast<PlayerRoleObject>() ?? [])
                 {
-                    if (roleObject.data != role) continue;
-                    roleObject.data = null;
+                    if (roleObject.Data != role) continue;
+                    roleObject.Data = null;
                     roleObject.QueueFree();
                 }
 
@@ -692,7 +691,7 @@ public partial class BattleScene : BaseScene, IEvent
         EndBattle(false);
     }
 
-    public void EnemyRoleDie(EnemyRole role)
+    private void EnemyRoleDie(EnemyRole role)
     {
         if (!role.IsFriendly)
         {
@@ -701,8 +700,8 @@ public partial class BattleScene : BaseScene, IEvent
                 CurrentEnemyRoles.Remove(role);
                 foreach (var roleObject in EnemyContainer?.GetChildren().Cast<EnemyRoleObject>() ?? [])
                 {
-                    if (roleObject.data != role) continue;
-                    roleObject.data = null;
+                    if (roleObject.Data != role) continue;
+                    roleObject.Data = null;
                     roleObject.QueueFree();
                 }
 
@@ -716,22 +715,22 @@ public partial class BattleScene : BaseScene, IEvent
         EndBattle(true);
     }
 
-    public void EndBattle(bool win)
+    private void EndBattle(bool win)
     {
         StaticInstance.EventMgr.UnregisterIEvent(this);
         StaticInstance.PlayerData.Gsd.MajorRole.RecoverMagic();
-        StartPlayerRoles.ForEach(obj =>
+        _startPlayerRoles.ForEach(obj =>
         {
             obj.EndFight();
             StaticInstance.EventMgr.UnregisterIEvent(obj);
         });
-        StartEnemyRoles.ForEach(obj => StaticInstance.EventMgr.UnregisterIEvent(obj));
-        PlayerRoles.Clear();
+        _startEnemyRoles.ForEach(obj => StaticInstance.EventMgr.UnregisterIEvent(obj));
+        _playerRoles.Clear();
         CurrentEnemyRoles.Clear();
         CurrentPlayerRoles.Clear();
-        EnemyRoles.Clear();
-        StartEnemyRoles.Clear();
-        StartPlayerRoles.Clear();
+        _enemyRoles.Clear();
+        _startEnemyRoles.Clear();
+        _startPlayerRoles.Clear();
         foreach (var node in HandControl.GetChildren())
         {
             node.QueueFree();
@@ -765,12 +764,12 @@ public partial class BattleScene : BaseScene, IEvent
                         datas.Add(@struct);
                     }
 
-                    RewardStruct @struct2 = new()
+                    RewardStruct struct2 = new()
                     {
                         Type = RewardType.Exp,
                         Rewards = [_battlePreset.GainExp.ToString()]
                     };
-                    if (_battlePreset.GainExp > 0) datas.Add(@struct2);
+                    if (_battlePreset.GainExp > 0) datas.Add(struct2);
                 }
 
 
@@ -808,7 +807,7 @@ public partial class BattleScene : BaseScene, IEvent
     {
         foreach (var i in EnemyContainer?.GetChildren() ?? [])
         {
-            if (i is EnemyRoleObject ero && ero.data == role)
+            if (i is EnemyRoleObject ero && ero.Data == role)
             {
                 return ero;
             }
@@ -830,7 +829,7 @@ public partial class BattleScene : BaseScene, IEvent
     {
         BattleStatic.MaxSelectCount = max;
         BattleStatic.MinSelectCount = min;
-        BattleStatic.isDiscarding = true;
+        BattleStatic.IsDiscarding = true;
         if (mustList != null) BattleStatic.MustList = mustList.ToList();
         _selectConfirmBtn.Visible = true;
         _selectControl.Visible = true;
@@ -842,22 +841,22 @@ public partial class BattleScene : BaseScene, IEvent
 
     private void SelectConfirmAction()
     {
-        if (BattleStatic.discard_list.Count < BattleStatic.MinSelectCount ||
-            BattleStatic.discard_list.Count > BattleStatic.MaxSelectCount) return;
+        if (BattleStatic.DiscardList.Count < BattleStatic.MinSelectCount ||
+            BattleStatic.DiscardList.Count > BattleStatic.MaxSelectCount) return;
         BattleStatic.ConfirmAction?.Invoke(SelectConfirm());
         BattleStatic.EndSelect();
         DispatchEvent("SelectConfirm");
     }
 
-    public List<Card> SelectConfirm()
+    private List<Card> SelectConfirm()
     {
         _selectConfirmBtn.Visible = false;
         _selectControl.Visible = false;
-        var res = BattleStatic.discard_list.ToList();
+        var res = BattleStatic.DiscardList.ToList();
         BattleStatic.SelectFilterFunc = null;
         BattleStatic.ConfirmAction = null;
-        BattleStatic.discard_list.Clear();
-        BattleStatic.isDiscarding = false;
+        BattleStatic.DiscardList.Clear();
+        BattleStatic.IsDiscarding = false;
         return res;
     }
 
@@ -877,7 +876,7 @@ public partial class BattleScene : BaseScene, IEvent
             if (owner != NowPlayer) continue;
             foreach (var cObj in HandControl.GetChildren().Cast<CardObject>())
             {
-                if (cObj.card != card) continue;
+                if (cObj.Card != card) continue;
                 cObj.QueueFree();
                 break;
             }
@@ -893,8 +892,8 @@ public partial class BattleScene : BaseScene, IEvent
 
     private void UpdateSelectBtn()
     {
-        if (BattleStatic.discard_list.Count < BattleStatic.MinSelectCount ||
-            BattleStatic.discard_list.Count > BattleStatic.MaxSelectCount)
+        if (BattleStatic.DiscardList.Count < BattleStatic.MinSelectCount ||
+            BattleStatic.DiscardList.Count > BattleStatic.MaxSelectCount)
         {
             _selectConfirmBtn.Disabled = true;
         }

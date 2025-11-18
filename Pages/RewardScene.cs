@@ -6,8 +6,8 @@ namespace KemoCard.Pages;
 
 public partial class RewardScene : BaseScene
 {
-    [Export] VBoxContainer vBox;
-    [Export] Godot.Button ReturnBtn;
+    [Export] private VBoxContainer _vBox;
+    [Export] private Button _returnBtn;
 
     public override void OnAdd(params object[] datas)
     {
@@ -21,9 +21,9 @@ public partial class RewardScene : BaseScene
         {
             var item = (RewardItem)ResourceLoader.Load<PackedScene>("res://Pages/RewardItem.tscn").Instantiate();
             item.SetReward(data.Type, data.Rewards);
-            vBox.AddChild(item);
+            _vBox.AddChild(item);
         });
-        ReturnBtn.Pressed += () =>
+        _returnBtn.Pressed += () =>
         {
             StaticInstance.WindowMgr.RemoveScene(this);
             if (StaticInstance.WindowMgr.GetSceneByName("MainScene") is MainScene mainScene)

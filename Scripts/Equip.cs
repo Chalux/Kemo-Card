@@ -1,8 +1,8 @@
-﻿using Godot;
-using KemoCard.Scripts.Equips;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text.Json.Serialization;
+using Godot;
+using KemoCard.Scripts.Equips;
 using static KemoCard.Scripts.Datas;
 using static KemoCard.Scripts.StaticEnums;
 
@@ -31,7 +31,7 @@ namespace KemoCard.Scripts
 
         public Equip(string id, BaseRole owner = null)
         {
-            this.Owner = owner;
+            Owner = owner;
             Id = id;
         }
 

@@ -7,8 +7,8 @@ namespace KemoCard.Pages;
 public partial class AlertView : BaseScene
 {
     [Export] private RichTextLabel _msg;
-    [Export] private Godot.Button _confirmBtn;
-    [Export] private Godot.Button _cancelBtn;
+    [Export] private Button _confirmBtn;
+    [Export] private Button _cancelBtn;
     private Action _confirmAction;
     private Action _cancelAction;
 

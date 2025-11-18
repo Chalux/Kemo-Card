@@ -11,6 +11,7 @@ namespace KemoCard.Scripts
         Event,
         Boss,
     }
+
     public class Room
     {
         public RoomType Type { get; set; } = RoomType.None;
@@ -18,16 +19,19 @@ namespace KemoCard.Scripts
         public int Col { get; set; }
         public float X { get; set; }
         public float Y { get; set; }
-        public List<int> NextRooms { get; set; } = new();
-        public bool Selected { get; set; } = false;
+        public List<int> NextRooms { get; set; } = [];
+        public bool Selected { get; set; }
+
         /// <summary>
         /// 只有Type是Monster的时候才有意义
         /// </summary>
         public string RoomPresetId { get; set; }
+
         /// <summary>
         /// 只有Type是Event的时候才有意义
         /// </summary>
         public string RoomEventId { get; set; }
+
         /// <summary>
         /// 只有Type是Equip的时候才有意义
         /// </summary>
@@ -35,8 +39,9 @@ namespace KemoCard.Scripts
 
         public override string ToString()
         {
-            if (Type == RoomType.None) return $"{Col}(N)";
-            else return $"{Col}({Type.ToString()[0]}{RoomPresetId ?? RoomEventId ?? RoomEquipId ?? "未确定"})";
+            return Type == RoomType.None
+                ? $"{Col}(N)"
+                : $"{Col}({Type.ToString()[0]}{RoomPresetId ?? RoomEventId ?? RoomEquipId ?? "未确定"})";
         }
     }
 }

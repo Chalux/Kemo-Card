@@ -9,13 +9,13 @@ namespace KemoCard.Pages;
 
 public partial class MainScene : BaseScene, IEvent
 {
-    [Export] private Godot.Button _saveButton;
-    [Export] private Godot.Button _editDeckButton;
-    [Export] private Godot.Button _testBattleButton;
-    [Export] private Godot.Button _editEquipBtn;
-    [Export] private Godot.Button _testPresetBtn;
-    [Export] private Godot.Button _showMapBtn;
-    [Export] private Godot.Button _allocBtn;
+    [Export] private Button _saveButton;
+    [Export] private Button _editDeckButton;
+    [Export] private Button _testBattleButton;
+    [Export] private Button _editEquipBtn;
+    [Export] private Button _testPresetBtn;
+    [Export] private Button _showMapBtn;
+    [Export] private Button _allocBtn;
     [Export] private Label _allocLabel;
     [Export] private Label _levelLabel;
     [Export] private Label _expLabel;
@@ -29,10 +29,10 @@ public partial class MainScene : BaseScene, IEvent
     [Export] private ProgressBar _hpProg;
     [Export] private Label _mpLabel;
     [Export] private ProgressBar _mpProg;
-    [Export] private Godot.Button _testAddCardBtn;
+    [Export] private Button _testAddCardBtn;
     [Export] private TextEdit _addCardInput;
-    [Export] private Godot.Button _returnMenuBtn;
-    [Export] private Godot.Button _checkMajorBtn;
+    [Export] private Button _returnMenuBtn;
+    [Export] private Button _checkMajorBtn;
 
     public override void _Ready()
     {
@@ -41,8 +41,7 @@ public partial class MainScene : BaseScene, IEvent
         _editDeckButton.Pressed += () =>
         {
             StaticInstance.WindowMgr.AddScene(
-                (BaseScene)ResourceLoader.Load<PackedScene>("res://Pages/RoleDeckView.tscn").Instantiate()
-                , [major]);
+                (BaseScene)ResourceLoader.Load<PackedScene>("res://Pages/RoleDeckView.tscn").Instantiate(), major);
             StaticInstance.MainRoot.HideRichHint();
         };
         _testBattleButton.Pressed += () =>
@@ -88,8 +87,7 @@ public partial class MainScene : BaseScene, IEvent
         _editEquipBtn.Pressed += () =>
         {
             StaticInstance.WindowMgr.AddScene(
-                (BaseScene)ResourceLoader.Load<PackedScene>("res://Pages/BagScene.tscn").Instantiate(),
-                [major]);
+                (BaseScene)ResourceLoader.Load<PackedScene>("res://Pages/BagScene.tscn").Instantiate(), major);
             StaticInstance.MainRoot.HideRichHint();
         };
         _debugNode.Visible = OS.IsDebugBuild();
@@ -109,8 +107,7 @@ public partial class MainScene : BaseScene, IEvent
         _allocBtn.Pressed += () =>
         {
             StaticInstance.WindowMgr.AddScene(
-                (BaseScene)ResourceLoader.Load<PackedScene>("res://Pages/AllocPointScene.tscn").Instantiate(),
-                [major]);
+                (BaseScene)ResourceLoader.Load<PackedScene>("res://Pages/AllocPointScene.tscn").Instantiate(), major);
             StaticInstance.MainRoot.HideRichHint();
         };
         _testAddCardBtn.Pressed += () =>

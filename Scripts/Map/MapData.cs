@@ -1,8 +1,9 @@
-﻿using Godot;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json.Serialization;
+using Godot;
+using Godot.Collections;
 
 namespace KemoCard.Scripts.Map
 {
@@ -62,7 +63,7 @@ namespace KemoCard.Scripts.Map
         public string ShowName { get; set; } = "";
         public string Id { get; set; } = "";
         public uint HealTimes { get; private set; } = 3;
-        public Godot.Collections.Dictionary<string, Godot.Collections.Array<Variant>> Cond;
+        public Godot.Collections.Dictionary<string, Array<Variant>> Cond;
         public bool CanAbort { get; set; } = true;
 
         /// <summary>
@@ -152,13 +153,13 @@ namespace KemoCard.Scripts.Map
                 StaticInstance.EventMgr.Dispatch("BeforeHeal");
                 StaticInstance.PlayerData.Gsd.MajorRole.CurrHealth +=
                     StaticInstance.PlayerData.Gsd.MajorRole.CurrHpLimit / 2;
-                StaticInstance.MainRoot.ShowBanner($"已治疗生命上限一半的血量");
+                StaticInstance.MainRoot.ShowBanner("已治疗生命上限一半的血量");
                 HealTimes -= 1;
                 StaticInstance.EventMgr.Dispatch("AfterHeal");
             }
             else
             {
-                StaticInstance.MainRoot.ShowBanner($"休息次数不足");
+                StaticInstance.MainRoot.ShowBanner("休息次数不足");
             }
         }
     }

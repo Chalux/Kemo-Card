@@ -3,7 +3,7 @@
 [ext_resource type="Script" uid="uid://hufp1pv3xa1e" path="res://Pages/SaveScene.cs" id="1_jwvr1"]
 [ext_resource type="Script" uid="uid://cjmhh8qfaroco" path="res://Pages/CustonSContainer.cs" id="2_hwt7r"]
 
-[node name="SaveScene" type="Control"]
+[node name="SaveScene" type="Control" node_paths=PackedStringArray("_exitBtn", "_saveList")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -11,6 +11,8 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_jwvr1")
+_exitBtn = NodePath("ExitBtn")
+_saveList = NodePath("Control/ScrollContainer/SaveList")
 
 [node name="ColorRect" type="ColorRect" parent="."]
 layout_mode = 1

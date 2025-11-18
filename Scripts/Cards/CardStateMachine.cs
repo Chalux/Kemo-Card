@@ -1,75 +1,76 @@
 using Godot;
 using Godot.Collections;
-using KemoCard.Scripts.Cards;
+using KemoCard.Pages;
 using static KemoCard.Scripts.StaticEnums;
+
+namespace KemoCard.Scripts.Cards;
 
 public partial class CardStateMachine : Control
 {
-    [Export] public CardState initialState;
-    public CardState currentState;
-    public Dictionary<CardStateEnum, CardState> states = new();
+    [Export] public CardState InitialState;
+    public CardState CurrentState;
+    private Dictionary<CardStateEnum, CardState> _states = new();
 
     public void Init(CardObject card)
     {
         foreach (var child in GetChildren())
         {
-            if (child is CardState @c)
-            {
-                states[c.state] = c;
-                //c.TransitionRequest += OnTransitionRequest;
-                c.cardObject = card;
-            }
+            if (child is not CardState c) continue;
+            _states[c.State] = c;
+            //c.TransitionRequest += OnTransitionRequest;
+            c.CardObject = card;
         }
-        if (initialState != null)
-        {
-            initialState.Enter();
-            currentState = initialState;
-        }
+
+        if (InitialState == null) return;
+        InitialState.Enter();
+        CurrentState = InitialState;
     }
 
     public void OnInput(InputEvent @event)
     {
-        currentState?.OnInput(@event);
+        CurrentState?.OnInput(@event);
     }
 
     public void OnGUIInput(InputEvent @event)
     {
-        currentState?.OnGUIInput(@event);
+        CurrentState?.OnGUIInput(@event);
     }
 
     public void OnMouseEnter()
     {
-        currentState?.OnMouseEnter();
+        CurrentState?.OnMouseEnter();
     }
 
     public void OnMouseExit()
     {
-        currentState?.OnMouseExit();
+        CurrentState?.OnMouseExit();
     }
 
     public void OnTransitionRequest(CardState from, CardStateEnum to)
     {
-        if (from != currentState)
+        if (from != CurrentState)
         {
             return;
         }
-        CardState newState = states[to];
+
+        var newState = _states[to];
         if (newState == null)
         {
             return;
         }
-        currentState?.Exit();
-        currentState = newState;
+
+        CurrentState?.Exit();
+        CurrentState = newState;
         newState.Enter();
     }
 
     public void Process(double delta)
     {
-        currentState?.Process(delta);
+        CurrentState?.Process(delta);
     }
 
     public void ReceiveEvent(string @event, params object[] datas)
     {
-        currentState.ReceiveEvent(@event, datas);
+        CurrentState.ReceiveEvent(@event, datas);
     }
 }

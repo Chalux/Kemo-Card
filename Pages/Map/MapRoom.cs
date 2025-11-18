@@ -1,18 +1,21 @@
-﻿using Godot;
-using KemoCard.Scripts;
-using KemoCard.Scripts.Events;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using KemoCard.Pages;
+using Godot;
+using KemoCard.Scripts;
+using KemoCard.Scripts.Cards;
+using KemoCard.Scripts.Events;
+
+namespace KemoCard.Pages.Map;
 
 public partial class MapRoom : Control
 {
-    [Export] Sprite2D Sprite;
-    [Export] Line2D Line;
-    [Export] AnimationPlayer Animation;
-    private bool _available = false;
+    [Export] private Sprite2D _sprite;
+    [Export] private Line2D _line;
+    [Export] private AnimationPlayer _animation;
+    private bool _available;
     public Action<Room> SelectEventHandler;
-    public bool onlyRunHandlerWhenSelected = false;
+    private bool _onlyRunHandlerWhenSelected;
+
     public bool Available
     {
         get => _available;
@@ -21,31 +24,34 @@ public partial class MapRoom : Control
             _available = value;
             if (_available)
             {
-                Animation.Play("highlight");
+                _animation.Play("highlight");
             }
             else if (!Room.Selected)
             {
-                Animation.Play("RESET");
+                _animation.Play("RESET");
             }
         }
     }
+
     private Room _room;
+
     public Room Room
     {
         get => _room;
         set
         {
             _room = value;
-            Position = new(Room.X, Room.Y);
+            Position = new Vector2(Room.X, Room.Y);
             Random r = new();
-            Line.RotationDegrees = r.NextSingle() * 360;
-            var IconStruct = StaticEnums.RoomIconPath[Room.Type];
-            Sprite.Texture = ResourceLoader.Load<CompressedTexture2D>(IconStruct);
+            _line.RotationDegrees = r.NextSingle() * 360;
+            var iconStruct = StaticEnums.RoomIconPath[Room.Type];
+            _sprite.Texture = ResourceLoader.Load<CompressedTexture2D>(iconStruct);
         }
     }
+
     public void ShowSelected()
     {
-        Line.Modulate = Colors.White;
+        _line.Modulate = Colors.White;
     }
 
     /// <summary>
@@ -54,88 +60,102 @@ public partial class MapRoom : Control
     public void OnMapRoomSelected()
     {
         SelectEventHandler.Invoke(Room);
-        if (onlyRunHandlerWhenSelected) return;
-        KemoCard.Pages.MainScene ms = StaticInstance.WindowMgr.GetSceneByName("MainScene") as KemoCard.Pages.MainScene;
+        if (_onlyRunHandlerWhenSelected) return;
+        var ms = StaticInstance.WindowMgr.GetSceneByName("MainScene") as MainScene;
         ms?.MapView.HideMap();
-        var Data = StaticInstance.PlayerData.Gsd.MapGenerator.Data;
-        if (Room.Type == RoomType.Monster || Room.Type == RoomType.Boss)
+        // var data = StaticInstance.PlayerData.Gsd.MapGenerator.Data;
+        switch (Room.Type)
         {
-            if (Room.RoomPresetId == null)
+            case RoomType.Monster or RoomType.Boss:
             {
-                MapGeneration.SetMonsterRoom(Room, Room.Type == RoomType.Boss);
-            }
-            StaticUtils.StartNewBattleByPreset(Room.RoomPresetId);
-        }
-        else if (Room.Type == RoomType.Event)
-        {
-            if (Room.RoomEventId == null)
-            {
-                MapGeneration.SetEventRoom(Room);
-            }
-            PackedScene res = ResourceLoader.Load<PackedScene>("res://Pages/EventScene.tscn");
-            if (res != null)
-            {
-                KemoCard.Pages.EventScene eventScene = res.Instantiate<KemoCard.Pages.EventScene>();
-                EventScript e = new(Room.RoomEventId);
-                StaticInstance.WindowMgr.AddScene(eventScene, e);
-            }
-        }
-        else if (Room.Type == RoomType.Treasure)
-        {
-            if (Room.RoomEquipId == null)
-            {
-                MapGeneration.SetTreasureRoom(Room);
-            }
-            PackedScene res = ResourceLoader.Load<PackedScene>("res://Pages/RewardScene.tscn");
-            if (res != null)
-            {
-                RewardStruct r1 = new()
+                if (Room.RoomPresetId == null)
                 {
-                    Type = RewardType.Equip,
-                    Rewards = new() { Room.RoomEquipId }
-                };
-                RewardStruct r2 = new()
-                {
-                    Type = RewardType.Card,
-                    Rewards = StaticUtils.GetRandomCardIdFromPool()
-                };
-                List<RewardStruct> datas = new() { r1 };
-                KemoCard.Pages.RewardScene rs = res.Instantiate<KemoCard.Pages.RewardScene>();
-                StaticInstance.WindowMgr.AddScene(rs, datas);
+                    MapGeneration.SetMonsterRoom(Room, Room.Type == RoomType.Boss);
+                }
+
+                StaticUtils.StartNewBattleByPreset(Room.RoomPresetId);
+                break;
             }
-        }
-        else if (Room.Type == RoomType.Shop)
-        {
-            PackedScene res = ResourceLoader.Load<PackedScene>("res://Pages/ShopScene.tscn");
-            if (res != null)
+            case RoomType.Event:
             {
-                Random rand = new();
-                List<string> cardIds = new();
-                List<ShopStruct> shopStructs = new();
-                int ErrorCount = 0;
-                var pool = StaticInstance.PlayerData.Gsd.MapGenerator.Data.CardPool;
-                for (int i = 0; i < 10; i++)
+                if (Room.RoomEventId == null)
                 {
-                    string cid = "";
-                    while ((cid == "" || (cid != "" && cardIds.IndexOf(cid) != -1)) && ErrorCount < 1000)
+                    MapGeneration.SetEventRoom(Room);
+                }
+
+                var res = ResourceLoader.Load<PackedScene>("res://Pages/EventScene.tscn");
+                if (res != null)
+                {
+                    var eventScene = res.Instantiate<EventScene>();
+                    EventScript e = new(Room.RoomEventId);
+                    StaticInstance.WindowMgr.AddScene(eventScene, e);
+                }
+
+                break;
+            }
+            case RoomType.Treasure:
+            {
+                if (Room.RoomEquipId == null)
+                {
+                    MapGeneration.SetTreasureRoom(Room);
+                }
+
+                var res = ResourceLoader.Load<PackedScene>("res://Pages/RewardScene.tscn");
+                if (res != null)
+                {
+                    RewardStruct r1 = new()
                     {
-                        cid = pool[rand.Next(pool.Count)];
-                        ErrorCount++;
-                    }
-                    if (cid != "")
+                        Type = RewardType.Equip,
+                        Rewards = [Room.RoomEquipId]
+                    };
+                    // RewardStruct r2 = new()
+                    // {
+                    //     Type = RewardType.Card,
+                    //     Rewards = StaticUtils.GetRandomCardIdFromPool()
+                    // };
+                    List<RewardStruct> datas = [r1];
+                    var rs = res.Instantiate<RewardScene>();
+                    StaticInstance.WindowMgr.AddScene(rs, datas);
+                }
+
+                break;
+            }
+            case RoomType.Shop:
+            {
+                var res = ResourceLoader.Load<PackedScene>("res://Pages/ShopScene.tscn");
+                if (res != null)
+                {
+                    Random rand = new();
+                    List<string> cardIds = [];
+                    List<ShopStruct> shopStructs = [];
+                    var errorCount = 0;
+                    var pool = StaticInstance.PlayerData.Gsd.MapGenerator.Data.CardPool;
+                    for (var i = 0; i < 10; i++)
                     {
+                        var cid = "";
+                        while ((cid == "" || (cid != "" && cardIds.IndexOf(cid) != -1)) && errorCount < 1000)
+                        {
+                            cid = pool[rand.Next(pool.Count)];
+                            errorCount++;
+                        }
+
+                        if (cid == "") continue;
                         ShopStruct shopStruct = new()
                         {
-                            Card = new(cid),
+                            Card = new Card(cid),
                             IsBought = false,
                         };
                         shopStruct.Price = rand.Next(50, 100) * (int)shopStruct.Card.Rare;
                         shopStructs.Add(shopStruct);
+                        cardIds.Add(cid);
                     }
+
+                    StaticInstance.PlayerData.Gsd.CurrShopStructs = shopStructs;
+                    var ss = res.Instantiate<ShopScene>();
+                    StaticInstance.WindowMgr.AddScene(ss);
                 }
-                StaticInstance.PlayerData.Gsd.CurrShopStructs = shopStructs;
-                KemoCard.Pages.ShopScene ss = res.Instantiate<KemoCard.Pages.ShopScene>();
-                StaticInstance.WindowMgr.AddScene(ss);
+
+                break;
             }
         }
     }
@@ -155,15 +175,10 @@ public partial class MapRoom : Control
 
     public override void _GuiInput(InputEvent @event)
     {
-        if (Available && @event.IsActionReleased("left_mouse"))
-        {
-            //GD.Print(GetGlobalMousePosition(), GetGlobalRect().HasPoint(GetGlobalMousePosition()));
-            if (GetGlobalRect().HasPoint(GetGlobalMousePosition()))
-            {
-                Room.Selected = true;
-                Animation.Play("select");
-            }
-        }
+        if (!Available || !@event.IsActionReleased("left_mouse")) return;
+        //GD.Print(GetGlobalMousePosition(), GetGlobalRect().HasPoint(GetGlobalMousePosition()));
+        if (!GetGlobalRect().HasPoint(GetGlobalMousePosition())) return;
+        Room.Selected = true;
+        _animation.Play("select");
     }
-
 }

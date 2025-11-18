@@ -1,71 +1,84 @@
-using Godot;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using Godot;
 using KemoCard.Scripts;
+
+namespace KemoCard.Pages;
 
 public partial class EndBattleRewardItem : Control
 {
-    private readonly static Dictionary<RewardType, string> TypeIconPath = new() {
+    private static readonly Dictionary<RewardType, string> TypeIconPath = new()
+    {
         { RewardType.Card, "res://Mods/MainPackage/Resources/Icons/icons_231.png" },
         { RewardType.Equip, "res://Mods/MainPackage/Resources/Icons/icons_079.png" },
         { RewardType.Gold, "res://Mods/MainPackage/Resources/Icons/icons_204.png" },
         { RewardType.Exp, "res://Mods/MainPackage/Resources/Icons/icons_032.png" }
     };
-    [Export] Button btn;
-    private RewardType _rewardType;
-    private string[] data;
 
-    public RewardType RType
+    [Export] private RwdButton _btn;
+    private RewardType _rewardType;
+    private string[] _data;
+
+    private RewardType RType
     {
         get => _rewardType;
         set
         {
             _rewardType = value;
-            btn.Icon = ResourceLoader.Load<CompressedTexture2D>(TypeIconPath[value]);
+            _btn.Icon = ResourceLoader.Load<CompressedTexture2D>(TypeIconPath[value]);
         }
     }
-    public void SetData(RewardType rewardType, string[] data)
+
+    private void SetData(RewardType rewardType, string[] data)
     {
         RType = rewardType;
-        this.data = data;
+        _data = data;
     }
 
     public override void _Ready()
     {
         base._Ready();
-        btn.Pressed += new(() =>
+        _btn.Pressed += () =>
         {
-            if (data != null)
+            if (_data == null) return;
+            switch (RType)
             {
-                switch (RType)
-                {
-                    case RewardType.Card:
-                        if (data.Length > 0)
+                case RewardType.Card:
+                    if (_data.Length > 0)
+                    {
+                        var res = ResourceLoader.Load<PackedScene>("res://Pages/SelectCardScene.tscn");
+                        if (res != null)
                         {
-                            PackedScene res = ResourceLoader.Load<PackedScene>("res://Pages/SelectCardScene.tscn");
-                            if (res != null)
-                            {
-                                KemoCard.Pages.SelectCardScene scs = res.Instantiate<KemoCard.Pages.SelectCardScene>();
-                                scs.Init(data.ToList());
-                                StaticInstance.WindowMgr.AddScene(scs);
-                            }
+                            var scs = res.Instantiate<SelectCardScene>();
+                            scs.Init(_data.ToList());
+                            StaticInstance.WindowMgr.AddScene(scs);
                         }
-                        break;
-                    case RewardType.Equip:
-                        if (data.Length > 0)
-                        {
-                            StaticInstance.PlayerData.Gsd.MajorRole.AddEquipToBag(new(data[0]));
-                        }
-                        break;
-                    case RewardType.Exp:
-                        if (data.Length > 0)
-                        {
-                            StaticInstance.PlayerData.Gsd.MajorRole.Exp += (uint)data[0].ToInt();
-                        }
-                        break;
-                }
-                Dispose();
+                    }
+
+                    break;
+                case RewardType.Equip:
+                    if (_data.Length > 0)
+                    {
+                        StaticInstance.PlayerData.Gsd.MajorRole.AddEquipToBag(new(_data[0]));
+                    }
+
+                    break;
+                case RewardType.Exp:
+                    if (_data.Length > 0)
+                    {
+                        StaticInstance.PlayerData.Gsd.MajorRole.Exp += (uint)_data[0].ToInt();
+                    }
+
+                    break;
+                case RewardType.None:
+                case RewardType.Gold:
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
             }
-        });
+
+            Dispose();
+        };
     }
 }

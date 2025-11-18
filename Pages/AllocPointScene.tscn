@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://dlyvt3t8aj7f4" path="res://Pages/AllocPointScene.cs" id="1_i723g"]
 
-[node name="AllocPointScene" type="Control" node_paths=PackedStringArray("SpeedTxt", "StrengthTxt", "EfficiencyTxt", "MantraTxt", "EquipTxt", "BookTxt", "CriticalTxt", "DodgeTxt", "SpeedMinus", "StrengthMinus", "EfficiencyMinus", "MantraMinus", "EquipMinus", "BookMinus", "CriticalMinus", "DodgeMinus", "SpeedPlus", "StrengthPlus", "EfficiencyPlus", "MantraPlus", "EquipPlus", "BookPlus", "CriticalPlus", "DodgePlus", "ConfirmBtn", "CancelBtn", "CheckDeckBtn", "RemainPoint")]
+[node name="AllocPointScene" type="Control" node_paths=PackedStringArray("_speedTxt", "_strengthTxt", "_efficiencyTxt", "_mantraTxt", "_equipTxt", "_bookTxt", "_criticalTxt", "_dodgeTxt", "_speedMinus", "_strengthMinus", "_efficiencyMinus", "_mantraMinus", "_equipMinus", "_bookMinus", "_criticalMinus", "_dodgeMinus", "_speedPlus", "_strengthPlus", "_efficiencyPlus", "_mantraPlus", "_equipPlus", "_bookPlus", "_criticalPlus", "_dodgePlus", "_confirmBtn", "_cancelBtn", "_checkDeckBtn", "_remainPoint")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -10,34 +10,34 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_i723g")
-SpeedTxt = NodePath("Container/VBoxContainer/Control/SpeedTxt")
-StrengthTxt = NodePath("Container/VBoxContainer/Control2/StrengthTxt")
-EfficiencyTxt = NodePath("Container/VBoxContainer/Control3/EfficiencyTxt")
-MantraTxt = NodePath("Container/VBoxContainer/Control4/MantraTxt")
-EquipTxt = NodePath("Container/VBoxContainer/Control5/EquipTxt")
-BookTxt = NodePath("Container/VBoxContainer/Control6/BookTxt")
-CriticalTxt = NodePath("Container/VBoxContainer/Control7/CriticalTxt")
-DodgeTxt = NodePath("Container/VBoxContainer/Control8/DodgeTxt")
-SpeedMinus = NodePath("Container/VBoxContainer/Control/SpeedMinus")
-StrengthMinus = NodePath("Container/VBoxContainer/Control2/StrengthMinus")
-EfficiencyMinus = NodePath("Container/VBoxContainer/Control3/EfficiencyMinus")
-MantraMinus = NodePath("Container/VBoxContainer/Control4/MantraMinus")
-EquipMinus = NodePath("Container/VBoxContainer/Control5/EquipMinus")
-BookMinus = NodePath("Container/VBoxContainer/Control6/BookMinus")
-CriticalMinus = NodePath("Container/VBoxContainer/Control7/CriticalMinus")
-DodgeMinus = NodePath("Container/VBoxContainer/Control8/DodgeMinus")
-SpeedPlus = NodePath("Container/VBoxContainer/Control/SpeedPlus")
-StrengthPlus = NodePath("Container/VBoxContainer/Control2/StrengthPlus")
-EfficiencyPlus = NodePath("Container/VBoxContainer/Control3/EfficiencyPlus")
-MantraPlus = NodePath("Container/VBoxContainer/Control4/MantraPlus")
-EquipPlus = NodePath("Container/VBoxContainer/Control5/EquipPlus")
-BookPlus = NodePath("Container/VBoxContainer/Control6/BookPlus")
-CriticalPlus = NodePath("Container/VBoxContainer/Control7/CriticalPlus")
-DodgePlus = NodePath("Container/VBoxContainer/Control8/DodgePlus")
-ConfirmBtn = NodePath("Container/ConfirmBtn")
-CancelBtn = NodePath("Container/CancelBtn")
-CheckDeckBtn = NodePath("Container/CheckDeckBtn")
-RemainPoint = NodePath("Container/RemainPoint")
+_speedTxt = NodePath("Container/VBoxContainer/Control/SpeedTxt")
+_strengthTxt = NodePath("Container/VBoxContainer/Control2/StrengthTxt")
+_efficiencyTxt = NodePath("Container/VBoxContainer/Control3/EfficiencyTxt")
+_mantraTxt = NodePath("Container/VBoxContainer/Control4/MantraTxt")
+_equipTxt = NodePath("Container/VBoxContainer/Control5/EquipTxt")
+_bookTxt = NodePath("Container/VBoxContainer/Control6/BookTxt")
+_criticalTxt = NodePath("Container/VBoxContainer/Control7/CriticalTxt")
+_dodgeTxt = NodePath("Container/VBoxContainer/Control8/DodgeTxt")
+_speedMinus = NodePath("Container/VBoxContainer/Control/SpeedMinus")
+_strengthMinus = NodePath("Container/VBoxContainer/Control2/StrengthMinus")
+_efficiencyMinus = NodePath("Container/VBoxContainer/Control3/EfficiencyMinus")
+_mantraMinus = NodePath("Container/VBoxContainer/Control4/MantraMinus")
+_equipMinus = NodePath("Container/VBoxContainer/Control5/EquipMinus")
+_bookMinus = NodePath("Container/VBoxContainer/Control6/BookMinus")
+_criticalMinus = NodePath("Container/VBoxContainer/Control7/CriticalMinus")
+_dodgeMinus = NodePath("Container/VBoxContainer/Control8/DodgeMinus")
+_speedPlus = NodePath("Container/VBoxContainer/Control/SpeedPlus")
+_strengthPlus = NodePath("Container/VBoxContainer/Control2/StrengthPlus")
+_efficiencyPlus = NodePath("Container/VBoxContainer/Control3/EfficiencyPlus")
+_mantraPlus = NodePath("Container/VBoxContainer/Control4/MantraPlus")
+_equipPlus = NodePath("Container/VBoxContainer/Control5/EquipPlus")
+_bookPlus = NodePath("Container/VBoxContainer/Control6/BookPlus")
+_criticalPlus = NodePath("Container/VBoxContainer/Control7/CriticalPlus")
+_dodgePlus = NodePath("Container/VBoxContainer/Control8/DodgePlus")
+_confirmBtn = NodePath("Container/ConfirmBtn")
+_cancelBtn = NodePath("Container/CancelBtn")
+_checkDeckBtn = NodePath("Container/CheckDeckBtn")
+_remainPoint = NodePath("Container/RemainPoint")
 
 [node name="ColorRect" type="ColorRect" parent="."]
 layout_mode = 1

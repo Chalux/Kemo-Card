@@ -7,20 +7,20 @@ namespace KemoCard.Pages;
 
 public partial class DeckView : BaseScene
 {
-    [Export] FlowContainer FlowContainer;
-    [Export] Godot.Button ExitBtn;
+    [Export] private FlowContainer _flowContainer;
+    [Export] private Button _exitBtn;
 
     public override void OnAdd(params object[] datas)
     {
-        ExitBtn.Pressed += () => { StaticInstance.WindowMgr.RemoveScene(this); };
+        _exitBtn.Pressed += () => { StaticInstance.WindowMgr.RemoveScene(this); };
         if (datas[0] is List<Card> deck)
         {
             deck.ForEach(card =>
             {
-                var cardobject = ResourceLoader.Load<PackedScene>($"res://Pages/CardShowObject.tscn")
-                    .Instantiate<KemoCard.Pages.CardShowObject>();
-                cardobject.InitDataByCard(card);
-                FlowContainer.AddChild(cardobject);
+                var cardObject = ResourceLoader.Load<PackedScene>("res://Pages/CardShowObject.tscn")
+                    .Instantiate<CardShowObject>();
+                cardObject.InitDataByCard(card);
+                _flowContainer.AddChild(cardObject);
             });
         }
     }

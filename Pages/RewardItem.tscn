@@ -1,14 +1,14 @@
 [gd_scene load_steps=3 format=3 uid="uid://d27acyaxv4l27"]
 
 [ext_resource type="Texture2D" uid="uid://dyygagjf1l0r6" path="res://Mods/MainPackage/Resources/Icons/icons_204.png" id="1_esx2y"]
-[ext_resource type="Script" path="res://Pages/RewardItem.cs" id="1_rayhw"]
+[ext_resource type="Script" uid="uid://6nbwo2yurpt1" path="res://Pages/RewardItem.cs" id="1_rayhw"]
 
-[node name="RewardItem" type="Control" node_paths=PackedStringArray("btn")]
+[node name="RewardItem" type="Control" node_paths=PackedStringArray("_btn")]
 custom_minimum_size = Vector2(300, 64)
 layout_mode = 3
 anchors_preset = 0
 script = ExtResource("1_rayhw")
-btn = NodePath("Button")
+_btn = NodePath("Button")
 
 [node name="Button" type="Button" parent="."]
 layout_mode = 1

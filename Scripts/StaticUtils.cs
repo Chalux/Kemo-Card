@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Godot;
+using KemoCard.Pages;
 using KemoCard.Scripts.Equips;
 using static KemoCard.Scripts.StaticEnums;
 
@@ -32,7 +33,6 @@ namespace KemoCard.Scripts
         {
             return buffDict switch
             {
-                BuffDict.None => 1,
                 _ => 1,
             };
         }
@@ -53,11 +53,11 @@ namespace KemoCard.Scripts
         public static string GetSaveDirPath() => ProjectSettings.LocalizePath("user://Saves/");
         public static string GetInternalImagePath => ProjectSettings.LocalizePath("res://Resources/Image/");
 
-        public static Pages.DialogueScene StartDialogue(string url)
+        public static DialogueScene StartDialogue(string url)
         {
             var res = ResourceLoader.Load<PackedScene>("res://Pages/DialogueScene.tscn");
             if (res == null) return null;
-            var ds = res.Instantiate<Pages.DialogueScene>();
+            var ds = res.Instantiate<DialogueScene>();
             StaticInstance.WindowMgr.AddScene(ds);
             ds.RunDialogue(url);
             StaticInstance.MainRoot.HideRichHint();
@@ -150,7 +150,7 @@ namespace KemoCard.Scripts
 
         public static void StartNewBattleByPreset(string presetId)
         {
-            var bs = (Pages.BattleScene)ResourceLoader.Load<PackedScene>("res://Pages/BattleScene.tscn").Instantiate();
+            var bs = (BattleScene)ResourceLoader.Load<PackedScene>("res://Pages/BattleScene.tscn").Instantiate();
             //MainScene ms = (MainScene)StaticInstance.windowMgr.GetSceneByName("MainScene");
             //ms?.MapView.HideMap();
             //StaticInstance.windowMgr.AddScene(bs);
@@ -161,7 +161,7 @@ namespace KemoCard.Scripts
         public static void CloseEvent()
         {
             StaticInstance.EventMgr.Dispatch("close_eventscene");
-            var ms = StaticInstance.WindowMgr.GetSceneByName("MainScene") as Pages.MainScene;
+            var ms = StaticInstance.WindowMgr.GetSceneByName("MainScene") as MainScene;
             ms?.MapView?.UnlockNextRooms();
         }
 
@@ -205,10 +205,10 @@ namespace KemoCard.Scripts
             return res;
         }
 
-        public static Pages.BattleScene TryGetBattleScene()
+        public static BattleScene TryGetBattleScene()
         {
-            if (!BattleStatic.isFighting) return null;
-            var bs = StaticInstance.WindowMgr.GetSceneByName("BattleScene") as Pages.BattleScene;
+            if (!BattleStatic.IsFighting) return null;
+            var bs = StaticInstance.WindowMgr.GetSceneByName("BattleScene") as BattleScene;
             return bs;
         }
     }

@@ -6,41 +6,41 @@ namespace KemoCard.Pages;
 
 public partial class MenuScene : BaseScene
 {
-    [Export] Godot.Button exit;
-    [Export] Godot.Button start;
-    [Export] Godot.Button load;
-    [Export] Godot.Button DebugTempBtn;
+    [Export] private Button _exit;
+    [Export] private Button _start;
+    [Export] private Button _load;
+    [Export] private Button _debugTempBtn;
 
     public override void _Ready()
     {
         base._Ready();
-        DebugTempBtn.Visible = OS.IsDebugBuild();
-        exit.Pressed += () =>
+        _debugTempBtn.Visible = OS.IsDebugBuild();
+        _exit.Pressed += () =>
         {
             GD.Print("MenuScene退出了游戏");
             GetTree().Quit();
         };
-        exit.MouseEntered += () => { StaticInstance.MainRoot.ShowRichHint("退出游戏"); };
-        exit.MouseExited += () => { StaticInstance.MainRoot.HideRichHint(); };
-        start.MouseEntered += () => { StaticInstance.MainRoot.ShowRichHint("开始游戏"); };
-        start.MouseExited += () => { StaticInstance.MainRoot.HideRichHint(); };
-        start.Pressed += () =>
+        _exit.MouseEntered += () => { StaticInstance.MainRoot.ShowRichHint("退出游戏"); };
+        _exit.MouseExited += () => { StaticInstance.MainRoot.HideRichHint(); };
+        _start.MouseEntered += () => { StaticInstance.MainRoot.ShowRichHint("开始游戏"); };
+        _start.MouseExited += () => { StaticInstance.MainRoot.HideRichHint(); };
+        _start.Pressed += () =>
         {
             StaticInstance.WindowMgr.ChangeScene(
                 ResourceLoader.Load<PackedScene>("res://Pages/RoleCreateScene.tscn").Instantiate(),
                 _ => { StaticInstance.MainRoot.CanPause = true; });
             StaticInstance.MainRoot.HideRichHint();
         };
-        load.Pressed += () =>
+        _load.Pressed += () =>
         {
             StaticInstance.WindowMgr.ChangeScene(
                 ResourceLoader.Load<PackedScene>("res://Pages/LoadSaveScene.tscn").Instantiate(),
                 _ => { StaticInstance.MainRoot.CanPause = true; });
             StaticInstance.MainRoot.HideRichHint();
         };
-        if (DebugTempBtn.Visible)
+        if (_debugTempBtn.Visible)
         {
-            DebugTempBtn.Pressed += () =>
+            _debugTempBtn.Pressed += () =>
             {
                 var res = ResourceLoader.Load<PackedScene>("res://Pages/FloatingNum.tscn");
                 if (res == null) return;

@@ -5,8 +5,8 @@ namespace KemoCard.Pages;
 
 public partial class SaveScene : BaseScene
 {
-    [Export] Godot.Button _exitBtn;
-    [Export] HFlowContainer _saveList;
+    [Export] private Button _exitBtn;
+    [Export] private HFlowContainer _saveList;
 
     // Called when the node enters the scene tree for the first time.
     public override void OnAdd(params object[] datas)
@@ -41,12 +41,12 @@ public partial class SaveScene : BaseScene
             var path = StaticUtils.GetSavePath((uint)i);
             if (FileAccess.FileExists(path))
             {
-                var imgpath = StaticUtils.GetSaveImgPath((uint)i);
-                if (FileAccess.FileExists(imgpath))
+                var imgPath = StaticUtils.GetSaveImgPath((uint)i);
+                if (FileAccess.FileExists(imgPath))
                 {
                     if (container.GetChild(0) is TextureRect tr)
                         tr.Texture =
-                            ImageTexture.CreateFromImage(Image.LoadFromFile(imgpath));
+                            ImageTexture.CreateFromImage(Image.LoadFromFile(imgPath));
                 }
             }
 

@@ -1,6 +1,9 @@
-﻿using Godot;
-using KemoCard.Scripts;
+﻿using System;
 using System.Collections.Generic;
+using Godot;
+using KemoCard.Scripts;
+
+namespace KemoCard.Pages;
 
 public enum RewardType
 {
@@ -10,12 +13,14 @@ public enum RewardType
     Equip = 3,
     Exp = 4,
 }
+
 public partial class RewardItem : Control
 {
-    [Export] Godot.Button btn;
+    [Export] private Button _btn;
     private RewardType _type = RewardType.None;
-    public List<string> Rewards = new();
-    public RewardType Type
+    private List<string> _rewards = [];
+
+    private RewardType Type
     {
         get => _type;
         set
@@ -25,72 +30,78 @@ public partial class RewardItem : Control
             switch (value)
             {
                 case RewardType.Gold:
-                    btn.Pressed += GoldAction;
-                    btn.Icon = ResourceLoader.Load<CompressedTexture2D>("res://Mods/MainPackage/Resources/Icons/icons_204.png");
-                    if (Rewards.Count > 0) btn.Text = $"金币({Rewards[0]})";
-                    else btn.Text = $"金币(出错)";
+                    _btn.Pressed += GoldAction;
+                    _btn.Icon = ResourceLoader.Load<CompressedTexture2D>(
+                        "res://Mods/MainPackage/Resources/Icons/icons_204.png");
+                    _btn.Text = _rewards.Count > 0 ? $"金币({_rewards[0]})" : "金币(出错)";
                     break;
                 case RewardType.Card:
-                    btn.Pressed += CardAction;
-                    btn.Icon = ResourceLoader.Load<CompressedTexture2D>("res://Mods/MainPackage/Resources/Icons/icons_231.png");
-                    if (Rewards.Count > 0) btn.Text = $"选择卡牌";
-                    else btn.Text = $"选择卡牌(出错)";
+                    _btn.Pressed += CardAction;
+                    _btn.Icon = ResourceLoader.Load<CompressedTexture2D>(
+                        "res://Mods/MainPackage/Resources/Icons/icons_231.png");
+                    _btn.Text = _rewards.Count > 0 ? "选择卡牌" : "选择卡牌(出错)";
                     break;
                 case RewardType.Equip:
-                    btn.Pressed += EquipAction;
-                    if (Rewards.Count > 0)
+                    _btn.Pressed += EquipAction;
+                    if (_rewards.Count > 0)
                     {
-                        Equip e = new(Rewards[0]);
-                        btn.Icon = ResourceLoader.Load<CompressedTexture2D>(e.EquipScript.TextureUrl);
+                        Equip e = new(_rewards[0]);
+                        _btn.Icon = ResourceLoader.Load<CompressedTexture2D>(e.EquipScript.TextureUrl);
 
-                        btn.Text = $"装备({e.EquipScript.Name})";
-                        btn.MouseEntered += new(() =>
-                        {
-                            StaticInstance.MainRoot.ShowRichHint(e.EquipScript.Desc);
-                        });
-                        btn.MouseExited += StaticInstance.MainRoot.HideRichHint;
+                        _btn.Text = $"装备({e.EquipScript.Name})";
+                        _btn.MouseEntered += () => { StaticInstance.MainRoot.ShowRichHint(e.EquipScript.Desc); };
+                        _btn.MouseExited += StaticInstance.MainRoot.HideRichHint;
                     }
-                    else btn.Text = $"装备(出错)";
+                    else _btn.Text = "装备(出错)";
+
                     break;
                 case RewardType.Exp:
-                    btn.Pressed += ExpAction;
-                    btn.Icon = ResourceLoader.Load<CompressedTexture2D>("res://Mods/MainPackage/Resources/Icons/icons_032.png");
-                    if (Rewards.Count > 0) btn.Text = $"经验({Rewards[0]})";
-                    else btn.Text = $"经验(出错)";
+                    _btn.Pressed += ExpAction;
+                    _btn.Icon = ResourceLoader.Load<CompressedTexture2D>(
+                        "res://Mods/MainPackage/Resources/Icons/icons_032.png");
+                    _btn.Text = _rewards.Count > 0 ? $"经验({_rewards[0]})" : "经验(出错)";
                     break;
+                case RewardType.None:
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(value), value, null);
             }
         }
     }
 
     public void SetReward(RewardType type, List<string> rewards)
     {
-        Rewards = rewards;
+        _rewards = rewards;
         Type = type;
     }
 
     private void GoldAction()
     {
-        StaticInstance.PlayerData.Gsd.MajorRole.Gold += Rewards.Count > 0 ? Rewards[0].ToInt() : 0;
+        StaticInstance.PlayerData.Gsd.MajorRole.Gold += _rewards.Count > 0 ? _rewards[0].ToInt() : 0;
         GetParent().RemoveChild(this);
         QueueFree();
     }
+
     private void CardAction()
     {
-        KemoCard.Pages.SelectCardScene selectCardScene = ResourceLoader.Load<PackedScene>("res://Pages/SelectCardScene.tscn").Instantiate<KemoCard.Pages.SelectCardScene>();
-        selectCardScene.Init(Rewards);
+        var selectCardScene = ResourceLoader.Load<PackedScene>("res://Pages/SelectCardScene.tscn")
+            .Instantiate<SelectCardScene>();
+        selectCardScene.Init(_rewards);
         StaticInstance.WindowMgr.AddScene(selectCardScene, this);
     }
+
     private void EquipAction()
     {
-        if (Rewards.Count == 0) return;
-        string id = Rewards[0];
-        StaticInstance.PlayerData.Gsd.MajorRole.AddEquipToBag(new(id));
+        if (_rewards.Count == 0) return;
+        var id = _rewards[0];
+        StaticInstance.PlayerData.Gsd.MajorRole.AddEquipToBag(new Equip(id));
         GetParent().RemoveChild(this);
         QueueFree();
     }
+
     private void ExpAction()
     {
-        StaticInstance.PlayerData.Gsd.MajorRole.Exp += Rewards.Count > 0 ? (uint)Rewards[0].ToInt() : 0;
+        StaticInstance.PlayerData.Gsd.MajorRole.Exp += _rewards.Count > 0 ? (uint)_rewards[0].ToInt() : 0;
         GetParent().RemoveChild(this);
         QueueFree();
     }

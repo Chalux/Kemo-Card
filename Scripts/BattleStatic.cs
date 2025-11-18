@@ -1,33 +1,34 @@
-﻿using KemoCard.Scripts.Cards;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using KemoCard.Pages;
+using KemoCard.Scripts.Cards;
 
 namespace KemoCard.Scripts
 {
-    internal class BattleStatic
+    internal static class BattleStatic
     {
-        public static CardObject currCard = null;
-        public static HashSet<BaseRole> Targets = new();
-        public static bool isFighting = false;
+        public static CardObject CurrCard;
+        public static readonly HashSet<BaseRole> Targets = [];
+        public static bool IsFighting;
 
-        public static List<Card> discard_list = new();
-        public static bool isDiscarding = false;
+        public static List<Card> DiscardList = [];
+        public static bool IsDiscarding;
         public static Func<Card, bool> SelectFilterFunc;
         public static Action<List<Card>> ConfirmAction;
-        public static List<int> MustList = new();
+        public static List<int> MustList = [];
         public static int MaxSelectCount = 0;
         public static int MinSelectCount = 0;
 
-        public static List<Card> GameUsedCard = new();
-        public static List<Card> TurnUsedCard = new();
-        public static Dictionary<string, double> GameTags = new();
-        public static Dictionary<string, double> TurnTags = new();
+        public static readonly List<Card> GameUsedCard = [];
+        public static readonly List<Card> TurnUsedCard = [];
+        public static readonly Dictionary<string, double> GameTags = new();
+        public static readonly Dictionary<string, double> TurnTags = new();
 
         public static void Reset()
         {
-            currCard = null;
+            CurrCard = null;
             Targets?.Clear();
-            isFighting = false;
+            IsFighting = false;
             EndSelect();
             GameUsedCard.Clear();
             TurnUsedCard.Clear();
@@ -37,7 +38,7 @@ namespace KemoCard.Scripts
 
         public static void SelectCard(CardObject obj)
         {
-            if (discard_list.IndexOf(obj.card) > -1)
+            if (DiscardList.IndexOf(obj.Card) > -1)
             {
                 if (MustList.IndexOf(obj.GetIndex()) > -1)
                 {
@@ -45,22 +46,23 @@ namespace KemoCard.Scripts
                 }
                 else
                 {
-                    discard_list.Remove(obj.card);
-                    obj.EFRect.Visible = false;
+                    DiscardList.Remove(obj.Card);
+                    obj.EfRect.Visible = false;
                 }
             }
             else
             {
-                discard_list.Add(obj.card);
-                obj.EFRect.Visible = true;
+                DiscardList.Add(obj.Card);
+                obj.EfRect.Visible = true;
             }
+
             StaticInstance.EventMgr.Dispatch("SelectCard");
         }
 
         public static void EndSelect()
         {
-            discard_list?.Clear();
-            isDiscarding = false;
+            DiscardList?.Clear();
+            IsDiscarding = false;
             MustList?.Clear();
             SelectFilterFunc = null;
             ConfirmAction = null;
@@ -68,9 +70,9 @@ namespace KemoCard.Scripts
 
         public static void StartSelect()
         {
-            discard_list = new();
-            isDiscarding = true;
-            MustList = new();
+            DiscardList = [];
+            IsDiscarding = true;
+            MustList = [];
             SelectFilterFunc = null;
             ConfirmAction = null;
         }

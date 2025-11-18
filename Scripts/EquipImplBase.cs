@@ -1,9 +1,9 @@
-﻿using Godot;
-using KemoCard.Scripts.Cards;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json.Serialization;
+using Godot;
+using KemoCard.Scripts.Cards;
 
 namespace KemoCard.Scripts
 {
@@ -14,18 +14,17 @@ namespace KemoCard.Scripts
         public Dictionary<string, uint> CardDic { get; set; } = new();
 
         public string TextureUrl { get; set; } = "";
-        [JsonIgnore]
-        public Action<BaseRole> UseFilter;
+        [JsonIgnore] public Action<BaseRole> UseFilter;
 
-        public bool DoDefaultPutOn = true;
-        [JsonIgnore]
-        public Action<EquipImplBase> CustomPutOn;
+        private bool _doDefaultPutOn = true;
+        [JsonIgnore] public Action<EquipImplBase> CustomPutOn;
         public string Desc = "";
+
         public void OnPutOn()
         {
-            if (Binder != null && DoDefaultPutOn && Binder.Owner is PlayerRole pr)
+            if (Binder != null && _doDefaultPutOn && Binder.Owner is PlayerRole pr)
             {
-                int Count = 0;
+                var count = 0;
                 foreach (var keyValuePair in CardDic)
                 {
                     for (uint i = 1; i <= keyValuePair.Value; i++)
@@ -35,58 +34,58 @@ namespace KemoCard.Scripts
                             EquipId = Binder.Uuid,
                         };
                         pr.AddCardIntoDeck(card);
-                        Count++;
+                        count++;
                     }
                 }
-                GD.Print("角色" + pr.GetName() + "装备了id为" + Binder.Id + ",Uuid为" + Binder.Uuid + "的装备。新增卡牌" + Count + "张至卡组中。装备后角色的卡组数量为" + pr.Deck.Count);
+
+                GD.Print("角色" + pr.GetName() + "装备了id为" + Binder.Id + ",Uuid为" + Binder.Uuid + "的装备。新增卡牌" + count +
+                         "张至卡组中。装备后角色的卡组数量为" + pr.Deck.Count);
             }
+
             CustomPutOn?.Invoke(this);
         }
 
         public bool DoDefaultPutOff = true;
-        [JsonIgnore]
-        public Action<EquipImplBase> CustomPutOff;
+        [JsonIgnore] public Action<EquipImplBase> CustomPutOff;
+
         public void OnPutOff()
         {
             if (Binder != null && DoDefaultPutOff && Binder.Owner is PlayerRole pr)
             {
-                int Count = 0;
+                var count = 0;
                 var tempDeck = pr.Deck.ToList();
-                foreach (var card in tempDeck)
+                foreach (var card in tempDeck.Where(card =>
+                             card.EquipId == Binder.Uuid && CardDic.ContainsKey(card.Id)))
                 {
-                    if (card.EquipId == Binder.Uuid && CardDic.ContainsKey(card.Id))
-                    {
-                        pr.RemoveCardFromDeck(card.Id, card.Idx);
-                        Count++;
-                    }
+                    pr.RemoveCardFromDeck(card.Id, card.Idx);
+                    count++;
                 }
-                GD.Print("角色" + pr.GetName() + "脱下了id为" + Binder.Id + ",Uuid为" + Binder.Uuid + "的装备。从卡组中删除卡牌" + Count + "张。脱下后角色的卡组数量为" + pr.Deck.Count);
+
+                GD.Print("角色" + pr.GetName() + "脱下了id为" + Binder.Id + ",Uuid为" + Binder.Uuid + "的装备。从卡组中删除卡牌" + count +
+                         "张。脱下后角色的卡组数量为" + pr.Deck.Count);
             }
+
             CustomPutOff?.Invoke(this);
         }
 
-        [JsonIgnore]
-        public Action OnCreated;
+        [JsonIgnore] public Action OnCreated;
 
-        [JsonIgnore]
-        public Dictionary<string, List<Action<dynamic>>> EventDic { get; set; } = new();
+        [JsonIgnore] private Dictionary<string, List<Action<dynamic>>> EventDic { get; set; } = new();
+
         public void ReceiveEvent(string @event, params object[] datas)
         {
-            if (EventDic.ContainsKey(@event)) EventDic[@event]?.ForEach(function => function?.Invoke(datas));
+            if (EventDic.TryGetValue(@event, out var value)) value?.ForEach(function => function?.Invoke(datas));
         }
 
         public void AddEvent(string @event, Action<dynamic> func)
         {
-            if (EventDic.ContainsKey(@event))
+            if (EventDic.TryGetValue(@event, out var value))
             {
-                EventDic[@event].Add(func);
+                value.Add(func);
             }
             else
             {
-                EventDic[@event] = new()
-                {
-                    func
-                };
+                EventDic[@event] = [func];
             }
         }
     }

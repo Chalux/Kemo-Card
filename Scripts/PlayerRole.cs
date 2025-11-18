@@ -1,10 +1,11 @@
-﻿using Godot;
-using KemoCard.Scripts.Cards;
-using KemoCard.Scripts.Roles;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json.Serialization;
+using Godot;
+using KemoCard.Pages;
+using KemoCard.Scripts.Cards;
+using KemoCard.Scripts.Roles;
 using static KemoCard.Scripts.StaticEnums;
 
 namespace KemoCard.Scripts
@@ -198,13 +199,11 @@ namespace KemoCard.Scripts
                             StaticInstance.MainRoot.ShowBanner("背包已满");
                             return;
                         }
-                        else
-                        {
-                            EquipList[bagIndex] = null;
-                            PutOffEquip((uint)EquipType.Weapon1);
-                            PutOffEquip((uint)EquipType.Weapon2);
-                            EquipDic[(uint)EquipType.Weapon1] = EquipDic[(uint)EquipType.Weapon2] = equip;
-                        }
+
+                        EquipList[bagIndex] = null;
+                        PutOffEquip((uint)EquipType.Weapon1);
+                        PutOffEquip((uint)EquipType.Weapon2);
+                        EquipDic[(uint)EquipType.Weapon1] = EquipDic[(uint)EquipType.Weapon2] = equip;
                     }
                     else
                     {
@@ -311,11 +310,9 @@ namespace KemoCard.Scripts
                 StaticInstance.EventMgr.Dispatch("PlayerEquipUpdated");
                 return true;
             }
-            else
-            {
-                StaticInstance.MainRoot.ShowBanner("背包已满");
-                return false;
-            }
+
+            StaticInstance.MainRoot.ShowBanner("背包已满");
+            return false;
         }
 
         public int GetFirstEmptyBagIndex()
@@ -479,7 +476,7 @@ namespace KemoCard.Scripts
         public void AddCardToDeck(Card card)
         {
             InFightDeck.Add(card);
-            if (StaticInstance.CurrWindow is not Pages.BattleScene bs) return;
+            if (StaticInstance.CurrWindow is not BattleScene bs) return;
             if (bs.NowPlayer == this)
             {
                 bs.UpdateCounts();
@@ -494,7 +491,7 @@ namespace KemoCard.Scripts
         public void RemoveCardInDeck(Card card)
         {
             InFightDeck.Remove(card);
-            if (StaticInstance.CurrWindow is not Pages.BattleScene bs) return;
+            if (StaticInstance.CurrWindow is not BattleScene bs) return;
             if (bs.NowPlayer == this)
             {
                 bs.UpdateCounts();
@@ -504,7 +501,7 @@ namespace KemoCard.Scripts
         public void AddCardToGrave(Card card)
         {
             InFightGrave.Add(card);
-            if (StaticInstance.CurrWindow is not Pages.BattleScene bs) return;
+            if (StaticInstance.CurrWindow is not BattleScene bs) return;
             if (bs.NowPlayer == this)
             {
                 bs.UpdateCounts();
@@ -514,7 +511,7 @@ namespace KemoCard.Scripts
         public void RemoveCardInGrave(Card card)
         {
             InFightGrave.Remove(card);
-            if (StaticInstance.CurrWindow is not Pages.BattleScene bs) return;
+            if (StaticInstance.CurrWindow is not BattleScene bs) return;
             if (bs.NowPlayer == this)
             {
                 bs.UpdateCounts();
@@ -600,7 +597,7 @@ namespace KemoCard.Scripts
         /// <param name="card">添加到手牌的card数据</param>
         public void AddCardIntoInfightHand(Card card)
         {
-            if (StaticInstance.WindowMgr.GetSceneByName("BattleScene") is not Pages.BattleScene bs) return;
+            if (StaticInstance.WindowMgr.GetSceneByName("BattleScene") is not BattleScene bs) return;
             card.Owner = this;
             InFightHands.Add(card);
             var res = ResourceLoader.Load<PackedScene>("res://Pages/CardObject.tscn");

@@ -7,9 +7,9 @@ namespace KemoCard.Pages;
 
 public partial class EventScene : BaseScene, IEvent
 {
-    [Export] VBoxContainer BtnContainer;
-    [Export] TextureRect EventImg;
-    [Export] Label EventTitle;
+    [Export] private VBoxContainer _btnContainer;
+    [Export] private TextureRect _eventImg;
+    [Export] private Label _eventTitle;
     private EventScript _eventScriptData;
 
     public override void OnAdd(params object[] datas)
@@ -35,26 +35,26 @@ public partial class EventScene : BaseScene, IEvent
     {
         var maxLen = Math.Max(_eventScriptData.EventActions.Count,
             Math.Max(_eventScriptData.EventDesc.Count, _eventScriptData.EventIconPath.Count));
-        foreach (var node in BtnContainer.GetChildren())
+        foreach (var node in _btnContainer.GetChildren())
         {
             node.QueueFree();
         }
 
         for (var i = 0; i < maxLen; i++)
         {
-            Godot.Button btn = new();
+            Button btn = new();
             btn.AddThemeFontSizeOverride("EventSceneFontSize", 36);
             btn.Text = _eventScriptData.EventDesc[i] ?? "无描述";
             var compressedTexture2D = ResourceLoader.Load<CompressedTexture2D>(_eventScriptData.EventIconPath[i]);
             btn.Icon = compressedTexture2D;
             if (_eventScriptData.EventActions[i] != null) btn.Pressed += _eventScriptData.EventActions[i];
             else btn.Pressed += GoAhead;
-            BtnContainer.AddChild(btn);
+            _btnContainer.AddChild(btn);
         }
 
         if (_eventScriptData.EventImgPath?.Length > 0)
-            EventImg.Texture = ResourceLoader.Load<CompressedTexture2D>(_eventScriptData.EventImgPath);
-        EventTitle.Text = _eventScriptData.EventTitle;
+            _eventImg.Texture = ResourceLoader.Load<CompressedTexture2D>(_eventScriptData.EventImgPath);
+        _eventTitle.Text = _eventScriptData.EventTitle;
     }
 
     private static void GoAhead()

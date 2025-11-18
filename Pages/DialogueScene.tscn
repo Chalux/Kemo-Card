@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://p68hgj7pwh2e" path="res://Pages/DialogueScene.cs" id="1_0b3sr"]
 
-[node name="DialogueScene" type="Control" node_paths=PackedStringArray("Background", "BlackMask")]
+[node name="DialogueScene" type="Control" node_paths=PackedStringArray("_background", "_blackMask")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -10,8 +10,8 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_0b3sr")
-Background = NodePath("BackGround")
-BlackMask = NodePath("BackGround/BlackMask")
+_background = NodePath("BackGround")
+_blackMask = NodePath("BackGround/BlackMask")
 
 [node name="BackGround" type="TextureRect" parent="."]
 custom_minimum_size = Vector2(1920, 1080)

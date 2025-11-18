@@ -1,7 +1,9 @@
 using Godot;
 
+namespace KemoCard.Pages;
+
 public partial class SelectCardItem : Control
 {
-    [Export] public KemoCard.Pages.CardShowObject showObject;
-    [Export] public TextureRect shaderRect;
+    [Export] public CardShowObject ShowObject;
+    [Export] public TextureRect ShaderRect;
 }

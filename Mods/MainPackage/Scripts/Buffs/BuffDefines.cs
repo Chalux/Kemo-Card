@@ -50,10 +50,10 @@ public partial class FireInjury : BaseBuffScript
     {
         if (datas == null) return;
         if (datas is not Damage d) return;
-        if (d.targets == null || d.targets[0] != b.Binder || d.atrribute != StaticEnums.AttributeEnum.Fire) return;
-        GD.Print("Buff fire_injury通过条件检测,修改前的值：" + d.value);
-        d.value *= 1.5;
-        GD.Print("Buff fire_injury通过条件检测,修改后的值：" + d.value);
+        if (d.Targets == null || d.Targets[0] != b.Binder || d.Attribute != StaticEnums.AttributeEnum.Fire) return;
+        GD.Print("Buff fire_injury通过条件检测,修改前的值：" + d.Value);
+        d.Value *= 1.5;
+        GD.Print("Buff fire_injury通过条件检测,修改后的值：" + d.Value);
     }
 }
 
@@ -67,10 +67,10 @@ public partial class FireResis : BaseBuffScript
     private static void DealDamageFunc(BuffImplBase b, dynamic datas)
     {
         if (datas is not Damage d) return;
-        if (d.targets == null || d.targets[0] != b.Binder || d.atrribute != StaticEnums.AttributeEnum.Fire) return;
-        GD.Print("Buff fire_resis通过条件检测,修改前的值：" + d.value);
-        d.value *= 0.75;
-        GD.Print("Buff fire_resis通过条件检测,修改后的值：" + d.value);
+        if (d.Targets == null || d.Targets[0] != b.Binder || d.Attribute != StaticEnums.AttributeEnum.Fire) return;
+        GD.Print("Buff fire_resis通过条件检测,修改前的值：" + d.Value);
+        d.Value *= 0.75;
+        GD.Print("Buff fire_resis通过条件检测,修改后的值：" + d.Value);
     }
 }
 
@@ -84,7 +84,7 @@ public partial class GetLucky : BaseBuffScript
     private static void StartBattleFunc(BuffImplBase b, dynamic datas)
     {
         if (StaticInstance.CurrWindow is not Pages.BattleScene bs) return;
-        if (!BattleStatic.isFighting) return;
+        if (!BattleStatic.IsFighting) return;
         if (b.Binder is not PlayerRole inFightPlayer) return;
         for (var i = 0; i < 2; i++)
         {
@@ -95,7 +95,7 @@ public partial class GetLucky : BaseBuffScript
             inFightPlayer.InFightHands.Add(card);
             if (inFightPlayer != bs.NowPlayer) continue;
             var cardObject = ResourceLoader.Load<PackedScene>("res://Pages/CardObject.tscn")
-                .Instantiate<CardObject>();
+                .Instantiate<Pages.CardObject>();
             cardObject.InitData(card);
             bs.HandControl.AddChild(cardObject);
         }
@@ -112,9 +112,9 @@ public partial class GhostBody : BaseBuffScript
     private static void DealDamageFunc(BuffImplBase b, dynamic datas)
     {
         if (datas[0] is not Damage damage) return;
-        if (damage.attackType == StaticEnums.AttackType.Physics)
+        if (damage.AttackType == StaticEnums.AttackType.Physics)
         {
-            damage.value /= 2;
+            damage.Value /= 2;
         }
     }
 }
@@ -130,10 +130,10 @@ public partial class Telekinesis : BaseBuffScript
     {
         if (datas[0] == null) return;
         if (datas[0] is not Damage damage) return;
-        if (!damage.targets.Contains(buff.Binder as BaseRole)) return;
+        if (!damage.Targets.Contains(buff.Binder as BaseRole)) return;
         if (buff.Binder is PlayerRole pr)
         {
-            pr.CurrMBlock += (int)Math.Ceiling(damage.value / 2);
+            pr.CurrMBlock += (int)Math.Ceiling(damage.Value / 2);
         }
     }
 }
@@ -149,10 +149,10 @@ internal partial class WaterInjury : BaseBuffScript
     {
         if (datas == null) return;
         if (datas is not Damage d) return;
-        if (d.targets == null || d.targets[0] != b.Binder || d.atrribute != StaticEnums.AttributeEnum.Water) return;
-        GD.Print("Buff water_injury通过条件检测,修改前的值：" + d.value);
-        d.value *= 1.5;
-        GD.Print("Buff water_injury通过条件检测,修改后的值：" + d.value);
+        if (d.Targets == null || d.Targets[0] != b.Binder || d.Attribute != StaticEnums.AttributeEnum.Water) return;
+        GD.Print("Buff water_injury通过条件检测,修改前的值：" + d.Value);
+        d.Value *= 1.5;
+        GD.Print("Buff water_injury通过条件检测,修改后的值：" + d.Value);
     }
 }
 
@@ -167,10 +167,10 @@ internal partial class WaterResis : BaseBuffScript
     {
         if (datas == null) return;
         if (datas is not Damage d) return;
-        if (d.targets is null || d.targets[0] != b.Binder ||
-            d.atrribute != StaticEnums.AttributeEnum.Water) return;
-        GD.Print("Buff water_resis通过条件检测,修改前的值：" + d.value);
-        d.value *= 0.75;
-        GD.Print("Buff water_resis通过条件检测,修改后的值：" + d.value);
+        if (d.Targets is null || d.Targets[0] != b.Binder ||
+            d.Attribute != StaticEnums.AttributeEnum.Water) return;
+        GD.Print("Buff water_resis通过条件检测,修改前的值：" + d.Value);
+        d.Value *= 0.75;
+        GD.Print("Buff water_resis通过条件检测,修改后的值：" + d.Value);
     }
 }

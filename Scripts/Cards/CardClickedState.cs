@@ -3,31 +3,29 @@ using static KemoCard.Scripts.StaticEnums;
 
 namespace KemoCard.Scripts.Cards
 {
-    partial class CardClickedState : CardState
+    internal partial class CardClickedState : CardState
     {
         public override void Enter()
         {
             OnEnter();
         }
 
-        void OnEnter()
+        private void OnEnter()
         {
             //cardObject.BgRect.Color = Colors.Orange;
-            cardObject.PivotOffset = Vector2.Zero;
-            cardObject.dropPointDetector.Monitoring = true;
-            cardObject.stateLabel.Text = "CLICKED";
+            CardObject.PivotOffset = Vector2.Zero;
+            CardObject.DropPointDetector.Monitoring = true;
+            CardObject.StateLabel.Text = "CLICKED";
         }
 
         public override void OnInput(InputEvent @event)
         {
-            if (@event is InputEventMouseMotion)
-            {
-                var type = cardObject.card.TargetType;
-                if (type == TargetType.AllSingle || type == TargetType.EnemySingle || type == TargetType.TeamSingle)
-                    cardObject.csm.OnTransitionRequest(this, CardStateEnum.TargetDragging);
-                else
-                    cardObject.csm.OnTransitionRequest(this, CardStateEnum.AllOrSelfDragging);
-            }
+            if (@event is not InputEventMouseMotion) return;
+            var type = CardObject.Card.TargetType;
+            CardObject.Csm.OnTransitionRequest(this,
+                type is TargetType.AllSingle or TargetType.EnemySingle or TargetType.TeamSingle
+                    ? CardStateEnum.TargetDragging
+                    : CardStateEnum.AllOrSelfDragging);
         }
     }
 }

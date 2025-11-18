@@ -1,12 +1,13 @@
-﻿using Godot;
-using KemoCard.Scripts.Buffs;
-using KemoCard.Scripts.Cards;
-using KemoCard.Scripts.Equips;
-using System;
+﻿using System;
 using System.Linq;
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using Godot;
+using KemoCard.Pages;
+using KemoCard.Scripts.Buffs;
+using KemoCard.Scripts.Cards;
+using KemoCard.Scripts.Equips;
 
 namespace KemoCard.Scripts
 {
@@ -23,7 +24,7 @@ namespace KemoCard.Scripts
         {
             if (index == 1 && !isQuick)
             {
-                Pages.AlertView.PopupAlert("选择的是自动存档位，是否继续？");
+                AlertView.PopupAlert("选择的是自动存档位，是否继续？");
             }
 
             var path = StaticUtils.GetSavePath(index);
@@ -126,7 +127,7 @@ namespace KemoCard.Scripts
             //GD.Print(MajorRole);
             if (Gsd.MajorRole == null) return;
             Gsd.MajorRole.BuildDeckIdxDic();
-            var node = (Pages.MainScene)ResourceLoader.Load<PackedScene>("res://Pages/MainScene.tscn").Instantiate();
+            var node = (MainScene)ResourceLoader.Load<PackedScene>("res://Pages/MainScene.tscn").Instantiate();
             StaticInstance.WindowMgr.ChangeScene(node);
             if (!StaticInstance.PlayerData.Gsd.MapGenerator.IsStillRunning) return;
             if (StaticInstance.PlayerData.Gsd.MapGenerator.FloorsClimbed == 0)
@@ -138,7 +139,7 @@ namespace KemoCard.Scripts
         private void LoadCardScript(Card card)
         {
             card.Owner = Gsd.MajorRole;
-            if (!Datas.Ins.CardPool.TryGetValue(card.Id, out var value))
+            if (!Datas.Ins.CardPool.ContainsKey(card.Id))
             {
                 var errorLog = "未在脚本库中找到卡牌对应id，请检查Mod配置。id:" + card.Id;
                 StaticInstance.MainRoot.ShowBanner(errorLog);

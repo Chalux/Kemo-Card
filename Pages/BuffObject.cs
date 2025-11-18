@@ -1,87 +1,81 @@
 ﻿using Godot;
 using KemoCard.Scripts;
-using System.Collections.Generic;
+
+namespace KemoCard.Pages;
 
 public partial class BuffObject : Control, IEvent
 {
     [Export] public Label CountLabel;
-    [Export] public TextureRect texture;
-    [Export] public ColorRect color;
-    public BuffImplBase data;
-    public void Init(string id, object Creator)
+    [Export] public TextureRect Texture;
+    [Export] public ColorRect Color;
+    public BuffImplBase Data;
+
+    public void Init(string id, object creator)
     {
-        data = new(id)
+        Data = new BuffImplBase(id)
         {
-            Creator = Creator
+            Creator = creator
         };
-        CompressedTexture2D res = ResourceLoader.Load<CompressedTexture2D>(data.IconPath);
+        var res = ResourceLoader.Load<CompressedTexture2D>(Data.IconPath);
         if (res != null)
         {
-            texture.Texture = res;
+            Texture.Texture = res;
         }
+
         InitObj();
     }
 
     public void Init(BuffImplBase buff)
     {
-        data = buff;
-        CompressedTexture2D res = ResourceLoader.Load<CompressedTexture2D>(data.IconPath);
+        Data = buff;
+        var res = ResourceLoader.Load<CompressedTexture2D>(Data.IconPath);
         if (res != null)
         {
-            texture.Texture = res;
+            Texture.Texture = res;
         }
+
         InitObj();
     }
 
     public void Update()
     {
-        if (data != null)
+        if (Data != null)
         {
-            if (data.BuffCount < 99)
-                CountLabel.Text = data.BuffCount.ToString();
-            else
-                CountLabel.Text = "99+";
+            CountLabel.Text = Data.BuffCount < 99 ? Data.BuffCount.ToString() : "99+";
         }
     }
 
     public void ReceiveEvent(string @event, params object[] datas)
     {
-        data?.ReceiveEvent(@event, datas);
+        Data?.ReceiveEvent(@event, datas);
     }
 
     private void InitObj()
     {
-        data.BuffObj = this;
-        MouseEntered += new(() =>
+        Data.BuffObj = this;
+        MouseEntered += () =>
         {
-            if (data != null)
+            if (Data == null) return;
+            var result = "Buff名：" + Data.BuffShowname + ",\n" +
+                         "Buff剩余计数：" + (Data.IsInfinite ? "永久" : Data.BuffCount) + ",\n" +
+                         "Buff量：" + Data.BuffValue + ",\n" +
+                         "效果：" + Data.Desc;
+            // HashSet<string> list = [];
+            foreach (var key in Data.tags)
             {
-                string result = "Buff名：" + data.BuffShowname + ",\n" +
-                    "Buff剩余计数：" + (data.IsInfinite ? "永久" : data.BuffCount) + ",\n" +
-                    "Buff量：" + data.BuffValue + ",\n" +
-                    "效果：" + data.Desc;
-                HashSet<string> list = new();
-                foreach (var key in data.tags)
-                {
-                    if (StaticEnums.HintDictionary.ContainsKey(key))
-                    {
-                        var data = StaticEnums.HintDictionary[key];
-                        result += $"\n{data.Alias}:{data.Desc}";
-                        list.Add(key);
-                    }
-                }
-                StaticInstance.MainRoot.ShowRichHint(StaticUtils.MakeBBCodeString(result, "left"));
+                if (!StaticEnums.HintDictionary.TryGetValue(key, out var data1)) continue;
+                result += $"\n{data1.Alias}:{data1.Desc}";
+                // list.Add(key);
             }
-        });
-        MouseExited += new(() =>
-        {
-            StaticInstance.MainRoot.HideRichHint();
-        });
+
+            StaticInstance.MainRoot.ShowRichHint(StaticUtils.MakeBBCodeString(result, "left"));
+        };
+        MouseExited += () => { StaticInstance.MainRoot.HideRichHint(); };
         Update();
     }
 
     ~BuffObject()
     {
-        data = null;
+        Data = null;
     }
 }

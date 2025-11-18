@@ -1,55 +1,59 @@
+using System.Linq;
 using Godot;
 using KemoCard.Scripts;
-using System.Linq;
+
+namespace KemoCard.Pages;
 
 public partial class PlayerRoleObject : Control, IEvent
 {
-    public PlayerRole data;
-    [Export] private ProgressBar hpProgress;
-    [Export] private ProgressBar mpProgress;
-    [Export] private RichTextLabel hpLabel;
-    [Export] private RichTextLabel mpLabel;
-    [Export] private ProgressBar PBProgress;
-    [Export] private ProgressBar MBProgress;
-    [Export] private RichTextLabel PBLabel;
-    [Export] private RichTextLabel MBLabel;
-    [Export] private RichTextLabel roleName;
-    [Export] public HBoxContainer buffContainer;
-    [Export] private TextureRect SelectRect;
-    [Export] private Control mainControl;
+    public PlayerRole Data;
+    [Export] private ProgressBar _hpProgress;
+    [Export] private ProgressBar _mpProgress;
+    [Export] private RichTextLabel _hpLabel;
+    [Export] private RichTextLabel _mpLabel;
+    [Export] private ProgressBar _pbProgress;
+    [Export] private ProgressBar _mbProgress;
+    [Export] private RichTextLabel _pbLabel;
+    [Export] private RichTextLabel _mbLabel;
+    [Export] private RichTextLabel _roleName;
+    [Export] public HBoxContainer BuffContainer;
+    [Export] private TextureRect _selectRect;
+    [Export] private Control _mainControl;
 
-    private bool SelectingTarget = false;
+    private bool _selectingTarget;
+
     // Called when the node enters the scene tree for the first time.
     public override void _Ready()
     {
         base._Ready();
         StaticInstance.EventMgr.RegisterIEvent(this);
-        mainControl.MouseEntered += new(() =>
+        _mainControl.MouseEntered += () =>
         {
-            if (SelectingTarget)
+            if (_selectingTarget)
             {
-                SelectRect.Visible = true;
-                BattleStatic.Targets.Add(data);
+                _selectRect.Visible = true;
+                BattleStatic.Targets.Add(Data);
                 //GD.Print(BattleStatic.Targets.Count);
             }
             else
             {
-                StaticInstance.MainRoot.ShowRichHint(data.GetRichDesc());
+                StaticInstance.MainRoot.ShowRichHint(Data.GetRichDesc());
             }
-        });
-        mainControl.MouseExited += new(() =>
+        };
+        _mainControl.MouseExited += () =>
         {
-            if (SelectingTarget)
+            if (_selectingTarget)
             {
-                SelectRect.Visible = false;
-                if (BattleStatic.Targets.Contains(data))
+                _selectRect.Visible = false;
+                if (BattleStatic.Targets.Contains(Data))
                 {
-                    BattleStatic.Targets.Remove(data);
+                    BattleStatic.Targets.Remove(Data);
                 }
                 //GD.Print(BattleStatic.Targets.Count);
             }
+
             StaticInstance.MainRoot.HideRichHint();
-        });
+        };
     }
 
     public override void _ExitTree()
@@ -60,124 +64,125 @@ public partial class PlayerRoleObject : Control, IEvent
 
     public void InitByPlayerRole(PlayerRole role)
     {
-        data = role;
-        hpProgress.MaxValue = data.CurrHpLimit;
-        mpProgress.MaxValue = data.CurrMpLimit;
-        PBProgress.MaxValue = MBProgress.MaxValue = data.CurrHpLimit;
+        Data = role;
+        _hpProgress.MaxValue = Data.CurrHpLimit;
+        _mpProgress.MaxValue = Data.CurrMpLimit;
+        _pbProgress.MaxValue = _mbProgress.MaxValue = Data.CurrHpLimit;
         role.RoleObject = this;
         UpdateObject();
     }
 
-    public void UpdateObject(PlayerRole role = null)
+    private void UpdateObject(PlayerRole role = null)
     {
         if (role != null)
         {
-            data = role;
+            Data = role;
         }
-        if (data == null) return;
-        hpProgress.Value = data.CurrHealth;
-        mpProgress.Value = data.CurrMagic;
-        PBProgress.Value = data.CurrPBlock;
-        MBProgress.Value = data.CurrMBlock;
-        PBLabel.Text = StaticUtils.MakeBBCodeString(data.CurrPBlock.ToString());
-        MBLabel.Text = StaticUtils.MakeBBCodeString(data.CurrMBlock.ToString());
-        hpLabel.Text = StaticUtils.MakeBBCodeString(data.CurrHealth + "/" + data.CurrHpLimit);
-        mpLabel.Text = StaticUtils.MakeBBCodeString(data.CurrMagic + "/" + data.CurrMpLimit);
-        roleName.Text = StaticUtils.MakeBBCodeString(data.Name);
+
+        if (Data == null) return;
+        _hpProgress.Value = Data.CurrHealth;
+        _mpProgress.Value = Data.CurrMagic;
+        _pbProgress.Value = Data.CurrPBlock;
+        _mbProgress.Value = Data.CurrMBlock;
+        _pbLabel.Text = StaticUtils.MakeBBCodeString(Data.CurrPBlock.ToString());
+        _mbLabel.Text = StaticUtils.MakeBBCodeString(Data.CurrMBlock.ToString());
+        _hpLabel.Text = StaticUtils.MakeBBCodeString(Data.CurrHealth + "/" + Data.CurrHpLimit);
+        _mpLabel.Text = StaticUtils.MakeBBCodeString(Data.CurrMagic + "/" + Data.CurrMpLimit);
+        _roleName.Text = StaticUtils.MakeBBCodeString(Data.Name);
     }
 
     public void ReceiveEvent(string @event, params object[] datas)
     {
-        if (@event == "PropertiesChanged")
+        switch (@event)
         {
-            UpdateObject();
-        }
-        else if (@event == "StartSelectTarget")
-        {
-            var type = (StaticEnums.TargetType)datas[0];
-            if (type == StaticEnums.TargetType.AllSingle || type == StaticEnums.TargetType.TeamSingle)
-                SelectingTarget = true;
-        }
-        else if (@event == "SelectTargetOwner")
-        {
-            var target = (BaseRole)datas[0];
-            if (target != null && target == data)
+            case "PropertiesChanged":
+                UpdateObject();
+                break;
+            case "StartSelectTarget":
             {
-                SelectingTarget = false;
-                SelectRect.Visible = true;
+                var type = (StaticEnums.TargetType)datas[0];
+                if (type is StaticEnums.TargetType.AllSingle or StaticEnums.TargetType.TeamSingle)
+                    _selectingTarget = true;
+                break;
+            }
+            case "SelectTargetOwner":
+            {
+                var target = (BaseRole)datas[0];
+                if (target != null && target == Data)
+                {
+                    _selectingTarget = false;
+                    _selectRect.Visible = true;
+                }
+
+                break;
+            }
+            case "EndSelectTarget":
+                _selectingTarget = false;
+                _selectRect.Visible = false;
+                break;
+            case "SelectTargetAll":
+            {
+                var type = (StaticEnums.TargetType)datas[0];
+                if (type is StaticEnums.TargetType.All or StaticEnums.TargetType.TeamAll)
+                {
+                    _selectingTarget = false;
+                    _selectRect.Visible = true;
+                }
+
+                break;
             }
         }
-        else if (@event == "EndSelectTarget")
-        {
-            SelectingTarget = false;
-            SelectRect.Visible = false;
-        }
-        else if (@event == "SelectTargetAll")
-        {
-            var type = (StaticEnums.TargetType)datas[0];
-            if (type == StaticEnums.TargetType.All || type == StaticEnums.TargetType.TeamAll)
-            {
-                SelectingTarget = false;
-                SelectRect.Visible = true;
-            }
-        }
+
         //data?.ReceiveEvent(@event, datas);
-        foreach (BuffObject buffObject in buffContainer?.GetChildren().Cast<BuffObject>())
+        foreach (var buffObject in BuffContainer?.GetChildren().Cast<BuffObject>() ?? [])
         {
             buffObject.ReceiveEvent(@event, datas);
         }
-        if (data != null)
+
+        if (Data == null) return;
+        foreach (var equip in Data.EquipDic.Values)
         {
-            foreach (Equip equip in data.EquipDic.Values)
-            {
-                equip?.EquipScript.ReceiveEvent(@event, datas);
-            }
+            equip?.EquipScript.ReceiveEvent(@event, datas);
         }
     }
 
-    public void AddBuff(string id, object Creator)
+    public void AddBuff(string id, object creator)
     {
-        BuffObject buffObject = (BuffObject)ResourceLoader.Load<PackedScene>("res://Pages/BuffObject.tscn").Instantiate();
-        buffObject.Init(id, Creator);
-        if (buffObject.data != null)
-        {
-            buffContainer?.AddChild(buffObject);
-            buffObject.data.Binder = data;
-        }
+        var buffObject =
+            (BuffObject)ResourceLoader.Load<PackedScene>("res://Pages/BuffObject.tscn").Instantiate();
+        buffObject.Init(id, creator);
+        if (buffObject.Data == null) return;
+        BuffContainer?.AddChild(buffObject);
+        buffObject.Data.Binder = Data;
     }
 
     public void AddBuff(BuffImplBase buff)
     {
-        BuffObject buffObject = (BuffObject)ResourceLoader.Load<PackedScene>("res://Pages/BuffObject.tscn").Instantiate();
+        var buffObject =
+            (BuffObject)ResourceLoader.Load<PackedScene>("res://Pages/BuffObject.tscn").Instantiate();
         buffObject.Init(buff);
-        if (buffObject.data != null)
-        {
-            buffContainer?.AddChild(buffObject);
-            buffObject.data.Binder = data;
-        }
+        if (buffObject.Data == null) return;
+        BuffContainer?.AddChild(buffObject);
+        buffObject.Data.Binder = Data;
     }
 
-    public void MinusBuffCountAndValue(string id, int count = 0, int value = 0)
+    private void MinusBuffCountAndValue(string id, int count = 0, int value = 0)
     {
-        bool HasBuff = false;
+        var hasBuff = false;
         BuffImplBase temp = null;
-        foreach (var buff in data.InFightBuffs)
+        foreach (var buff in Data.InFightBuffs.Where(buff => buff.BuffId == id))
         {
-            if (buff.BuffId == id)
-            {
-                HasBuff = true;
-                temp = buff;
-                break;
-            }
+            hasBuff = true;
+            temp = buff;
+            break;
         }
-        if (HasBuff)
+
+        if (!hasBuff) return;
+        if (count > 0)
+            temp.BuffCount -= count;
+        if (value != 0)
         {
-            if (count > 0)
-                temp.BuffCount -= count;
-            if (value != 0)
-            {
-                temp.BuffValue -= value;
-            }
+            temp.BuffValue -= value;
         }
     }
 }
