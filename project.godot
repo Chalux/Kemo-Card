@@ -47,6 +47,10 @@ project/assembly_name="Kemo Card"
 
 enabled=PackedStringArray("res://addons/dialogue_manager/plugin.cfg")
 
+[gui]
+
+theme/custom="uid://bwgi72e7yqtxh"
+
 [input]
 
 left_mouse={

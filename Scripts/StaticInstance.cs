@@ -1,8 +1,10 @@
-﻿using Godot;
+﻿using System.Diagnostics.CodeAnalysis;
+using Godot;
 using KemoCard.Pages;
 
 namespace KemoCard.Scripts
 {
+    [SuppressMessage("Usage", "CA2211:非常量字段应当不可见")]
     public static class StaticInstance
     {
         // 全局唯一变量
@@ -14,6 +16,7 @@ namespace KemoCard.Scripts
         public static EventMgr EventMgr;
         [Export] public static PlayerData PlayerData;
         [Export] public static Node CurrWindow;
+        public static SettingData SettingData;
 
         // 一些颜色的配置什么的
         public static readonly string NameColor = "#" + Colors.LightYellow.ToHtml();

@@ -22,9 +22,6 @@ public partial class MainRoot : Control
     // Called when the node enters the scene tree for the first time.
     public override void _Ready()
     {
-        GetTree().Root.Size = new Vector2I(1280, 720);
-        GetTree().Root.Position = (DisplayServer.ScreenGetSize() - GetTree().Root.Size) / 2;
-
         #region 静态全局初始化开始
 
         StaticInstance.MainRoot = this;
@@ -35,7 +32,12 @@ public partial class MainRoot : Control
 
         StaticInstance.PlayerData = new PlayerData();
 
+        StaticInstance.SettingData = new SettingData();
+
         #endregion
+
+        GetTree().Root.SetSize(StaticInstance.SettingData.GetScreenResolution());
+        GetTree().Root.Position = (DisplayServer.ScreenGetSize() - GetTree().Root.Size) / 2;
 
         //StaticInstance.windowMgr.ChangeScene(ResourceLoader.Load<PackedScene>("res://Pages/LoadScene.tscn").Instantiate());
         StaticInstance.WindowMgr.ChangeScene(ResourceLoader.Load<PackedScene>("res://Pages/menu_scene.tscn")
@@ -129,5 +131,12 @@ public partial class MainRoot : Control
         {
             _colorRect.SetSize(new Vector2(_richHint.Size.X + 2 * _hPadding, _richHint.Size.Y + 2 * _vPadding));
         }
+    }
+    
+    public override void _Notification(int what)
+    {
+        if (what != NotificationWMCloseRequest) return;
+        StaticInstance.SettingData.Save();
+        GetTree().Quit();
     }
 }

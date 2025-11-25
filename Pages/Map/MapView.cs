@@ -8,14 +8,12 @@ namespace KemoCard.Pages.Map;
 
 public partial class MapView : BaseScene, IEvent
 {
-    private const int ScrollSpeed = 75;
     private const string MapRoomPath = "res://Pages/Map/MapRoom.tscn";
     private const string MapLinePath = "res://Pages/Map/MapLine.tscn";
 
-    [Export] private Node2D _lines;
-    [Export] private Node2D _rooms;
-    [Export] private Node2D _visual;
-    [Export] private Camera2D _camera2D;
+    [Export] private Control _lines;
+    [Export] private Control _rooms;
+    [Export] private ScrollContainer _visual;
     [Export] private Button _hideBtn;
     [Export] private Button _debugBtn;
     [Export] private Button _debugBtn2;
@@ -44,34 +42,6 @@ public partial class MapView : BaseScene, IEvent
     private static void OnDebugBtn2OnPressed()
     {
         GD.Print(StaticInstance.PlayerData.Gsd.MapGenerator.ToString());
-    }
-
-    public override void _Input(InputEvent @event)
-    {
-        var y = _camera2D.Position.Y;
-        if (@event.IsActionPressed("scroll_up"))
-        {
-            y -= ScrollSpeed;
-            _isDrag = false;
-        }
-        else if (@event.IsActionPressed("scroll_down"))
-        {
-            y += ScrollSpeed;
-            _isDrag = false;
-        }
-        else if (@event.IsActionPressed("left_mouse"))
-            _isDrag = true;
-        else if (@event.IsActionReleased("left_mouse"))
-            _isDrag = false;
-
-        if (_isDrag && @event is InputEventMouseMotion mm)
-        {
-            y -= mm.Relative.Y;
-        }
-
-        y = Math.Clamp(y, -CameraEdgeY, 0);
-        _camera2D.Position = new Vector2(_camera2D.Position.X, y);
-        //GD.Print(Camera2D.Position, Y, -CameraEdgeY);
     }
 
     public void GenerateNewMap(MapData mapData)
@@ -121,16 +91,12 @@ public partial class MapView : BaseScene, IEvent
         var middle = (int)Math.Floor(map.MapWidth * 0.5);
         var row = (int)map.Floors - 1;
         if (mapData.Count > row && mapData[row].Count > middle) SpawnRoom(mapData[row][middle]);
-        float mapWidthPixels = map.XDistance * (map.MapWidth - 1);
-        var s = GetViewportRect().Size;
-        _visual.Position = new Vector2((s.X - mapWidthPixels) / 2, s.Y / 2);
-        _camera2D.Enabled = false;
+        _visual.MouseFilter = MouseFilterEnum.Ignore;
     }
 
     private void SpawnRoom(Room room)
     {
-        var newRoom = ResourceLoader.Load<PackedScene>(MapRoomPath).Instantiate() as MapRoom;
-        if (newRoom == null) return;
+        if (ResourceLoader.Load<PackedScene>(MapRoomPath).Instantiate() is not MapRoom newRoom) return;
         _rooms.AddChild(newRoom);
         newRoom.Room = room;
         newRoom.SelectEventHandler += OnMapRoomSelected;
@@ -147,8 +113,7 @@ public partial class MapView : BaseScene, IEvent
         if (room.NextRooms.Count == 0) return;
         foreach (var nextRoom in room.NextRooms)
         {
-            var newLine = ResourceLoader.Load<PackedScene>(MapLinePath).Instantiate() as Line2D;
-            if (newLine == null) continue;
+            if (ResourceLoader.Load<PackedScene>(MapLinePath).Instantiate() is not Line2D newLine) continue;
             newLine.AddPoint(new Vector2(room.X, room.Y));
             var r = StaticInstance.PlayerData.Gsd.MapGenerator.MapData[nextRoom / 100][nextRoom % 100];
             newLine.AddPoint(new Vector2(r.X, r.Y));
@@ -194,13 +159,13 @@ public partial class MapView : BaseScene, IEvent
     {
         Show();
         UpdateView();
-        _camera2D.Enabled = true;
+        _visual.MouseFilter = MouseFilterEnum.Stop;
     }
 
     public void HideMap()
     {
         Hide();
-        _camera2D.Enabled = false;
+        _visual.MouseFilter = MouseFilterEnum.Ignore;
     }
 
     private void TryHeal()
@@ -238,6 +203,6 @@ public partial class MapView : BaseScene, IEvent
 
     private void ResetCamera()
     {
-        _camera2D.Position = new Vector2(_camera2D.Position.X, -CameraEdgeY);
+        _visual.SetVScroll(int.MaxValue);
     }
 }

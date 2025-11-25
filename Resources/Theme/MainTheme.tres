@@ -1,0 +1,6 @@
+[gd_resource type="Theme" format=3 uid="uid://bwgi72e7yqtxh"]
+
+[resource]
+Button/font_sizes/font_size = 32
+OptionButton/font_sizes/font_size = 32
+TabContainer/font_sizes/font_size = 32

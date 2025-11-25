@@ -1,6 +1,6 @@
 ~ start_dialogue
 
-do ChangeBG("res://Resources/Images/forest.png")
+do ChangeBg("res://Resources/Images/forest.png")
 旁白: 你走进了一片沼泽.
 旁白: 这里看起来很危险，小心点.
 

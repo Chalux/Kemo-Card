@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://frr1h8oeo4h3" path="res://Pages/Map/MapSelectScene.cs" id="1_6gao4"]
 
-[node name="MapSelectScene" type="Control"]
+[node name="MapSelectScene" type="Control" node_paths=PackedStringArray("_exitButton", "_flowContainer")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -10,6 +10,8 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_6gao4")
+_exitButton = NodePath("ExitBtn")
+_flowContainer = NodePath("MapBtnContainer")
 
 [node name="Background" type="ColorRect" parent="."]
 custom_minimum_size = Vector2(1920, 1080)

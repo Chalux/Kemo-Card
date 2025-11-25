@@ -59,12 +59,10 @@ namespace KemoCard.Scripts.Cards
                 }
             }
 
-            var flag = true;
-            if (CardObject.Card.UseFilter != null)
-                flag = CardObject.Card.UseFilter.Invoke(CardObject.Card?.Owner, roles, null);
+            var flag = CardObject.Card?.Script?.UseFilter(CardObject.Card, CardObject.Card.Owner, roles, null) ?? true;
             if (isCosted && BattleStatic.Targets.Count > 0 && flag)
             {
-                CardObject.Card?.FunctionUse?.Invoke(CardObject.Card.Owner, roles, [CardObject.Card]);
+                CardObject.Card?.Script?.UseFunction(CardObject.Card, CardObject.Card.Owner, roles);
                 BattleStatic.AddUsedCard(CardObject.Card);
                 GD.Print($"卡牌C{CardObject.Card?.Id}已使用");
                 BattleStatic.CurrCard = null;

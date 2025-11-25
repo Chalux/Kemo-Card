@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://07j3vile11pe" path="res://Pages/Map/MapView.cs" id="1_rh6j2"]
 
-[node name="Map" type="Control" node_paths=PackedStringArray("_lines", "_rooms", "_visual", "_camera2D", "_hideBtn", "_debugBtn", "_debugBtn2", "_healBtn", "_abortBtn", "_healLabel")]
+[node name="Map" type="Control" node_paths=PackedStringArray("_lines", "_rooms", "_visual", "_hideBtn", "_debugBtn", "_debugBtn2", "_healBtn", "_abortBtn", "_healLabel")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -10,27 +10,25 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_rh6j2")
-_lines = NodePath("Visual/Lines")
-_rooms = NodePath("Visual/Rooms")
+_lines = NodePath("Visual/AspectRatioContainer/Lines")
+_rooms = NodePath("Visual/AspectRatioContainer/Rooms")
 _visual = NodePath("Visual")
-_camera2D = NodePath("Camera2D")
-_hideBtn = NodePath("Camera2D/HideBtn")
-_debugBtn = NodePath("Camera2D/DebugBtn")
-_debugBtn2 = NodePath("Camera2D/DebugBtn2")
-_healBtn = NodePath("Camera2D/HealBtn")
-_abortBtn = NodePath("Camera2D/AbortBtn")
-_healLabel = NodePath("Camera2D/HealLabel")
+_hideBtn = NodePath("HideBtn")
+_debugBtn = NodePath("DebugBtn")
+_debugBtn2 = NodePath("DebugBtn2")
+_healBtn = NodePath("HealBtn")
+_abortBtn = NodePath("AbortBtn")
+_healLabel = NodePath("HealLabel")
 
-[node name="Camera2D" type="Camera2D" parent="."]
-offset = Vector2(960, 540)
-
-[node name="Background" type="ColorRect" parent="Camera2D"]
+[node name="Background" type="ColorRect" parent="."]
 custom_minimum_size = Vector2(1920, 1080)
+layout_mode = 0
 offset_right = 1920.0
 offset_bottom = 1080.0
 color = Color(0.329412, 0.541176, 0.74902, 1)
 
-[node name="HideBtn" type="Button" parent="Camera2D"]
+[node name="HideBtn" type="Button" parent="."]
+layout_mode = 0
 offset_left = 64.0
 offset_top = 64.0
 offset_right = 256.0
@@ -38,7 +36,8 @@ offset_bottom = 128.0
 theme_override_font_sizes/font_size = 36
 text = "隐藏地图"
 
-[node name="HealBtn" type="Button" parent="Camera2D"]
+[node name="HealBtn" type="Button" parent="."]
+layout_mode = 0
 offset_left = 64.0
 offset_top = 152.0
 offset_right = 256.0
@@ -46,7 +45,8 @@ offset_bottom = 216.0
 theme_override_font_sizes/font_size = 36
 text = "休息"
 
-[node name="AbortBtn" type="Button" parent="Camera2D"]
+[node name="AbortBtn" type="Button" parent="."]
+layout_mode = 0
 offset_left = 64.0
 offset_top = 240.0
 offset_right = 256.0
@@ -54,7 +54,8 @@ offset_bottom = 304.0
 theme_override_font_sizes/font_size = 36
 text = "放弃"
 
-[node name="HealLabel" type="Label" parent="Camera2D"]
+[node name="HealLabel" type="Label" parent="."]
+layout_mode = 0
 offset_left = 280.0
 offset_top = 152.0
 offset_right = 512.0
@@ -63,7 +64,8 @@ theme_override_font_sizes/font_size = 36
 text = "休息次数：0"
 vertical_alignment = 1
 
-[node name="DebugBtn" type="Button" parent="Camera2D"]
+[node name="DebugBtn" type="Button" parent="."]
+layout_mode = 0
 offset_left = 1664.0
 offset_top = 64.0
 offset_right = 1856.0
@@ -71,7 +73,8 @@ offset_bottom = 128.0
 theme_override_font_sizes/font_size = 36
 text = "爬一层"
 
-[node name="DebugBtn2" type="Button" parent="Camera2D"]
+[node name="DebugBtn2" type="Button" parent="."]
+layout_mode = 0
 offset_left = 1664.0
 offset_top = 152.0
 offset_right = 1856.0
@@ -79,8 +82,22 @@ offset_bottom = 216.0
 theme_override_font_sizes/font_size = 36
 text = "打印地图"
 
-[node name="Visual" type="Node2D" parent="."]
+[node name="Visual" type="ScrollContainer" parent="."]
+custom_minimum_size = Vector2(1120, 960)
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+grow_horizontal = 2
+grow_vertical = 2
 
-[node name="Lines" type="Node2D" parent="Visual"]
+[node name="AspectRatioContainer" type="AspectRatioContainer" parent="Visual"]
+layout_mode = 2
 
-[node name="Rooms" type="Node2D" parent="Visual"]
+[node name="Lines" type="Control" parent="Visual/AspectRatioContainer"]
+layout_mode = 2
+
+[node name="Rooms" type="Control" parent="Visual/AspectRatioContainer"]
+layout_mode = 2

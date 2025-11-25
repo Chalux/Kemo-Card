@@ -17,6 +17,7 @@ namespace KemoCard.Scripts.Cards
         // 这里的装备id是为了记录是否是装备加到卡组里的，idx同。非装备的话可以不填。
         public string EquipId { get; init; } = "";
         public uint Rare { get; }
+        [JsonIgnore] public readonly BaseCardScript Script;
 
         /// <summary>
         /// 全局的词条，可以理解为永久的词条加成
@@ -28,7 +29,21 @@ namespace KemoCard.Scripts.Cards
         /// </summary>
         public Dictionary<string, float> InGameDict { get; private set; } = new();
 
+        /// <summary>
+        /// 地图内词条，进入新地图时清空
+        /// </summary>
         public Dictionary<string, float> InRoundDict { get; } = new();
+
+        /// <summary>
+        /// 临时词条，使用或被弃掉后清空
+        /// </summary>
+        public Dictionary<string, float> TempDict { get; } = new();
+
+        /// <summary>
+        /// 回合内词条，每回合结束时清空
+        /// </summary>
+        public Dictionary<string, float> InTurnDict { get; } = new();
+
         public TargetType TargetType { get; set; } = TargetType.Self;
 
         // 这里的idx是记录在牌组里的idx顺位
@@ -77,9 +92,6 @@ namespace KemoCard.Scripts.Cards
 
         public int Cost { get; set; }
         public CostType CostType { get; set; } = CostType.ActionPoint;
-        [JsonIgnore] public Func<BaseRole, List<BaseRole>, dynamic[], bool> UseFilter { get; set; }
-        [JsonIgnore] public Action<BaseRole, List<BaseRole>, dynamic[]> FunctionUse { get; set; }
-        [JsonIgnore] public Action<BaseRole, DisCardReason, BaseRole> DiscardAction { get; set; }
 
         public Card(string id)
         {
@@ -100,8 +112,8 @@ namespace KemoCard.Scripts.Cards
                 Cost = (int)value.Cost;
                 TargetType = (TargetType)value.TargetType;
                 CostType = (CostType)value.CostType;
-                var script = CardFactory.CreateCard(id);
-                script?.OnCardScriptInit(this);
+                Script = CardFactory.CreateCard(id);
+                Script?.OnCardScriptInit(this);
             }
         }
 

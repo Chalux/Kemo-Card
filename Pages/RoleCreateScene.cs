@@ -122,7 +122,7 @@ public partial class RoleCreateScene : BaseScene
         {
             AlertView.PopupAlert($"检测到已填入预设角色id。角色的数据为：\r\n{role.GetRichDesc()}是否确定？", false, () =>
             {
-                role.StartFunction?.Invoke();
+                role.Script?.OnGameStart(role);
 
                 StaticInstance.PlayerData.Gsd.MajorRole = role;
 

@@ -327,7 +327,7 @@ public partial class BattleScene : BaseScene, IEvent
             po.InitByPlayerRole(i);
             i.TurnActionPoint = i.CurrentActionPoint = i.ActionPoint;
             i.InitFighter();
-            i.OnBattleStart?.Invoke();
+            i.Script?.OnBattleStart(i);
             PlayerContainer?.AddChild(po);
         }
 
@@ -872,7 +872,7 @@ public partial class BattleScene : BaseScene, IEvent
         {
             owner.InFightHands.Remove(card);
             owner.InFightGrave.Add(card);
-            card.DiscardAction?.Invoke(owner, reason, from);
+            card.Script?.DiscardAction(card, owner, reason, from);
             if (owner != NowPlayer) continue;
             foreach (var cObj in HandControl.GetChildren().Cast<CardObject>())
             {

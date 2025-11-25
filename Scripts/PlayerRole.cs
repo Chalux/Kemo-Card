@@ -13,14 +13,16 @@ namespace KemoCard.Scripts
     [Serializable]
     public class PlayerRole : BaseRole
     {
-        public PlayerRole(double OriginSpeed, double OriginStrength, double OriginEffeciency, double OriginMantra,
-            double OriginCraftEquip, double OriginCraftBook, double OriginCritical, double OriginDodge,
-            string name = "", int CurrHealth = 0, int CurrMagic = 0, int OriginHpLimit = 0, int OriginMpLimit = 0,
-            int ActionPoint = 0) : base(OriginSpeed, OriginStrength, OriginEffeciency, OriginMantra, OriginCraftEquip,
-            OriginCraftBook, OriginCritical, OriginDodge, CurrHealth, CurrMagic, OriginHpLimit, OriginMpLimit)
+        public BaseRoleScript Script;
+
+        public PlayerRole(double originSpeed, double originStrength, double originEffeciency, double originMantra,
+            double originCraftEquip, double originCraftBook, double originCritical, double originDodge,
+            string name = "", int currHealth = 0, int currMagic = 0, int originHpLimit = 0, int originMpLimit = 0,
+            int actionPoint = 0) : base(originSpeed, originStrength, originEffeciency, originMantra, originCraftEquip,
+            originCraftBook, originCritical, originDodge, currHealth, currMagic, originHpLimit, originMpLimit)
         {
             SetName(name);
-            this.ActionPoint = ActionPoint;
+            this.ActionPoint = actionPoint;
         }
 
         public PlayerRole()
@@ -38,17 +40,12 @@ namespace KemoCard.Scripts
             else
             {
                 Id = value.RoleId;
-                var script = RoleFactory.CreateRole(id);
-                script?.OnRoleInit(this);
+                Script = RoleFactory.CreateRole(id);
+                Script?.OnRoleInit(this);
             }
         }
 
         public string Id { get; set; } = "";
-
-        /// <summary>
-        /// 在使用这个角色当预设角色开始游戏的时候才会调用这个函数
-        /// </summary>
-        [JsonIgnore] public Action StartFunction;
 
         public List<Card> Deck { get; set; } = [];
 
@@ -97,9 +94,9 @@ namespace KemoCard.Scripts
             }
         }
 
-        public void RemoveCardFromDeck(string cardid, uint idx)
+        public void RemoveCardFromDeck(string cardId, uint idx)
         {
-            if (!DeckIdxDic.TryGetValue(cardid, out var dic)) return;
+            if (!DeckIdxDic.TryGetValue(cardId, out var dic)) return;
             if (!dic.TryGetValue(idx, out var value)) return;
             Deck.Remove(value);
             value.Owner = null;
@@ -179,7 +176,7 @@ namespace KemoCard.Scripts
             Deck.Clear();
         }
 
-        public Dictionary<uint, Equip> EquipDic { get; set; } = new Dictionary<uint, Equip>();
+        public Dictionary<uint, Equip> EquipDic { get; set; } = new();
         public Equip[] EquipList { get; set; } = new Equip[BagCount];
 
         public void PutOnEquip(uint bagIndex)
@@ -199,19 +196,12 @@ namespace KemoCard.Scripts
                             StaticInstance.MainRoot.ShowBanner("背包已满");
                             return;
                         }
+                    }
 
-                        EquipList[bagIndex] = null;
-                        PutOffEquip((uint)EquipType.Weapon1);
-                        PutOffEquip((uint)EquipType.Weapon2);
-                        EquipDic[(uint)EquipType.Weapon1] = EquipDic[(uint)EquipType.Weapon2] = equip;
-                    }
-                    else
-                    {
-                        EquipList[bagIndex] = null;
-                        PutOffEquip((uint)EquipType.Weapon1);
-                        PutOffEquip((uint)EquipType.Weapon2);
-                        EquipDic[(uint)EquipType.Weapon1] = EquipDic[(uint)EquipType.Weapon2] = equip;
-                    }
+                    EquipList[bagIndex] = null;
+                    PutOffEquip((uint)EquipType.Weapon1);
+                    PutOffEquip((uint)EquipType.Weapon2);
+                    EquipDic[(uint)EquipType.Weapon1] = EquipDic[(uint)EquipType.Weapon2] = equip;
 
                     break;
                 }
@@ -260,6 +250,14 @@ namespace KemoCard.Scripts
                     EquipList[bagIndex] = null;
                     EquipDic[(uint)EquipType.Weapon1] = equip;
                     break;
+                case EquipType.None:
+                case EquipType.Helmet:
+                case EquipType.Armor:
+                case EquipType.Trousers:
+                case EquipType.Glove:
+                case EquipType.Shoe:
+                case EquipType.Weapon1:
+                case EquipType.Weapon2:
                 default:
                     EquipList[bagIndex] = null;
                     PutOffEquip((uint)equip.EquipType);
@@ -350,8 +348,6 @@ namespace KemoCard.Scripts
 
             return value;
         }
-
-        [JsonIgnore] public Action OnBattleStart;
 
         private uint _unUsedPoints;
 

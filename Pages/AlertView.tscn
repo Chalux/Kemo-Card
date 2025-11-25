@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://br04qcbdjn4sy" path="res://Pages/AlertView.cs" id="1_7qlgh"]
 
-[node name="AlertScene" type="Control" node_paths=PackedStringArray("_msg", "_confirmBtn", "_cancelBtn")]
+[node name="AlertScene" type="Control" node_paths=PackedStringArray("_msg", "_confirmBtn", "_cancelBtn", "_cdTimer", "_closeBtn")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -13,6 +13,8 @@ script = ExtResource("1_7qlgh")
 _msg = NodePath("ColorRect/RichTextLabel")
 _confirmBtn = NodePath("ColorRect/Control/Confirm")
 _cancelBtn = NodePath("ColorRect/Control/Cancel")
+_cdTimer = NodePath("Timer")
+_closeBtn = NodePath("ColorRect/Control/Cancel")
 EnableMouseStopFilter = 0
 
 [node name="ClickMask" type="Panel" parent="."]
@@ -101,3 +103,6 @@ grow_horizontal = 0
 grow_vertical = 2
 theme_override_font_sizes/font_size = 36
 text = "取 消"
+
+[node name="Timer" type="Timer" parent="."]
+process_mode = 3
