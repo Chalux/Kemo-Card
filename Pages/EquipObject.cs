@@ -29,6 +29,12 @@ public partial class EquipObject : Control
         }
         else
         {
+            if (string.IsNullOrEmpty(Data.EquipScript.TextureUrl))
+            {
+                _textureRect.Texture = null;
+                return;
+            }
+
             var res = ResourceLoader.Load<CompressedTexture2D>(Data.EquipScript.TextureUrl);
             //if (res != null) textureRect.Texture = ImageTexture.CreateFromImage(res);
             if (res != null) _textureRect.Texture = res;

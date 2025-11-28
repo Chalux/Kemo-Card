@@ -18,7 +18,7 @@ namespace KemoCard.Scripts
         public GlobalSaveData Gsd = new();
 
         private readonly JsonSerializerOptions _options = new()
-            { ReferenceHandler = ReferenceHandler.Preserve, IncludeFields = true };
+            { ReferenceHandler = ReferenceHandler.Preserve, IncludeFields = true, WriteIndented = true };
 
         public void Save(uint index, bool isQuick = false)
         {

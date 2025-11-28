@@ -38,7 +38,7 @@ namespace KemoCard.Pages
 
         public override void OnAdd(params object[] data)
         {
-            if (data == null || data[0] != null || data[0] is not PlayerRole)
+            if (data?[0] is not PlayerRole)
             {
                 StaticInstance.WindowMgr.RemoveScene(this);
                 return;

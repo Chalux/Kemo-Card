@@ -344,7 +344,7 @@ namespace KemoCard.Scripts
         {
             var value = Symbol.GetValueOrDefault(key, defaultValue);
             Buffs.ForEach(buff => { value += buff.Symbol.GetValueOrDefault(key, 0); });
-            value += EquipDic.Values.Sum(equip => equip.Symbol.GetValueOrDefault(key, 0));
+            value += (float)EquipDic.Values.Sum(equip => equip.Symbol.GetValueOrDefault(key, 0));
 
             return value;
         }

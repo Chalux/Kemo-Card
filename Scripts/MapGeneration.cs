@@ -1,14 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json.Serialization;
 using KemoCard.Pages;
 using KemoCard.Scripts.Map;
 
 namespace KemoCard.Scripts
 {
+    [Serializable]
     public class MapGeneration
     {
-        public MapData Data { get; private set; } = new();
+        [JsonInclude] public MapData Data { get; private set; } = new();
 
         private Dictionary<RoomType, double> RandomRoomTypeWeights { get; } = new()
         {
@@ -18,10 +20,10 @@ namespace KemoCard.Scripts
         };
 
         private double RandomRoomTypeTotalWeight { get; set; }
-        public List<List<Room>> MapData { get; private set; } = [];
+        [JsonInclude] public List<List<Room>> MapData { get; private set; } = [];
         public int FloorsClimbed { get; set; }
         public Room LastRoom { get; set; }
-        public bool IsStillRunning { get; private set; }
+        [JsonInclude] public bool IsStillRunning { get; private set; }
 
         public void GenerateMap(MapData data = null, bool runStartAction = false)
         {
@@ -83,21 +85,27 @@ namespace KemoCard.Scripts
         private List<List<Room>> GenerateGrid()
         {
             List<List<Room>> result = new((int)Data.Floors);
+            Random r = new();
             for (var i = 0; i < Data.Floors; i++)
             {
                 List<Room> adjacentRooms = new((int)Data.MapWidth);
                 for (var j = 0; j < Data.MapWidth; j++)
                 {
-                    Room currentRoom = new();
-                    Random r = new();
-                    currentRoom.X = r.NextSingle() * Data.PlacementRandomness + Data.XDistance * j;
-                    currentRoom.Y = r.NextSingle() * Data.PlacementRandomness - Data.YDistance * i;
-                    currentRoom.Row = i;
-                    currentRoom.Col = j;
-                    currentRoom.NextRooms = [];
+                    Room currentRoom = new()
+                    {
+                        X = r.NextSingle() * Data.PlacementRandomness + Data.XDistance * j,
+                        Y = r.NextSingle() * Data.PlacementRandomness + Data.YDistance * i,
+                        Row = i,
+                        Col = j,
+                        NextRooms = []
+                    };
                     if (i == Data.Floors - 1)
                     {
-                        currentRoom.Y = (i + 1) * -Data.YDistance;
+                        currentRoom.Y = (i + 1) * Data.YDistance;
+                    }
+                    else if (i == 0)
+                    {
+                        currentRoom.Y = 16;
                     }
 
                     adjacentRooms.Add(currentRoom);
@@ -158,18 +166,15 @@ namespace KemoCard.Scripts
                 rightNeighbour = MapData[i][j + 1];
             if (rightNeighbour != null && room.Col > j)
             {
-                foreach (var nextRoom in rightNeighbour.NextRooms)
+                if (rightNeighbour.NextRooms.Any(nextRoom => nextRoom % 100 < room.Col))
                 {
-                    if (nextRoom % 100 < room.Col) return true;
+                    return true;
                 }
             }
 
             if (leftNeighbour != null && room.Col < j)
             {
-                foreach (var nextRoom in leftNeighbour.NextRooms)
-                {
-                    if (nextRoom % 100 > room.Col) return true;
-                }
+                return leftNeighbour.NextRooms.Any(nextRoom => nextRoom % 100 > room.Col);
             }
 
             return false;
@@ -228,7 +233,7 @@ namespace KemoCard.Scripts
                 //SetTreasureRoom(Room);
             }
 
-            foreach (Room room in MapData[(int)Data.Floors - 2].Where(room => room.NextRooms is { Count: > 0 }))
+            foreach (var room in MapData[(int)Data.Floors - 2].Where(room => room.NextRooms is { Count: > 0 }))
             {
                 room.Type = RoomType.Treasure;
                 //SetTreasureRoom(Room);

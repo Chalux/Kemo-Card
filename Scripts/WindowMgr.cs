@@ -79,7 +79,7 @@ namespace KemoCard.Scripts
                     GD.Print("SceneRemoved:" + scene.Name);
                     if (_popUpRoot == scene.GetParent())
                     {
-                        _popUpRoot.RemoveChild(scene);
+                        _popUpRoot.CallDeferred(Node.MethodName.RemoveChild, scene);
                         if (scene is IEvent @event)
                         {
                             StaticInstance.EventMgr.UnregisterIEvent(@event);
@@ -96,7 +96,7 @@ namespace KemoCard.Scripts
                 GD.Print("SceneRemoved:" + scene.Name);
                 if (_popUpRoot == scene.GetParent())
                 {
-                    _popUpRoot.RemoveChild(scene);
+                    _popUpRoot.CallDeferred(Node.MethodName.RemoveChild, scene);
                     if (scene is IEvent @event)
                     {
                         StaticInstance.EventMgr.UnregisterIEvent(@event);
@@ -134,12 +134,10 @@ namespace KemoCard.Scripts
 
             foreach (var i in _dialogRoot.GetChildren())
             {
-                if (i != null && i.IsInsideTree())
-                {
-                    _dialogRoot.RemoveChild(i);
-                    //i.Free();
-                    i.QueueFree();
-                }
+                if (i == null || !i.IsInsideTree()) continue;
+                _dialogRoot.CallDeferred(Node.MethodName.RemoveChild, i);
+                //i.Free();
+                i.QueueFree();
             }
 
             _scenes.Add(scene.Name, scene);
@@ -182,11 +180,9 @@ namespace KemoCard.Scripts
 
             foreach (var i in _dialogRoot.GetChildren())
             {
-                if (i != null && i.IsInsideTree() && i.Name != sceneName)
-                {
-                    _dialogRoot.RemoveChild(i);
-                    i.QueueFree();
-                }
+                if (i == null || !i.IsInsideTree() || i.Name == sceneName) continue;
+                _dialogRoot.CallDeferred(Node.MethodName.RemoveChild, i);
+                i.QueueFree();
             }
 
             StaticInstance.CurrWindow = scene;

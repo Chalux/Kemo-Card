@@ -1,10 +1,10 @@
 [gd_scene load_steps=4 format=3 uid="uid://dktlsmcncoda2"]
 
-[ext_resource type="Script" uid="uid://cjmhh8qfaroco" path="res://Pages/CustonSContainer.cs" id="1_2wsrc"]
+[ext_resource type="Script" uid="uid://cjmhh8qfaroco" path="res://Pages/CustomSContainer.cs" id="1_2wsrc"]
 [ext_resource type="Script" uid="uid://dm3f32mnei8lv" path="res://Pages/BagScene.cs" id="1_cx6uk"]
 [ext_resource type="PackedScene" uid="uid://dyv3uci0g4ye4" path="res://Pages/EquipObject.tscn" id="2_8083f"]
 
-[node name="BagScene" type="Control"]
+[node name="BagScene" type="Control" node_paths=PackedStringArray("_helmetSlot", "_armorSlot", "_gloveSlot", "_trouserSlot", "_shoeSlot", "_weaponSlot1", "_weaponSlot2", "_otherSlot1", "_otherSlot2", "_otherSlot3", "_otherSlot4", "_otherSlot5", "_gmEdit", "_addBtn", "_deleteBtn", "Popup", "_flowContainer", "_quitBtn", "_debugControl")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -12,6 +12,25 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_cx6uk")
+_helmetSlot = NodePath("ColorRect2/HalmetSlot")
+_armorSlot = NodePath("ColorRect2/ArmorSlot")
+_gloveSlot = NodePath("ColorRect2/GloveSlot")
+_trouserSlot = NodePath("ColorRect2/TrouserSlot")
+_shoeSlot = NodePath("ColorRect2/ShoeSlot")
+_weaponSlot1 = NodePath("ColorRect2/WeaponSlot1")
+_weaponSlot2 = NodePath("ColorRect2/WeaponSlot2")
+_otherSlot1 = NodePath("ColorRect2/OtherSlot")
+_otherSlot2 = NodePath("ColorRect2/OtherSlot2")
+_otherSlot3 = NodePath("ColorRect2/OtherSlot3")
+_otherSlot4 = NodePath("ColorRect2/OtherSlot4")
+_otherSlot5 = NodePath("ColorRect2/OtherSlot5")
+_gmEdit = NodePath("DebugControl/GMEdit")
+_addBtn = NodePath("DebugControl/AddBtn")
+_deleteBtn = NodePath("DebugControl/DeleteBtn")
+Popup = NodePath("PopupMenu")
+_flowContainer = NodePath("ColorRect3/Control/ScrollContainer/HBoxContainer")
+_quitBtn = NodePath("QuitBtn")
+_debugControl = NodePath("DebugControl")
 
 [node name="ColorRect" type="ColorRect" parent="."]
 layout_mode = 1
@@ -36,7 +55,6 @@ offset_right = -0.64001465
 offset_bottom = -0.12005615
 
 [node name="OtherSlot" parent="ColorRect2" instance=ExtResource("2_8083f")]
-custom_minimum_size = Vector2(96, 96)
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.13900001
@@ -51,7 +69,6 @@ grow_horizontal = 1
 grow_vertical = 1
 
 [node name="OtherSlot2" parent="ColorRect2" instance=ExtResource("2_8083f")]
-custom_minimum_size = Vector2(96, 96)
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.13900001
@@ -66,7 +83,6 @@ grow_horizontal = 1
 grow_vertical = 1
 
 [node name="OtherSlot3" parent="ColorRect2" instance=ExtResource("2_8083f")]
-custom_minimum_size = Vector2(96, 96)
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.13900001
@@ -81,7 +97,6 @@ grow_horizontal = 1
 grow_vertical = 1
 
 [node name="OtherSlot4" parent="ColorRect2" instance=ExtResource("2_8083f")]
-custom_minimum_size = Vector2(96, 96)
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.13900001
@@ -96,7 +111,6 @@ grow_horizontal = 1
 grow_vertical = 1
 
 [node name="OtherSlot5" parent="ColorRect2" instance=ExtResource("2_8083f")]
-custom_minimum_size = Vector2(96, 96)
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.13900001
@@ -220,7 +234,7 @@ offset_top = -0.5200043
 offset_right = -8.32019
 offset_bottom = -0.12005615
 
-[node name="Control" type="Control" parent="ColorRect3" node_paths=PackedStringArray("scrollContainer")]
+[node name="Control" type="Control" parent="ColorRect3"]
 layout_mode = 1
 anchor_left = 0.059000004
 anchor_top = 0.07700001
@@ -231,7 +245,6 @@ offset_top = -0.06400299
 offset_right = 0.19195557
 offset_bottom = 0.063964844
 script = ExtResource("1_2wsrc")
-scrollContainer = NodePath("ScrollContainer")
 
 [node name="ScrollContainer" type="ScrollContainer" parent="ColorRect3/Control"]
 layout_mode = 1

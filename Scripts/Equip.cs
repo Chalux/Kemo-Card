@@ -11,11 +11,11 @@ namespace KemoCard.Scripts
     public class Equip
     {
         // 临时的属性修改都放在这里面，只有永久修改的才写代码改属性值
-        public Dictionary<string, float> Symbol { get; } = new();
+        [JsonInclude] public Dictionary<string, double> Symbol { get; } = new();
 
-        public string Id { get; }
+        [JsonInclude] public string Id { get; }
 
-        public string Uuid { get; private set; }
+        [JsonInclude] public string Uuid { get; private set; }
         [JsonIgnore] public BaseRole Owner;
         [JsonIgnore] public EquipType EquipType { get; private set; } = EquipType.Other;
 
@@ -26,18 +26,15 @@ namespace KemoCard.Scripts
             InitScript();
         }
 
-        public Equip(string id, string uuid, Dictionary<string, float> symbol)
-        {
-            Id = id;
-            Uuid = uuid;
-            if (Ins.EquipPool.TryGetValue(Id, out var value))
-            {
-                _struct = value;
-                EquipType = (EquipType)_struct.EquipType;
-            }
-
-            Symbol = symbol;
-        }
+        // [JsonConstructor]
+        // public Equip(string id)
+        // {
+        //     Id = id;
+        //     if (!Ins.EquipPool.TryGetValue(Id, out var value)) return;
+        //     _struct = value;
+        //     EquipType = (EquipType)_struct.EquipType;
+        //     InitScript();
+        // }
 
         [JsonIgnore] public EquipImplBase EquipScript { get; private set; } = new();
 

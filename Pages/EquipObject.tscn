@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://gpjolw6meuwt" path="res://Pages/EquipObject.cs" id="1_m3r4u"]
 
-[node name="EquipObject" type="Control"]
+[node name="EquipObject" type="Control" node_paths=PackedStringArray("_textureRect")]
 custom_minimum_size = Vector2(96, 96)
 layout_mode = 3
 anchors_preset = 15
@@ -15,6 +15,7 @@ grow_vertical = 2
 size_flags_horizontal = 0
 size_flags_vertical = 0
 script = ExtResource("1_m3r4u")
+_textureRect = NodePath("TextureRect")
 
 [node name="ColorRect" type="ColorRect" parent="."]
 self_modulate = Color(1, 1, 1, 0.219608)

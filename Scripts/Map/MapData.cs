@@ -7,12 +7,13 @@ using Godot.Collections;
 
 namespace KemoCard.Scripts.Map
 {
+    [Serializable]
     public class MapData
     {
         /// <summary>
         /// x轴两个点的间距
         /// </summary>
-        public int XDistance { get; } = 180;
+        public int XDistance { get; } = 150;
 
         /// <summary>
         /// y轴两个点的间距
@@ -62,15 +63,14 @@ namespace KemoCard.Scripts.Map
         public uint MaxTier { get; set; } = 1;
         public string ShowName { get; set; } = "";
         public string Id { get; set; } = "";
-        public uint HealTimes { get; private set; } = 3;
+        [JsonInclude] public uint HealTimes { get; private set; } = 3;
         public Godot.Collections.Dictionary<string, Array<Variant>> Cond;
         public bool CanAbort { get; set; } = true;
 
         /// <summary>
         /// 在地图生成后，会将生成完的地图传给这个委托。作者可以用自己的规则来给地图重新规定房间内容。
         /// </summary>
-        [JsonIgnore]
-        public Action<List<List<Room>>> Rules = null;
+        [JsonIgnore] public Action<List<List<Room>>> Rules = null;
 
         public MapData(string id)
         {

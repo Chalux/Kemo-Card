@@ -20,6 +20,7 @@ public partial class MapView : BaseScene, IEvent
     [Export] private Button _healBtn;
     [Export] private Button _abortBtn;
     [Export] private Label _healLabel;
+    [Export] private Control _mapContainer;
 
     private float CameraEdgeY { get; set; }
     private bool _isDrag;
@@ -36,7 +37,17 @@ public partial class MapView : BaseScene, IEvent
         _debugBtn2.Pressed += OnDebugBtn2OnPressed;
         _healBtn.Pressed += TryHeal;
         _abortBtn.Pressed += AbortMap;
+        _visual.GuiInput += VisualOnGuiInput;
         UpdateView();
+    }
+
+    private void VisualOnGuiInput(InputEvent @event)
+    {
+        if (@event is InputEventMouseMotion mouseMotion)
+        {
+            if (mouseMotion.IsActionPressed("left_mouse"))
+                _visual.SetVScroll(_visual.GetVScroll() + (int)mouseMotion.Relative.Y);
+        }
     }
 
     private static void OnDebugBtn2OnPressed()
@@ -92,6 +103,8 @@ public partial class MapView : BaseScene, IEvent
         var row = (int)map.Floors - 1;
         if (mapData.Count > row && mapData[row].Count > middle) SpawnRoom(mapData[row][middle]);
         _visual.MouseFilter = MouseFilterEnum.Ignore;
+        if (mapData.Count > 0 && mapData[row].Count > 0)
+            _mapContainer.CustomMinimumSize = new Vector2(_visual.Size.X, mapData[row][middle].Y + 100);
     }
 
     private void SpawnRoom(Room room)

@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://07j3vile11pe" path="res://Pages/Map/MapView.cs" id="1_rh6j2"]
 
-[node name="Map" type="Control" node_paths=PackedStringArray("_lines", "_rooms", "_visual", "_hideBtn", "_debugBtn", "_debugBtn2", "_healBtn", "_abortBtn", "_healLabel")]
+[node name="Map" type="Control" node_paths=PackedStringArray("_lines", "_rooms", "_visual", "_hideBtn", "_debugBtn", "_debugBtn2", "_healBtn", "_abortBtn", "_healLabel", "_mapContainer")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -19,6 +19,7 @@ _debugBtn2 = NodePath("DebugBtn2")
 _healBtn = NodePath("HealBtn")
 _abortBtn = NodePath("AbortBtn")
 _healLabel = NodePath("HealLabel")
+_mapContainer = NodePath("Visual/AspectRatioContainer")
 
 [node name="Background" type="ColorRect" parent="."]
 custom_minimum_size = Vector2(1920, 1080)
@@ -83,21 +84,34 @@ theme_override_font_sizes/font_size = 36
 text = "打印地图"
 
 [node name="Visual" type="ScrollContainer" parent="."]
-custom_minimum_size = Vector2(1120, 960)
+custom_minimum_size = Vector2(1408, 960)
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
+offset_left = -704.0
+offset_top = -480.0
+offset_right = 704.0
+offset_bottom = 480.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="AspectRatioContainer" type="AspectRatioContainer" parent="Visual"]
+[node name="AspectRatioContainer" type="Control" parent="Visual"]
 layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 0
+mouse_filter = 2
 
 [node name="Lines" type="Control" parent="Visual/AspectRatioContainer"]
-layout_mode = 2
+anchors_preset = 0
+offset_right = 1536.0
+offset_bottom = 960.0
+mouse_filter = 2
 
 [node name="Rooms" type="Control" parent="Visual/AspectRatioContainer"]
-layout_mode = 2
+anchors_preset = 0
+offset_right = 1536.0
+offset_bottom = 960.0
+mouse_filter = 2
