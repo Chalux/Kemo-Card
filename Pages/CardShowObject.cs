@@ -65,23 +65,35 @@ public partial class CardShowObject : Control
             sm.SetShaderParameter("y_rot", 0);
         }
 
-        StaticInstance.MainRoot.HideRichHint();
+        StaticInstance.MainRoot?.HideRichHint();
     }
 
     public override void _GuiInput(InputEvent @event)
     {
-        if (@event is not InputEventMouseMotion) return;
-        var mousePos = GetGlobalMousePosition();
-        var diff = (SvContainer.GlobalPosition + SvContainer.Size) - mousePos;
-        var lerpValueX = Mathf.Remap(diff.X, 0, Size.X, 0, 1);
-        var lerpValueY = Mathf.Remap(diff.Y, 0, Size.Y, 0, 1);
-        //var RotX = Mathf.RadToDeg(Mathf.LerpAngle(-AngleXMax, AngleXMax, LerpValueX));
-        //var RotY = Mathf.RadToDeg(Mathf.LerpAngle(-AngleYMax, AngleYMax, LerpValueY));
-        var rotX = Mathf.RadToDeg(Mathf.LerpAngle(-AngleYMax, AngleYMax, lerpValueY));
-        var rotY = Mathf.RadToDeg(Mathf.LerpAngle(AngleXMax, -AngleXMax, lerpValueX));
-        if (SvContainer.Material is not ShaderMaterial sm) return;
-        sm.SetShaderParameter("x_rot", rotX);
-        sm.SetShaderParameter("y_rot", rotY);
+        if (@event is InputEventMouseMotion)
+        {
+            var mousePos = GetGlobalMousePosition();
+            var diff = (SvContainer.GlobalPosition + SvContainer.Size) - mousePos;
+            var lerpValueX = Mathf.Remap(diff.X, 0, Size.X, 0, 1);
+            var lerpValueY = Mathf.Remap(diff.Y, 0, Size.Y, 0, 1);
+            //var RotX = Mathf.RadToDeg(Mathf.LerpAngle(-AngleXMax, AngleXMax, LerpValueX));
+            //var RotY = Mathf.RadToDeg(Mathf.LerpAngle(-AngleYMax, AngleYMax, LerpValueY));
+            var rotX = Mathf.RadToDeg(Mathf.LerpAngle(-AngleYMax, AngleYMax, lerpValueY));
+            var rotY = Mathf.RadToDeg(Mathf.LerpAngle(AngleXMax, -AngleXMax, lerpValueX));
+            if (SvContainer.Material is not ShaderMaterial sm) return;
+            sm.SetShaderParameter("x_rot", rotX);
+            sm.SetShaderParameter("y_rot", rotY);
+        }
+        else if (OS.IsDebugBuild() && @event is InputEventMouseButton imb &&
+                 imb.IsCtrlPressed() &&
+                 imb.IsActionPressed("left_mouse") && SvContainer.Material is ShaderMaterial sm)
+        {
+            _animTween?.Kill();
+            _animTween = CreateTween();
+            _animTween.TweenProperty(SvContainer.Material, "shader_parameter/dissolve_value",
+                0.0, 1f);
+            _animTween.TweenCallback(Callable.From(() => sm.SetShaderParameter("dissolve_value", 1.0f)));
+        }
     }
 
     private void UpdateCardObject()
@@ -97,5 +109,11 @@ public partial class CardShowObject : Control
     {
         (FrameRect.Material as ShaderMaterial)?.SetShaderParameter("color",
             new Color(StaticUtils.GetFrameColorByRare(Card.Rare)));
+    }
+
+    public override void _ExitTree()
+    {
+        _animTween?.Kill();
+        base._ExitTree();
     }
 }

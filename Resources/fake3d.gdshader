@@ -29,10 +29,13 @@ varying vec3 p;
 //uniform float rayOffsetY:hint_range(0,2);
 uniform sampler2D in_color;
 uniform float scaleArg:hint_range(0.0, 16.0, 0.1) = 4;
-// x轴旋转对镭射效果的影响因子
+// x轴旋转对全息效果的影响因子
 uniform float x_rot_scale:hint_range(0.0, 360, 1) = 10;
-// y轴旋转对镭射效果的影响因子
+// y轴旋转对全息效果的影响因子
 uniform float y_rot_scale:hint_range(0.0, 360, 1) = 10;
+// 负片效果影响因子
+uniform float negative:hint_range(0.0, 1, 0.1) = 0.1;
+uniform vec4 negative_color:source_color;
 
 //const float PI = 3.14159;
 
@@ -111,9 +114,12 @@ void fragment(){
     if (cull_back && p.z <= 0.0) discard;
     vec2 uv = (p.xy / p.z).xy - o;
     COLOR = texture(TEXTURE, uv + 0.5);
+	
+	ivec2 ts = textureSize(TEXTURE,0);
+	vec2 tex_size = vec2(ts);
 
     // 根据effect_type应用不同效果
-    if(effect_type == 1){  // 镭射效果
+    if(effect_type == 1){  // 全息效果
 		//vec4 tex = texture(TEXTURE, UV);
 		vec4 tex = texture(in_color, UV);
 		float low = min(tex.r, min(tex.g, tex.b));
@@ -123,10 +129,8 @@ void fragment(){
 		vec4 HSL = hsl(vec4(tex.r*sf, tex.g*sf, tex.b, tex.a));
 
 		float t = TIME * 5.0 + 2003.;
-		ivec2 ts = textureSize(TEXTURE,0);
-		vec2 tex_size = vec2(ts);
 		vec2 floored_uv = (floor((uv*tex_size.xy)))/max(tex_size.x, tex_size.y);
-	    vec2 uv_scaled_centered = (floored_uv - 0.5) * 2.3 * max(tex_size.x, tex_size.y) / scaleArg;
+    	vec2 uv_scaled_centered = (floored_uv - 0.5) * 2.3 * max(tex_size.x, tex_size.y) / scaleArg;
 
 		vec2 field_part1 = uv_scaled_centered + 50.*vec2(sin(-t / 143.6340), cos(-t / 99.4324));
 		vec2 field_part2 = uv_scaled_centered + 50.*vec2(cos( t / 53.1532),  cos( t / 61.4532));
@@ -142,9 +146,56 @@ void fragment(){
 		HSL.x = HSL.x + res + y_rot/y_rot_scale*0.04;
 		HSL.y = min(0.6, HSL.y+0.5);
 
-        COLOR.rgb += RGB(HSL).rgb;  // 叠加镭射效果
+        COLOR.rgb += RGB(HSL).rgb;  // 叠加全息效果
     } else if(effect_type == 2){  // 负片效果
-        COLOR.rgb = 1.0 - COLOR.rgb;
+		vec4 tex = texture(in_color, UV);
+		//vec2 ng_uv = uv * 2.;
+//
+	    float low = min(tex.r, min(tex.g, tex.b));
+	    float high = max(tex.r, max(tex.g, tex.b));
+	    float delta = high - low - 0.1;
+//
+	    //float fac = 0.8 + 0.9 * sin(11.0 * ng_uv.x + 4.32 * ng_uv.y + tex.r * 12.0 + cos(tex.r * 5.3 + ng_uv.y * 4.2 - ng_uv.x * 4.0));
+	    //float fac2 = 0.5 + 0.5 * sin(8.0 * ng_uv.x + 2.32 * ng_uv.y + tex.r * 5.0 - cos(tex.r * 2.3 + ng_uv.x * 8.2));
+	    //float fac3 = 0.5 + 0.5 * sin(10.0 * ng_uv.x + 5.32 * ng_uv.y + tex.r * 6.111 + sin(tex.r * 5.3 + ng_uv.y * 3.2));
+	    //float fac4 = 0.5 + 0.5 * sin(3.0 * ng_uv.x + 2.32 * ng_uv.y + tex.r * 8.111 + sin(tex.r * 1.3 + ng_uv.y * 11.2));
+	    //float fac5 = sin(0.9 * 16.0 * ng_uv.x + 5.32 * ng_uv.y + tex.r * 12.0 + cos(tex.r * 5.3 + ng_uv.y * 4.2 - ng_uv.x * 4.0));
+//
+	    //float maxfac = 0.7 * max(max(fac, max(fac2, max(fac3, 0.0))) + (fac + fac2 + fac3 * fac4), 0.0);
+//
+	    //tex.rgb = tex.rgb * 0.5 + vec3(0.4, 0.4, 0.8);
+//
+	    //tex.r = tex.r - delta + delta * maxfac * (0.7 + fac5 * 0.27) - 0.1;
+	    //tex.g = tex.g - delta + delta * maxfac * (0.7 - fac5 * 0.27) - 0.1;
+	    //tex.b = tex.b - delta + delta * maxfac * 0.7 - 0.1;
+	    //tex.a = tex.a * (0.5 * max(min(1.0, max(0.0, 0.3 * max(low * 0.2, delta) + min(max(maxfac * 0.1, 0.0), 0.4))), 0.0) + 0.15 * maxfac * (0.1 + delta));
+	//
+        //COLOR.rgb *= tex.rgb;
+		
+		vec4 SAT = hsl(tex);
+		if (abs(negative)>0.01) {
+			SAT.b = 1.0-SAT.b;
+		}
+		SAT.r = .2-SAT.r;
+		tex = RGB(SAT) + .8*vec4(.31,.39,.41,0.);
+		
+		float change = x_rot / 12.;
+		
+		float fac = 0.8 + 0.9*sin(11.*uv.x+4.32*uv.y + change*12. + cos(change*5.3 + uv.y*4.2 - uv.x*4.));
+	    float fac2 = 0.5 + 0.5*sin(8.*uv.x+2.32*uv.y +change*5. - cos(change*2.3 + uv.x*8.2));
+	    float fac3 = 0.5 + 0.5*sin(10.*uv.x+5.32*uv.y + change*6.111 + sin(change*5.3 + uv.y*3.2));
+	    float fac4 = 0.5 + 0.5*sin(3.*uv.x+2.32*uv.y + change*8.111 + sin(change*1.3 + uv.y*11.2));
+	    float fac5 = sin(0.9*16.*uv.x+5.32*uv.y + change*12. + cos(change*5.3 + uv.y*4.2 - uv.x*4.));
+	
+		float maxfac = 0.7*max(max(fac, max(fac2, max(fac3,0.0))) + (fac+fac2+fac3*fac4), 0);
+		
+		tex.r = tex.r-delta + delta*maxfac*(0.7 + fac5*0.27) - 0.1;
+	    tex.g = tex.g-delta + delta*maxfac*(0.7 - fac5*0.27) - 0.1;
+	    tex.b = tex.b-delta + delta*maxfac*0.7 - 0.1;
+	    tex.a = tex.a*(0.5*max(min(1., max(0.,0.3*max(low*0.2, delta)+ min(max(maxfac*0.1,0.), 0.4)) ), 0.) + 0.15*maxfac*(0.1+delta));
+		
+		tex.rgb = tex.rgb * 0.5 + negative_color.rgb;
+		COLOR.rgb *= tex.rgb;
     }
 
     vec4 noise_texture = texture(dissolve_texture, UV);

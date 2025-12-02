@@ -27,11 +27,13 @@ shader_parameter/dissolve_texture = SubResource("NoiseTexture2D_hp427")
 shader_parameter/dissolve_value = 1.0
 shader_parameter/burn_size = 0.2
 shader_parameter/burn_color = Color(0.922391, 0.121125, 0, 1)
-shader_parameter/effect_type = 1
+shader_parameter/effect_type = 2
 shader_parameter/in_color = SubResource("PlaceholderTexture2D_v6mps")
 shader_parameter/scaleArg = 6.60000009834792
 shader_parameter/x_rot_scale = 10.0
 shader_parameter/y_rot_scale = 10.0
+shader_parameter/negative = 0.1
+shader_parameter/negative_color = Color(0.019607844, 0, 0.5372549, 1)
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_lmy76"]
 resource_local_to_scene = true
