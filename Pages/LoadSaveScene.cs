@@ -33,6 +33,11 @@ public partial class LoadSaveScene : BaseScene
                 if (FileAccess.FileExists(imgPath))
                 {
                     var img = Image.LoadFromFile(imgPath);
+                    if (img.GetFormat() == Image.Format.Rgb8)
+                    {
+                        img.Convert(Image.Format.Rgba8);
+                    }
+
                     if (container.GetChild(0) is TextureRect tr) tr.Texture = ImageTexture.CreateFromImage(img);
                 }
             }

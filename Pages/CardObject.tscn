@@ -54,6 +54,8 @@ shader_parameter/dissolve_texture = SubResource("NoiseTexture2D_hp427")
 shader_parameter/dissolve_value = 1.0
 shader_parameter/burn_size = 0.2
 shader_parameter/burn_color = Color(0.922391, 0.121125, 0, 1)
+shader_parameter/effect_type = 1
+shader_parameter/scale = 0.1
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_auwai"]
 resource_local_to_scene = true

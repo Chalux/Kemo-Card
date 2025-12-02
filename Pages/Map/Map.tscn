@@ -98,20 +98,19 @@ offset_bottom = 480.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="AspectRatioContainer" type="Control" parent="Visual"]
+[node name="AspectRatioContainer" type="MarginContainer" parent="Visual"]
 layout_mode = 2
 size_flags_horizontal = 0
 size_flags_vertical = 0
 mouse_filter = 2
+theme_override_constants/margin_left = 16
+theme_override_constants/margin_top = 16
+theme_override_constants/margin_right = 16
 
 [node name="Lines" type="Control" parent="Visual/AspectRatioContainer"]
-anchors_preset = 0
-offset_right = 1536.0
-offset_bottom = 960.0
+layout_mode = 2
 mouse_filter = 2
 
 [node name="Rooms" type="Control" parent="Visual/AspectRatioContainer"]
-anchors_preset = 0
-offset_right = 1536.0
-offset_bottom = 960.0
+layout_mode = 2
 mouse_filter = 2

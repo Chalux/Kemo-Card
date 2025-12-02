@@ -46,8 +46,8 @@ public partial class CardShowObject : Control
         _animTween = CreateTween();
         _animTween.TweenProperty(this, "scale", new Vector2(1.2f, 1.2f), 0.5f).SetEase(Tween.EaseType.Out)
             .SetTrans(Tween.TransitionType.Elastic);
-        var desc = Card.GetDesc;
-        if (desc != "")
+        var desc = Card?.GetDesc;
+        if (!string.IsNullOrEmpty(desc))
         {
             StaticInstance.MainRoot.ShowRichHint(StaticUtils.MakeBBCodeString(desc, "left"));
         }

@@ -22,15 +22,20 @@ public partial class DialogueScene : BaseScene
 
     public async Task ChangeBg(string url, float duration = 1.0f)
     {
-        var image = ResourceLoader.Load<CompressedTexture2D>(url);
+        var image = Image.LoadFromFile(url);
         if (image != null)
         {
-            // var toTexture = ImageTexture.CreateFromImage(image);
+            if (image.GetFormat() == Image.Format.Rgb8)
+            {
+                image.Convert(Image.Format.Rgba8);
+            }
+
+            var toTexture = ImageTexture.CreateFromImage(image);
             _switchTween?.Kill();
             _switchTween = GetTree().CreateTween();
             _switchTween.SetParallel(false);
             _switchTween.TweenProperty(_blackMask, "modulate", Colors.Black, duration / 2);
-            _switchTween.TweenCallback(Callable.From(() => _background.Texture = image));
+            _switchTween.TweenCallback(Callable.From(() => _background.Texture = toTexture));
             _switchTween.TweenProperty(_blackMask, "modulate", Color.Color8(0, 0, 0, 0), duration / 2);
             _switchTween.Play();
             await ToSignal(_switchTween, Tween.SignalName.Finished);

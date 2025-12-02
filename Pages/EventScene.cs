@@ -53,7 +53,17 @@ public partial class EventScene : BaseScene, IEvent
         }
 
         if (_eventScriptData.EventImgPath?.Length > 0)
-            _eventImg.Texture = ResourceLoader.Load<CompressedTexture2D>(_eventScriptData.EventImgPath);
+        {
+            var img = Image.LoadFromFile(_eventScriptData.EventImgPath);
+            if (img.GetFormat() == Image.Format.Rgb8)
+            {
+                img.Convert(Image.Format.Rgba8);
+            }
+
+            var toTexture = ImageTexture.CreateFromImage(img);
+            _eventImg.Texture = toTexture;
+        }
+
         _eventTitle.Text = _eventScriptData.EventTitle;
     }
 

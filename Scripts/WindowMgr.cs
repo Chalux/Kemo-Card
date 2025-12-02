@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using Godot;
 using KemoCard.Pages;
 
@@ -239,12 +240,9 @@ namespace KemoCard.Scripts
                 }
             }
 
-            foreach (var i in _scenes.Values)
+            foreach (var i in _scenes.Values.Where(i => i != null && i.IsInsideTree()))
             {
-                if (i != null && i.IsInsideTree())
-                {
-                    RemoveScene(i);
-                }
+                RemoveScene(i);
             }
         }
 

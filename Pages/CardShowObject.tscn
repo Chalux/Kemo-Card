@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=3 uid="uid://bhiqlhvrt8uq2"]
+[gd_scene load_steps=11 format=3 uid="uid://bhiqlhvrt8uq2"]
 
 [ext_resource type="Script" uid="uid://dnkaue0uhpd20" path="res://Pages/CardShowObject.cs" id="1_mqmob"]
 [ext_resource type="Shader" uid="uid://bl753ihbpq1tq" path="res://Resources/fake3d.gdshader" id="1_nu6xd"]
@@ -13,6 +13,8 @@ frequency = 0.0016
 noise = SubResource("FastNoiseLite_ep83x")
 color_ramp = SubResource("Gradient_kotth")
 
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_v6mps"]
+
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_kydiv"]
 resource_local_to_scene = true
 shader = ExtResource("1_nu6xd")
@@ -25,6 +27,11 @@ shader_parameter/dissolve_texture = SubResource("NoiseTexture2D_hp427")
 shader_parameter/dissolve_value = 1.0
 shader_parameter/burn_size = 0.2
 shader_parameter/burn_color = Color(0.922391, 0.121125, 0, 1)
+shader_parameter/effect_type = 1
+shader_parameter/in_color = SubResource("PlaceholderTexture2D_v6mps")
+shader_parameter/scaleArg = 6.60000009834792
+shader_parameter/x_rot_scale = 10.0
+shader_parameter/y_rot_scale = 10.0
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_lmy76"]
 resource_local_to_scene = true
@@ -72,6 +79,14 @@ handle_input_locally = false
 size = Vector2i(256, 320)
 render_target_update_mode = 4
 
+[node name="ColorRect" type="ColorRect" parent="SubViewportContainer/SubViewport"]
+modulate = Color(0.5330367, 0.5330367, 0.5330367, 0.43137255)
+custom_minimum_size = Vector2(128, 192)
+offset_right = 256.0
+offset_bottom = 320.0
+pivot_offset = Vector2(128, 320)
+mouse_filter = 2
+
 [node name="FrameRect" type="ColorRect" parent="SubViewportContainer/SubViewport"]
 material = SubResource("ShaderMaterial_lmy76")
 anchors_preset = 15
@@ -79,14 +94,6 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-mouse_filter = 2
-
-[node name="ColorRect" type="ColorRect" parent="SubViewportContainer/SubViewport"]
-modulate = Color(0, 0, 0, 0.431373)
-custom_minimum_size = Vector2(128, 192)
-offset_right = 256.0
-offset_bottom = 320.0
-pivot_offset = Vector2(128, 320)
 mouse_filter = 2
 
 [node name="CardName" type="RichTextLabel" parent="SubViewportContainer/SubViewport"]

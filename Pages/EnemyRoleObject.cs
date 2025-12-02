@@ -177,4 +177,9 @@ public partial class EnemyRoleObject : Control, IEvent
         buffObj.Data.OnBuffAdded?.Invoke(buffObj.Data);
         BuffContainer?.AddChild(buffObj);
     }
+
+    ~EnemyRoleObject()
+    {
+        StaticInstance.EventMgr.UnregisterIEvent(this);
+    }
 }

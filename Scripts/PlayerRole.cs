@@ -22,7 +22,7 @@ namespace KemoCard.Scripts
             originCraftBook, originCritical, originDodge, currHealth, currMagic, originHpLimit, originMpLimit)
         {
             SetName(name);
-            this.ActionPoint = actionPoint;
+            ActionPoint = actionPoint;
         }
 
         public PlayerRole()
@@ -436,14 +436,14 @@ namespace KemoCard.Scripts
         [JsonIgnore] public List<Card> InFightHands = [];
         [JsonIgnore] public List<Card> InFightGrave = [];
         [JsonIgnore] public List<BuffImplBase> InFightBuffs = [];
-        public int HandLimit = 10;
+        public int HandLimit { get; set; } = 10;
         [JsonIgnore] public bool IsIfpInit;
         [JsonIgnore] public bool IsDead = false;
         public int InFightDeckCount => InFightDeck.Count;
         public int InFightGraveCount => InFightGrave.Count;
         [JsonIgnore] public PlayerRoleObject RoleObject;
 
-        private int _turnActionPoint;
+        [JsonIgnore] private int _turnActionPoint;
 
         public int TurnActionPoint
         {
@@ -456,7 +456,7 @@ namespace KemoCard.Scripts
             }
         }
 
-        public int CurrActionPoint;
+        [JsonIgnore] public int CurrActionPoint;
 
         public int CurrentActionPoint
         {
