@@ -15,7 +15,7 @@ public partial class CardObject : Control
     [Export] public Polygon2D CostBg;
     [Export] public Area2D DropPointDetector;
     [Export] public Label StateLabel;
-    [Export] public Scripts.Cards.CardStateMachine Csm;
+    [Export] public CardStateMachine Csm;
     [Export] public Control BezierControl;
     [Export] public SubViewportContainer SvContainer;
     [Export] public ColorRect FrameRect;

@@ -97,7 +97,7 @@ namespace KemoCard.Scripts.Cards
                         CardObject.SvContainer.UseParentMaterial = true;
                         CardObject.ShowHint = false;
                         var tween = CreateTween();
-                        tween.TweenProperty(CardObject.Material as ShaderMaterial, "shader_parameter/dissolve_value",
+                        tween.TweenProperty(CardObject.SvContainer.Material as ShaderMaterial, "shader_parameter/dissolve_value",
                             0, 1f);
                         tween.TweenCallback(Callable.From(CardObject.QueueFree));
                         tween.Play();

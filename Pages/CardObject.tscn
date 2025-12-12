@@ -1,6 +1,5 @@
-[gd_scene load_steps=28 format=3 uid="uid://w7e40lauidt0"]
+[gd_scene load_steps=24 format=3 uid="uid://w7e40lauidt0"]
 
-[ext_resource type="Shader" uid="uid://bxdawormwjyst" path="res://Resources/burn_shader.gdshader" id="1_8ochk"]
 [ext_resource type="Script" uid="uid://k4v0udrobod8" path="res://Pages/CardObject.cs" id="1_bld5k"]
 [ext_resource type="Shader" uid="uid://bl753ihbpq1tq" path="res://Resources/fake3d.gdshader" id="2_03cat"]
 [ext_resource type="Script" uid="uid://drmikumvfpk6r" path="res://Pages/Bezier.cs" id="2_13l5h"]
@@ -16,31 +15,18 @@
 [ext_resource type="Script" uid="uid://bn86s4bryyjpx" path="res://Scripts/Cards/CardAllState.cs" id="8_m444i"]
 [ext_resource type="Script" uid="uid://cmtlrmmt1u2t0" path="res://Scripts/Cards/CardDiscardingState.cs" id="15_dok7q"]
 
-[sub_resource type="Gradient" id="Gradient_mcxnm"]
-
-[sub_resource type="FastNoiseLite" id="FastNoiseLite_wjo5k"]
-frequency = 0.001
-
-[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_ocyq7"]
-noise = SubResource("FastNoiseLite_wjo5k")
-color_ramp = SubResource("Gradient_mcxnm")
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_proen"]
-resource_local_to_scene = true
-shader = ExtResource("1_8ochk")
-shader_parameter/dissolve_texture = SubResource("NoiseTexture2D_ocyq7")
-shader_parameter/dissolve_value = 1.0
-shader_parameter/burn_size = 0.14
-shader_parameter/burn_color = Color(0.831373, 0.137255, 0, 1)
-
 [sub_resource type="Gradient" id="Gradient_5i4y7"]
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_kogeu"]
+resource_local_to_scene = true
 frequency = 0.0016
 
 [sub_resource type="NoiseTexture2D" id="NoiseTexture2D_hp427"]
+resource_local_to_scene = true
 noise = SubResource("FastNoiseLite_kogeu")
 color_ramp = SubResource("Gradient_5i4y7")
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_xupy4"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_on47y"]
 resource_local_to_scene = true
@@ -55,7 +41,12 @@ shader_parameter/dissolve_value = 1.0
 shader_parameter/burn_size = 0.2
 shader_parameter/burn_color = Color(0.922391, 0.121125, 0, 1)
 shader_parameter/effect_type = 1
-shader_parameter/scale = 0.1
+shader_parameter/in_color = SubResource("PlaceholderTexture2D_xupy4")
+shader_parameter/scaleArg = 6.60000009834792
+shader_parameter/x_rot_scale = 10.0
+shader_parameter/y_rot_scale = 10.0
+shader_parameter/negative = 0.1
+shader_parameter/negative_color = Color(0.019607844, 0, 0.5372549, 1)
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_auwai"]
 resource_local_to_scene = true
@@ -77,7 +68,6 @@ height = 320
 noise = SubResource("FastNoiseLite_sk25p")
 
 [node name="CardObject" type="Control" node_paths=PackedStringArray("CardName", "CardDesc", "CardCost", "BgRect", "CostBg", "DropPointDetector", "StateLabel", "Csm", "BezierControl", "SvContainer", "FrameRect", "EfRect")]
-material = SubResource("ShaderMaterial_proen")
 custom_minimum_size = Vector2(256, 320)
 layout_mode = 3
 anchors_preset = 0
@@ -125,6 +115,14 @@ handle_input_locally = false
 size = Vector2i(256, 320)
 render_target_update_mode = 4
 
+[node name="BgRect" type="ColorRect" parent="Container/SubViewportContainer/SubViewport"]
+custom_minimum_size = Vector2(128, 192)
+offset_right = 256.0
+offset_bottom = 320.0
+pivot_offset = Vector2(128, 320)
+mouse_filter = 2
+color = Color(0, 0, 0, 0.556863)
+
 [node name="FrameRect" type="ColorRect" parent="Container/SubViewportContainer/SubViewport"]
 material = SubResource("ShaderMaterial_auwai")
 anchors_preset = 15
@@ -133,14 +131,6 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
-
-[node name="BgRect" type="ColorRect" parent="Container/SubViewportContainer/SubViewport"]
-custom_minimum_size = Vector2(128, 192)
-offset_right = 256.0
-offset_bottom = 320.0
-pivot_offset = Vector2(128, 320)
-mouse_filter = 2
-color = Color(0, 0, 0, 0.556863)
 
 [node name="CardName" type="RichTextLabel" parent="Container/SubViewportContainer/SubViewport"]
 offset_left = 16.0
