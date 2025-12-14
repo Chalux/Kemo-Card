@@ -50,7 +50,7 @@ public partial class MainScene : BaseScene, IEvent
             List<string> array = [];
             try
             {
-                array.AddRange(strings.Where(string.IsNullOrEmpty));
+                array.AddRange(strings.Where(s => !string.IsNullOrEmpty(s)));
             }
             catch
             {

@@ -29,7 +29,13 @@ public class SettingData
 
     private void Load()
     {
-        if (!FileAccess.FileExists(SettingFilePath)) return;
+        if (!FileAccess.FileExists(SettingFilePath))
+        {
+            GD.PrintErr($"系统设置文件不存在，已创建默认设置文件");
+            _settings = new SettingObj();
+            return;
+        }
+
         using var load = FileAccess.Open(SettingFilePath, FileAccess.ModeFlags.Read);
         try
         {
@@ -44,7 +50,7 @@ public class SettingData
 
     public Vector2I GetScreenResolution()
     {
-        return _settings.ScreenResolution;
+        return _settings?.ScreenResolution ?? new Vector2I(1280, 720);
     }
 
     public void SetScreenResolution(Vector2I resolution)

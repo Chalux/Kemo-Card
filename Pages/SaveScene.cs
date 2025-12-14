@@ -33,8 +33,14 @@ public partial class SaveScene : BaseScene
                     //    GD.Print(error);
                     //    return;
                     //}
+                    var img = StaticInstance.PlayerData.ScreenSnapshot;
+                    if (img.GetFormat() == Image.Format.Rgb8)
+                    {
+                        img.Convert(Image.Format.Rgba8);
+                    }
+
                     if (container.GetChild(0) is TextureRect tr)
-                        tr.Texture = ImageTexture.CreateFromImage(StaticInstance.PlayerData.ScreenSnapshot);
+                        tr.Texture = ImageTexture.CreateFromImage(img);
                 });
             };
             if (container.GetChild(1) is Label lab) lab.Text = "s" + i + (i == 1 ? "(自动存档)" : "");
@@ -44,9 +50,15 @@ public partial class SaveScene : BaseScene
                 var imgPath = StaticUtils.GetSaveImgPath((uint)i);
                 if (FileAccess.FileExists(imgPath))
                 {
+                    var img = Image.LoadFromFile(imgPath);
+                    if (img.GetFormat() == Image.Format.Rgb8)
+                    {
+                        img.Convert(Image.Format.Rgba8);
+                    }
+
                     if (container.GetChild(0) is TextureRect tr)
                         tr.Texture =
-                            ImageTexture.CreateFromImage(Image.LoadFromFile(imgPath));
+                            ImageTexture.CreateFromImage(img);
                 }
             }
 
