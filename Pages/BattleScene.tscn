@@ -52,6 +52,7 @@ layout_mode = 1
 anchor_right = 1.0
 anchor_bottom = 0.59300005
 offset_bottom = -0.44006348
+metadata/_edit_lock_ = true
 
 [node name="PlayerContainer" type="HBoxContainer" parent="BattleRoot"]
 layout_mode = 1
@@ -249,6 +250,7 @@ offset_left = -1.2799988
 offset_top = -0.44006348
 offset_right = -0.6401367
 offset_bottom = -0.12005615
+metadata/_edit_lock_ = true
 
 [node name="EndControl" type="Control" parent="."]
 visible = false
